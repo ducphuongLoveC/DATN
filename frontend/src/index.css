@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--system-ui);
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-y: auto;
+    overscroll-behavior: none; 
+    touch-action: manipulation;
+    -webkit-user-drag: none;
+    -ms-content-zooming: none;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --main-font-size: 14px;
+    --mini-font-size: 12px;
+
+}
