@@ -1,0 +1,66 @@
+// Accordion.module.scss
+
+.accordion-item {
+    border-bottom: 1px solid #e1e1e1;
+    overflow: hidden;
+
+    .button-header {
+        background: #f7f8fa !important;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; // Thêm dòng này để căn giữa nội dung và icon
+        width: 100%;
+        padding: 15px;
+        font-size: 1rem;
+        color: var(--bs-accordion-btn-color);
+        text-align: left;
+        border: 0;
+        border-radius: 0;
+        overflow-anchor: none;
+
+        .content-header {
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .icon {
+            font-size: 20px;
+        }
+    }
+}
+.des {
+    font-size: 12px;
+    font-weight: 400;
+    color: #29303b;
+}
+
+
+.collapse-body {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+
+.content-list {
+    padding: 5px 5px 5px 25px;
+
+    input[type="checkbox"] {
+        margin-right: 10px;
+    }
+
+    a {
+        font-size: 14px;
+        color: #333;
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+    }
+}

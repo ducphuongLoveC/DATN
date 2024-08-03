@@ -1,0 +1,22 @@
+.learning-list {
+
+    border-left: 1px solid rgb(215, 212, 212);
+    width: 500px;
+
+    .header-lists {
+        background-color: #ffffff;
+        font-size: 16px;
+        position: fixed;
+        font-weight: 600;
+        padding: 15px 5px;
+        z-index: 999;
+        width: 100%;
+    }
+
+    .content-lists {
+        border-top: 1px solid rgb(215, 212, 212);
+        height: 83vh;   
+        overflow: auto;
+        margin-top: 60px;
+    }
+}

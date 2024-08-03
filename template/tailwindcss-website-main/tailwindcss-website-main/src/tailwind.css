@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .slick-prev,
+  .slick-next {
+    width: auto;
+    height: auto;
+    background: #eee;
+    padding: 10px;
+    z-index: 40;
+  }
+
+  .slick-prev:hover,
+  .slick-prev:focus,
+  .slick-next:hover,
+  .slick-next:focus {
+    color: #000;
+    opacity: 0.8;
+    background: #eee;
+  }
+
+  .slick-next {
+    margin-right: 18px;
+  }
+
+  .slick-prev {
+    margin-left: 8px;
+  }
+
+  .slick-prev::before {
+    content: "\f053";
+  }
+
+  .slick-next::before {
+    content: "\f054";
+  }
+
+  .slick-prev::before,
+  .slick-next::before {
+    color: #000;
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+  }
+}
