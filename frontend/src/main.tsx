@@ -21,8 +21,6 @@ import 'tippy.js/animations/scale-extreme.css';
 
 import './index.css';
 
-
-
 const store = configureStore({ reducer });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

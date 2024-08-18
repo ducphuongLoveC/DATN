@@ -78,7 +78,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
         marginTop: -2,
         width: '1rem',
         height: '1rem',
-        color: theme.palette.secondary.main
+        color: theme.palette.secondary.main,
     };
 
     const linkSX = {
@@ -86,7 +86,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
         color: 'grey.900',
         textDecoration: 'none',
         alignContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     };
 
     let customLocation = location.pathname;
@@ -128,7 +128,11 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
 
     // item separator
     const SeparatorIcon = separator as React.ComponentType;
-    const separatorIcon = separator ? <SeparatorIcon stroke={1.5} size="16px" /> : <IconTallymark1 stroke={1.5} size="16px" />;
+    const separatorIcon = separator ? (
+        <SeparatorIcon stroke={1.5} size="16px" />
+    ) : (
+        <IconTallymark1 stroke={1.5} size="16px" />
+    );
 
     let mainContent;
     let itemContent;
@@ -145,7 +149,11 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
                 {...(main.url && { component: Link, to: main.url })}
                 variant="subtitle1"
                 sx={linkSX}
-                color={window.location.pathname === main.url ? 'text.primary' : 'text.secondary'}
+                color={
+                    window.location.pathname === main.url
+                        ? 'text.primary'
+                        : 'text.secondary'
+                }
             >
                 {icons && <CollapseIcon style={iconSX} />}
                 {main.title}
@@ -153,17 +161,28 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
         );
     }
 
-    if (!custom && main && main.type === 'collapse' && main.breadcrumbs === true) {
+    if (
+        !custom &&
+        main &&
+        main.type === 'collapse' &&
+        main.breadcrumbs === true
+    ) {
         breadcrumbContent = (
             <Card
-                sx={card === false ? { mb: 3, bgcolor: 'transparent', ...sx } : { mb: 3, bgcolor: 'background.default', ...sx }}
+                sx={
+                    card === false
+                        ? { mb: 3, bgcolor: 'transparent', ...sx }
+                        : { mb: 3, bgcolor: 'background.default', ...sx }
+                }
                 {...others}
             >
                 <Box sx={{ p: 2, pl: card === false ? 0 : 2 }}>
                     <Grid
                         container
                         direction={rightAlign ? 'row' : 'column'}
-                        justifyContent={rightAlign ? 'space-between' : 'flex-start'}
+                        justifyContent={
+                            rightAlign ? 'space-between' : 'flex-start'
+                        }
                         alignItems={rightAlign ? 'center' : 'flex-start'}
                         spacing={1}
                     >
@@ -173,11 +192,32 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
                                 aria-label="breadcrumb"
                                 maxItems={maxItems || 8}
                                 separator={separatorIcon}
-                                sx={{ '& .MuiBreadcrumbs-separator': { width: 16, ml: 1.25, mr: 1.25 } }}
+                                sx={{
+                                    '& .MuiBreadcrumbs-separator': {
+                                        width: 16,
+                                        ml: 1.25,
+                                        mr: 1.25,
+                                    },
+                                }}
                             >
-                                <Typography component={Link} to="/" color="textSecondary" variant="subtitle1" sx={linkSX}>
-                                    {icons && <HomeTwoToneIcon style={iconSX} />}
-                                    {icon && !icons && <HomeIcon style={{ ...iconSX, marginRight: 0 }} />}
+                                <Typography
+                                    component={Link}
+                                    to="/"
+                                    color="textSecondary"
+                                    variant="subtitle1"
+                                    sx={linkSX}
+                                >
+                                    {icons && (
+                                        <HomeTwoToneIcon style={iconSX} />
+                                    )}
+                                    {icon && !icons && (
+                                        <HomeIcon
+                                            style={{
+                                                ...iconSX,
+                                                marginRight: 0,
+                                            }}
+                                        />
+                                    )}
                                     {(!icon || icons) && 'Dashboard'}
                                 </Typography>
                                 {mainContent}
@@ -186,18 +226,27 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
                         {title && titleBottom && <BTitle title={main.title} />}
                     </Grid>
                 </Box>
-                {card === false && divider !== false && <Divider sx={{ mt: 2 }} />}
+                {card === false && divider !== false && (
+                    <Divider sx={{ mt: 2 }} />
+                )}
             </Card>
         );
     }
 
     // items
-    if ((item && item.type === 'item') || (item?.type === 'group' && item?.url) || custom) {
+    if (
+        (item && item.type === 'item') ||
+        (item?.type === 'group' && item?.url) ||
+        custom
+    ) {
         itemTitle = item?.title;
 
         ItemIcon = item?.icon ? item.icon : AccountTreeTwoToneIcon;
         itemContent = (
-            <Typography variant="subtitle1" sx={{ ...linkSX, color: 'text.secondary' }}>
+            <Typography
+                variant="subtitle1"
+                sx={{ ...linkSX, color: 'text.secondary' }}
+            >
                 {icons && <ItemIcon style={iconSX} />}
                 {itemTitle}
             </Typography>
@@ -208,11 +257,25 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
                 aria-label="breadcrumb"
                 maxItems={maxItems || 8}
                 separator={separatorIcon}
-                sx={{ '& .MuiBreadcrumbs-separator': { width: 16, ml: 1.25, mr: 1.25 } }}
+                sx={{
+                    '& .MuiBreadcrumbs-separator': {
+                        width: 16,
+                        ml: 1.25,
+                        mr: 1.25,
+                    },
+                }}
             >
-                <Typography component={Link} to="/" color="textSecondary" variant="subtitle1" sx={linkSX}>
+                <Typography
+                    component={Link}
+                    to="/"
+                    color="textSecondary"
+                    variant="subtitle1"
+                    sx={linkSX}
+                >
                     {icons && <HomeTwoToneIcon style={iconSX} />}
-                    {icon && !icons && <HomeIcon style={{ ...iconSX, marginRight: 0 }} />}
+                    {icon && !icons && (
+                        <HomeIcon style={{ ...iconSX, marginRight: 0 }} />
+                    )}
                     {(!icon || icons) && 'Dashboard'}
                 </Typography>
                 {mainContent}
@@ -226,18 +289,31 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
                     aria-label="breadcrumb"
                     maxItems={maxItems || 8}
                     separator={separatorIcon}
-                    sx={{ '& .MuiBreadcrumbs-separator': { width: 16, ml: 1.25, mr: 1.25 } }}
+                    sx={{
+                        '& .MuiBreadcrumbs-separator': {
+                            width: 16,
+                            ml: 1.25,
+                            mr: 1.25,
+                        },
+                    }}
                 >
                     {links?.map((link, index) => {
-                        CollapseIcon = link.icon ? link.icon : AccountTreeTwoToneIcon;
+                        CollapseIcon = link.icon
+                            ? link.icon
+                            : AccountTreeTwoToneIcon;
 
                         return (
                             <Typography
                                 key={index}
-                                {...(link.to && { component: Link, to: link.to })}
+                                {...(link.to && {
+                                    component: Link,
+                                    to: link.to,
+                                })}
                                 variant="subtitle1"
                                 sx={linkSX}
-                                color={!link.to ? 'text.primary' : 'text.secondary'}
+                                color={
+                                    !link.to ? 'text.primary' : 'text.secondary'
+                                }
                             >
                                 {link.icon && <CollapseIcon style={iconSX} />}
                                 {link.title}
@@ -252,23 +328,39 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
         if (item?.breadcrumbs !== false || custom) {
             breadcrumbContent = (
                 <Card
-                    sx={card === false ? { mb: 3, bgcolor: 'transparent', ...sx } : { mb: 3, bgcolor: 'background.default', ...sx }}
+                    sx={
+                        card === false
+                            ? { mb: 3, bgcolor: 'transparent', ...sx }
+                            : { mb: 3, bgcolor: 'background.default', ...sx }
+                    }
                     {...others}
                 >
                     <Box sx={{ p: 2, pl: card === false ? 0 : 2 }}>
                         <Grid
                             container
                             direction={rightAlign ? 'row' : 'column'}
-                            justifyContent={rightAlign ? 'space-between' : 'flex-start'}
+                            justifyContent={
+                                rightAlign ? 'space-between' : 'flex-start'
+                            }
                             alignItems={rightAlign ? 'center' : 'flex-start'}
                             spacing={1}
                         >
-                            {title && !titleBottom && <BTitle title={custom ? heading : item?.title} />}
+                            {title && !titleBottom && (
+                                <BTitle
+                                    title={custom ? heading : item?.title}
+                                />
+                            )}
                             <Grid item>{tempContent}</Grid>
-                            {title && titleBottom && <BTitle title={custom ? heading : item?.title} />}
+                            {title && titleBottom && (
+                                <BTitle
+                                    title={custom ? heading : item?.title}
+                                />
+                            )}
                         </Grid>
                     </Box>
-                    {card === false && divider !== false && <Divider sx={{ mt: 2 }} />}
+                    {card === false && divider !== false && (
+                        <Divider sx={{ mt: 2 }} />
+                    )}
                 </Card>
             );
         }

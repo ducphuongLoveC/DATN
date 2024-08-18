@@ -9,7 +9,6 @@ import subDomainRouter from '../helpers/subDomainRouter';
 
 import subRouterProp from '@/interfaces/sub';
 
-
 const createRoutes = (routes: RouteProp[]) => {
     return (
         <Router>
@@ -30,7 +29,10 @@ const createRoutes = (routes: RouteProp[]) => {
                         />
                     );
                 })}
-                <Route path="*" element={<h1>Không thể tìm thấy trang này</h1>} />
+                <Route
+                    path="*"
+                    element={<h1>Không thể tìm thấy trang này</h1>}
+                />
             </Routes>
         </Router>
     );
@@ -42,11 +44,11 @@ const subRouter: subRouterProp[] = [
         routes: privateRoutes,
         isAuthentication: true,
         handleAuthentication: () => {
-            // xử lí logic 
-            return true
-        }
-    }
-]
+            // xử lí logic
+            return true;
+        },
+    },
+];
 
 const router = createRoutes(subDomainRouter(subRouter, mainRoutes));
 export { router };

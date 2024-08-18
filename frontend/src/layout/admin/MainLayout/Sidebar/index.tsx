@@ -23,7 +23,11 @@ interface SidebarProps {
 
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
-const Sidebar: React.FC<SidebarProps> = ({ drawerOpen, drawerToggle, window }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+    drawerOpen,
+    drawerToggle,
+    window,
+}) => {
     const theme = useTheme();
     const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -38,14 +42,20 @@ const Sidebar: React.FC<SidebarProps> = ({ drawerOpen, drawerToggle, window }) =
                 <PerfectScrollbar
                     component="div"
                     style={{
-                        height: !matchUpMd ? 'calc(100vh - 56px)' : 'calc(100vh - 88px)',
+                        height: !matchUpMd
+                            ? 'calc(100vh - 56px)'
+                            : 'calc(100vh - 88px)',
                         paddingLeft: '16px',
-                        paddingRight: '16px'
+                        paddingRight: '16px',
                     }}
                 >
                     <MenuList />
 
-                    <Stack direction="row" justifyContent="center" sx={{ mb: 2 }}>
+                    <Stack
+                        direction="row"
+                        justifyContent="center"
+                        sx={{ mb: 2 }}
+                    >
                         <Chip
                             label={import.meta.env.VITE_APP_VERSION}
                             disabled
@@ -60,7 +70,11 @@ const Sidebar: React.FC<SidebarProps> = ({ drawerOpen, drawerToggle, window }) =
                 <Box sx={{ px: 2 }}>
                     <MenuList />
 
-                    <Stack direction="row" justifyContent="center" sx={{ mb: 2 }}>
+                    <Stack
+                        direction="row"
+                        justifyContent="center"
+                        sx={{ mb: 2 }}
+                    >
                         <Chip
                             label={import.meta.env.VITE_APP_VERSION}
                             disabled
@@ -74,10 +88,18 @@ const Sidebar: React.FC<SidebarProps> = ({ drawerOpen, drawerToggle, window }) =
         </>
     );
 
-    const container = window !== undefined ? () => window.document.body : undefined;
+    const container =
+        window !== undefined ? () => window.document.body : undefined;
 
     return (
-        <Box component="nav" sx={{ flexShrink: { md: 0 }, width: matchUpMd ? drawerWidth : 'auto' }} aria-label="mailbox folders">
+        <Box
+            component="nav"
+            sx={{
+                flexShrink: { md: 0 },
+                width: matchUpMd ? drawerWidth : 'auto',
+            }}
+            aria-label="mailbox folders"
+        >
             <Drawer
                 container={container}
                 variant={matchUpMd ? 'persistent' : 'temporary'}
@@ -91,9 +113,9 @@ const Sidebar: React.FC<SidebarProps> = ({ drawerOpen, drawerToggle, window }) =
                         color: theme.palette.text.primary,
                         borderRight: 'none',
                         [theme.breakpoints.up('md')]: {
-                            top: '88px'
-                        }
-                    }
+                            top: '88px',
+                        },
+                    },
                 }}
                 ModalProps={{ keepMounted: true }}
                 color="inherit"

@@ -10,18 +10,17 @@ import themeTypography from './typography';
 
 /**
  * Represent theme style and structure as per Material-UI
- * @param {JsonObject} themeSelect themeSelect parameter object
+ * @param {JsonObject} stateReducer stateReducer parameter object
  */
 
-export const theme = (themeSelect: any) => {
+export const theme = (stateReducer: any) => {
     const color = colors;
-
     const themeOptionsLight = {
         colors: color,
         borderColor: color.gray,
         heading: color.grey900,
         paper: color.paper,
-        paper2: color.grey,
+        paper2: color.primaryLight,
         backgroundDefault: color.paper,
         background: color.primaryLight,
         textPrimary: color.grey700,
@@ -30,14 +29,14 @@ export const theme = (themeSelect: any) => {
         menuSelected: color.secondaryDark,
         menuSelectedBack: color.secondaryLight,
         divider: color.grey200,
-        themeSelect
+        stateReducer,
     };
 
     const themeOptionsDark = {
         colors: color,
         heading: color.grey100, // Light text color for dark mode
-        paper: color.grey900,  // Dark background for paper
-        paper2: color.grey900,
+        paper: color.grey900, // Dark background for paper
+        paper2: color.grey700,
         backgroundDefault: color.grey900, // Dark background for default
         background: color.grey800, // Darker background
         textPrimary: color.grey300, // Lighter text color
@@ -46,30 +45,39 @@ export const theme = (themeSelect: any) => {
         menuSelected: color.secondaryLight, // Highlight color for selected menu item
         menuSelectedBack: color.secondaryDark, // Background color for selected menu item
         divider: color.grey700, // Darker divider color
-        themeSelect
+        stateReducer,
     };
 
     const themeOptions = {
         direction: 'ltr',
-        palette: themePalette(themeSelect.theme === "light" ? themeOptionsLight : themeOptionsDark),
+        palette: themePalette(
+            stateReducer.theme === 'light'
+                ? themeOptionsLight
+                : themeOptionsDark
+        ),
         mixins: {
             toolbar: {
                 minHeight: '48px',
                 padding: '16px',
                 '@media (min-width: 600px)': {
-                    minHeight: '48px'
-                }
-            }
+                    minHeight: '48px',
+                },
+            },
         },
-        typography: themeTypography(themeSelect.theme === "light" ? themeOptionsLight : themeOptionsDark)
+        typography: themeTypography(
+            stateReducer.theme === 'light'
+                ? themeOptionsLight
+                : themeOptionsDark
+        ),
     };
 
     const themes = createTheme(themeOptions);
 
-    themes.components = componentStyleOverrides(themeSelect.theme === "light" ? themeOptionsLight : themeOptionsDark);
+    themes.components = componentStyleOverrides(
+        stateReducer.theme === 'light' ? themeOptionsLight : themeOptionsDark
+    );
 
     return themes;
 };
 
 export default theme;
-    

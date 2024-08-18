@@ -8,7 +8,7 @@ import homeReducer from './homeReducer';
 
 const reducer = combineReducers({
     customization: customizationReducer,
-    homeReducer: homeReducer
+    homeReducer: homeReducer,
 });
 
 export default reducer;

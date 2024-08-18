@@ -14,7 +14,9 @@ import { MENU_OPEN } from '@/store/actions';
 // ==============================|| MAIN LOGO ||============================== //
 
 const LogoSection: FC = () => {
-    const defaultId = useSelector((state: RootState) => state.customization.defaultId);
+    const defaultId = useSelector(
+        (state: RootState) => state.customization.defaultId
+    );
     const dispatch = useDispatch();
     return (
         <ButtonBase

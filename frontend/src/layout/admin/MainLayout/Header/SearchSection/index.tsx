@@ -18,48 +18,58 @@ import PopupState, { bindPopper, bindToggle } from 'material-ui-popup-state';
 import Transitions from '@/ui-component/extended/Transitions';
 
 // assets
-import { IconAdjustmentsHorizontal, IconSearch, IconX } from '@tabler/icons-react';
+import {
+    IconAdjustmentsHorizontal,
+    IconSearch,
+    IconX,
+} from '@tabler/icons-react';
 
 interface HeaderAvatarProps {
     children: ReactNode;
     [x: string]: any; // To allow any other props
 }
 
-const HeaderAvatar = forwardRef<HTMLDivElement, HeaderAvatarProps>(({ children, ...others }, ref) => {
-    const theme = useTheme<Theme>();
+const HeaderAvatar = forwardRef<HTMLDivElement, HeaderAvatarProps>(
+    ({ children, ...others }, ref) => {
+        const theme = useTheme<Theme>();
 
-    return (
-        <Avatar
-            ref={ref}
-            variant="rounded"
-            sx={{
-                ...theme.typography.commonAvatar,
-                ...theme.typography.mediumAvatar,
-                bgcolor: 'secondary.light',
-                color: 'secondary.dark',
-                '&:hover': {
-                    bgcolor: 'secondary.dark',
-                    color: 'secondary.light'
-                }
-            }}
-            {...others}
-        >
-            {children}
-        </Avatar>
-    );
-});
+        return (
+            <Avatar
+                ref={ref}
+                variant="rounded"
+                sx={{
+                    ...theme.typography.commonAvatar,
+                    ...theme.typography.mediumAvatar,
+                    bgcolor: 'secondary.light',
+                    color: 'secondary.dark',
+                    '&:hover': {
+                        bgcolor: 'secondary.dark',
+                        color: 'secondary.light',
+                    },
+                }}
+                {...others}
+            >
+                {children}
+            </Avatar>
+        );
+    }
+);
 
 HeaderAvatar.propTypes = {
-    children: PropTypes.node
+    children: PropTypes.node,
 };
 
 interface MobileSearchProps {
     value: string;
     setValue: React.Dispatch<React.SetStateAction<string>>;
-    popupState: any
+    popupState: any;
 }
 
-const MobileSearch: React.FC<MobileSearchProps> = ({ value, setValue, popupState }) => {
+const MobileSearch: React.FC<MobileSearchProps> = ({
+    value,
+    setValue,
+    popupState,
+}) => {
     const theme = useTheme<Theme>();
 
     return (
@@ -88,8 +98,8 @@ const MobileSearch: React.FC<MobileSearchProps> = ({ value, setValue, popupState
                                 color: 'orange.dark',
                                 '&:hover': {
                                     bgcolor: 'orange.dark',
-                                    color: 'orange.light'
-                                }
+                                    color: 'orange.light',
+                                },
                             }}
                             {...bindToggle(popupState)}
                         >
@@ -99,7 +109,10 @@ const MobileSearch: React.FC<MobileSearchProps> = ({ value, setValue, popupState
                 </InputAdornment>
             }
             aria-describedby="search-helper-text"
-            inputProps={{ 'aria-label': 'weight', sx: { bgcolor: 'transparent', pl: 0.5 } }}
+            inputProps={{
+                'aria-label': 'weight',
+                sx: { bgcolor: 'transparent', pl: 0.5 },
+            }}
             sx={{ width: '100%', ml: 0.5, px: 2, bgcolor: 'background.paper' }}
         />
     );
@@ -124,16 +137,46 @@ const SearchSection: React.FC = () => {
                             <Popper
                                 {...bindPopper(popupState)}
                                 transition
-                                sx={{ zIndex: 1100, width: '99%', top: '-55px !important', px: { xs: 1.25, sm: 1.5 } }}
+                                sx={{
+                                    zIndex: 1100,
+                                    width: '99%',
+                                    top: '-55px !important',
+                                    px: { xs: 1.25, sm: 1.5 },
+                                }}
                             >
                                 {({ TransitionProps }) => (
                                     <>
-                                        <Transitions type="zoom" {...TransitionProps} sx={{ transformOrigin: 'center left' }}>
-                                            <Card sx={{ bgcolor: 'background.default', border: 0, boxShadow: 'none' }}>
+                                        <Transitions
+                                            type="zoom"
+                                            {...TransitionProps}
+                                            sx={{
+                                                transformOrigin: 'center left',
+                                            }}
+                                        >
+                                            <Card
+                                                sx={{
+                                                    bgcolor:
+                                                        'background.default',
+                                                    border: 0,
+                                                    boxShadow: 'none',
+                                                }}
+                                            >
                                                 <Box sx={{ p: 2 }}>
-                                                    <Grid container alignItems="center" justifyContent="space-between">
+                                                    <Grid
+                                                        container
+                                                        alignItems="center"
+                                                        justifyContent="space-between"
+                                                    >
                                                         <Grid item xs>
-                                                            <MobileSearch value={value} setValue={setValue} popupState={popupState} />
+                                                            <MobileSearch
+                                                                value={value}
+                                                                setValue={
+                                                                    setValue
+                                                                }
+                                                                popupState={
+                                                                    popupState
+                                                                }
+                                                            />
                                                         </Grid>
                                                     </Grid>
                                                 </Box>
@@ -160,12 +203,18 @@ const SearchSection: React.FC = () => {
                     endAdornment={
                         <InputAdornment position="end">
                             <HeaderAvatar>
-                                <IconAdjustmentsHorizontal stroke={1.5} size="20px" />
+                                <IconAdjustmentsHorizontal
+                                    stroke={1.5}
+                                    size="20px"
+                                />
                             </HeaderAvatar>
                         </InputAdornment>
                     }
                     aria-describedby="search-helper-text"
-                    inputProps={{ 'aria-label': 'weight', sx: { bgcolor: 'transparent', pl: 0.5 } }}
+                    inputProps={{
+                        'aria-label': 'weight',
+                        sx: { bgcolor: 'transparent', pl: 0.5 },
+                    }}
                     sx={{ width: { md: 250, lg: 434 }, ml: 2, px: 2 }}
                 />
             </Box>

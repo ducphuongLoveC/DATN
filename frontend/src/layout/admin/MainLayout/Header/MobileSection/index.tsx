@@ -24,7 +24,10 @@ const MobileSection: React.FC = () => {
     };
 
     const handleClose = (event: MouseEvent | null) => {
-        if (anchorRef.current && anchorRef.current.contains(event?.target as Node)) {
+        if (
+            anchorRef.current &&
+            anchorRef.current.contains(event?.target as Node)
+        ) {
             return;
         }
         setOpen(false);
@@ -45,7 +48,7 @@ const MobileSection: React.FC = () => {
                     component="span"
                     disableRipple
                     sx={{
-                        bgcolor: open ? 'grey.300' : 'grey.100'
+                        bgcolor: open ? 'grey.300' : 'grey.100',
                     }}
                     ref={anchorRef}
                     aria-controls={open ? 'menu-list-grow' : undefined}
@@ -64,17 +67,17 @@ const MobileSection: React.FC = () => {
                 transition
                 disablePortal
                 style={{
-                    width: '100%'
+                    width: '100%',
                 }}
                 popperOptions={{
                     modifiers: [
                         {
                             name: 'offset',
                             options: {
-                                offset: [0, 9]
-                            }
-                        }
-                    ]
+                                offset: [0, 9],
+                            },
+                        },
+                    ],
                 }}
             >
                 {({ TransitionProps }) => (

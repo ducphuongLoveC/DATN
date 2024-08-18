@@ -1,5 +1,5 @@
 const user = {
-    title : 'User',
+    title: 'User',
     children: [
         {
             title: 'Login',
@@ -8,7 +8,7 @@ const user = {
         {
             title: 'Register',
             url: '/auth/register',
-        }
-    ]
-}
+        },
+    ],
+};
 export default user;

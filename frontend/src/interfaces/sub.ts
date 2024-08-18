@@ -1,9 +1,9 @@
-import RouteProp from "./route";
+import RouteProp from './route';
 
 interface subRouterProp {
-    sub: string,
-    routes: RouteProp[],
-    isAuthentication: boolean,
-    handleAuthentication?: Function
+    sub: string;
+    routes: RouteProp[];
+    isAuthentication: boolean;
+    handleAuthentication?: Function;
 }
-export default subRouterProp
+export default subRouterProp;

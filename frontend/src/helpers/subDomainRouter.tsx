@@ -1,7 +1,10 @@
-import subRouterProp from "@/interfaces/sub";
-import RouteProp from "@/interfaces/route";
+import subRouterProp from '@/interfaces/sub';
+import RouteProp from '@/interfaces/route';
 
-const subDomainRouter = (datas: subRouterProp[], mainRoutes: RouteProp[]): RouteProp[] => {
+const subDomainRouter = (
+    datas: subRouterProp[],
+    mainRoutes: RouteProp[]
+): RouteProp[] => {
     const stringSubs = window.location.hostname.split('.');
 
     // Nếu không có miền phụ, trả về mainRoutes
@@ -12,7 +15,11 @@ const subDomainRouter = (datas: subRouterProp[], mainRoutes: RouteProp[]): Route
     const foundSub = datas.find((d) => d.sub === stringSubs[0]);
 
     if (foundSub) {
-        if (foundSub.isAuthentication && foundSub.handleAuthentication && foundSub.handleAuthentication()) {
+        if (
+            foundSub.isAuthentication &&
+            foundSub.handleAuthentication &&
+            foundSub.handleAuthentication()
+        ) {
             return foundSub.routes;
         }
         if (!foundSub.isAuthentication) return foundSub.routes;

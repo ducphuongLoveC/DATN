@@ -42,7 +42,9 @@ interface AuthLoginProps {
 const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
     const theme = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-    const customization = useSelector((state: RootState) => state.customization);
+    const customization = useSelector(
+        (state: RootState) => state.customization
+    );
     const [checked, setChecked] = useState(true);
 
     const googleHandler = async () => {
@@ -54,13 +56,20 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
         setShowPassword(!showPassword);
     };
 
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleMouseDownPassword = (
+        event: React.MouseEvent<HTMLButtonElement>
+    ) => {
         event.preventDefault();
     };
 
     return (
         <>
-            <Grid container direction="column" justifyContent="center" spacing={2}>
+            <Grid
+                container
+                direction="column"
+                justifyContent="center"
+                spacing={2}
+            >
                 <Grid item xs={12}>
                     <AnimateButton>
                         <Button
@@ -72,11 +81,19 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                             sx={{
                                 color: 'grey.700',
                                 backgroundColor: theme.palette.grey[50],
-                                borderColor: theme.palette.grey[100]
+                                borderColor: theme.palette.grey[100],
                             }}
                         >
                             <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
-                                <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
+                                <img
+                                    src={Google}
+                                    alt="google"
+                                    width={16}
+                                    height={16}
+                                    style={{
+                                        marginRight: matchDownSM ? 8 : 16,
+                                    }}
+                                />
                             </Box>
                             Sign in with Google
                         </Button>
@@ -86,10 +103,13 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                     <Box
                         sx={{
                             alignItems: 'center',
-                            display: 'flex'
+                            display: 'flex',
                         }}
                     >
-                        <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
+                        <Divider
+                            sx={{ flexGrow: 1 }}
+                            orientation="horizontal"
+                        />
 
                         <Button
                             variant="outlined"
@@ -101,7 +121,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                 borderColor: `${theme.palette.grey[100]} !important`,
                                 color: `${theme.palette.grey[900]}!important`,
                                 fontWeight: 500,
-                                borderRadius: `${customization.borderRadius}px`
+                                borderRadius: `${customization.borderRadius}px`,
                             }}
                             disableRipple
                             disabled
@@ -109,12 +129,23 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                             OR
                         </Button>
 
-                        <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
+                        <Divider
+                            sx={{ flexGrow: 1 }}
+                            orientation="horizontal"
+                        />
                     </Box>
                 </Grid>
-                <Grid item xs={12} container alignItems="center" justifyContent="center">
+                <Grid
+                    item
+                    xs={12}
+                    container
+                    alignItems="center"
+                    justifyContent="center"
+                >
                     <Box sx={{ mb: 2 }}>
-                        <Typography variant="subtitle1">Sign in with Email address</Typography>
+                        <Typography variant="subtitle1">
+                            Sign in with Email address
+                        </Typography>
                     </Box>
                 </Grid>
             </Grid>
@@ -123,22 +154,44 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                 initialValues={{
                     email: '',
                     password: '',
-                    submit: null
+                    submit: null,
                 }}
                 validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                    password: Yup.string().max(255).required('Password is required')
+                    email: Yup.string()
+                        .email('Must be a valid email')
+                        .max(255)
+                        .required('Email is required'),
+                    password: Yup.string()
+                        .max(255)
+                        .required('Password is required'),
                 })}
-                onSubmit={(values, { setSubmitting, setErrors }: FormikHelpers<typeof values>) => {
+                onSubmit={(
+                    values,
+                    { setSubmitting, setErrors }: FormikHelpers<typeof values>
+                ) => {
                     // Handle form submission
                     console.log(values);
                     setSubmitting(false);
                 }}
             >
-                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                {({
+                    errors,
+                    handleBlur,
+                    handleChange,
+                    handleSubmit,
+                    isSubmitting,
+                    touched,
+                    values,
+                }) => (
                     <form noValidate onSubmit={handleSubmit} {...others}>
-                        <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                            <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
+                        <FormControl
+                            fullWidth
+                            error={Boolean(touched.email && errors.email)}
+                            sx={{ ...theme.typography.customInput }}
+                        >
+                            <InputLabel htmlFor="outlined-adornment-email-login">
+                                Email Address / Username
+                            </InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-email-login"
                                 type="email"
@@ -150,7 +203,10 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                 inputProps={{}}
                             />
                             {touched.email && errors.email && (
-                                <FormHelperText error id="standard-weight-helper-text-email-login">
+                                <FormHelperText
+                                    error
+                                    id="standard-weight-helper-text-email-login"
+                                >
                                     {errors.email}
                                 </FormHelperText>
                             )}
@@ -161,7 +217,9 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                             error={Boolean(touched.password && errors.password)}
                             sx={{ ...theme.typography.customInput }}
                         >
-                            <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password-login">
+                                Password
+                            </InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password-login"
                                 type={showPassword ? 'text' : 'password'}
@@ -174,11 +232,17 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                         <IconButton
                                             aria-label="toggle password visibility"
                                             onClick={handleClickShowPassword}
-                                            onMouseDown={handleMouseDownPassword}
+                                            onMouseDown={
+                                                handleMouseDownPassword
+                                            }
                                             edge="end"
                                             size="large"
                                         >
-                                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                                            {showPassword ? (
+                                                <Visibility />
+                                            ) : (
+                                                <VisibilityOff />
+                                            )}
                                         </IconButton>
                                     </InputAdornment>
                                 }
@@ -186,30 +250,49 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                 inputProps={{}}
                             />
                             {touched.password && errors.password && (
-                                <FormHelperText error id="standard-weight-helper-text-password-login">
+                                <FormHelperText
+                                    error
+                                    id="standard-weight-helper-text-password-login"
+                                >
                                     {errors.password}
                                 </FormHelperText>
                             )}
                         </FormControl>
-                        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            spacing={1}
+                        >
                             <FormControlLabel
                                 control={
                                     <Checkbox
                                         checked={checked}
-                                        onChange={(event) => setChecked(event.target.checked)}
+                                        onChange={(event) =>
+                                            setChecked(event.target.checked)
+                                        }
                                         name="checked"
                                         color="primary"
                                     />
                                 }
                                 label="Remember me"
                             />
-                            <Typography variant="subtitle1" color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
+                            <Typography
+                                variant="subtitle1"
+                                color="secondary"
+                                sx={{
+                                    textDecoration: 'none',
+                                    cursor: 'pointer',
+                                }}
+                            >
                                 Forgot Password?
                             </Typography>
                         </Stack>
                         {errors.submit && (
                             <Box sx={{ mt: 3 }}>
-                                <FormHelperText error>{errors.submit}</FormHelperText>
+                                <FormHelperText error>
+                                    {errors.submit}
+                                </FormHelperText>
                             </Box>
                         )}
 

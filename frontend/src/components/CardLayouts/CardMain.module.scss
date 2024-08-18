@@ -1,0 +1,19 @@
+.list-course {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    place-items: center;
+}
+
+@media (max-width: 1200px) {
+    /* Kích thước màn hình lớn hơn nhưng nhỏ hơn 1200px */
+    .list-course {
+        grid-template-columns: repeat(3, 1fr); /* Hiển thị 3 cột */
+    }
+}
+
+@media (max-width: 768px) {
+    /* Kích thước màn hình nhỏ hơn hoặc bằng 768px */
+    .list-course {
+        grid-template-columns: repeat(2, 1fr); /* Hiển thị 2 cột */
+    }
+}

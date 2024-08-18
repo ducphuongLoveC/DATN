@@ -4,7 +4,14 @@ import { SxProps, Theme } from '@mui/material/styles';
 
 // Define types for props
 interface AvatarProps {
-    color?: 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | string; // Define colors based on your theme
+    color?:
+        | 'primary'
+        | 'secondary'
+        | 'error'
+        | 'warning'
+        | 'info'
+        | 'success'
+        | string; // Define colors based on your theme
     outline?: boolean;
     size?: 'badge' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     sx?: SxProps<Theme>;
@@ -13,14 +20,25 @@ interface AvatarProps {
 
 // ==============================|| AVATAR ||============================== //
 
-const Avatar: React.FC<AvatarProps> = ({ color, outline, size, sx, ...others }) => {
-    const colorSX = color && !outline ? { color: 'background.paper', bgcolor: `${color}.main` } : {};
-    const outlineSX = outline ? {
-        color: color ? `${color}.main` : 'primary.main',
-        bgcolor: 'background.paper',
-        border: '2px solid',
-        borderColor: color ? `${color}.main` : 'primary.main'
-    } : {};
+const Avatar: React.FC<AvatarProps> = ({
+    color,
+    outline,
+    size,
+    sx,
+    ...others
+}) => {
+    const colorSX =
+        color && !outline
+            ? { color: 'background.paper', bgcolor: `${color}.main` }
+            : {};
+    const outlineSX = outline
+        ? {
+              color: color ? `${color}.main` : 'primary.main',
+              bgcolor: 'background.paper',
+              border: '2px solid',
+              borderColor: color ? `${color}.main` : 'primary.main',
+          }
+        : {};
     let sizeSX = {};
     switch (size) {
         case 'badge':
@@ -45,7 +63,12 @@ const Avatar: React.FC<AvatarProps> = ({ color, outline, size, sx, ...others }) 
             sizeSX = {};
     }
 
-    return <MuiAvatar sx={{ ...colorSX, ...outlineSX, ...sizeSX, ...sx }} {...others} />;
+    return (
+        <MuiAvatar
+            sx={{ ...colorSX, ...outlineSX, ...sizeSX, ...sx }}
+            {...others}
+        />
+    );
 };
 
 export default Avatar;

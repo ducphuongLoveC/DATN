@@ -58,7 +58,7 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
         <FiberManualRecordIcon
             sx={{
                 width: customization.isOpen.includes(item.id) ? 8 : 6,
-                height: customization.isOpen.includes(item.id) ? 8 : 6
+                height: customization.isOpen.includes(item.id) ? 8 : 6,
             }}
             fontSize={level > 0 ? 'inherit' : 'medium'}
         />
@@ -68,7 +68,16 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
 
     const listItemProps = item.external
         ? { component: 'a', href: item.url, target: itemTarget }
-        : { component: forwardRef((props, ref) => <Link ref={ref} {...props} to={item.url} target={itemTarget} />) };
+        : {
+              component: forwardRef((props, ref) => (
+                  <Link
+                      ref={ref}
+                      {...props}
+                      to={item.url}
+                      target={itemTarget}
+                  />
+              )),
+          };
 
     const itemHandler = (id: string) => {
         dispatch({ type: MENU_OPEN, id });
@@ -94,23 +103,38 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
                 borderRadius: `${customization.borderRadius}px`,
                 mb: 0.5,
                 alignItems: 'flex-start',
-                backgroundColor: level > 1 ? 'transparent !important' : 'inherit',
+                backgroundColor:
+                    level > 1 ? 'transparent !important' : 'inherit',
                 py: level > 1 ? 1 : 1.25,
-                pl: `${level * 24}px`
+                pl: `${level * 24}px`,
             }}
             selected={customization.isOpen.includes(item.id)}
             onClick={() => itemHandler(item.id)}
         >
-            <ListItemIcon sx={{ my: 'auto', minWidth: !item.icon ? 18 : 36 }}>{itemIcon}</ListItemIcon>
+            <ListItemIcon sx={{ my: 'auto', minWidth: !item.icon ? 18 : 36 }}>
+                {itemIcon}
+            </ListItemIcon>
             <ListItemText
                 primary={
-                    <Typography variant={customization.isOpen.includes(item.id) ? 'h5' : 'body1'} color="inherit">
+                    <Typography
+                        variant={
+                            customization.isOpen.includes(item.id)
+                                ? 'h5'
+                                : 'body1'
+                        }
+                        color="inherit"
+                    >
                         {item.title}
                     </Typography>
                 }
                 secondary={
                     item.caption && (
-                        <Typography variant="caption" sx={{ ...theme.typography.subMenuCaption }} display="block" gutterBottom>
+                        <Typography
+                            variant="caption"
+                            sx={{ ...theme.typography.subMenuCaption }}
+                            display="block"
+                            gutterBottom
+                        >
                             {item.caption}
                         </Typography>
                     )
@@ -122,7 +146,9 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
                     variant={item.chip.variant}
                     size={item.chip.size}
                     label={item.chip.label}
-                    avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
+                    avatar={
+                        item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>
+                    }
                 />
             )}
         </ListItemButton>

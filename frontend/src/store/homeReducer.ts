@@ -2,28 +2,24 @@ import * as actionTypes from './actions';
 
 export const initialState = {
     theme: 'light',
-    opened: false
+    opened: false,
 };
 
-const homeReducer = (state = initialState, action : any) => {
-   
+const homeReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case actionTypes.TOGGLE_THEME_HOME:
             return {
                 ...state,
-                theme: action.theme
-            }
+                theme: action.theme,
+            };
 
         case actionTypes.SET_MENU_HOME_MOBILE:
             return {
                 ...state,
-                opened: action.opened
-            }
+                opened: action.opened,
+            };
         default:
             return state;
-
     }
-}
+};
 export default homeReducer;
-
-

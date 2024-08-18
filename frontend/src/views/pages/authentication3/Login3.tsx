@@ -24,39 +24,85 @@ const Login: React.FC = () => {
 
     return (
         <AuthWrapper1>
-            <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: '100vh' }}>
+            <Grid
+                container
+                direction="column"
+                justifyContent="flex-end"
+                sx={{ minHeight: '100vh' }}
+            >
                 <Grid item xs={12}>
-                    <Grid container justifyContent="center" alignItems="center" sx={{ background: theme.palette.background.paper, minHeight: 'calc(100vh - 68px)' }}>
+                    <Grid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        sx={{
+                            background: theme.palette.background.paper,
+                            minHeight: 'calc(100vh - 68px)',
+                        }}
+                    >
                         <Grid item>
-                            <img width={'100%'} src="/images/banauth.webp" alt="Banner" />
+                            <img
+                                width={'100%'}
+                                src="/images/banauth.webp"
+                                alt="Banner"
+                            />
                         </Grid>
                         <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
                             <AuthCardWrapper>
-                                <Grid container spacing={2} alignItems="center" justifyContent="center">
+                                <Grid
+                                    container
+                                    spacing={2}
+                                    alignItems="center"
+                                    justifyContent="center"
+                                >
                                     <Grid item sx={{ mb: 3 }}>
                                         <Link to="#" aria-label="logo">
-                                            <Logo /> {/* Sử dụng component Logo */}
+                                            <Logo />{' '}
+                                            {/* Sử dụng component Logo */}
                                         </Link>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Grid
                                             container
-                                            direction={{ xs: 'column-reverse', md: 'row' }}
+                                            direction={{
+                                                xs: 'column-reverse',
+                                                md: 'row',
+                                            }}
                                             alignItems="center"
                                             justifyContent="center"
                                         >
                                             <Grid item>
-                                                <Stack alignItems="center" justifyContent="center" spacing={1}>
-                                                    <Typography color={theme.palette.secondary.main} gutterBottom variant={downMD ? 'h3' : 'h2'}>
+                                                <Stack
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                    spacing={1}
+                                                >
+                                                    <Typography
+                                                        color={
+                                                            theme.palette
+                                                                .secondary.main
+                                                        }
+                                                        gutterBottom
+                                                        variant={
+                                                            downMD ? 'h3' : 'h2'
+                                                        }
+                                                    >
                                                         Hi, Welcome Back
                                                     </Typography>
                                                     <Typography
                                                         variant="caption"
                                                         fontSize="16px"
-                                                        textAlign={{ xs: 'center', md: 'inherit' }}
-                                                        color={theme.palette.text.secondary}
+                                                        textAlign={{
+                                                            xs: 'center',
+                                                            md: 'inherit',
+                                                        }}
+                                                        color={
+                                                            theme.palette.text
+                                                                .secondary
+                                                        }
                                                     >
-                                                        Enter your credentials to continue
+                                                        Enter your credentials
+                                                        to continue
                                                     </Typography>
                                                 </Stack>
                                             </Grid>
@@ -66,15 +112,30 @@ const Login: React.FC = () => {
                                         <AuthLogin />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Divider sx={{ bgcolor: theme.palette.divider }} /> {/* Áp dụng màu border từ theme */}
+                                        <Divider
+                                            sx={{
+                                                bgcolor: theme.palette.divider,
+                                            }}
+                                        />{' '}
+                                        {/* Áp dụng màu border từ theme */}
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Grid item container direction="column" alignItems="center" xs={12}>
+                                        <Grid
+                                            item
+                                            container
+                                            direction="column"
+                                            alignItems="center"
+                                            xs={12}
+                                        >
                                             <Typography
                                                 component={Link}
                                                 to="/auth/register"
                                                 variant="subtitle1"
-                                                sx={{ textDecoration: 'none', color: theme.palette.primary.main }}
+                                                sx={{
+                                                    textDecoration: 'none',
+                                                    color: theme.palette.primary
+                                                        .main,
+                                                }}
                                             >
                                                 Don&apos;t have an account?
                                             </Typography>

@@ -6,10 +6,9 @@ const SET_FONT_FAMILY = '@customization/SET_FONT_FAMILY';
 const SET_BORDER_RADIUS = '@customization/SET_BORDER_RADIUS';
 const TOGGLE_THEME = '@customization/TOGGLE_THEME';
 
-// action - client 
+// action - client
 const TOGGLE_THEME_HOME = '@home/TOGGLE_THEME';
 const SET_MENU_HOME_MOBILE = '@home/SET_MENU_HOME_MOBILE';
-
 
 export {
     SET_MENU,
@@ -18,9 +17,6 @@ export {
     SET_FONT_FAMILY,
     SET_BORDER_RADIUS,
     TOGGLE_THEME,
-
-
     TOGGLE_THEME_HOME,
-    SET_MENU_HOME_MOBILE
-}
-
+    SET_MENU_HOME_MOBILE,
+};

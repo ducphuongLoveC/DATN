@@ -1,12 +1,13 @@
-import { IconChalkboard } from "@tabler/icons-react";
+import { IconChalkboard } from '@tabler/icons-react';
 const icon = {
     IconChalkboard,
-}
+};
 
 const myCourse = {
+    id: 'my-course',
     title: 'My Course',
     target: false,
-    url: 'my-course',
-    icon: icon.IconChalkboard
-}
+    url: '/my-course',
+    icon: icon.IconChalkboard,
+};
 export default myCourse;

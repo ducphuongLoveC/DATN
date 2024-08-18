@@ -10,7 +10,7 @@ body {
     text-rendering: optimizeLegibility;
     -moz-osx-font-smoothing: grayscale;
     overflow-y: auto;
-    overscroll-behavior: none; 
+    overscroll-behavior: none;
     touch-action: manipulation;
     -webkit-user-drag: none;
     -ms-content-zooming: none;
@@ -24,5 +24,4 @@ ul {
 :root {
     --main-font-size: 14px;
     --mini-font-size: 12px;
-
 }

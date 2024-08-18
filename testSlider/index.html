@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .banner {
+            display: flex;
+            height: 100vh;
+            transition: transform 1s ease;
+        }
+        .slider {
+            flex-grow: 0;
+            flex-shrink: 0;
+            flex-basis:100%; /* Chiếm toàn bộ chiều rộng */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem; 
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div class="slider" style="background-color: red;">1</div>
+        <div class="slider" style="background-color: blue;">2</div>
+        <div class="slider" style="background-color: green;">3</div>
+        <div class="slider" style="background-color: green;">4</div>
+    </div>
+
+    <script>
+        const banner = document.querySelector('.banner');
+        const sliders = document.querySelectorAll('.slider');
+
+        let currentSlider = 0;
+
+        function moveToSlide(index) {
+            banner.style.transform = `translateX(-${index * 100}%)`;
+        }
+  
+        setInterval(() => { 
+            moveToSlide(currentSlider);
+            currentSlider += 1;
+            if (currentSlider >= sliders.length) currentSlider = 0;
+        }, 1000);
+    </script>
+</body>
+</html>
