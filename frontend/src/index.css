@@ -22,6 +22,10 @@ ul {
 }
 
 :root {
+    --white-primary: #EEF2F6;
+    --gray-primary: #C0C0C0;
+
+  
     --main-font-size: 14px;
     --mini-font-size: 12px;
 }

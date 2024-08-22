@@ -12,7 +12,11 @@ import MainCard from '../MainCard';
 const ProductPlaceholder = () => (
     <MainCard content={false} boxShadow>
         <Skeleton variant="rectangular" height={220} />
-        <CardContent sx={{ p: 2 }}>
+        <CardContent
+            sx={{
+                p: 2,
+            }}
+        >
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Skeleton variant="rectangular" height={20} />
@@ -20,7 +24,13 @@ const ProductPlaceholder = () => (
                 <Grid item xs={12}>
                     <Skeleton variant="rectangular" height={45} />
                 </Grid>
-                <Grid item xs={12} sx={{ pt: '8px !important' }}>
+                <Grid
+                    item
+                    xs={12}
+                    sx={{
+                        pt: '8px !important',
+                    }}
+                >
                     <Stack direction="row" alignItems="center" spacing={1}>
                         <Skeleton
                             variant="rectangular"

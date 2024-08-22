@@ -10,10 +10,10 @@ import themeTypography from './typography';
 
 /**
  * Represent theme style and structure as per Material-UI
- * @param {JsonObject} stateReducer stateReducer parameter object
+ * @param {JsonObject} state state parameter object
  */
 
-export const theme = (stateReducer: any) => {
+export const theme = (state: any) => {
     const color = colors;
     const themeOptionsLight = {
         colors: color,
@@ -29,14 +29,14 @@ export const theme = (stateReducer: any) => {
         menuSelected: color.secondaryDark,
         menuSelectedBack: color.secondaryLight,
         divider: color.grey200,
-        stateReducer,
+        state,
     };
 
     const themeOptionsDark = {
         colors: color,
         heading: color.grey100, // Light text color for dark mode
-        paper: color.grey900, // Dark background for paper
-        paper2: color.grey700,
+        paper: color.black, // Dark background for paper
+        paper2: color.black2,
         backgroundDefault: color.grey900, // Dark background for default
         background: color.grey800, // Darker background
         textPrimary: color.grey300, // Lighter text color
@@ -45,15 +45,13 @@ export const theme = (stateReducer: any) => {
         menuSelected: color.secondaryLight, // Highlight color for selected menu item
         menuSelectedBack: color.secondaryDark, // Background color for selected menu item
         divider: color.grey700, // Darker divider color
-        stateReducer,
+        state,
     };
 
-    const themeOptions = {
+    const themeOptions: any = {
         direction: 'ltr',
         palette: themePalette(
-            stateReducer.theme === 'light'
-                ? themeOptionsLight
-                : themeOptionsDark
+            state.theme === 'light' ? themeOptionsLight : themeOptionsDark
         ),
         mixins: {
             toolbar: {
@@ -65,16 +63,14 @@ export const theme = (stateReducer: any) => {
             },
         },
         typography: themeTypography(
-            stateReducer.theme === 'light'
-                ? themeOptionsLight
-                : themeOptionsDark
+            state.theme === 'light' ? themeOptionsLight : themeOptionsDark
         ),
     };
 
     const themes = createTheme(themeOptions);
 
     themes.components = componentStyleOverrides(
-        stateReducer.theme === 'light' ? themeOptionsLight : themeOptionsDark
+        state.theme === 'light' ? themeOptionsLight : themeOptionsDark
     );
 
     return themes;

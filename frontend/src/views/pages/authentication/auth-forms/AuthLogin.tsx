@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store'; // Adjust the import based on your store setup
 
 // material-ui
-import { useTheme, Theme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -20,7 +19,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 
-// third party
+// third-party
 import * as Yup from 'yup';
 import { Formik, FormikHelpers } from 'formik';
 
@@ -30,7 +29,6 @@ import AnimateButton from '@/ui-component/extended/AnimateButton';
 // assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
 import Google from '@/assets/images/icons/social-google.svg';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
@@ -39,19 +37,23 @@ interface AuthLoginProps {
     // Define any additional props here if necessary
 }
 
+interface FormValues {
+    email: string;
+    password: string;
+    submit: null;
+}
+
 const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
-    const theme = useTheme();
+    const theme: any = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-    const customization = useSelector(
-        (state: RootState) => state.customization
-    );
+    const customization = useSelector((state: any) => state.customization);
     const [checked, setChecked] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
 
     const googleHandler = async () => {
         console.error('Login');
     };
 
-    const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -84,7 +86,15 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                 borderColor: theme.palette.grey[100],
                             }}
                         >
-                            <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
+                            <Box
+                                sx={{
+                                    mr: {
+                                        xs: 1,
+                                        sm: 2,
+                                        width: 20,
+                                    },
+                                }}
+                            >
                                 <img
                                     src={Google}
                                     alt="google"
@@ -107,10 +117,11 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                         }}
                     >
                         <Divider
-                            sx={{ flexGrow: 1 }}
+                            sx={{
+                                flexGrow: 1,
+                            }}
                             orientation="horizontal"
                         />
-
                         <Button
                             variant="outlined"
                             sx={{
@@ -128,9 +139,10 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                         >
                             OR
                         </Button>
-
                         <Divider
-                            sx={{ flexGrow: 1 }}
+                            sx={{
+                                flexGrow: 1,
+                            }}
                             orientation="horizontal"
                         />
                     </Box>
@@ -142,7 +154,11 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <Box sx={{ mb: 2 }}>
+                    <Box
+                        sx={{
+                            mb: 2,
+                        }}
+                    >
                         <Typography variant="subtitle1">
                             Sign in with Email address
                         </Typography>
@@ -166,8 +182,8 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                         .required('Password is required'),
                 })}
                 onSubmit={(
-                    values,
-                    { setSubmitting, setErrors }: FormikHelpers<typeof values>
+                    values: FormValues,
+                    { setSubmitting, setErrors }: FormikHelpers<FormValues>
                 ) => {
                     // Handle form submission
                     console.log(values);
@@ -187,7 +203,9 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                         <FormControl
                             fullWidth
                             error={Boolean(touched.email && errors.email)}
-                            sx={{ ...theme.typography.customInput }}
+                            sx={{
+                                ...theme.typography.customInput,
+                            }}
                         >
                             <InputLabel htmlFor="outlined-adornment-email-login">
                                 Email Address / Username
@@ -215,7 +233,9 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                         <FormControl
                             fullWidth
                             error={Boolean(touched.password && errors.password)}
-                            sx={{ ...theme.typography.customInput }}
+                            sx={{
+                                ...theme.typography.customInput,
+                            }}
                         >
                             <InputLabel htmlFor="outlined-adornment-password-login">
                                 Password
@@ -258,6 +278,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                 </FormHelperText>
                             )}
                         </FormControl>
+
                         <Stack
                             direction="row"
                             alignItems="center"
@@ -288,15 +309,24 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                 Forgot Password?
                             </Typography>
                         </Stack>
+
                         {errors.submit && (
-                            <Box sx={{ mt: 3 }}>
+                            <Box
+                                sx={{
+                                    mt: 3,
+                                }}
+                            >
                                 <FormHelperText error>
                                     {errors.submit}
                                 </FormHelperText>
                             </Box>
                         )}
 
-                        <Box sx={{ mt: 2 }}>
+                        <Box
+                            sx={{
+                                mt: 2,
+                            }}
+                        >
                             <AnimateButton>
                                 <Button
                                     disableElevation

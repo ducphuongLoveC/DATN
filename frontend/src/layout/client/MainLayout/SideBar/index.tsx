@@ -2,10 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { useTheme } from '@mui/material';
-
 import styled from '@emotion/styled';
 
-import { BiSolidHome, BiNews, BiLogoTelegram } from 'react-icons/bi';
 import s from './SideBar.module.scss';
 import menus, { Props as PropsMenuHome } from '@/menu-items/sidebar-home';
 
@@ -14,10 +12,16 @@ const SideBarStyled = styled('div')<{ theme: any }>(({ theme }) => ({
 }));
 
 const SideBar: React.FC = () => {
-    const theme = useTheme();
-    const [indexActive, setIndexActive] = useState<number>(0);
+    // State để lưu URL hiện tại
+    const [activeUrl, setActiveUrl] = useState(window.location.pathname);
 
-    const handleSetActive = (index: number) => setIndexActive(index);
+    const theme = useTheme();
+
+    // Hàm xử lý cập nhật URL khi người dùng chọn liên kết
+    const handleLinkClick = (url: string) => {
+        setActiveUrl(url);
+    };
+
     return (
         <SideBarStyled theme={theme} className={clsx(s['side-bar'])}>
             <ul className={clsx(s['side-bar-ul'])}>
@@ -26,14 +30,14 @@ const SideBar: React.FC = () => {
                     return (
                         <li key={index}>
                             <Link
-                                onClick={() => handleSetActive(index)}
+                                onClick={() => handleLinkClick(m.url)}
                                 style={{
                                     background:
-                                        index === indexActive
+                                        activeUrl === m.url
                                             ? theme.palette.primary.light
                                             : '',
                                     color:
-                                        index === indexActive
+                                        activeUrl === m.url
                                             ? theme.palette.text.secondary
                                             : '',
                                 }}
@@ -50,4 +54,5 @@ const SideBar: React.FC = () => {
         </SideBarStyled>
     );
 };
+
 export default SideBar;

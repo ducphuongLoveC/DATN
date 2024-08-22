@@ -16,7 +16,6 @@ import Breadcrumbs from '@/ui-component/extended/Breadcrumbs';
 import { SET_MENU } from '@/store/actions';
 import { drawerWidth } from '@/store/constant';
 import { IconChevronRight } from '@tabler/icons-react';
-import { RootState } from '@/store'; // Assuming RootState is defined in your store
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -25,8 +24,9 @@ interface MainLayoutProps {
 // Styled component for main content
 const Main = styled('main', {
     shouldForwardProp: (prop) => prop !== 'open' && prop !== 'theme',
-})<MainLayoutProps>(({ theme, open }) => ({
+})<{ theme: any; open: boolean }>(({ theme, open }) => ({
     ...theme.typography.mainContent,
+    background: theme.palette.background.paper2,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     transition: theme.transitions.create(
@@ -59,18 +59,26 @@ const Main = styled('main', {
 }));
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-    const theme = useTheme();
+    const theme: any = useTheme();
     const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
     const leftDrawerOpened = useSelector(
-        (state: RootState) => state.customization.opened
+        (state: any) => state.customization.opened
     );
     const dispatch = useDispatch();
     const handleLeftDrawerToggle = () => {
-        dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
+        dispatch({
+            type: SET_MENU,
+            opened: !leftDrawerOpened,
+        });
     };
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box
+            sx={{
+                display: 'flex',
+                background: theme.palette.background.paper,
+            }}
+        >
             <CssBaseline />
             <AppBar
                 enableColorOnDark
@@ -78,7 +86,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 color="inherit"
                 elevation={0}
                 sx={{
-                    bgcolor: theme.palette.background.default,
+                    bgcolor: theme.palette.background.paper,
                     transition: leftDrawerOpened
                         ? theme.transitions.create('width')
                         : 'none',

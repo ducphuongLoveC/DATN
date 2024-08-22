@@ -11,7 +11,7 @@ import NavCollapse from '../NavCollapse';
 interface MenuItem {
     id: string;
     type: 'collapse' | 'item';
-    title?: string;
+    title: string; // Đảm bảo title luôn là string
     caption?: string;
     children?: MenuItem[];
 }
@@ -23,7 +23,7 @@ interface NavGroupProps {
 // ==============================|| SIDEBAR MENU LIST GROUP ||============================== //
 
 const NavGroup: React.FC<NavGroupProps> = ({ item }) => {
-    const theme = useTheme();
+    const theme: any = useTheme();
 
     // menu list collapse & items
     const items = item.children?.map((menu) => {
@@ -53,7 +53,9 @@ const NavGroup: React.FC<NavGroupProps> = ({ item }) => {
                     item.title && (
                         <Typography
                             variant="caption"
-                            sx={{ ...theme.typography.menuCaption }}
+                            sx={{
+                                ...theme.typography.menuCaption,
+                            }}
                             display="block"
                             gutterBottom
                         >
@@ -61,7 +63,9 @@ const NavGroup: React.FC<NavGroupProps> = ({ item }) => {
                             {item.caption && (
                                 <Typography
                                     variant="caption"
-                                    sx={{ ...theme.typography.subMenuCaption }}
+                                    sx={{
+                                        ...theme.typography.subMenuCaption,
+                                    }}
                                     display="block"
                                     gutterBottom
                                 >
@@ -76,7 +80,12 @@ const NavGroup: React.FC<NavGroupProps> = ({ item }) => {
             </List>
 
             {/* group divider */}
-            <Divider sx={{ mt: 0.25, mb: 1.25 }} />
+            <Divider
+                sx={{
+                    mt: 0.25,
+                    mb: 1.25,
+                }}
+            />
         </>
     );
 };

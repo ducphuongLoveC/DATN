@@ -1,7 +1,5 @@
 import { useEffect, useState, ChangeEvent, SyntheticEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/store'; // Adjust the path as needed
-
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Drawer from '@mui/material/Drawer';
@@ -44,9 +42,7 @@ function valueText(value: number) {
 const Customization: React.FC = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const customization = useSelector(
-        (state: RootState) => state.customization
-    );
+    const customization = useSelector((state: any) => state.customization);
 
     console.log(customization);
 
@@ -70,7 +66,10 @@ const Customization: React.FC = () => {
     };
 
     useEffect(() => {
-        dispatch({ type: SET_BORDER_RADIUS, borderRadius });
+        dispatch({
+            type: SET_BORDER_RADIUS,
+            borderRadius,
+        });
     }, [dispatch, borderRadius]);
 
     let initialFont: string;
@@ -103,7 +102,10 @@ const Customization: React.FC = () => {
                 newFont = `'Roboto', sans-serif`;
                 break;
         }
-        dispatch({ type: SET_FONT_FAMILY, fontFamily: newFont });
+        dispatch({
+            type: SET_FONT_FAMILY,
+            fontFamily: newFont,
+        });
     }, [dispatch, fontFamily]);
 
     // state - theme
@@ -114,7 +116,10 @@ const Customization: React.FC = () => {
     };
 
     useEffect(() => {
-        dispatch({ type: TOGGLE_THEME, theme: themeMode });
+        dispatch({
+            type: TOGGLE_THEME,
+            theme: themeMode,
+        });
     }, [dispatch, themeMode]);
 
     return (
@@ -158,7 +163,13 @@ const Customization: React.FC = () => {
                 }}
             >
                 <PerfectScrollbar component="div">
-                    <Grid container spacing={gridSpacing} sx={{ p: 3 }}>
+                    <Grid
+                        container
+                        spacing={gridSpacing}
+                        sx={{
+                            p: 3,
+                        }}
+                    >
                         <Grid item xs={12}>
                             {/* font family */}
                             <SubCard title="Font Family">
@@ -229,7 +240,9 @@ const Customization: React.FC = () => {
                                     container
                                     spacing={2}
                                     alignItems="center"
-                                    sx={{ mt: 2.5 }}
+                                    sx={{
+                                        mt: 2.5,
+                                    }}
                                 >
                                     <Grid item>
                                         <Typography

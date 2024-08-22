@@ -28,7 +28,9 @@ const Login: React.FC = () => {
                 container
                 direction="column"
                 justifyContent="flex-end"
-                sx={{ minHeight: '100vh' }}
+                sx={{
+                    minHeight: '100vh',
+                }}
             >
                 <Grid item xs={12}>
                     <Grid
@@ -47,7 +49,16 @@ const Login: React.FC = () => {
                                 alt="Banner"
                             />
                         </Grid>
-                        <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
+                        <Grid
+                            item
+                            sx={{
+                                m: {
+                                    xs: 1,
+                                    sm: 3,
+                                },
+                                mb: 0,
+                            }}
+                        >
                             <AuthCardWrapper>
                                 <Grid
                                     container
@@ -55,7 +66,12 @@ const Login: React.FC = () => {
                                     alignItems="center"
                                     justifyContent="center"
                                 >
-                                    <Grid item sx={{ mb: 3 }}>
+                                    <Grid
+                                        item
+                                        sx={{
+                                            mb: 3,
+                                        }}
+                                    >
                                         <Link to="#" aria-label="logo">
                                             <Logo />{' '}
                                             {/* Sử dụng component Logo */}

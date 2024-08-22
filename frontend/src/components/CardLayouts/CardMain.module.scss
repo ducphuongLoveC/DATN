@@ -5,15 +5,14 @@
 }
 
 @media (max-width: 1200px) {
-    /* Kích thước màn hình lớn hơn nhưng nhỏ hơn 1200px */
+    /* */
     .list-course {
-        grid-template-columns: repeat(3, 1fr); /* Hiển thị 3 cột */
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 768px) {
-    /* Kích thước màn hình nhỏ hơn hoặc bằng 768px */
     .list-course {
-        grid-template-columns: repeat(2, 1fr); /* Hiển thị 2 cột */
+        grid-template-columns: repeat(2, 1fr);
     }
 }

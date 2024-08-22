@@ -10,16 +10,20 @@ import {
 } from '@mui/material';
 
 import { styled } from '@mui/system';
+import { Link } from 'react-router-dom';
 
+import clsx from 'clsx';
+import s from './Card.module.scss';
 interface Icons {
-    title: string,
-    icon: React.ReactNode
+    title: string;
+    icon: React.ReactNode;
 }
+
 interface CardMainProps {
     width?: string;
     title: string;
     img: string;
-    footerIcon: Icons[]
+    footerIcon: Icons[];
 }
 
 const CustomCard = styled(Card)<{ width?: string; theme: any }>(
@@ -30,8 +34,7 @@ const CustomCard = styled(Card)<{ width?: string; theme: any }>(
         overflow: 'hidden',
         position: 'relative',
         transition: '.15s ease-in',
-        width: width || 'auto', // Sử dụng giá trị width từ props hoặc mặc định là auto
-
+        width: '90%',
         '&:hover, &:focus-within': {
             transform: 'translateY(-5px)',
         },
@@ -41,7 +44,7 @@ const CustomCard = styled(Card)<{ width?: string; theme: any }>(
 const CustomCardMedia = styled(CardMedia)({
     height: '160px',
     overflow: 'hidden',
-    objectFit: 'cover'
+    objectFit: 'cover',
 });
 
 const CustomIconButton = styled(IconButton)({
@@ -66,7 +69,7 @@ const CustomIconButton = styled(IconButton)({
     },
 });
 
-const CustomTypography = styled(Typography)({
+const CustomTypography = styled(Link)({
     fontWeight: 600,
     fontSize: '1rem',
     textDecoration: 'none',
@@ -88,7 +91,6 @@ const CustomCardFooter = styled(Box)({
     paddingTop: '1rem',
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
-
 });
 
 const CustomCardMeta = styled(Box)({
@@ -114,36 +116,29 @@ const CustomCardMeta = styled(Box)({
     },
 });
 
-const CardMain: React.FC<CardMainProps> = ({ width, title, img, footerIcon }) => {
+const CardMain: React.FC<CardMainProps> = ({
+    width,
+    title,
+    img,
+    footerIcon,
+}) => {
     const theme = useTheme();
     return (
-        <CustomCard width={width} theme={theme}>
-            <CustomCardMedia
-                component="img"
-                image={img}
-                alt="An orange painted blue, cut in half laying on a blue background"
-            />
+        <CustomCard className={clsx(s['card'])} width={width} theme={theme}>
+            <CustomCardMedia image={img} />
             <CardContent>
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                >
-                    <CustomTypography component="a" href="#">
-                        {title}
-                    </CustomTypography>
+                <Box>
+                    <CustomTypography to={'/'}>{title}</CustomTypography>
                 </Box>
                 <CustomCardFooter>
-                    {
-                        footerIcon.map((data: Icons, index: number) => (
-                            <CustomCardMeta key={index}>
-                                {data.icon}
-                                <Typography variant="body2" color="text.secondary">
-                                    {data.title}
-                                </Typography>
-                            </CustomCardMeta>
-                        ))
-                    }
+                    {footerIcon.map((data: Icons, index: number) => (
+                        <CustomCardMeta key={index}>
+                            {data.icon}
+                            <Typography variant="body2" color="text.secondary">
+                                {data.title}
+                            </Typography>
+                        </CustomCardMeta>
+                    ))}
                 </CustomCardFooter>
             </CardContent>
         </CustomCard>

@@ -1,4 +1,4 @@
-export default function componentStyleOverrides(theme) {
+export default function componentStyleOverrides(theme: any) {
     const bgColor = theme.colors?.grey50;
 
     return {
@@ -19,7 +19,7 @@ export default function componentStyleOverrides(theme) {
                     backgroundImage: 'none',
                 },
                 rounded: {
-                    borderRadius: `${theme?.themeSelect?.borderRadius}px`,
+                    borderRadius: `${theme?.state?.borderRadius}px`,
                 },
             },
         },
@@ -107,7 +107,7 @@ export default function componentStyleOverrides(theme) {
                 root: {
                     background: bgColor,
 
-                    borderRadius: `${theme?.themeSelect?.borderRadius}px`,
+                    borderRadius: `${theme?.state?.borderRadius}px`,
                     '& .MuiOutlinedInput-notchedOutline': {
                         borderColor: theme.colors?.grey400,
                     },
@@ -122,7 +122,7 @@ export default function componentStyleOverrides(theme) {
                     fontWeight: 500,
                     background: bgColor,
                     padding: '15.5px 14px',
-                    borderRadius: `${theme?.themeSelect?.borderRadius}px`,
+                    borderRadius: `${theme?.state?.borderRadius}px`,
                     '&.MuiInputBase-inputSizeSmall': {
                         padding: '10px 14px',
                         '&.MuiInputBase-inputAdornedStart': {
@@ -134,7 +134,7 @@ export default function componentStyleOverrides(theme) {
                     paddingLeft: 4,
                 },
                 notchedOutline: {
-                    borderRadius: `${theme?.themeSelect?.borderRadius}px`,
+                    borderRadius: `${theme?.state?.borderRadius}px`,
                 },
             },
         },

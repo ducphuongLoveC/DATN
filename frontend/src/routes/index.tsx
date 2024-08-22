@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import RouteProp from '@/interfaces/route';
 
 import mainRoutes from './mainRoutes';
-
 import privateRoutes from './privateRoutes';
 import subDomainRouter from '../helpers/subDomainRouter';
 
@@ -14,7 +13,7 @@ const createRoutes = (routes: RouteProp[]) => {
         <Router>
             <Routes>
                 {routes.map((route, index) => {
-                    const Layout = route.layout ? route.layout : Fragment;
+                    const Layout: any = route.layout || Fragment;
                     const Page = route.page;
 
                     return (

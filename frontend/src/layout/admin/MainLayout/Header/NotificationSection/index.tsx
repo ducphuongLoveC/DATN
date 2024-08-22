@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import CardActions from '@mui/material/CardActions';
 import Chip from '@mui/material/Chip';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
@@ -98,28 +97,18 @@ const NotificationSection: React.FC = () => {
                     },
                 }}
             >
-                <ButtonBase sx={{ borderRadius: '12px' }}>
-                    <Avatar
-                        variant="rounded"
-                        sx={{
-                            ...theme.typography.commonAvatar,
-                            ...theme.typography.mediumAvatar,
-                            transition: 'all .2s ease-in-out',
-                            background: theme.palette.secondary.light,
-                            color: theme.palette.secondary.dark,
-                            '&[aria-controls="menu-list-grow"],&:hover': {
-                                background: theme.palette.secondary.dark,
-                                color: theme.palette.secondary.light,
-                            },
-                        }}
-                        ref={anchorRef}
-                        aria-controls={open ? 'menu-list-grow' : undefined}
-                        aria-haspopup="true"
-                        onClick={handleToggle}
-                        color="inherit"
-                    >
-                        <IconBell stroke={1.5} size="1.3rem" />
-                    </Avatar>
+                <ButtonBase
+                    sx={{
+                        borderRadius: '12px',
+                        boxShadow: theme.shadows[16],
+                    }}
+                    ref={anchorRef}
+                    aria-controls={open ? 'menu-list-grow' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleToggle}
+                    color="inherit"
+                >
+                    <IconBell stroke={1.5} size="1.3rem" />
                 </ButtonBase>
             </Box>
             <Popper
@@ -146,14 +135,19 @@ const NotificationSection: React.FC = () => {
                         in={open}
                         {...TransitionProps}
                     >
-                        <Paper>
+                        <Paper
+                            elevation={16}
+                            sx={{
+                                boxShadow: theme.shadows[16],
+                            }}
+                        >
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MainCard
                                     border={false}
-                                    elevation={16}
                                     content={false}
-                                    boxShadow
-                                    shadow={theme.shadows[16]}
+                                    sx={{
+                                        boxShadow: theme.shadows[16],
+                                    }}
                                 >
                                     <Grid
                                         container
@@ -165,7 +159,10 @@ const NotificationSection: React.FC = () => {
                                                 container
                                                 alignItems="center"
                                                 justifyContent="space-between"
-                                                sx={{ pt: 2, px: 2 }}
+                                                sx={{
+                                                    pt: 2,
+                                                    px: 2,
+                                                }}
                                             >
                                                 <Grid item>
                                                     <Stack
@@ -260,7 +257,9 @@ const NotificationSection: React.FC = () => {
                                                     </Grid>
                                                     <Grid item xs={12} p={0}>
                                                         <Divider
-                                                            sx={{ my: 0 }}
+                                                            sx={{
+                                                                my: 0,
+                                                            }}
                                                         />
                                                     </Grid>
                                                 </Grid>

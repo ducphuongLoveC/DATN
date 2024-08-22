@@ -18,10 +18,14 @@ const MobileNavbar: React.FC<MobileNavbarProp> = ({ isShow = false }) => {
 
     return (
         <div
-            style={{ background: theme.palette.background.paper }}
+            style={{
+                background: theme.palette.background.paper,
+            }}
             className={clsx(
                 s['mobile-navbar'],
-                { [s.show]: isShow },
+                {
+                    [s.show]: isShow,
+                },
                 `tw-h-[102vh] tw-absolute tw-top-0 tw-left-0 tw-text-left tw-shadow tw-overflow-y`
             )}
         >

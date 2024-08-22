@@ -30,39 +30,30 @@ import path from '@/constants/routes';
 // ==============================|| NAVBAR ||============================== //
 
 const Navbar: React.FC = () => {
-
-
-
-    // handle theme
-    const theme = useTheme(); // Lấy theme từ hook useTheme
+    const theme = useTheme();
     const dispatch = useDispatch();
     const homeState = useSelector((state: any) => state.homeReducer);
 
-    // set Theme
-    const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
-
     const handleToggleThemeMode = () => {
-        const newTheme = themeMode === 'light' ? 'dark' : 'light';
-        setThemeMode(newTheme);
+        const newTheme = homeState.theme === 'light' ? 'dark' : 'light';
+        dispatch({
+            type: TOGGLE_THEME_HOME,
+            theme: newTheme,
+        });
     };
 
-    useEffect(() => {
-        dispatch({ type: TOGGLE_THEME_HOME, theme: themeMode });
-    }, [dispatch, themeMode]);
-
-    // set navbarMobile
-    const [openedMobile, setOpenedMobile] = useState<boolean>(false);
     const handleToggleNavMobile = () => {
-        setOpenedMobile(!openedMobile);
+        dispatch({
+            type: SET_MENU_HOME_MOBILE,
+            opened: !homeState.opened,
+        });
     };
-
-    useEffect(() => {
-        dispatch({ type: SET_MENU_HOME_MOBILE, opened: openedMobile });
-    }, [dispatch, openedMobile]);
 
     return (
         <nav
-            style={{ background: theme.palette.background.paper }}
+            style={{
+                background: theme.palette.background.paper,
+            }}
             className={clsx(s['nav'], `tw-p-2.5 tw-sticky tw-top-0 tw-z-50`)}
         >
             <div className={clsx(s['content-nav'], 'container tw-mx-auto')}>
@@ -70,18 +61,16 @@ const Navbar: React.FC = () => {
                     <div className="tw-flex tw-justify-center tw-items-center">
                         <div>
                             <Link to="/">
-                                <img
-                                    src="./images/logo.png"
-                                    alt="Logo"
-                                    className="tw-w-36"
-                                />
+                                <img alt="Logo" className="tw-w-36" />
                             </Link>
                         </div>
                         <div className="tw-hidden md:tw-block tw-ml-8 tw-group tw-relative">
                             <BiCategoryAlt className="tw-w-8 tw-h-8 tw-cursor-pointer" />
                         </div>
                         <div
-                            style={{ width: '350px' }}
+                            style={{
+                                width: '350px',
+                            }}
                             className="tw-hidden md:tw-block tw-ml-16 tw-relative"
                         >
                             <span className="tw-absolute tw-top-2.5 tw-left-4">
@@ -189,7 +178,9 @@ const Navbar: React.FC = () => {
                     className="tw-absolute tw-top-1 tw-right-3 tw-cursor-pointer tw-mt-5"
                 >
                     <span
-                        style={{ color: theme.palette.text.primary }}
+                        style={{
+                            color: theme.palette.text.primary,
+                        }}
                         className="md:tw-hidden navbar-toggle tw-text-slate-900"
                     >
                         {homeState.opened ? <BiX /> : <BiListUl />}

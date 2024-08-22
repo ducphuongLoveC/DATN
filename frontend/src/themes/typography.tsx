@@ -1,11 +1,11 @@
 /**
  * Typography used in theme
- * @param {JsonObject} theme theme themeSelect object
+ * @param {JsonObject} theme theme state object
  */
 
-export default function themeTypography(theme) {
+export default function themeTypography(theme: any) {
     return {
-        fontFamily: theme?.themeSelect?.fontFamily,
+        fontFamily: theme?.state?.fontFamily,
         h6: {
             fontWeight: 500,
             color: theme.heading,
@@ -94,7 +94,7 @@ export default function themeTypography(theme) {
             padding: '20px',
             marginTop: '88px',
             marginRight: '20px',
-            borderRadius: `${theme?.themeSelect?.borderRadius}px`,
+            borderRadius: `${theme?.state?.borderRadius}px`,
         },
         menuCaption: {
             fontSize: '0.875rem',

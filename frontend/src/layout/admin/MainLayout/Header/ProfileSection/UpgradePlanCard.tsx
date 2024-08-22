@@ -53,7 +53,9 @@ const UpgradePlanCard: React.FC = () => {
                         <Typography
                             variant="subtitle2"
                             color={'grey.900'}
-                            sx={{ opacity: 0.6 }}
+                            sx={{
+                                opacity: 0.6,
+                            }}
                         >
                             70% discount for 1 years <br />
                             subscriptions.
@@ -62,7 +64,9 @@ const UpgradePlanCard: React.FC = () => {
                     <Grid item>
                         <Stack direction="row">
                             <Link
-                                sx={{ textDecoration: 'none' }}
+                                sx={{
+                                    textDecoration: 'none',
+                                }}
                                 href="https://links.codedthemes.com/hsqll"
                                 target="_blank"
                             >
@@ -70,7 +74,9 @@ const UpgradePlanCard: React.FC = () => {
                                     <Button
                                         variant="contained"
                                         color="warning"
-                                        sx={{ boxShadow: 'none' }}
+                                        sx={{
+                                            boxShadow: 'none',
+                                        }}
                                     >
                                         Go Premium
                                     </Button>

@@ -1,21 +1,30 @@
-import PropTypes from 'prop-types';
-
 import React from 'react';
-
-// material-ui
+import { SxProps, Theme } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 
+// Define types for props
+interface SubCardProps {
+    children?: React.ReactNode;
+    content?: boolean;
+    contentClass?: string;
+    darkTitle?: boolean;
+    secondary?: React.ReactNode;
+    sx?: SxProps<Theme>;
+    contentSX?: SxProps<Theme>;
+    title?: React.ReactNode;
+}
+
 // ==============================|| CUSTOM SUB CARD ||============================== //
 
-const SubCard = React.forwardRef(
+const SubCard = React.forwardRef<HTMLDivElement, SubCardProps>(
     (
         {
             children,
-            content,
+            content = true,
             contentClass,
             darkTitle,
             secondary,
@@ -34,7 +43,9 @@ const SubCard = React.forwardRef(
                 sx={{
                     border: '1px solid',
                     borderColor: 'divider',
-                    ':hover': { boxShadow: defaultShadow },
+                    ':hover': {
+                        boxShadow: defaultShadow,
+                    },
                     ...sx,
                 }}
                 {...others}
@@ -42,14 +53,18 @@ const SubCard = React.forwardRef(
                 {/* card header and action */}
                 {!darkTitle && title && (
                     <CardHeader
-                        sx={{ p: 2.5 }}
+                        sx={{
+                            p: 2.5,
+                        }}
                         title={<Typography variant="h5">{title}</Typography>}
                         action={secondary}
                     />
                 )}
                 {darkTitle && title && (
                     <CardHeader
-                        sx={{ p: 2.5 }}
+                        sx={{
+                            p: 2.5,
+                        }}
                         title={<Typography variant="h4">{title}</Typography>}
                         action={secondary}
                     />
@@ -61,7 +76,10 @@ const SubCard = React.forwardRef(
                 {/* card content */}
                 {content && (
                     <CardContent
-                        sx={{ p: 2.5, ...contentSX }}
+                        sx={{
+                            p: 2.5,
+                            ...contentSX,
+                        }}
                         className={contentClass || ''}
                     >
                         {children}
@@ -73,27 +91,6 @@ const SubCard = React.forwardRef(
     }
 );
 
-SubCard.propTypes = {
-    children: PropTypes.node,
-    content: PropTypes.bool,
-    contentClass: PropTypes.string,
-    darkTitle: PropTypes.bool,
-    secondary: PropTypes.oneOfType([
-        PropTypes.node,
-        PropTypes.string,
-        PropTypes.object,
-    ]),
-    sx: PropTypes.object,
-    contentSX: PropTypes.object,
-    title: PropTypes.oneOfType([
-        PropTypes.node,
-        PropTypes.string,
-        PropTypes.object,
-    ]),
-};
-
-SubCard.defaultProps = {
-    content: true,
-};
+SubCard.displayName = 'SubCard';
 
 export default SubCard;

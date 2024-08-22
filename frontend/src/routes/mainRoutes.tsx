@@ -1,4 +1,6 @@
 import MainLayout from '@/layout/client/MainLayout';
+import BannerLayout from '@/layout/client/BannerLayout';
+
 import Home from '@/views/pages/Home';
 import RouteProp from '../interfaces/route';
 import Login3 from '@/views/pages/authentication3/Login3';
@@ -9,18 +11,18 @@ import path from '@/constants/routes';
 const publicRoutes: RouteProp[] = [
     {
         path: '/',
-        layout: MainLayout,
+        layout: BannerLayout,
         page: Home,
     },
     {
         path: path.client.contact,
         layout: MainLayout,
-        page: Home,
+        page: () => <h1>Bài viết</h1>,
     },
     {
         path: path.client.news,
         layout: MainLayout,
-        page: Home,
+        page: () => <h1>Liên hệ</h1>,
     },
     {
         path: path.client.auth.login,

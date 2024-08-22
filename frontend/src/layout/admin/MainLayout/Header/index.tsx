@@ -20,7 +20,7 @@ interface HeaderProps {
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
 const Header: FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
-    const theme = useTheme();
+    const theme: any = useTheme();
 
     return (
         <>
@@ -36,11 +36,22 @@ const Header: FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
             >
                 <Box
                     component="span"
-                    sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}
+                    sx={{
+                        display: {
+                            xs: 'none',
+                            md: 'block',
+                        },
+                        flexGrow: 1,
+                    }}
                 >
                     <LogoSection />
                 </Box>
-                <ButtonBase sx={{ borderRadius: '8px', overflow: 'hidden' }}>
+                <ButtonBase
+                    sx={{
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                    }}
+                >
                     <Avatar
                         variant="rounded"
                         sx={{
@@ -64,8 +75,16 @@ const Header: FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 
             {/* header search */}
             <SearchSection />
-            <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ flexGrow: 1 }} />
+            <Box
+                sx={{
+                    flexGrow: 1,
+                }}
+            />
+            <Box
+                sx={{
+                    flexGrow: 1,
+                }}
+            />
 
             {/* notification & profile */}
             <NotificationSection />

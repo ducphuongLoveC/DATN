@@ -10,6 +10,7 @@ const Footer: React.FC = () => {
     return (
         <footer
             style={{
+                background: theme.palette.background.paper,
                 color: theme.palette.text.primary,
                 marginTop: '20px',
                 boxShadow:
@@ -20,11 +21,7 @@ const Footer: React.FC = () => {
                 <div className="tw-flex tw-flex-col md:tw-flex-row">
                     <div className="tw-basis-2/6">
                         <div className="tw-p-5">
-                            <img
-                                src="./images/logo-mini.png"
-                                alt=""
-                                className="tw-w-10"
-                            />
+                            <img alt="logo-footer" className="tw-w-10" />
                             <div>
                                 <h3
                                     className="tw-font-medium tw-mt-4 tw-mb-3"
@@ -32,17 +29,17 @@ const Footer: React.FC = () => {
                                         color: theme.palette.text.secondary,
                                     }}
                                 >
-                                    Call Us
+                                    Liên hệ với chúng tôi
                                 </h3>
                                 <div className="tw-text-sm">
-                                    <h4 className="tw-mb-2">+88019626352323</h4>
-                                    <h4 className="tw-mb-2">hello@gmail.com</h4>
+                                    <h4 className="tw-mb-2">+0123456789</h4>
+                                    <h4 className="tw-mb-2">email.com</h4>
                                     <h4 className="tw-mb-2">
                                         9AM- 5PM, Monday - Friday
                                     </h4>
                                     <h4 className="tw-mb-2">
-                                        PO Box 567, Hostain st. 433 Los Angeles,
-                                        California, US
+                                        Nhà số 10, 379 Xuân Phương, Nam Từ Liêm,
+                                        Hà Nội
                                     </h4>
                                 </div>
                             </div>
@@ -52,9 +49,11 @@ const Footer: React.FC = () => {
                         <div className="tw-p-4">
                             <h3
                                 className="tw-font-medium tw-mt-4 tw-mb-3"
-                                style={{ color: theme.palette.text.secondary }}
+                                style={{
+                                    color: theme.palette.text.secondary,
+                                }}
                             >
-                                Links
+                                Các liên kết khác
                             </h3>
                             <ul className="tw-list-none tw-mt-4">
                                 {[
@@ -86,9 +85,11 @@ const Footer: React.FC = () => {
                         <div className="tw-p-4">
                             <h3
                                 className="tw-font-medium tw-mt-4 tw-mb-3"
-                                style={{ color: theme.palette.text.secondary }}
+                                style={{
+                                    color: theme.palette.text.secondary,
+                                }}
                             >
-                                Information
+                                Sản phẩm
                             </h3>
                             <ul className="tw-list-none tw-mt-4">
                                 {[
@@ -120,9 +121,11 @@ const Footer: React.FC = () => {
                         <div className="tw-p-4">
                             <h3
                                 className="tw-font-medium tw-mt-4 tw-mb-3"
-                                style={{ color: theme.palette.text.secondary }}
+                                style={{
+                                    color: theme.palette.text.secondary,
+                                }}
                             >
-                                Sign up for our newsletter
+                                Mạng xã hội
                             </h3>
                             <p className="tw-text-sm">
                                 Lorem ipsum dolor, sit amet consectetur
@@ -154,14 +157,16 @@ const Footer: React.FC = () => {
                     </div>
                 </div>
                 <div className="tw-text-center tw-mt-4">
-                    &copy; 2022 All rights reserved.
+                    &copy; Đồ án tốt nghiệp by Duc Phuong
                 </div>
                 <div>
                     <a
                         id="scroll-to-top"
                         href="#top"
                         className="tw-transition tw-hidden tw-shadow tw-bottom-1 tw-right-1 tw-w-14 tw-h-14 tw-rounded-[50%] tw-bg-red-600 tw-hover:opacity-80 tw-z-50 tw-border tw-group"
-                        style={{ backgroundColor: theme.palette.primary.main }}
+                        style={{
+                            backgroundColor: theme.palette.primary.main,
+                        }}
                     >
                         <i className="fa-solid fa-arrow-up tw-transition tw-pt-5 tw-pl-5 tw-text-white tw-group-hover:-translate-y-2"></i>
                     </a>

@@ -31,7 +31,9 @@ const EarningCard = () => (
                 <Grid item>
                     <Skeleton
                         variant="rectangular"
-                        sx={{ my: 2 }}
+                        sx={{
+                            my: 2,
+                        }}
                         height={40}
                     />
                 </Grid>

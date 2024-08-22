@@ -28,7 +28,7 @@ const Chip: React.FC<ChipProps> = ({
 }) => {
     const theme = useTheme();
 
-    let defaultSX: SxProps<Theme> = {
+    const defaultSX: SxProps<Theme> = {
         color: 'primary.main',
         bgcolor: 'primary.light',
         ':hover': {
@@ -187,7 +187,15 @@ const Chip: React.FC<ChipProps> = ({
     }
 
     const SX = variant === 'outlined' ? outlineSX : defaultSX;
-    return <MuiChip sx={{ ...SX, ...sx }} {...others} />;
+    return (
+        <MuiChip
+            sx={{
+                ...SX,
+                ...sx,
+            }}
+            {...others}
+        />
+    );
 };
 
 export default Chip;

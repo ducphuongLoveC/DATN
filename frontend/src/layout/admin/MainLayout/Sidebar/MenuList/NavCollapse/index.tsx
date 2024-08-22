@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { RootState } from '@/store'; // Adjust the import based on your store configuration
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -38,10 +37,8 @@ interface NavCollapseProps {
 // ==============================|| SIDEBAR MENU LIST COLLAPSE ITEMS ||============================== //
 
 const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
-    const theme = useTheme();
-    const customization = useSelector(
-        (state: RootState) => state.customization
-    );
+    const theme: any = useTheme();
+    const customization = useSelector((state: any) => state.customization);
 
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState<string | null>(null);
@@ -80,7 +77,7 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
     }, [pathname, menu.children]);
 
     // menu collapse & item
-    const menus = menu.children?.map((item) => {
+    const menus = menu.children?.map((item: any) => {
         switch (item.type) {
             case 'collapse':
                 return (
@@ -102,12 +99,15 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
         }
     });
 
-    const Icon = menu.icon;
+    const Icon: any = menu.icon;
     const menuIcon = menu.icon ? (
         <Icon
             strokeWidth={1.5}
             size="1.3rem"
-            style={{ marginTop: 'auto', marginBottom: 'auto' }}
+            style={{
+                marginTop: 'auto',
+                marginBottom: 'auto',
+            }}
         />
     ) : (
         <FiberManualRecordIcon
@@ -135,7 +135,10 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
                 onClick={handleClick}
             >
                 <ListItemIcon
-                    sx={{ my: 'auto', minWidth: !menu.icon ? 18 : 36 }}
+                    sx={{
+                        my: 'auto',
+                        minWidth: !menu.icon ? 18 : 36,
+                    }}
                 >
                     {menuIcon}
                 </ListItemIcon>
@@ -144,7 +147,9 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
                         <Typography
                             variant={selected === menu.id ? 'h5' : 'body1'}
                             color="inherit"
-                            sx={{ my: 'auto' }}
+                            sx={{
+                                my: 'auto',
+                            }}
                         >
                             {menu.title}
                         </Typography>
@@ -153,7 +158,9 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
                         menu.caption && (
                             <Typography
                                 variant="caption"
-                                sx={{ ...theme.typography.subMenuCaption }}
+                                sx={{
+                                    ...theme.typography.subMenuCaption,
+                                }}
                                 display="block"
                                 gutterBottom
                             >
@@ -166,13 +173,19 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
                     <IconChevronUp
                         stroke={1.5}
                         size="1rem"
-                        style={{ marginTop: 'auto', marginBottom: 'auto' }}
+                        style={{
+                            marginTop: 'auto',
+                            marginBottom: 'auto',
+                        }}
                     />
                 ) : (
                     <IconChevronDown
                         stroke={1.5}
                         size="1rem"
-                        style={{ marginTop: 'auto', marginBottom: 'auto' }}
+                        style={{
+                            marginTop: 'auto',
+                            marginBottom: 'auto',
+                        }}
                     />
                 )}
             </ListItemButton>

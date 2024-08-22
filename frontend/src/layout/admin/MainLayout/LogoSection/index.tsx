@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/store'; // Ensure you have a RootState type defined in your store
 
 // material-ui
 import ButtonBase from '@mui/material/ButtonBase';
@@ -15,13 +14,18 @@ import { MENU_OPEN } from '@/store/actions';
 
 const LogoSection: FC = () => {
     const defaultId = useSelector(
-        (state: RootState) => state.customization.defaultId
+        (state: any) => state.customization.defaultId
     );
     const dispatch = useDispatch();
     return (
         <ButtonBase
             disableRipple
-            onClick={() => dispatch({ type: MENU_OPEN, id: defaultId })}
+            onClick={() =>
+                dispatch({
+                    type: MENU_OPEN,
+                    id: defaultId,
+                })
+            }
             component={Link}
             to=""
         >

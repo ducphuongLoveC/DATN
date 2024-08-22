@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store'; // Thay đổi đường dẫn cho phù hợp với cấu trúc của bạn
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -45,10 +44,8 @@ import {
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection: React.FC = () => {
-    const theme = useTheme();
-    const customization = useSelector(
-        (state: RootState) => state.customization
-    );
+    const theme: any = useTheme();
+    const customization = useSelector((state: any) => state.customization);
     const navigate = useNavigate();
 
     const [sdm, setSdm] = useState<boolean>(true);
@@ -60,12 +57,12 @@ const ProfileSection: React.FC = () => {
 
     const handleLogout = async () => {
         console.log('Logout');
+        // Add logout logic here
     };
-
-    const handleClose = (event: MouseEvent | null) => {
+    const handleClose = (event: any) => {
         if (
             anchorRef.current &&
-            anchorRef.current.contains(event?.target as Node)
+            anchorRef.current.contains(event.target as Node)
         ) {
             return;
         }
@@ -94,7 +91,6 @@ const ProfileSection: React.FC = () => {
         if (prevOpen.current === true && open === false) {
             anchorRef.current?.focus();
         }
-
         prevOpen.current = open;
     }, [open]);
 
@@ -128,7 +124,7 @@ const ProfileSection: React.FC = () => {
                             margin: '8px 0 8px 8px !important',
                             cursor: 'pointer',
                         }}
-                        ref={anchorRef}
+                        ref={anchorRef as React.RefObject<HTMLDivElement>} // Cast ref to match Avatar's expected type
                         aria-controls={open ? 'menu-list-grow' : undefined}
                         aria-haspopup="true"
                         color="inherit"
@@ -142,7 +138,7 @@ const ProfileSection: React.FC = () => {
                     />
                 }
                 variant="outlined"
-                ref={anchorRef}
+                ref={anchorRef as any} // Cast ref as any if needed
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
                 onClick={handleToggle}
@@ -168,16 +164,20 @@ const ProfileSection: React.FC = () => {
             >
                 {({ TransitionProps }) => (
                     <Transitions in={open} {...TransitionProps}>
-                        <Paper>
+                        <Paper elevation={16}>
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MainCard
                                     border={false}
-                                    elevation={16}
                                     content={false}
                                     boxShadow
                                     shadow={theme.shadows[16]}
                                 >
-                                    <Box sx={{ p: 2, pb: 0 }}>
+                                    <Box
+                                        sx={{
+                                            p: 2,
+                                            pb: 0,
+                                        }}
+                                    >
                                         <Stack>
                                             <Stack
                                                 direction="row"
@@ -190,7 +190,9 @@ const ProfileSection: React.FC = () => {
                                                 <Typography
                                                     component="span"
                                                     variant="h4"
-                                                    sx={{ fontWeight: 400 }}
+                                                    sx={{
+                                                        fontWeight: 400,
+                                                    }}
                                                 >
                                                     Johne Doe
                                                 </Typography>
@@ -238,7 +240,12 @@ const ProfileSection: React.FC = () => {
                                             overflowX: 'hidden',
                                         }}
                                     >
-                                        <Box sx={{ p: 2, pt: 0 }}>
+                                        <Box
+                                            sx={{
+                                                p: 2,
+                                                pt: 0,
+                                            }}
+                                        >
                                             <UpgradePlanCard />
                                             <Divider />
                                             <Card
@@ -316,7 +323,7 @@ const ProfileSection: React.FC = () => {
                                                                                     .checked
                                                                             )
                                                                         }
-                                                                        name="sdm"
+                                                                        name="notification"
                                                                         size="small"
                                                                     />
                                                                 </Grid>
@@ -330,129 +337,62 @@ const ProfileSection: React.FC = () => {
                                                 component="nav"
                                                 sx={{
                                                     width: '100%',
-                                                    maxWidth: 350,
-                                                    minWidth: 300,
-                                                    backgroundColor:
+                                                    maxWidth: 360,
+                                                    bgcolor:
                                                         theme.palette.background
                                                             .paper,
-                                                    borderRadius: '10px',
-                                                    [theme.breakpoints.down(
-                                                        'md'
-                                                    )]: {
-                                                        minWidth: '100%',
-                                                    },
-                                                    '& .MuiListItemButton-root':
-                                                        {
-                                                            mt: 0.5,
-                                                        },
                                                 }}
                                             >
                                                 <ListItemButton
-                                                    sx={{
-                                                        borderRadius: `${customization.borderRadius}px`,
-                                                    }}
                                                     selected={
                                                         selectedIndex === 0
                                                     }
-                                                    onClick={(event) =>
+                                                    onClick={(event: any) =>
                                                         handleListItemClick(
                                                             event,
                                                             0,
-                                                            '#'
-                                                        )
-                                                    }
-                                                >
-                                                    <ListItemIcon>
-                                                        <IconSettings
-                                                            stroke={1.5}
-                                                            size="1.3rem"
-                                                        />
-                                                    </ListItemIcon>
-                                                    <ListItemText
-                                                        primary={
-                                                            <Typography variant="body2">
-                                                                Account Settings
-                                                            </Typography>
-                                                        }
-                                                    />
-                                                </ListItemButton>
-                                                <ListItemButton
-                                                    sx={{
-                                                        borderRadius: `${customization.borderRadius}px`,
-                                                    }}
-                                                    selected={
-                                                        selectedIndex === 1
-                                                    }
-                                                    onClick={(event) =>
-                                                        handleListItemClick(
-                                                            event,
-                                                            1,
-                                                            '#'
+                                                            '/profile'
                                                         )
                                                     }
                                                 >
                                                     <ListItemIcon>
                                                         <IconUser
                                                             stroke={1.5}
-                                                            size="1.3rem"
+                                                            size="1.25rem"
                                                         />
                                                     </ListItemIcon>
-                                                    <ListItemText
-                                                        primary={
-                                                            <Grid
-                                                                container
-                                                                spacing={1}
-                                                                justifyContent="space-between"
-                                                            >
-                                                                <Grid item>
-                                                                    <Typography variant="body2">
-                                                                        Social
-                                                                        Profile
-                                                                    </Typography>
-                                                                </Grid>
-                                                                <Grid item>
-                                                                    <Chip
-                                                                        label="02"
-                                                                        size="small"
-                                                                        sx={{
-                                                                            bgcolor:
-                                                                                theme
-                                                                                    .palette
-                                                                                    .warning
-                                                                                    .dark,
-                                                                            color: theme
-                                                                                .palette
-                                                                                .background
-                                                                                .default,
-                                                                        }}
-                                                                    />
-                                                                </Grid>
-                                                            </Grid>
-                                                        }
-                                                    />
+                                                    <ListItemText primary="Profile" />
                                                 </ListItemButton>
                                                 <ListItemButton
-                                                    sx={{
-                                                        borderRadius: `${customization.borderRadius}px`,
-                                                    }}
                                                     selected={
-                                                        selectedIndex === 4
+                                                        selectedIndex === 1
                                                     }
+                                                    onClick={(event: any) =>
+                                                        handleListItemClick(
+                                                            event,
+                                                            1,
+                                                            '/settings'
+                                                        )
+                                                    }
+                                                >
+                                                    <ListItemIcon>
+                                                        <IconSettings
+                                                            stroke={1.5}
+                                                            size="1.25rem"
+                                                        />
+                                                    </ListItemIcon>
+                                                    <ListItemText primary="Settings" />
+                                                </ListItemButton>
+                                                <ListItemButton
                                                     onClick={handleLogout}
                                                 >
                                                     <ListItemIcon>
                                                         <IconLogout
                                                             stroke={1.5}
-                                                            size="1.3rem"
+                                                            size="1.25rem"
                                                         />
                                                     </ListItemIcon>
-                                                    <ListItemText
-                                                        primary={
-                                                            <Typography variant="body2">
-                                                                Logout
-                                                            </Typography>
-                                                        }
-                                                    />
+                                                    <ListItemText primary="Logout" />
                                                 </ListItemButton>
                                             </List>
                                         </Box>

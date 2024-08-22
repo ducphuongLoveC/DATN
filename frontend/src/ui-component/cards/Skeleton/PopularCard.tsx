@@ -5,7 +5,8 @@ import Grid from '@mui/material/Grid';
 import Skeleton from '@mui/material/Skeleton';
 
 // project imports
-import { gridSpacing } from 'store/constant';
+
+import { gridSpacing } from '@/store/constant';
 
 // ==============================|| SKELETON - POPULAR CARD ||============================== //
 
@@ -258,7 +259,12 @@ const PopularCard = () => (
             </Grid>
         </CardContent>
         <CardContent
-            sx={{ p: 1.25, display: 'flex', pt: 0, justifyContent: 'center' }}
+            sx={{
+                p: 1.25,
+                display: 'flex',
+                pt: 0,
+                justifyContent: 'center',
+            }}
         >
             <Skeleton variant="rectangular" height={25} width={75} />
         </CardContent>

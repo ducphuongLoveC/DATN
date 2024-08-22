@@ -48,7 +48,9 @@ const AnimateButton = React.forwardRef<HTMLDivElement, AnimateButtonProps>(
                 return (
                     <motion.div
                         ref={ref}
-                        animate={{ rotate: 360 }}
+                        animate={{
+                            rotate: 360,
+                        }}
                         transition={{
                             repeat: Infinity,
                             repeatType: 'loop',
@@ -64,7 +66,9 @@ const AnimateButton = React.forwardRef<HTMLDivElement, AnimateButtonProps>(
                     return (
                         <motion.div
                             ref={ref}
-                            animate={{ y: y !== undefined ? y : '' }}
+                            animate={{
+                                y: y !== undefined ? y : '',
+                            }}
                             onHoverEnd={() => cycleY()}
                             onHoverStart={() => cycleY()}
                         >
@@ -75,7 +79,9 @@ const AnimateButton = React.forwardRef<HTMLDivElement, AnimateButtonProps>(
                 return (
                     <motion.div
                         ref={ref}
-                        animate={{ x: x !== undefined ? x : '' }}
+                        animate={{
+                            x: x !== undefined ? x : '',
+                        }}
                         onHoverEnd={() => cycleX()}
                         onHoverStart={() => cycleX()}
                     >
@@ -86,13 +92,20 @@ const AnimateButton = React.forwardRef<HTMLDivElement, AnimateButtonProps>(
             default:
                 const scaleValue =
                     typeof scale === 'number'
-                        ? { hover: scale, tap: scale }
+                        ? {
+                              hover: scale,
+                              tap: scale,
+                          }
                         : scale;
                 return (
                     <motion.div
                         ref={ref}
-                        whileHover={{ scale: scaleValue?.hover }}
-                        whileTap={{ scale: scaleValue?.tap }}
+                        whileHover={{
+                            scale: scaleValue?.hover,
+                        }}
+                        whileTap={{
+                            scale: scaleValue?.tap,
+                        }}
                     >
                         {children}
                     </motion.div>

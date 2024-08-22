@@ -58,7 +58,7 @@ ListItemWrapper.propTypes = {
 // ==============================|| NOTIFICATION LIST ITEM ||============================== //
 
 const NotificationList = () => {
-    const theme = useTheme();
+    const theme: any = useTheme();
 
     const chipSX = {
         height: 24,
@@ -126,7 +126,13 @@ const NotificationList = () => {
                     </ListItemSecondaryAction>
                 </ListItem>
                 <Grid container direction="column" className="list-container">
-                    <Grid item xs={12} sx={{ pb: 2 }}>
+                    <Grid
+                        item
+                        xs={12}
+                        sx={{
+                            pb: 2,
+                        }}
+                    >
                         <Typography variant="subtitle2">
                             It is a long established fact that a reader will be
                             distracted
@@ -181,7 +187,13 @@ const NotificationList = () => {
                     </ListItemSecondaryAction>
                 </ListItem>
                 <Grid container direction="column" className="list-container">
-                    <Grid item xs={12} sx={{ pb: 2 }}>
+                    <Grid
+                        item
+                        xs={12}
+                        sx={{
+                            pb: 2,
+                        }}
+                    >
                         <Typography variant="subtitle2">
                             We have successfully received your request.
                         </Typography>
@@ -232,7 +244,13 @@ const NotificationList = () => {
                     </ListItemSecondaryAction>
                 </ListItem>
                 <Grid container direction="column" className="list-container">
-                    <Grid item xs={12} sx={{ pb: 2 }}>
+                    <Grid
+                        item
+                        xs={12}
+                        sx={{
+                            pb: 2,
+                        }}
+                    >
                         <Typography variant="subtitle2">
                             All done! Now check your inbox as you&apos;re in for
                             a sweet treat!
@@ -286,7 +304,13 @@ const NotificationList = () => {
                     </ListItemSecondaryAction>
                 </ListItem>
                 <Grid container direction="column" className="list-container">
-                    <Grid item xs={12} sx={{ pb: 2 }}>
+                    <Grid
+                        item
+                        xs={12}
+                        sx={{
+                            pb: 2,
+                        }}
+                    >
                         <Typography component="span" variant="subtitle2">
                             Uploaded two file on &nbsp;
                             <Typography component="span" variant="h6">
@@ -355,7 +379,13 @@ const NotificationList = () => {
                     </ListItemSecondaryAction>
                 </ListItem>
                 <Grid container direction="column" className="list-container">
-                    <Grid item xs={12} sx={{ pb: 2 }}>
+                    <Grid
+                        item
+                        xs={12}
+                        sx={{
+                            pb: 2,
+                        }}
+                    >
                         <Typography variant="subtitle2">
                             It is a long established fact that a reader will be
                             distracted

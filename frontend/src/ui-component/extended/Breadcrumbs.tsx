@@ -27,7 +27,12 @@ interface BTitleProps {
 
 const BTitle: FC<BTitleProps> = ({ title }) => (
     <Grid item>
-        <Typography variant="h3" sx={{ fontWeight: 500 }}>
+        <Typography
+            variant="h3"
+            sx={{
+                fontWeight: 500,
+            }}
+        >
             {title}
         </Typography>
     </Grid>
@@ -47,7 +52,11 @@ interface BreadcrumbsProps {
     separator?: React.ComponentType | ReactNode;
     title?: boolean;
     titleBottom?: boolean;
-    links?: Array<{ to?: string; title: string; icon?: React.ComponentType }>;
+    links?: Array<{
+        to?: string;
+        title: string;
+        icon?: React.ComponentType;
+    }>;
 }
 
 // ==============================|| BREADCRUMBS ||============================== //
@@ -89,7 +98,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
         alignItems: 'center',
     };
 
-    let customLocation = location.pathname;
+    const customLocation = location.pathname;
 
     useEffect(() => {
         navigation?.items?.map((menu: any) => {
@@ -129,7 +138,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
     // item separator
     const SeparatorIcon = separator as React.ComponentType;
     const separatorIcon = separator ? (
-        <SeparatorIcon stroke={1.5} size="16px" />
+        <SeparatorIcon />
     ) : (
         <IconTallymark1 stroke={1.5} size="16px" />
     );
@@ -146,7 +155,10 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
         CollapseIcon = main.icon ? main.icon : AccountTreeTwoToneIcon;
         mainContent = (
             <Typography
-                {...(main.url && { component: Link, to: main.url })}
+                {...(main.url && {
+                    component: Link,
+                    to: main.url,
+                })}
                 variant="subtitle1"
                 sx={linkSX}
                 color={
@@ -171,12 +183,25 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
             <Card
                 sx={
                     card === false
-                        ? { mb: 3, bgcolor: 'transparent', ...sx }
-                        : { mb: 3, bgcolor: 'background.default', ...sx }
+                        ? {
+                              mb: 3,
+                              bgcolor: 'transparent',
+                              ...sx,
+                          }
+                        : {
+                              mb: 3,
+                              bgcolor: 'background.default',
+                              ...sx,
+                          }
                 }
                 {...others}
             >
-                <Box sx={{ p: 2, pl: card === false ? 0 : 2 }}>
+                <Box
+                    sx={{
+                        p: 2,
+                        pl: card === false ? 0 : 2,
+                    }}
+                >
                     <Grid
                         container
                         direction={rightAlign ? 'row' : 'column'}
@@ -227,7 +252,11 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
                     </Grid>
                 </Box>
                 {card === false && divider !== false && (
-                    <Divider sx={{ mt: 2 }} />
+                    <Divider
+                        sx={{
+                            mt: 2,
+                        }}
+                    />
                 )}
             </Card>
         );
@@ -245,7 +274,10 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
         itemContent = (
             <Typography
                 variant="subtitle1"
-                sx={{ ...linkSX, color: 'text.secondary' }}
+                sx={{
+                    ...linkSX,
+                    color: 'text.secondary',
+                }}
             >
                 {icons && <ItemIcon style={iconSX} />}
                 {itemTitle}
@@ -274,7 +306,12 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
                 >
                     {icons && <HomeTwoToneIcon style={iconSX} />}
                     {icon && !icons && (
-                        <HomeIcon style={{ ...iconSX, marginRight: 0 }} />
+                        <HomeIcon
+                            style={{
+                                ...iconSX,
+                                marginRight: 0,
+                            }}
+                        />
                     )}
                     {(!icon || icons) && 'Dashboard'}
                 </Typography>
@@ -330,12 +367,25 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
                 <Card
                     sx={
                         card === false
-                            ? { mb: 3, bgcolor: 'transparent', ...sx }
-                            : { mb: 3, bgcolor: 'background.default', ...sx }
+                            ? {
+                                  mb: 3,
+                                  bgcolor: 'transparent',
+                                  ...sx,
+                              }
+                            : {
+                                  mb: 3,
+                                  bgcolor: 'background.default',
+                                  ...sx,
+                              }
                     }
                     {...others}
                 >
-                    <Box sx={{ p: 2, pl: card === false ? 0 : 2 }}>
+                    <Box
+                        sx={{
+                            p: 2,
+                            pl: card === false ? 0 : 2,
+                        }}
+                    >
                         <Grid
                             container
                             direction={rightAlign ? 'row' : 'column'}
@@ -359,7 +409,11 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
                         </Grid>
                     </Box>
                     {card === false && divider !== false && (
-                        <Divider sx={{ mt: 2 }} />
+                        <Divider
+                            sx={{
+                                mt: 2,
+                            }}
+                        />
                     )}
                 </Card>
             );

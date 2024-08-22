@@ -1,62 +1,72 @@
-import useSWR, { mutate } from 'swr';
-import { useMemo } from 'react';
+// import useSWR, { mutate } from 'swr';
+// import { useMemo } from 'react';
 
-const initialState = {
-    openedItem: 'dashboard',
-    openedComponent: 'buttons',
-    openedHorizontalItem: null,
-    isDashboardDrawerOpened: false,
-    isComponentDrawerOpened: true,
-};
+// // Định nghĩa kiểu cho trạng thái menu
+// interface MenuMasterState {
+//     openedItem: string;
+//     openedComponent: string;
+//     openedHorizontalItem: string | null;
+//     isDashboardDrawerOpened: boolean;
+//     isComponentDrawerOpened: boolean;
+// }
 
-export const endpoints = {
-    key: 'api/menu',
-    master: 'master',
-    dashboard: '/dashboard', // server URL
-};
+// // Trạng thái khởi đầu
+// const initialState: MenuMasterState = {
+//     openedItem: 'dashboard',
+//     openedComponent: 'buttons',
+//     openedHorizontalItem: null,
+//     isDashboardDrawerOpened: false,
+//     isComponentDrawerOpened: true,
+// };
 
-export function useGetMenuMaster() {
-    const { data, isLoading } = useSWR(
-        endpoints.key + endpoints.master,
-        () => initialState,
-        {
-            revalidateIfStale: false,
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-        }
-    );
+// // Endpoints API
+// export const endpoints = {
+//     key: 'api/menu',
+//     master: 'master',
+//     dashboard: '/dashboard', // server URL
+// };
 
-    const memoizedValue = useMemo(
-        () => ({
-            menuMaster: data,
-            menuMasterLoading: isLoading,
-        }),
-        [data, isLoading]
-    );
+// // Hook để lấy trạng thái menu
+// export function useGetMenuMaster() {
+//     const { data, isLoading } = useSWR<MenuMasterState>(
+//         endpoints.key + endpoints.master,
+//         () => initialState,
+//         {
+//             revalidateIfStale: false,
+//             revalidateOnFocus: false,
+//             revalidateOnReconnect: false,
+//         }
+//     );
 
-    return memoizedValue;
-}
+//     const memoizedValue = useMemo(
+//         () => ({
+//             menuMaster: data,
+//             menuMasterLoading: isLoading,
+//         }),
+//         [data, isLoading]
+//     );
 
-export function handlerDrawerOpen(isDashboardDrawerOpened) {
-    // to update local state based on key
+//     return memoizedValue;
+// }
 
-    mutate(
-        endpoints.key + endpoints.master,
-        (currentMenuMaster) => {
-            return { ...currentMenuMaster, isDashboardDrawerOpened };
-        },
-        false
-    );
-}
+// // Hàm để cập nhật trạng thái drawer
+// export function handlerDrawerOpen(isDashboardDrawerOpened: boolean) {
+//     mutate<MenuMasterState>(
+//         endpoints.key + endpoints.master,
+//         (currentMenuMaster) => {
+//             return { ...currentMenuMaster, isDashboardDrawerOpened };
+//         },
+//         false
+//     );
+// }
 
-export function handlerActiveItem(openedItem) {
-    // to update local state based on key
-
-    mutate(
-        endpoints.key + endpoints.master,
-        (currentMenuMaster) => {
-            return { ...currentMenuMaster, openedItem };
-        },
-        false
-    );
-}
+// // Hàm để cập nhật mục đang mở
+// export function handlerActiveItem(openedItem: string) {
+//     mutate<MenuMasterState>(
+//         endpoints.key + endpoints.master,
+//         (currentMenuMaster) => {
+//             return { ...currentMenuMaster, openedItem };
+//         },
+//         false
+//     );
+// }

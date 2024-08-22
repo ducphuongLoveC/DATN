@@ -29,7 +29,10 @@ const Avatar: React.FC<AvatarProps> = ({
 }) => {
     const colorSX =
         color && !outline
-            ? { color: 'background.paper', bgcolor: `${color}.main` }
+            ? {
+                  color: 'background.paper',
+                  bgcolor: `${color}.main`,
+              }
             : {};
     const outlineSX = outline
         ? {
@@ -42,22 +45,40 @@ const Avatar: React.FC<AvatarProps> = ({
     let sizeSX = {};
     switch (size) {
         case 'badge':
-            sizeSX = { width: 28, height: 28 };
+            sizeSX = {
+                width: 28,
+                height: 28,
+            };
             break;
         case 'xs':
-            sizeSX = { width: 34, height: 34 };
+            sizeSX = {
+                width: 34,
+                height: 34,
+            };
             break;
         case 'sm':
-            sizeSX = { width: 40, height: 40 };
+            sizeSX = {
+                width: 40,
+                height: 40,
+            };
             break;
         case 'md':
-            sizeSX = { width: 60, height: 60 };
+            sizeSX = {
+                width: 60,
+                height: 60,
+            };
             break;
         case 'lg':
-            sizeSX = { width: 72, height: 72 };
+            sizeSX = {
+                width: 72,
+                height: 72,
+            };
             break;
         case 'xl':
-            sizeSX = { width: 82, height: 82 };
+            sizeSX = {
+                width: 82,
+                height: 82,
+            };
             break;
         default:
             sizeSX = {};
@@ -65,7 +86,12 @@ const Avatar: React.FC<AvatarProps> = ({
 
     return (
         <MuiAvatar
-            sx={{ ...colorSX, ...outlineSX, ...sizeSX, ...sx }}
+            sx={{
+                ...colorSX,
+                ...outlineSX,
+                ...sizeSX,
+                ...sx,
+            }}
             {...others}
         />
     );

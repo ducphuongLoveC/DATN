@@ -3,9 +3,9 @@
  * @param {JsonObject} theme Theme customization object
  */
 
-export default function themePalette(theme) {
+export default function themePalette(theme: any) {
     return {
-        mode: theme?.themeSelect?.navType,
+        mode: theme?.state?.navType,
         common: {
             black: theme.colors?.darkPaper,
         },

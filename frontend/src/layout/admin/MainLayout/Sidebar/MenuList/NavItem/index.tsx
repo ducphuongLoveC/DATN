@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect } from 'react';
+import React, { forwardRef, Ref, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -24,7 +24,7 @@ interface ChipProps {
     variant: 'filled' | 'outlined';
     size: 'small' | 'medium';
     label: string;
-    avatar?: React.ReactNode;
+    avatar?: React.ReactElement; // Ensure avatar is a ReactElement or undefined
 }
 
 interface NavItemProps {
@@ -36,7 +36,10 @@ interface NavItemProps {
         target?: boolean;
         external?: boolean;
         disabled?: boolean;
-        icon?: React.ComponentType<{ stroke?: number; size?: string }>;
+        icon?: React.ComponentType<{
+            stroke?: number;
+            size?: string;
+        }>;
         chip?: ChipProps;
     };
     level: number;
@@ -45,14 +48,14 @@ interface NavItemProps {
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
 const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
-    const theme = useTheme();
+    const theme: any = useTheme();
     const dispatch = useDispatch();
     const { pathname } = useLocation();
     const customization = useSelector((state: any) => state.customization);
     const matchesSM = useMediaQuery(theme.breakpoints.down('lg'));
 
     const Icon = item.icon;
-    const itemIcon = item.icon ? (
+    const itemIcon = Icon ? (
         <Icon stroke={1.5} size="1.3rem" />
     ) : (
         <FiberManualRecordIcon
@@ -66,22 +69,38 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
 
     const itemTarget = item.target ? '_blank' : '_self';
 
+    const ListItemLink = forwardRef<
+        HTMLAnchorElement,
+        React.ComponentPropsWithoutRef<'a'>
+    >((props, ref) => (
+        <Link
+            ref={ref as Ref<HTMLAnchorElement>}
+            {...props}
+            to={item.url || '/'}
+            target={itemTarget}
+        />
+    ));
+
     const listItemProps = item.external
-        ? { component: 'a', href: item.url, target: itemTarget }
+        ? {
+              component: 'a',
+              href: item.url,
+              target: itemTarget,
+          }
         : {
-              component: forwardRef((props, ref) => (
-                  <Link
-                      ref={ref}
-                      {...props}
-                      to={item.url}
-                      target={itemTarget}
-                  />
-              )),
+              component: ListItemLink,
           };
 
     const itemHandler = (id: string) => {
-        dispatch({ type: MENU_OPEN, id });
-        if (matchesSM) dispatch({ type: SET_MENU, opened: false });
+        dispatch({
+            type: MENU_OPEN,
+            id,
+        });
+        if (matchesSM)
+            dispatch({
+                type: SET_MENU,
+                opened: false,
+            });
     };
 
     // active menu item on page load
@@ -90,7 +109,10 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
             .split('/')
             .findIndex((id) => id === item.id);
         if (currentIndex > -1) {
-            dispatch({ type: MENU_OPEN, id: item.id });
+            dispatch({
+                type: MENU_OPEN,
+                id: item.id,
+            });
         }
         // eslint-disable-next-line
     }, [pathname]);
@@ -111,7 +133,12 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
             selected={customization.isOpen.includes(item.id)}
             onClick={() => itemHandler(item.id)}
         >
-            <ListItemIcon sx={{ my: 'auto', minWidth: !item.icon ? 18 : 36 }}>
+            <ListItemIcon
+                sx={{
+                    my: 'auto',
+                    minWidth: !item.icon ? 18 : 36,
+                }}
+            >
                 {itemIcon}
             </ListItemIcon>
             <ListItemText
@@ -131,7 +158,9 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
                     item.caption && (
                         <Typography
                             variant="caption"
-                            sx={{ ...theme.typography.subMenuCaption }}
+                            sx={{
+                                ...theme.typography.subMenuCaption,
+                            }}
                             display="block"
                             gutterBottom
                         >
@@ -147,7 +176,9 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
                     size={item.chip.size}
                     label={item.chip.label}
                     avatar={
-                        item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>
+                        item.chip.avatar ? (
+                            <Avatar>{item.chip.avatar}</Avatar>
+                        ) : undefined // Ensure avatar is undefined if not provided
                     }
                 />
             )}

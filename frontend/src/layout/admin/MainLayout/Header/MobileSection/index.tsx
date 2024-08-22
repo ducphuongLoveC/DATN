@@ -10,12 +10,12 @@ import Toolbar from '@mui/material/Toolbar';
 import { MoreOutlined } from '@ant-design/icons';
 import SearchSection from '../SearchSection';
 import ProfileSection from '../ProfileSection';
-import Transitions from '@/components/@extended/Transitions';
+import Transitions from '@/ui-component/extended/Transitions';
 
 // ==============================|| HEADER CONTENT - MOBILE ||============================== //
 
 const MobileSection: React.FC = () => {
-    const theme = useTheme();
+    const theme: any = useTheme();
     const [open, setOpen] = useState<boolean>(false);
     const anchorRef = useRef<HTMLButtonElement | null>(null);
 
@@ -23,7 +23,7 @@ const MobileSection: React.FC = () => {
         setOpen((prevOpen) => !prevOpen);
     };
 
-    const handleClose = (event: MouseEvent | null) => {
+    const handleClose = (event: any) => {
         if (
             anchorRef.current &&
             anchorRef.current.contains(event?.target as Node)
@@ -43,7 +43,12 @@ const MobileSection: React.FC = () => {
 
     return (
         <>
-            <Box sx={{ flexShrink: 0, ml: 0.75 }}>
+            <Box
+                sx={{
+                    flexShrink: 0,
+                    ml: 0.75,
+                }}
+            >
                 <IconButton
                     component="span"
                     disableRipple
@@ -82,7 +87,11 @@ const MobileSection: React.FC = () => {
             >
                 {({ TransitionProps }) => (
                     <Transitions type="fade" in={open} {...TransitionProps}>
-                        <Paper sx={{ boxShadow: theme.customShadows.z1 }}>
+                        <Paper
+                            sx={{
+                                boxShadow: theme.customShadows.z1,
+                            }}
+                        >
                             <ClickAwayListener onClickAway={handleClose}>
                                 <AppBar color="inherit">
                                     <Toolbar>

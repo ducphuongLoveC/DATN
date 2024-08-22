@@ -31,7 +31,7 @@ interface HeaderAvatarProps {
 
 const HeaderAvatar = forwardRef<HTMLDivElement, HeaderAvatarProps>(
     ({ children, ...others }, ref) => {
-        const theme = useTheme<Theme>();
+        const theme: any = useTheme();
 
         return (
             <Avatar
@@ -88,12 +88,16 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
                     <HeaderAvatar>
                         <IconAdjustmentsHorizontal stroke={1.5} size="20px" />
                     </HeaderAvatar>
-                    <Box sx={{ ml: 2 }}>
+                    <Box
+                        sx={{
+                            ml: 2,
+                        }}
+                    >
                         <Avatar
                             variant="rounded"
                             sx={{
-                                ...theme.typography.commonAvatar,
-                                ...theme.typography.mediumAvatar,
+                                // ...theme.typography.commonAvatar,
+                                // ...theme.typography.mediumAvatar,
                                 bgcolor: 'orange.light',
                                 color: 'orange.dark',
                                 '&:hover': {
@@ -111,9 +115,17 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
             aria-describedby="search-helper-text"
             inputProps={{
                 'aria-label': 'weight',
-                sx: { bgcolor: 'transparent', pl: 0.5 },
+                sx: {
+                    bgcolor: 'transparent',
+                    pl: 0.5,
+                },
             }}
-            sx={{ width: '100%', ml: 0.5, px: 2, bgcolor: 'background.paper' }}
+            sx={{
+                width: '100%',
+                ml: 0.5,
+                px: 2,
+                bgcolor: 'background.paper',
+            }}
         />
     );
 };
@@ -125,11 +137,22 @@ const SearchSection: React.FC = () => {
 
     return (
         <>
-            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+            <Box
+                sx={{
+                    display: {
+                        xs: 'block',
+                        md: 'none',
+                    },
+                }}
+            >
                 <PopupState variant="popper" popupId="demo-popup-popper">
                     {(popupState) => (
                         <>
-                            <Box sx={{ ml: 2 }}>
+                            <Box
+                                sx={{
+                                    ml: 2,
+                                }}
+                            >
                                 <HeaderAvatar {...bindToggle(popupState)}>
                                     <IconSearch stroke={1.5} size="19.2px" />
                                 </HeaderAvatar>
@@ -141,7 +164,10 @@ const SearchSection: React.FC = () => {
                                     zIndex: 1100,
                                     width: '99%',
                                     top: '-55px !important',
-                                    px: { xs: 1.25, sm: 1.5 },
+                                    px: {
+                                        xs: 1.25,
+                                        sm: 1.5,
+                                    },
                                 }}
                             >
                                 {({ TransitionProps }) => (
@@ -161,7 +187,11 @@ const SearchSection: React.FC = () => {
                                                     boxShadow: 'none',
                                                 }}
                                             >
-                                                <Box sx={{ p: 2 }}>
+                                                <Box
+                                                    sx={{
+                                                        p: 2,
+                                                    }}
+                                                >
                                                     <Grid
                                                         container
                                                         alignItems="center"
@@ -189,7 +219,14 @@ const SearchSection: React.FC = () => {
                     )}
                 </PopupState>
             </Box>
-            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+            <Box
+                sx={{
+                    display: {
+                        xs: 'none',
+                        md: 'block',
+                    },
+                }}
+            >
                 <OutlinedInput
                     id="input-search-header"
                     value={value}
@@ -213,9 +250,19 @@ const SearchSection: React.FC = () => {
                     aria-describedby="search-helper-text"
                     inputProps={{
                         'aria-label': 'weight',
-                        sx: { bgcolor: 'transparent', pl: 0.5 },
+                        sx: {
+                            bgcolor: 'transparent',
+                            pl: 0.5,
+                        },
                     }}
-                    sx={{ width: { md: 250, lg: 434 }, ml: 2, px: 2 }}
+                    sx={{
+                        width: {
+                            md: 250,
+                            lg: 434,
+                        },
+                        ml: 2,
+                        px: 2,
+                    }}
                 />
             </Box>
         </>

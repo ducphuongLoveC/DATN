@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store'; // Adjust the import based on your store setup
 
 // material-ui
-import { useTheme, Theme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -23,7 +22,7 @@ import Typography from '@mui/material/Typography';
 
 // third party
 import * as Yup from 'yup';
-import { Formik, FormikHelpers, FormikErrors } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 
 // project imports
 import Google from '@/assets/images/icons/social-google.svg';
@@ -41,17 +40,19 @@ interface AuthRegisterProps {
 }
 
 const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
-    const theme = useTheme();
+    const theme: any = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-    const customization = useSelector(
-        (state: RootState) => state.customization
-    );
+    const customization = useSelector((state: any) => state.customization);
     const [showPassword, setShowPassword] = useState(false);
     const [checked, setChecked] = useState(true);
 
     const [strength, setStrength] = useState<number>(0);
     const [level, setLevel] = useState<
-        { color: string; label: string } | undefined
+        | {
+              color: string;
+              label: string;
+          }
+        | undefined
     >();
 
     const googleHandler = async () => {
@@ -99,7 +100,15 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                                 borderColor: theme.palette.grey[100],
                             }}
                         >
-                            <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
+                            <Box
+                                sx={{
+                                    mr: {
+                                        xs: 1,
+                                        sm: 2,
+                                        width: 20,
+                                    },
+                                }}
+                            >
                                 <img
                                     src={Google}
                                     alt="google"
@@ -115,9 +124,16 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                     </AnimateButton>
                 </Grid>
                 <Grid item xs={12}>
-                    <Box sx={{ alignItems: 'center', display: 'flex' }}>
+                    <Box
+                        sx={{
+                            alignItems: 'center',
+                            display: 'flex',
+                        }}
+                    >
                         <Divider
-                            sx={{ flexGrow: 1 }}
+                            sx={{
+                                flexGrow: 1,
+                            }}
                             orientation="horizontal"
                         />
                         <Button
@@ -138,7 +154,9 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                             OR
                         </Button>
                         <Divider
-                            sx={{ flexGrow: 1 }}
+                            sx={{
+                                flexGrow: 1,
+                            }}
                             orientation="horizontal"
                         />
                     </Box>
@@ -150,7 +168,11 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <Box sx={{ mb: 2 }}>
+                    <Box
+                        sx={{
+                            mb: 2,
+                        }}
+                    >
                         <Typography variant="subtitle1">
                             Sign up with Email address
                         </Typography>
@@ -174,10 +196,13 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                         .required('Password is required'),
                 })}
                 onSubmit={(
-                    values: { email: string; password: string; submit: null },
+                    values: {
+                        email: string;
+                        password: string;
+                        submit: null;
+                    },
                     {
                         setSubmitting,
-                        setErrors,
                     }: FormikHelpers<{
                         email: string;
                         password: string;
@@ -208,7 +233,9 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                                     name="fname"
                                     type="text"
                                     defaultValue=""
-                                    sx={{ ...theme.typography.customInput }}
+                                    sx={{
+                                        ...theme.typography.customInput,
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -219,14 +246,18 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                                     name="lname"
                                     type="text"
                                     defaultValue=""
-                                    sx={{ ...theme.typography.customInput }}
+                                    sx={{
+                                        ...theme.typography.customInput,
+                                    }}
                                 />
                             </Grid>
                         </Grid>
                         <FormControl
                             fullWidth
                             error={Boolean(touched.email && errors.email)}
-                            sx={{ ...theme.typography.customInput }}
+                            sx={{
+                                ...theme.typography.customInput,
+                            }}
                         >
                             <InputLabel htmlFor="outlined-adornment-email-register">
                                 Email Address / Username
@@ -253,7 +284,9 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                         <FormControl
                             fullWidth
                             error={Boolean(touched.password && errors.password)}
-                            sx={{ ...theme.typography.customInput }}
+                            sx={{
+                                ...theme.typography.customInput,
+                            }}
                         >
                             <InputLabel htmlFor="outlined-adornment-password-register">
                                 Password
@@ -302,7 +335,11 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
 
                         {strength !== 0 && (
                             <FormControl fullWidth>
-                                <Box sx={{ mb: 2 }}>
+                                <Box
+                                    sx={{
+                                        mb: 2,
+                                    }}
+                                >
                                     <Grid
                                         container
                                         spacing={2}
@@ -367,14 +404,22 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                             </Grid>
                         </Grid>
                         {errors.submit && (
-                            <Box sx={{ mt: 3 }}>
+                            <Box
+                                sx={{
+                                    mt: 3,
+                                }}
+                            >
                                 <FormHelperText error>
                                     {errors.submit}
                                 </FormHelperText>
                             </Box>
                         )}
 
-                        <Box sx={{ mt: 2 }}>
+                        <Box
+                            sx={{
+                                mt: 2,
+                            }}
+                        >
                             <AnimateButton>
                                 <Button
                                     disableElevation
