@@ -8,6 +8,8 @@ import Register3 from '@/views/pages/authentication3/Register3';
 
 import path from '@/constants/routes';
 
+import Baiviet from '@/views/pages/Baiviet';
+
 const publicRoutes: RouteProp[] = [
     {
         path: '/',
@@ -33,6 +35,11 @@ const publicRoutes: RouteProp[] = [
         path: path.client.auth.register,
         layout: MainLayout,
         page: Register3,
+    },
+    {
+        path: '/bai-viet',
+        layout: MainLayout,
+        page: Baiviet,
     },
 ];
 

@@ -1,7 +1,7 @@
 import * as actionTypes from './actions';
 
 export const initialState = {
-    theme: 'light',
+    theme: 'dark',
     opened: false,
 };
 

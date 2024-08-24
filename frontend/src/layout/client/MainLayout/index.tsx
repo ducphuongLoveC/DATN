@@ -11,9 +11,8 @@ interface MainLayoutProp {
     children: React.ReactNode;
 }
 const MainLayout: React.FC<MainLayoutProp> = ({ children }) => {
-    
-    const [state, setState]= useState(1);
-    
+    const [state, setState] = useState(1);
+
     const theme: Theme = useTheme();
     return (
         <div
@@ -28,7 +27,7 @@ const MainLayout: React.FC<MainLayoutProp> = ({ children }) => {
             </div>
             <Footer />
             {state}
-                <button onClick={()=> setState(state+1)}>Imcriment</button>
+            <button onClick={() => setState(state + 1)}>Imcriment</button>
         </div>
     );
 };

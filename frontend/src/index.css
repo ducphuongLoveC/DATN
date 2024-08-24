@@ -20,12 +20,14 @@ ul {
     margin: 0;
     padding: 0;
 }
+#root {
+    width: 100%;
+}
 
 :root {
-    --white-primary: #EEF2F6;
-    --gray-primary: #C0C0C0;
+    --white-primary: #eef2f6;
+    --gray-primary: #c0c0c0;
 
-  
     --main-font-size: 14px;
     --mini-font-size: 12px;
 }

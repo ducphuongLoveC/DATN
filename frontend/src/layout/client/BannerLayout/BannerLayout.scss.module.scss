@@ -1,15 +1,27 @@
-.container {
-    width: 85%;
-    margin: auto;
+.content-main {
+    width: 87%;
 }
 
-@media (max-width: 1199px) {
-    .container {
-        width: 80%;
+@media (max-width: 1460px) {
+    .content-main {
+        width: 85% !important;
     }
 }
+
+@media (max-width: 1103px) {
+    .content-main {
+        width: 80% !important;
+    }
+}
+
 @media (max-width: 768px) {
-    .container {
-        width: 100%;
+    .content-main {
+        width: 100% !important;
+    }
+}
+
+@media (min-width: 1600px) {
+    .content-main {
+        width: 1600px;
     }
 }

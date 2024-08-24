@@ -24,7 +24,7 @@ const SideBar: React.FC = () => {
 
     return (
         <SideBarStyled theme={theme} className={clsx(s['side-bar'])}>
-            <ul className={clsx(s['side-bar-ul'])}>
+            <ul className={clsx(s['side-bar-ul'], 'tw-sticky')}>
                 {menus.map((m: PropsMenuHome, index: number) => {
                     const Icon: any = m.icon;
                     return (
