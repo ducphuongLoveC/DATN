@@ -10,7 +10,7 @@ export interface Props {
 const menus: Props[] = [
     {
         icon: BiSolidHome,
-        title: 'Trang chủ',
+        title: 'Home',
         url: '/',
         target: false,
     },

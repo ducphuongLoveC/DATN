@@ -15,10 +15,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 65px;
-    height: 65px;
+    width: 70px;
+    height: 70px;
     border-radius: 14px;
-    padding: 5px;
+   
 
     // &:hover {
     //     background-color: rgb(236, 236, 236);
@@ -33,20 +33,29 @@
         bottom: 0;
         width: 100%;
         z-index: 999;
+        
     }
 
     .item-side-bar {
-        width: 65px;
-        height: 65px;
+        width: 45px;
+        height: 45px;
+        border-radius: 3px;
+        
+        
     }
 
     .side-bar-ul {
-        padding-top: 5px;
+        font-size: 10px;
         display: flex;
         justify-content: space-around;
         flex-direction: row;
         box-shadow:
             0 -4px 6px rgba(0, 0, 0, 0.1),
             0 -1px 3px rgba(0, 0, 0, 0.08);
+
+            
+    }
+    .icon {
+        font-size: 10px;
     }
 }

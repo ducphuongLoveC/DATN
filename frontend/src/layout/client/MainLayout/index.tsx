@@ -5,30 +5,36 @@ import Footer from './Footer';
 import Navbar from './NavBar';
 import SideBar from './SideBar';
 import s from './MainLayout.scss.module.scss';
+import Layout from '../Layout.scss.module.scss';
+
 import { useState } from 'react';
 
 interface MainLayoutProp {
     children: React.ReactNode;
 }
 const MainLayout: React.FC<MainLayoutProp> = ({ children }) => {
-    const [state, setState] = useState(1);
-
     const theme: Theme = useTheme();
     return (
+        <div
+        style={{
+            background: theme.palette.background.paper,
+        }}
+    >
+        <Navbar />
+
         <div
             style={{
                 background: theme.palette.background.paper,
             }}
+            className="tw-flex"
         >
-            <Navbar />
-            <div className="tw-flex tw-width-100">
-                <SideBar />
-                <div className={clsx(s['container'])}>{children}</div>
+            <SideBar />
+            <div className={clsx(Layout['content-main'])}>
+                {children}
             </div>
-            <Footer />
-            {state}
-            <button onClick={() => setState(state + 1)}>Imcriment</button>
         </div>
+        <Footer />
+    </div>
     );
 };
 export default MainLayout;

@@ -5,7 +5,7 @@ import SideBar from '../MainLayout/SideBar';
 import Carousel from '@/components/Carousel';
 import Navbar from '../MainLayout/NavBar';
 import Footer from '../MainLayout/Footer';
-import s from './BannerLayout.scss.module.scss';
+import Layout from '../Layout.scss.module.scss';
 
 interface BannerLayoutProp {
     children: React.ReactNode;
@@ -42,7 +42,7 @@ const fakeSlider = [
     {
         _id: '4',
         path: '/angular',
-        image: '/images/angular-banner.png',
+        image: '/images/angular.png',
         background: 'linear-gradient(to right, #FF512F, #DD2476)',
         title: 'Angular',
         description:
@@ -121,8 +121,8 @@ const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
                 className="tw-flex"
             >
                 <SideBar />
-                <div className={clsx(s['content-main'])}>
-                    <Carousel dot auto sliders={fakeSlider} />
+                <div className={clsx(Layout['content-main'])}>
+                    <Carousel dot auto time={2000} sliders={fakeSlider} />
                     {children}
                 </div>
             </div>

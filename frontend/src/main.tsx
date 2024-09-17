@@ -4,6 +4,7 @@ import ReactDOM, { createRoot } from 'react-dom/client';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import reducer from '@/store/reducer';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import App from './App';
 import '@/assets/scss/style.scss';
@@ -26,7 +27,10 @@ const store = configureStore({ reducer });
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
         <React.StrictMode>
-            <App />
+            <QueryClientProvider client={new QueryClient}>
+
+                <App />
+            </QueryClientProvider>
         </React.StrictMode>
     </Provider>
 );
