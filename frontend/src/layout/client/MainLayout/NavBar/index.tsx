@@ -37,6 +37,8 @@ import { useTheme } from '@mui/material/styles';
 
 import useDebounce from '@/hooks/useDebounce';
 import sleep from '@/utils/useSleep';
+import theme from '@/themes';
+import { BeatLoader } from 'react-spinners';
 
 // ==============================|| NAVBAR ||============================== //
 
@@ -55,6 +57,9 @@ const ImageContentSearch = styled('img')(({ theme }) => ({
 
 }))
 
+
+
+
 const Navbar: React.FC = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
@@ -64,6 +69,9 @@ const Navbar: React.FC = () => {
 
     const [searchValue, setSearchValue] = useState('');
     const [dataSearch, setDataSearch] = useState([]);
+
+    const [isLogin, setIsLogin] = useState(false);
+
 
     const debounced = useDebounce(searchValue, 500);
 
@@ -105,8 +113,9 @@ const Navbar: React.FC = () => {
 
     const handleSearchValue = (value: string) => {
         console.log(value);
-
-        setSearchValue(value.trim());
+        if (!value.startsWith(' ')) {
+            setSearchValue(value);
+        }
     }
     const clearSearchValue = () => {
         setSearchValue('');
@@ -120,154 +129,137 @@ const Navbar: React.FC = () => {
             className={clsx(s['nav'], `tw-p-2.5 tw-sticky tw-top-0 tw-z-50`)}
         >
             <div className={clsx(s['content-nav'], 'tw-mx-auto')}>
-                <div className="tw-flex tw-justify-between">
-                    <div className={clsx(s['box-left'], "tw-flex tw-items-center")}>
-                        <div className={clsx(s['logo'])}>
-                            <Link to="/">
-                                <img alt="Logo" className="tw-w-10" />
-                            </Link>
-                        </div>
-                        <div
+                <div className="tw-flex tw-justify-between tw-items-center">
+                    {/* Box chứa logo */}
+                    <div className="tw-flex tw-items-center">
+                        <Link to="/">
+                            <img src='/images/ftech-c.png' alt="Logo" width={'60'} />
+                        </Link>
+                    </div>
 
-                            className={clsx(s['search'], "tw-relative")}
-                        >
-                            <span className="tw-absolute tw-top-3.5 tw-left-4">
-                                <i className="fa-solid fa-magnifying-glass tw-text-[20px]"></i>
+                    {/* Box chứa tìm kiếm */}
+                    <div className="tw-flex tw-items-center tw-w-1/3 tw-border-solid">
+                        <div className={clsx(s['search'], "tw-relative tw-w-full")}>
+                            <span className="tw-absolute tw-top-3 tw-left-4">
+                                <i className="fa-solid fa-magnifying-glass tw-text-[15px]"></i>
                             </span>
 
                             <HeadlessTippy
-                                visible={searchValue.length > 0 ? true : false}
+                                visible={searchValue.length > 0}
                                 placement='top-start'
                                 interactive
-                                arrow
-                                appendTo={() => document.body}
+
                                 render={(attrs) => (
                                     <Wrapper
                                         style={{
-                                            background:
-                                                theme.palette.background
-                                                    .paper,
+                                            background: theme.palette.background.paper,
                                             width: '400px',
                                             maxHeight: '70vh',
                                             overflow: 'auto'
-
                                         }}
                                         {...attrs}
                                     >
 
                                         {
-                                            dataSearch.length ?
-                                                <>
-                                                    <h3>Khóa học</h3>
-
-                                                    {
-                                                        dataSearch.map((d: any, i: number) => (
-
-                                                            <ContentSearch key={i}>
-                                                                <ImageContentSearch src={d.image} />
-                                                                <span>{d.name}</span>
-                                                            </ContentSearch>
-                                                        ))
-                                                    }
-                                                </>
-                                                : <span>Không tìm thấy kết quả cho '{searchValue}'</span>
+                                            dataSearch.length > 0 &&
+                                            <>
+                                                <span className='tw-mb-2'>Kết quả cho '{searchValue}'</span>
+                                                <h3>Khóa học</h3>
+                                                {dataSearch.map((d: any, i: number) => (
+                                                    <ContentSearch key={i}>
+                                                        <ImageContentSearch src={d.image} />
+                                                        <span>{d.name}</span>
+                                                    </ContentSearch>
+                                                ))}
+                                            </>
                                         }
+                                        {
+                                            isLoading && <span>Đang tìm '{searchValue}'</span>
+                                        }
+                                        {
+                                            !isLoading && dataSearch.length == 0 && <span>Không tìm thấy kết quả cho '{searchValue}'</span>
+                                        }
+
                                     </Wrapper>
                                 )}
                             >
-                                <div>
+                                <div >
                                     <input
                                         value={searchValue}
-
-                                        className={`tw-transition tw-w-full tw-text-xm tw-rounded-md tw-p-3 tw-pl-12  tw-outline-${theme.palette.background.paper2} bg-transparent`}
+                                        className={clsx(`tw-transition tw-w-full tw-text-xm tw-rounded-full tw-p-2.5 tw-pl-12 bg-transparent`)}
+                                        style={{
+                                            border: `2px solid ${theme.palette.border.borderLv2}`,
+                                        }}
                                         placeholder="Search..."
                                         onChange={(e) => handleSearchValue(e.target.value)}
                                     />
-                                    {
-                                        isLoading && <i className='tw-absolute tw-top-2.5 tw-right-5 tw-animate-spin'> <RiLoader4Fill style={{ width: '20px' }} /></i>
-                                    }
-                                    {
-                                        searchValue.length ? <i onClick={clearSearchValue} className='tw-absolute tw-top-2.5 tw-right-0'> <BiX /> </i> : <></>
-                                    }
+
+                                    {isLoading && <i className='tw-absolute tw-top-3 tw-right-5' ><BeatLoader color='#fff' size={6} /> </i>}
+                                    {!isLoading && searchValue.length > 0 && <i onClick={clearSearchValue} className='tw-absolute tw-top-2 tw-right-5'><BiX /></i>}
                                 </div>
                             </HeadlessTippy>
-
                         </div>
                     </div>
 
-                    <div className={clsx(s['box-right'], "tw-flex tw-justify-center tw-items-center md:tw-pr-0")}>
-                        <ul className="tw-list-none">
-                            <li className="tw-inline-block tw-mx-2 sm:tw-mx-2 md:tw-mx-4 tw-relative tw-group">
-                                <Link
-                                    to="#"
-                                    className={`tw-text-xl ${theme.palette.text.primary}`}
-                                >
+                    {/* Box chứa thông báo và nút Login */}
+                    <div className="tw-flex tw-items-center tw-justify-center tw-space-x-4">
+                        <ul className="tw-list-none tw-flex tw-items-center tw-justify-center">
+                            <li className="tw-relative tw-ml-4">
+                                <Link to="#" className={`tw-text-xl ${theme.palette.text.primary}`}>
                                     <Tippy content="Thay đổi theme">
-                                        <i>
-                                            <BiAdjust
-                                                onClick={handleToggleThemeMode}
-                                            />
-                                        </i>
+                                        <i><BiAdjust onClick={handleToggleThemeMode} /></i>
                                     </Tippy>
                                 </Link>
                             </li>
 
-                            <li className="tw-inline-block tw-mx-2 sm:tw-mx-2 md:tw-mx-4 tw-relative tw-group">
-                                <Link
-                                    to="#"
-                                    className={`tw-text-xl ${theme.palette.text.primary}`}
-                                >
-                                    <span className="tw-absolute -tw-top-2 tw-bg-red-500 -tw-right-3.5 tw-text-white tw-pl-1.5 tw-text-sm tw-rounded-full tw-h-5 tw-w-5">
-                                        2
-                                    </span>
-                                    <Tippy content="Thông báo">
-                                        <i>
-                                            <BiBell />
-                                        </i>
-                                    </Tippy>
-                                </Link>
-                            </li>
-                            <li className="tw-inline-block tw-mx-2 sm:tw-mx-2 md:tw-mx-4 tw-relative tw-group">
-                                <Link
-                                    to="#"
-                                    className={`tw-text-xl ${theme.palette.text.primary}`}
-                                >
-                                    <Tippy content="Khóa học của tôi">
-                                        <i>
-                                            <GradientIcon>
-                                                <BiChalkboard fontSize={25} />
-                                            </GradientIcon>
-                                        </i>
-                                    </Tippy>
-                                </Link>
-                            </li>
+                            {
+                                isLogin ? (<>
+                                    <li className="tw-relative tw-ml-4">
+                                        <Link to="#" className={`tw-text-xl ${theme.palette.text.primary}`}>
+                                            <span className="tw-absolute -tw-top-2 tw-bg-red-500 -tw-right-3.5 tw-text-white tw-pl-1.5 tw-text-sm tw-rounded-full tw-h-5 tw-w-5">
+                                                2
+                                            </span>
+                                            <Tippy content="Thông báo">
+                                                <i><BiBell /></i>
+                                            </Tippy>
+                                        </Link>
+                                    </li>
+                                    <li className="tw-relative tw-ml-4">
+                                        <Link to="#" className={`tw-text-xl ${theme.palette.text.primary}`}>
+                                            <Tippy content="Khóa học của tôi">
+                                                <i><GradientIcon><BiChalkboard fontSize={25} /></GradientIcon></i>
+                                            </Tippy>
+                                        </Link>
+                                    </li>
+                                    <li className='tw-ml-4'>
+                                        <img src='/images/avatar.jpg' className="tw-rounded-full tw-h-9 tw-w-9" />
+                                    </li>
+                                </>) : (<>
+                                    <li>
+                                        <Link to='/auth/register' className="tw-hidden sm:tw-block tw-px-5 tw-py-2 tw-rounded-md">
+                                            Đăng ký
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link
+                                            to='/auth/login'
+                                            className="tw-bg-gradient-to-r tw-from-[#00C9FF] tw-to-[#92FE9D] tw-text-white tw-px-4 tw-py-2 tw-rounded-full tw-whitespace-nowrap tw-max-w-max"
+                                        >
+                                            Đăng nhập
+                                        </Link>
+
+                                    </li>
+                                </>)
+                            }
                         </ul>
 
-                        <Link to={'/auth/login'} style={{
-                            background: 'linear-gradient(to right, #00C9FF, #92FE9D)',
-                            borderRadius: '10px',
-                            color: 'white',
-                            padding: ' 5px 20px 5px 20px',
-                            marginBottom: '7px',
-                        }}>Login</Link>
-                        <li style={{
-                        }}><div
+                        <div onClick={handleToggleNavMobile} className="tw-cursor-pointer md:tw-hidden tw-flex tw-items-center tw-justify-center">
 
-                            onClick={handleToggleNavMobile}
-                            className="tw-absolute tw-top-1 tw-right-3 tw-cursor-pointer tw-mt-5"
-                        >
-                                <span
-                                    style={{
-                                        color: theme.palette.text.primary,
-
-                                    }}
-                                    className="md:tw-hidden navbar-toggle tw-text-slate-900"
-                                >
-                                    {homeState.opened ? <BiX /> : <BiListUl />}
-                                </span>
-                            </div></li>
+                            {homeState.opened ? <BiX /> : <BiListUl />}
+                        </div>
                     </div>
                 </div>
+
 
             </div>
 

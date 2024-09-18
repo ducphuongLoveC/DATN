@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 body {
     box-sizing: border-box;
     margin: 0;
@@ -15,7 +14,6 @@ body {
     -webkit-user-drag: none;
     -ms-content-zooming: none;
 }
-
 ul {
     margin: 0;
     padding: 0;
@@ -27,7 +25,6 @@ li {
 #root {
     width: 100%;
 }
-
 :root {
     --white-primary: #eef2f6;
     --gray-primary: #c0c0c0;

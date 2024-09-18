@@ -2,7 +2,7 @@ import { useTheme } from '@emotion/react';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 
 import { styled } from '@mui/material/styles';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { Box, Typography } from '@mui/material';
@@ -89,6 +89,8 @@ const Carousel: React.FC<CarouselProps> = ({
 
     const currentSlider = useRef(0);
     const preSlider = useRef(0);
+
+    const [loading, setLoading] = useState(true);
 
     const handleBack = async () => {
         currentSlider.current =

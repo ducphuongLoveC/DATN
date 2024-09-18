@@ -6,10 +6,16 @@
 export default function themeTypography(theme: any) {
     return {
         fontFamily: theme?.state?.fontFamily,
-        h6: {
+        _h6: {
             fontWeight: 500,
             color: theme.heading,
             fontSize: '0.75rem',
+        },
+        get h6() {
+            return this._h6;
+        },
+        set h6(value) {
+            this._h6 = value;
         },
         h5: {
             fontSize: '0.875rem',

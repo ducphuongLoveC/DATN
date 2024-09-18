@@ -1,7 +1,13 @@
+
 /**
  * Color intention that you want to used in your theme
  * @param {JsonObject} theme Theme customization object
  */
+
+
+
+// Mở rộng Theme interface của MUI
+
 
 export default function themePalette(theme: any) {
     return {
@@ -66,6 +72,8 @@ export default function themePalette(theme: any) {
             hint: theme.colors?.grey100,
         },
         border: {
+            borderLv1: theme.paper,
+            borderLv2: theme.paper2,
             default: theme.colors,
         },
 
