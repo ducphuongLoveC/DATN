@@ -11,9 +11,8 @@ const subDomainRouter = (
     if (stringSubs.length < 2) {
         return mainRoutes;
     }
-
+    
     const foundSub = datas.find((d) => d.sub === stringSubs[0]);
-
     if (foundSub) {
         if (
             foundSub.isAuthentication &&
