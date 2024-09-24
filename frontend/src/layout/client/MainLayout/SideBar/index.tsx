@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import { useTheme } from '@mui/material';
-import styled from '@emotion/styled';
+import { useTheme, styled } from '@mui/material';
 
 import s from './SideBar.module.scss';
 import menus, { Props as PropsMenuHome } from '@/menu-items/sidebar-home';

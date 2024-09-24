@@ -23,6 +23,10 @@ const Register: React.FC = () => {
     const downMD = useMediaQuery((theme: Theme) =>
         theme.breakpoints.down('md')
     );
+
+
+    console.log(downMD);
+
     const theme = useTheme();
     return (
         <AuthWrapper1>
@@ -30,37 +34,30 @@ const Register: React.FC = () => {
                 container
                 direction="column"
                 justifyContent="flex-end"
-                sx={{
-                    minHeight: '100vh',
-                }}
+                
+
             >
                 <Grid item xs={12}>
                     <Grid
                         container
+
                         justifyContent="center"
                         alignItems="center"
                         sx={{
                             background: theme.palette.background.paper,
-                            minHeight: 'calc(100vh - 68px)',
+
                         }}
                     >
                         <Grid
                             item
-                            sx={{
-                                m: {
-                                    xs: 1,
-                                    sm: 3,
-                                },
-                                mb: 0,
-                            }}
+                            md={6}
+                            xs={12}
+                            container
+                            justifyContent="center"
+                            alignItems="center"
                         >
                             <AuthCardWrapper>
-                                <Grid
-                                    container
-                                    spacing={2}
-                                    alignItems="center"
-                                    justifyContent="center"
-                                >
+                                <Grid>
                                     <Grid
                                         item
                                         sx={{
@@ -87,27 +84,23 @@ const Register: React.FC = () => {
                                                     alignItems="center"
                                                     justifyContent="center"
                                                     spacing={1}
+                                                    marginBottom={'20px'}
+
                                                 >
                                                     <Typography
-                                                        color="secondary.main"
+                                                        sx={{
+                                                            background: 'var(--color-primary)',
+                                                            WebkitBackgroundClip: 'text',
+                                                            WebkitTextFillColor: 'transparent',
+                                                        }}
                                                         gutterBottom
                                                         variant={
                                                             downMD ? 'h3' : 'h2'
                                                         }
                                                     >
-                                                        Sign up
+                                                        Đăng ký
                                                     </Typography>
-                                                    <Typography
-                                                        variant="caption"
-                                                        fontSize="16px"
-                                                        textAlign={{
-                                                            xs: 'center',
-                                                            md: 'inherit',
-                                                        }}
-                                                    >
-                                                        Enter your credentials
-                                                        to continue
-                                                    </Typography>
+                                                   
                                                 </Stack>
                                             </Grid>
                                         </Grid>
@@ -141,14 +134,17 @@ const Register: React.FC = () => {
                                 </Grid>
                             </AuthCardWrapper>
                         </Grid>
+                        {
+                            !downMD &&
+                            <Grid item md={6}>
+                                <img
+                                    width={'80%'}
+                                    src="/images/banauth.webp"
+                                    alt=""
+                                />
+                            </Grid>
+                        }
 
-                        <Grid>
-                            <img
-                                width={'100%'}
-                                src="/images/banauth.webp"
-                                alt=""
-                            />
-                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

@@ -28,7 +28,7 @@ li {
 :root {
     --white-primary: #eef2f6;
     --gray-primary: #c0c0c0;
-
+    --color-primary: linear-gradient(to right, #00C9FF, #92FE9D);
     --main-font-size: 14px;
     --mini-font-size: 12px;
 }

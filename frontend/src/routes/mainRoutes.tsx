@@ -1,15 +1,15 @@
+import { lazy } from 'react';
 import MainLayout from '@/layout/client/MainLayout';
 import BannerLayout from '@/layout/client/BannerLayout';
-
-import Home from '@/views/pages/Home';
-import RouteProp from '../interfaces/route';
-import Login3 from '@/views/pages/authentication3/Login3';
-import Register3 from '@/views/pages/authentication3/Register3';
-
+import Loadable from '@/ui-component/Loadable';
 import path from '@/constants/routes';
 
-import Baiviet from '@/views/pages/Baiviet';
-
+const Home = Loadable(lazy(() => import('@/views/pages/Home')));
+const Login3 = Loadable (lazy(() => import('@/views/pages/authentication3/Login3')));
+const LogAuth = Loadable (lazy(() => import('@/views/pages/logAuth')));
+const Register3 = Loadable (lazy(() => import('@/views/pages/authentication3/Register3')));
+const Baiviet = Loadable (lazy(() => import('@/views/pages/Baiviet')));
+import RouteProp from '@/interfaces/route';
 const publicRoutes: RouteProp[] = [
     {
         path: '/',
@@ -30,6 +30,10 @@ const publicRoutes: RouteProp[] = [
         path: path.client.auth.login,
         layout: MainLayout,
         page: Login3,
+    },
+    {
+        path: path.client.log_auth,
+        page: LogAuth,
     },
     {
         path: path.client.auth.register,

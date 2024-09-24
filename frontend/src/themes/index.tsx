@@ -37,7 +37,7 @@ export const theme = (state: any) => {
         heading: color.grey100, // Light text color for dark mode
         paper: color.black, // Dark background for paper
         paper2: color.black2,
-        backgroundDefault: color.grey900, // Dark background for default
+        // backgroundDefault: color.grey900, // Dark background for default
         background: color.grey800, // Darker background
         textPrimary: color.grey300, // Lighter text color
         textSecondary: color.grey500, // Slightly darker text color

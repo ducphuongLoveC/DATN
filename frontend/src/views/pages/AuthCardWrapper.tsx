@@ -31,18 +31,12 @@ const AuthCardWrapper: React.FC<AuthCardWrapperProps> = ({
                 flexGrow: 1,
                 flexBasis: '50%',
             },
+        
         }}
         content={false}
         {...other}
     >
         <Box
-            sx={{
-                p: {
-                    xs: 2,
-                    sm: 3,
-                    xl: 5,
-                },
-            }}
         >
             {children}
         </Box>

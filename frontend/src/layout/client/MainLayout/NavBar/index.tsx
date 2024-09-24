@@ -2,28 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import axios from 'axios';
 import clsx from 'clsx';
-import { RiLoader4Fill } from "react-icons/ri";
+import { Box } from '@mui/material';
 import {
-    BiCategoryAlt,
     BiAdjust,
     BiBell,
     BiChalkboard,
     BiListUl,
-    BiCloset,
     BiX,
-    BiLogIn,
-    BiSolidRegistered,
-    BiUserPlus,
-    BiCart
 } from 'react-icons/bi';
 import Tippy from '@tippyjs/react';
-
 import HeadlessTippy from '@tippyjs/react/headless';
+import { TypeAnimation } from 'react-type-animation';
 
-import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
 // import my project
@@ -33,15 +25,14 @@ import s from './Navbar.module.scss';
 import MobileNavbar from './MobileNavbar';
 
 import { TOGGLE_THEME_HOME, SET_MENU_HOME_MOBILE } from '@/store/actions';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, styled } from '@mui/material/styles';
 
 import useDebounce from '@/hooks/useDebounce';
 import sleep from '@/utils/useSleep';
-import theme from '@/themes';
+
 import { BeatLoader } from 'react-spinners';
 
 // ==============================|| NAVBAR ||============================== //
-
 
 const ContentSearch = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -132,7 +123,7 @@ const Navbar: React.FC = () => {
                 <div className="tw-flex tw-justify-between tw-items-center">
                     {/* Box chứa logo */}
                     <div className="tw-flex tw-items-center">
-                        <Link to="/">
+                        <Link to="/" className='tw-flex tw-items-center'>
                             <img src='/images/ftech-c.png' alt="Logo" width={'60'} />
                         </Link>
                     </div>

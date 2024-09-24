@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+
+import { useTheme, styled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -39,6 +39,12 @@ interface AuthRegisterProps {
     // Define any additional props here if necessary
 }
 
+const MainInput = styled(OutlinedInput)(({ theme }) => ({
+    input: {
+        color: 'black'
+    }
+}));
+
 const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
     const theme: any = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
@@ -46,12 +52,13 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [checked, setChecked] = useState(true);
 
+
     const [strength, setStrength] = useState<number>(0);
     const [level, setLevel] = useState<
         | {
-              color: string;
-              label: string;
-          }
+            color: string;
+            label: string;
+        }
         | undefined
     >();
 
@@ -87,97 +94,7 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                 justifyContent="center"
                 spacing={2}
             >
-                <Grid item xs={12}>
-                    <AnimateButton>
-                        <Button
-                            variant="outlined"
-                            fullWidth
-                            onClick={googleHandler}
-                            size="large"
-                            sx={{
-                                color: 'grey.700',
-                                backgroundColor: theme.palette.grey[50],
-                                borderColor: theme.palette.grey[100],
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    mr: {
-                                        xs: 1,
-                                        sm: 2,
-                                        width: 20,
-                                    },
-                                }}
-                            >
-                                <img
-                                    src={Google}
-                                    alt="google"
-                                    width={16}
-                                    height={16}
-                                    style={{
-                                        marginRight: matchDownSM ? 8 : 16,
-                                    }}
-                                />
-                            </Box>
-                            Sign up with Google
-                        </Button>
-                    </AnimateButton>
-                </Grid>
-                <Grid item xs={12}>
-                    <Box
-                        sx={{
-                            alignItems: 'center',
-                            display: 'flex',
-                        }}
-                    >
-                        <Divider
-                            sx={{
-                                flexGrow: 1,
-                            }}
-                            orientation="horizontal"
-                        />
-                        <Button
-                            variant="outlined"
-                            sx={{
-                                cursor: 'unset',
-                                m: 2,
-                                py: 0.5,
-                                px: 7,
-                                borderColor: `${theme.palette.grey[100]} !important`,
-                                color: `${theme.palette.grey[900]}!important`,
-                                fontWeight: 500,
-                                borderRadius: `${customization.borderRadius}px`,
-                            }}
-                            disableRipple
-                            disabled
-                        >
-                            OR
-                        </Button>
-                        <Divider
-                            sx={{
-                                flexGrow: 1,
-                            }}
-                            orientation="horizontal"
-                        />
-                    </Box>
-                </Grid>
-                <Grid
-                    item
-                    xs={12}
-                    container
-                    alignItems="center"
-                    justifyContent="center"
-                >
-                    <Box
-                        sx={{
-                            mb: 2,
-                        }}
-                    >
-                        <Typography variant="subtitle1">
-                            Sign up with Email address
-                        </Typography>
-                    </Box>
-                </Grid>
+
             </Grid>
 
             <Formik
@@ -235,6 +152,9 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                                     defaultValue=""
                                     sx={{
                                         ...theme.typography.customInput,
+                                        input:{
+                                            color: 'black'
+                                        }
                                     }}
                                 />
                             </Grid>
@@ -248,6 +168,9 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                                     defaultValue=""
                                     sx={{
                                         ...theme.typography.customInput,
+                                        input:{
+                                            color: 'black'
+                                        }
                                     }}
                                 />
                             </Grid>
@@ -257,12 +180,14 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                             error={Boolean(touched.email && errors.email)}
                             sx={{
                                 ...theme.typography.customInput,
+                               
                             }}
                         >
                             <InputLabel htmlFor="outlined-adornment-email-register">
                                 Email Address / Username
                             </InputLabel>
-                            <OutlinedInput
+                            <MainInput
+                                theme={theme}
                                 id="outlined-adornment-email-register"
                                 type="email"
                                 value={values.email}
@@ -270,6 +195,7 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 inputProps={{}}
+                                
                             />
                             {touched.email && errors.email && (
                                 <FormHelperText
@@ -291,7 +217,7 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                             <InputLabel htmlFor="outlined-adornment-password-register">
                                 Password
                             </InputLabel>
-                            <OutlinedInput
+                            <MainInput
                                 id="outlined-adornment-password-register"
                                 type={showPassword ? 'text' : 'password'}
                                 value={values.password}
@@ -428,9 +354,12 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                                     size="large"
                                     type="submit"
                                     variant="contained"
-                                    color="secondary"
+                                    sx={{
+                                        background: 'var(--color-primary)', // Sử dụng biến CSS đã sửa
+                                        color: '#fff',
+                                    }}
                                 >
-                                    Sign up
+                                    Đăng ký
                                 </Button>
                             </AnimateButton>
                         </Box>

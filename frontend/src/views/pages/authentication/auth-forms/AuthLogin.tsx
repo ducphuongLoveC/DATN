@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme, styled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -23,6 +23,7 @@ import Stack from '@mui/material/Stack';
 import * as Yup from 'yup';
 import { Formik, FormikHelpers } from 'formik';
 
+
 // project imports
 import AnimateButton from '@/ui-component/extended/AnimateButton';
 
@@ -33,17 +34,21 @@ import Google from '@/assets/images/icons/social-google.svg';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
-interface AuthLoginProps {
-    // Define any additional props here if necessary
-}
-
 interface FormValues {
     email: string;
     password: string;
     submit: null;
 }
+interface AuthLoginProps {
+    onSubmit?: (values: FormValues) => void;
+}
 
-const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
+const MainInput = styled(OutlinedInput)(({ theme }) => ({
+    input: {
+        color: 'black'
+    }
+}))
+const AuthLogin: React.FC<AuthLoginProps> = ({ onSubmit, ...others }) => {
     const theme: any = useTheme();
     const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
     const customization = useSelector((state: any) => state.customization);
@@ -70,7 +75,6 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                 container
                 direction="column"
                 justifyContent="center"
-                spacing={2}
             >
                 <Grid item xs={12}>
                     <AnimateButton>
@@ -80,11 +84,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                             onClick={googleHandler}
                             size="large"
                             variant="outlined"
-                            sx={{
-                                color: 'grey.700',
-                                backgroundColor: theme.palette.grey[50],
-                                borderColor: theme.palette.grey[100],
-                            }}
+                           
                         >
                             <Box
                                 sx={{
@@ -105,7 +105,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                     }}
                                 />
                             </Box>
-                            Sign in with Google
+                            Đăng nhập với google
                         </Button>
                     </AnimateButton>
                 </Grid>
@@ -137,7 +137,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                             disableRipple
                             disabled
                         >
-                            OR
+                            Hoặc
                         </Button>
                         <Divider
                             sx={{
@@ -160,7 +160,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                         }}
                     >
                         <Typography variant="subtitle1">
-                            Sign in with Email address
+                            Đăng nhập với tài khoản hệ thống
                         </Typography>
                     </Box>
                 </Grid>
@@ -174,19 +174,19 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                 }}
                 validationSchema={Yup.object().shape({
                     email: Yup.string()
-                        .email('Must be a valid email')
+                        .email('Nhập đúng định dạng email')
                         .max(255)
-                        .required('Email is required'),
+                        .required('Email bắt buộc'),
                     password: Yup.string()
                         .max(255)
-                        .required('Password is required'),
+                        .required('Mật khẩu bắt buộc'),
                 })}
                 onSubmit={(
                     values: FormValues,
                     { setSubmitting, setErrors }: FormikHelpers<FormValues>
                 ) => {
-                    // Handle form submission
-                    console.log(values);
+                    
+                    onSubmit && onSubmit(values);
                     setSubmitting(false);
                 }}
             >
@@ -210,7 +210,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                             <InputLabel htmlFor="outlined-adornment-email-login">
                                 Email Address / Username
                             </InputLabel>
-                            <OutlinedInput
+                            <MainInput
                                 id="outlined-adornment-email-login"
                                 type="email"
                                 value={values.email}
@@ -240,7 +240,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                             <InputLabel htmlFor="outlined-adornment-password-login">
                                 Password
                             </InputLabel>
-                            <OutlinedInput
+                            <MainInput
                                 id="outlined-adornment-password-login"
                                 type={showPassword ? 'text' : 'password'}
                                 value={values.password}
@@ -296,7 +296,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                         color="primary"
                                     />
                                 }
-                                label="Remember me"
+                                label="Lưu cho lần đăng nhập sau"
                             />
                             <Typography
                                 variant="subtitle1"
@@ -306,7 +306,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                     cursor: 'pointer',
                                 }}
                             >
-                                Forgot Password?
+                                Quên mật khẩu?
                             </Typography>
                         </Stack>
 
@@ -335,9 +335,12 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ ...others }) => {
                                     size="large"
                                     type="submit"
                                     variant="contained"
-                                    color="secondary"
+                                    sx={{
+                                        background: 'var(--color-primary)', // Sử dụng biến CSS đã sửa
+                                        color: '#fff',
+                                    }}
                                 >
-                                    Sign in
+                                    Đăng nhập
                                 </Button>
                             </AnimateButton>
                         </Box>

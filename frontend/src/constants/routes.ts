@@ -5,6 +5,7 @@ const path = {
             login: '/auth/login',
             register: '/auth/register',
         },
+        log_auth: 'log_auth',
         news: '/news',
         contact: '/contact',
     },

@@ -13,14 +13,12 @@ import { useTheme } from '@mui/material/styles';
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../authentication/auth-forms/AuthLogin';
-import Logo from '@/ui-component/Logo';
-import AuthFooter from '@/ui-component/cards/AuthFooter';
 
 // ================================|| AUTH3 - LOGIN ||================================ //
 
 const Login: React.FC = () => {
-    const theme = useTheme(); // Lấy theme từ hook useTheme
-    const downMD = useMediaQuery(theme.breakpoints.down('md')); // Sử dụng theme breakpoints
+    const theme = useTheme();
+    const downMD = useMediaQuery(theme.breakpoints.down('md')); // Kiểm tra màn hình nhỏ hơn md
 
     return (
         <AuthWrapper1>
@@ -28,9 +26,6 @@ const Login: React.FC = () => {
                 container
                 direction="column"
                 justifyContent="flex-end"
-                sx={{
-                    minHeight: '100vh',
-                }}
             >
                 <Grid item xs={12}>
                     <Grid
@@ -39,44 +34,24 @@ const Login: React.FC = () => {
                         alignItems="center"
                         sx={{
                             background: theme.palette.background.paper,
-                            minHeight: 'calc(100vh - 68px)',
                         }}
                     >
-                        <Grid item>
-                            <img
-                                width={'100%'}
-                                src="/images/banauth.webp"
-                                alt="Banner"
-                            />
-                        </Grid>
-                        <Grid
-                            item
-                            sx={{
-                                m: {
-                                    xs: 1,
-                                    sm: 3,
-                                },
-                                mb: 0,
-                            }}
-                        >
+                        {!downMD && ( // Ẩn banner khi nhỏ hơn MD
+                            <Grid item md={6}>
+                                <img
+                                    width='80%'
+                                    src="/images/banauth.webp"
+                                    alt="Banner"
+                                />
+                            </Grid>
+                        )}
+                        <Grid item xs={12} md={6}
+                            container
+                            justifyContent="center"
+                            alignItems="center" >
                             <AuthCardWrapper>
-                                <Grid
-                                    container
-                                    spacing={2}
-                                    alignItems="center"
-                                    justifyContent="center"
-                                >
-                                    <Grid
-                                        item
-                                        sx={{
-                                            mb: 3,
-                                        }}
-                                    >
-                                        <Link to="#" aria-label="logo">
-                                            <Logo />{' '}
-                                            {/* Sử dụng component Logo */}
-                                        </Link>
-                                    </Grid>
+                                <Grid>
+                                    <Grid item sx={{ mb: 3 }}></Grid>
                                     <Grid item xs={12}>
                                         <Grid
                                             container
@@ -92,34 +67,20 @@ const Login: React.FC = () => {
                                                     alignItems="center"
                                                     justifyContent="center"
                                                     spacing={1}
+                                                    marginBottom={'20px'}
                                                 >
                                                     <Typography
-                                                        color={
-                                                            theme.palette
-                                                                .secondary.main
-                                                        }
-                                                        gutterBottom
-                                                        variant={
-                                                            downMD ? 'h3' : 'h2'
-                                                        }
-                                                    >
-                                                        Hi, Welcome Back
-                                                    </Typography>
-                                                    <Typography
-                                                        variant="caption"
-                                                        fontSize="16px"
-                                                        textAlign={{
-                                                            xs: 'center',
-                                                            md: 'inherit',
+                                                        sx={{
+                                                            background: 'var(--color-primary)',
+                                                            WebkitBackgroundClip: 'text',
+                                                            WebkitTextFillColor: 'transparent',
                                                         }}
-                                                        color={
-                                                            theme.palette.text
-                                                                .secondary
-                                                        }
+                                                        gutterBottom
+                                                        variant={downMD ? 'h3' : 'h2'}
                                                     >
-                                                        Enter your credentials
-                                                        to continue
+                                                        Đăng nhập
                                                     </Typography>
+
                                                 </Stack>
                                             </Grid>
                                         </Grid>
@@ -132,8 +93,7 @@ const Login: React.FC = () => {
                                             sx={{
                                                 bgcolor: theme.palette.divider,
                                             }}
-                                        />{' '}
-                                        {/* Áp dụng màu border từ theme */}
+                                        />
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Grid
@@ -149,11 +109,10 @@ const Login: React.FC = () => {
                                                 variant="subtitle1"
                                                 sx={{
                                                     textDecoration: 'none',
-                                                    color: theme.palette.primary
-                                                        .main,
+                                                    color: theme.palette.primary.main,
                                                 }}
                                             >
-                                                Don&apos;t have an account?
+                                                Bạn chưa có tài khoản?
                                             </Typography>
                                         </Grid>
                                     </Grid>

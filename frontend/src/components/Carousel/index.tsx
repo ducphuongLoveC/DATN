@@ -1,7 +1,7 @@
-import { useTheme } from '@emotion/react';
+
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 
-import { styled } from '@mui/material/styles';
+import { styled,useTheme } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';

@@ -2,7 +2,7 @@ import Header from '@/layout/client/MainLayout/Header';
 
 import CourseCardLayouts from '@/components/CardLayouts';
 import Carousel from '@/components/Carousel';
-import { useTheme } from '@emotion/react';
+import { useTheme } from '@mui/material';
 import { BiPlay } from 'react-icons/bi';
 
 const Home: React.FC = () => {
