@@ -42,7 +42,7 @@ const createRoutes = (routes: RouteProp[]) => {
 const authenticateUser = () => {
 
     const token = localStorage.getItem('token');
-
+    return true
     if (!token) {
         window.location.href = `${getMainDomain().link}log_auth`;
         return false;

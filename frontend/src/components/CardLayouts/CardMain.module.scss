@@ -10,9 +10,10 @@
         grid-template-columns: repeat(3, 1fr);
     }
 }
-
 @media (max-width: 768px) {
     .list-course {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+// scss, material ui, taiwind 

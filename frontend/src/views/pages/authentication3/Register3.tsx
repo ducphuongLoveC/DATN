@@ -24,9 +24,6 @@ const Register: React.FC = () => {
         theme.breakpoints.down('md')
     );
 
-
-    console.log(downMD);
-
     const theme = useTheme();
     return (
         <AuthWrapper1>

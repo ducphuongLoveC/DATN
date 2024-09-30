@@ -13,8 +13,7 @@ import { router } from '@/routes';
 import getMainDomain from './utils/getMainDoumain';
 const App: React.FC = () => {    
 
-    console.log(getMainDomain());
-    
+
     const state = useSelector(
         (state: any) =>
             window.location.hostname.startsWith('admin')

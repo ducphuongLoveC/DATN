@@ -1,31 +1,13 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "useDefineForClassFields": true,
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
-        "allowJs": false,
-        "skipLibCheck": true,
-        "esModuleInterop": false,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "module": "ESNext",
-        "moduleResolution": "Node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "jsx": "react-jsx", // Đặt jsx thành react-jsx hoặc react
-        "baseUrl": ".",
-        "paths": {
-            "@/*": ["src/*"] // Đặt alias '@' trỏ tới thư mục src
-        },
-        "types": ["node"] // Thêm node vào types
-    },
+
     "include": ["src"], // Bao gồm tất cả các tệp trong thư mục src
     "exclude": ["node_modules", "dist"], // Loại trừ các thư mục không cần thiết
     "references": [
         {
-            "path": "./tsconfig.node.json"
+            "path": "./tsconfig.node.json",
+        },
+        {
+            "path": "./tsconfig.app.json",
         }
     ]
 }

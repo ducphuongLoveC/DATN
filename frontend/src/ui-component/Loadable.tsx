@@ -6,8 +6,8 @@ import Loader from './Loader';
 // Define the type for the Loadable component
 const Loadable =
     <P extends object>(Component: ComponentType<P>) =>
-    (props: P) => (
-        <Suspense fallback={<Loader />}>
+    (props: P) => ( 
+        <Suspense  fallback={<Loader />}>
             <Component {...props} />
         </Suspense>
     );

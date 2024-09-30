@@ -44,7 +44,7 @@ const Customization: React.FC = () => {
     const dispatch = useDispatch();
     const customization = useSelector((state: any) => state.customization);
 
-    console.log(customization);
+  
 
     // drawer on/off
     const [open, setOpen] = useState<boolean>(false);

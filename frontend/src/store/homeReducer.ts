@@ -1,8 +1,7 @@
 import * as actionTypes from './actions';
 
 export const initialState = {
-    theme: 'dark',
-    opened: false,
+    theme: 'dark'
 };
 
 const homeReducer = (state = initialState, action: any) => {
@@ -13,11 +12,6 @@ const homeReducer = (state = initialState, action: any) => {
                 theme: action.theme,
             };
 
-        case actionTypes.SET_MENU_HOME_MOBILE:
-            return {
-                ...state,
-                opened: action.opened,
-            };
         default:
             return state;
     }

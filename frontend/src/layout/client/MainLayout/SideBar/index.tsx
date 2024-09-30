@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import { useTheme, styled } from '@mui/material';
+import { useTheme, styled, useMediaQuery } from '@mui/material';
 
 import s from './SideBar.module.scss';
 import menus, { Props as PropsMenuHome } from '@/menu-items/sidebar-home';
@@ -21,6 +21,8 @@ const SideBar: React.FC = () => {
         setActiveUrl(url);
     };
 
+    const downMD = useMediaQuery(theme.breakpoints.down('md'));
+    
     return (
         <SideBarStyled theme={theme} className={clsx(s['side-bar'])}>
             <ul className={clsx(s['side-bar-ul'], 'tw-sticky')}>
@@ -30,20 +32,28 @@ const SideBar: React.FC = () => {
                         <li key={index}>
                             <Link
                                 onClick={() => handleLinkClick(m.url)}
-                                style={{
-                                    background:
-                                        activeUrl === m.url
-                                            ? theme.palette.primary.light
-                                            : '',
+                                style={!downMD ? {
+
                                     color:
                                         activeUrl === m.url
                                             ? theme.palette.text.secondary
                                             : '',
-                                }}
+                                    backgroundColor: activeUrl === m.url
+                                        ? '#e8ebed'
+                                        : '',
+                                } :
+                                    {
+                                        color:
+                                            activeUrl === m.url
+                                                ? theme.palette.text.secondary
+                                                : ''
+                                    }
+
+                                }
                                 className={clsx(s['item-side-bar'])}
                                 to={m.url}
                             >
-                                <i className={clsx(s['icon'])}><Icon  /></i>
+                                <i className={clsx(s['icon'])}><Icon /></i>
                                 {m.title}
                             </Link>
                         </li>

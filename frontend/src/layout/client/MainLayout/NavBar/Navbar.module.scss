@@ -21,9 +21,14 @@
         background-color: red;
     }
 }
-.content-nav {
+
+.nav-mobile {
+    width: 100%;
+}
+.nav-desk {
     width: 90%;
 }
+
 
 svg {
     width: 27px;
@@ -32,6 +37,6 @@ svg {
 
 @media (max-width: 768px) {    
     .search {
-        display: none;
+        width: 300px; 
     }
 }

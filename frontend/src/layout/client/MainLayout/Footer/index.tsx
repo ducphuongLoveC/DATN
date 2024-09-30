@@ -13,8 +13,6 @@ const Footer: React.FC = () => {
                 background: theme.palette.background.paper,
                 color: theme.palette.text.primary,
                 marginTop: '20px',
-                boxShadow:
-                    '0 -4px 6px rgba(0, 0, 0, 0.1), 0 -1px 3px rgba(0, 0, 0, 0.08)',
             }}
         >
             <div className="tw-container tw-mx-auto tw-px-5 tw-py-16">
@@ -137,20 +135,19 @@ const Footer: React.FC = () => {
                             <p className="tw-mt-4 tw-relative">
                                 <input
                                     style={{
-                                        border: `1px solid ${theme.palette.text.primary}`,
+                                        border: `1px solid ${theme.palette.background.paper2}`,
                                     }}
                                     type="email"
-                                    placeholder="Your e-mail"
-                                    className="tw-w-full tw-p-3 tw-pl-5 tw-rounded-full tw-text-gray-700 tw-placeholder:text-gray-700"
+                                    placeholder="Email của bạn"
+                                    className="tw-w-full tw-p-3 tw-pl-5 tw-rounded-full  tw-placeholder:text-gray-700"
                                 />
                                 <span
-                                    className="tw-absolute tw-top-1 tw-right-2 tw-bg-red-600 tw-px-5 tw-p-2 tw-rounded-full tw-uppercase"
+                                    className="tw-cursor-pointer tw-absolute tw-top-1 tw-right-2 tw-text-white tw-px-5 tw-p-2 tw-rounded-full tw-uppercase"
                                     style={{
-                                        backgroundColor:
-                                            theme.palette.primary.main,
+                                        background: 'var(--color-primary)'
                                     }}
                                 >
-                                    Subscribe
+                                    Gửi ngay
                                 </span>
                             </p>
                         </div>

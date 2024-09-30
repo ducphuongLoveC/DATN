@@ -41,7 +41,7 @@ const publicRoutes: RouteProp[] = [
         page: Register3,
     },
     {
-        path: '/bai-viet',
+        path: path.client.news,
         layout: MainLayout,
         page: Baiviet,
     },

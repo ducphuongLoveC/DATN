@@ -8,7 +8,7 @@ const TOGGLE_THEME = '@customization/TOGGLE_THEME';
 
 // action - client
 const TOGGLE_THEME_HOME = '@home/TOGGLE_THEME';
-const SET_MENU_HOME_MOBILE = '@home/SET_MENU_HOME_MOBILE';
+
 
 export {
     SET_MENU,
@@ -18,5 +18,4 @@ export {
     SET_BORDER_RADIUS,
     TOGGLE_THEME,
     TOGGLE_THEME_HOME,
-    SET_MENU_HOME_MOBILE,
 };

@@ -24,6 +24,7 @@ const CourseCardLayouts: React.FC = () => {
             />
 
             <CardMain
+                
                 title="Javascript cơ bản"
                 img="https://th.bing.com/th/id/OIP.x15WU1tjr_qt2cEJaOgPSwHaD3?rs=1&pid=ImgDetMain"
                 footerIcon={[

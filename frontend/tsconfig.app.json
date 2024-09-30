@@ -21,7 +21,15 @@
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+
+        // alias
+
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"] // Đặt alias '@' trỏ tới thư mục src
+        },
+        "types": ["node"] // Thêm node vào types
     },
     "include": ["src"]
 }

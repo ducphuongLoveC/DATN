@@ -1,5 +1,9 @@
-import { BiSolidHome, BiNews, BiLogoTelegram } from 'react-icons/bi';
+import { BiSolidHome, BiNews, BiLogoTelegram, BiSolidObjectsHorizontalLeft  } from 'react-icons/bi';
 
+import { FaRoad } from "react-icons/fa6";
+
+console.log(FaRoad);
+import path from '@/constants/routes';
 export interface Props {
     icon: React.ReactNode | Function;
     title: string;
@@ -15,9 +19,15 @@ const menus: Props[] = [
         target: false,
     },
     {
+        icon: BiSolidObjectsHorizontalLeft,
+        title: 'Lộ trình',
+        url: '/learning_path',
+        target: false,
+    },
+    {
         icon: BiNews,
         title: 'Bài viết',
-        url: '/news',
+        url: path.client.news,
         target: false,
     },
     {
@@ -26,5 +36,6 @@ const menus: Props[] = [
         url: '/contact',
         target: false,
     },
+    
 ];
 export default menus;

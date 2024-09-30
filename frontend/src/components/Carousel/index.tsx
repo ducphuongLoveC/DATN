@@ -1,7 +1,7 @@
 
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 
-import { styled,useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
@@ -90,16 +90,14 @@ const Carousel: React.FC<CarouselProps> = ({
     const currentSlider = useRef(0);
     const preSlider = useRef(0);
 
-    const [loading, setLoading] = useState(true);
-
     const handleBack = async () => {
         currentSlider.current =
             (currentSlider.current - 1 + totalSlides) % totalSlides;
-        dotNavigation(currentSlider.current);
+        navigation();
     };
     const handleForward = async () => {
         currentSlider.current = (currentSlider.current + 1) % totalSlides;
-        dotNavigation(currentSlider.current);
+        navigation();
     };
 
     const dotReset = () => {
@@ -107,10 +105,14 @@ const Carousel: React.FC<CarouselProps> = ({
             'var(--white-primary)';
     };
 
+    const navigation = () => {
+        handlerCarousel();
+    }
+
     const dotNavigation = (index: number) => {
-        dotReset();
         currentSlider.current = index;
         handlerCarousel();
+
     };
 
     const handlerCarousel = () => {
@@ -146,7 +148,6 @@ const Carousel: React.FC<CarouselProps> = ({
 
     useEffect(coreCarousel, [dot, time, auto, sliders]);
 
-    console.log('check');
 
     return (
         <>

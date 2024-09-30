@@ -127,7 +127,7 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                     }>
                 ) => {
                     // Handle form submission
-                    console.log(values);
+
                     setSubmitting(false);
                 }}
             >

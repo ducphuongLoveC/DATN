@@ -13,24 +13,26 @@ import {
 } from 'react-icons/bi';
 import Tippy from '@tippyjs/react';
 import HeadlessTippy from '@tippyjs/react/headless';
-import { TypeAnimation } from 'react-type-animation';
+
 
 import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
+
 
 // import my project
 import Wrapper from '@/components/Wrapper';
 import GradientIcon from '@/components/GradientIcon';
 import s from './Navbar.module.scss';
-import MobileNavbar from './MobileNavbar';
 
-import { TOGGLE_THEME_HOME, SET_MENU_HOME_MOBILE } from '@/store/actions';
-import { useTheme, styled } from '@mui/material/styles';
+
+import { TOGGLE_THEME_HOME } from '@/store/actions';
+import { useTheme, styled, } from '@mui/material/styles';
+import { useMediaQuery } from '@mui/material';
 
 import useDebounce from '@/hooks/useDebounce';
 import sleep from '@/utils/useSleep';
 
 import { BeatLoader } from 'react-spinners';
+import ImageDescription from '@/components/ImageDescription';
 
 // ==============================|| NAVBAR ||============================== //
 
@@ -49,7 +51,39 @@ const ImageContentSearch = styled('img')(({ theme }) => ({
 }))
 
 
+const notifications = [
+    {
+        bodyHead: "Dương Đức Phương",
+        bodyContent: "Đã like ảnh của bạn!",
+        time: '1 phút trước'
+    },
+    {
+        bodyHead: "Nguyễn Văn A",
+        bodyContent: "Đã bình luận về bài viết của bạn!",
+        time: '1 phút trước'
+    },
+    {
+        bodyHead: "Trần Thị B",
+        bodyContent: "Đã theo dõi bạn!",
+        time: '1 phút trước'
+    },
+];
 
+
+const courses = [
+    {
+        title: "Kiến thức nền tảng javascript",
+        status: "chưa học khóa này",
+    },
+    {
+        title: "Kiến thức nền tảng javascript",
+        status: "chưa học khóa này",
+    },
+    {
+        title: "Kiến thức nền tảng javascript",
+        status: "chưa học khóa này",
+    },
+];
 
 const Navbar: React.FC = () => {
     const theme = useTheme();
@@ -61,10 +95,13 @@ const Navbar: React.FC = () => {
     const [searchValue, setSearchValue] = useState('');
     const [dataSearch, setDataSearch] = useState([]);
 
-    const [isLogin, setIsLogin] = useState(false);
+    const [isLogin, setIsLogin] = useState(true);
 
+    const [isShowNavMobile, setIsShowNavMobile] = useState(false);
 
     const debounced = useDebounce(searchValue, 500);
+
+
 
     useEffect(() => {
 
@@ -95,12 +132,6 @@ const Navbar: React.FC = () => {
         });
     };
 
-    const handleToggleNavMobile = () => {
-        dispatch({
-            type: SET_MENU_HOME_MOBILE,
-            opened: !homeState.opened,
-        });
-    };
 
     const handleSearchValue = (value: string) => {
         console.log(value);
@@ -112,6 +143,17 @@ const Navbar: React.FC = () => {
         setSearchValue('');
     }
 
+    const handleToggleNavMobile = () => {
+        setIsShowNavMobile(!isShowNavMobile);
+    }
+
+
+    // media 
+    const downMD = useMediaQuery(theme.breakpoints.down('md'));
+    const downSM = useMediaQuery(theme.breakpoints.down('sm'));
+
+
+
     return (
         <nav
             style={{
@@ -119,7 +161,8 @@ const Navbar: React.FC = () => {
             }}
             className={clsx(s['nav'], `tw-p-2.5 tw-sticky tw-top-0 tw-z-50`)}
         >
-            <div className={clsx(s['content-nav'], 'tw-mx-auto')}>
+            <div className={clsx('tw-mx-auto', !downMD ? s['nav-desk'] : s['nav-mobile'])}
+            >
                 <div className="tw-flex tw-justify-between tw-items-center">
                     {/* Box chứa logo */}
                     <div className="tw-flex tw-items-center">
@@ -129,7 +172,7 @@ const Navbar: React.FC = () => {
                     </div>
 
                     {/* Box chứa tìm kiếm */}
-                    <div className="tw-flex tw-items-center tw-w-1/3 tw-border-solid">
+                    <div className={`tw-flex tw-items-center tw-border-solid ${downSM ? 'tw-w-full' : 'tw-w-1/3'}`}>
                         <div className={clsx(s['search'], "tw-relative tw-w-full")}>
                             <span className="tw-absolute tw-top-3 tw-left-4">
                                 <i className="fa-solid fa-magnifying-glass tw-text-[15px]"></i>
@@ -185,7 +228,7 @@ const Navbar: React.FC = () => {
                                         onChange={(e) => handleSearchValue(e.target.value)}
                                     />
 
-                                    {isLoading && <i className='tw-absolute tw-top-3 tw-right-5' ><BeatLoader color='#fff' size={6} /> </i>}
+                                    {isLoading && <i className='tw-absolute tw-top-3 tw-right-5' ><BeatLoader color={`${theme.palette.text.primary}`} size={6} /> </i>}
                                     {!isLoading && searchValue.length > 0 && <i onClick={clearSearchValue} className='tw-absolute tw-top-2 tw-right-5'><BiX /></i>}
                                 </div>
                             </HeadlessTippy>
@@ -195,7 +238,7 @@ const Navbar: React.FC = () => {
                     {/* Box chứa thông báo và nút Login */}
                     <div className="tw-flex tw-items-center tw-justify-center tw-space-x-4">
                         <ul className="tw-list-none tw-flex tw-items-center tw-justify-center">
-                            <li className="tw-relative tw-ml-4">
+                            <li className="tw-relative tw-ml-1">
                                 <Link to="#" className={`tw-text-xl ${theme.palette.text.primary}`}>
                                     <Tippy content="Thay đổi theme">
                                         <i><BiAdjust onClick={handleToggleThemeMode} /></i>
@@ -205,25 +248,142 @@ const Navbar: React.FC = () => {
 
                             {
                                 isLogin ? (<>
-                                    <li className="tw-relative tw-ml-4">
-                                        <Link to="#" className={`tw-text-xl ${theme.palette.text.primary}`}>
+                                    <li className={`tw-relative ${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
+                                        <div className={`tw-text-xl`}>
                                             <span className="tw-absolute -tw-top-2 tw-bg-red-500 -tw-right-3.5 tw-text-white tw-pl-1.5 tw-text-sm tw-rounded-full tw-h-5 tw-w-5">
                                                 2
                                             </span>
-                                            <Tippy content="Thông báo">
-                                                <i><BiBell /></i>
-                                            </Tippy>
-                                        </Link>
+
+                                            {/* thông báo */}
+                                            <HeadlessTippy
+
+                                                trigger="click"
+                                                placement='top-end'
+                                                interactive
+                                                allowHTML
+
+                                                render={(attrs) => (
+                                                    <Wrapper
+                                                        style={{
+                                                            background: theme.palette.background.paper,
+                                                            width: '350px',
+                                                            maxHeight: '70vh',
+                                                            overflow: 'auto'
+                                                        }}
+                                                        {...attrs}
+                                                    >
+                                                        <ImageDescription.Container>
+                                                            <ImageDescription.Header
+                                                                head='Thông báo'
+                                                                hExtend={(
+                                                                    <div className='tw-flex tw-justify-between'>
+                                                                        <button className='tw-py-2'>Đánh dấu là đã đọc</button>
+                                                                        <button className='tw-text-red-500'>xóa</button>
+                                                                    </div>
+                                                                )}
+                                                            />
+                                                            {
+                                                                notifications.map((n) =>
+                                                                    <ImageDescription.Body
+                                                                        hover
+                                                                        thumbnail='images/ktnt.png'
+                                                                        bodyHead={n.bodyHead}
+                                                                        bodyContent={n.bodyContent}
+                                                                        bExtend={(
+                                                                            <p style={{ fontSize: 'var(--mini-font-size)' }}>{n.time}</p>
+                                                                        )}
+                                                                    />)
+                                                            }
+                                                        </ImageDescription.Container>
+
+                                                    </Wrapper>
+                                                )}
+                                            >
+                                                <i className='tw-cursor-pointer tw-select-none'><BiBell /></i>
+                                            </HeadlessTippy>
+
+                                        </div>
                                     </li>
-                                    <li className="tw-relative tw-ml-4">
+                                    <li className={`tw-relative ${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
                                         <Link to="#" className={`tw-text-xl ${theme.palette.text.primary}`}>
-                                            <Tippy content="Khóa học của tôi">
+                                            {/* khóa học của tôi */}
+                                            <HeadlessTippy
+                                                trigger="click"
+                                                placement='top-start'
+                                                interactive
+                                                allowHTML
+
+                                                render={(attrs) => (
+                                                    <Wrapper style={{
+                                                        background: theme.palette.background.paper,
+                                                        width: '400px',
+                                                    }}>
+                                                        <ImageDescription.Container>
+                                                            <ImageDescription.Header
+                                                                head='Khóa học của tôi'
+                                                                hExtend={(
+                                                                    <div className='tw-flex tw-justify-between'>
+                                                                        <button className='tw-py-2'>Xem tất cả</button>
+                                                                    </div>
+                                                                )}
+                                                            />
+                                                            {
+                                                                courses.map((c) =>
+                                                                    <ImageDescription.Body
+                                                                        hover
+                                                                        thumbnail='images/ktnt.png'
+                                                                        bodyHead={c.title}
+                                                                        bodyContent={c.status}
+                                                                        bExtend={(
+                                                                            <button style={{
+                                                                                color:'white',
+                                                                                lineHeight: '20px',
+                                                                                padding:"0 10px",
+                                                                                fontSize: 'var(--mini-font-size)',
+                                                                                borderRadius: 'var(--main-border-radius)',
+                                                                                background: 'var(--color-primary)'
+                                                                            }}
+                                                                            >Học ngay
+                                                                            </button>
+                                                                        )}
+                                                                    />)
+                                                            }
+                                                        </ImageDescription.Container>
+                                                    </Wrapper>
+                                                )}
+
+                                            >
                                                 <i><GradientIcon><BiChalkboard fontSize={25} /></GradientIcon></i>
-                                            </Tippy>
+                                            </HeadlessTippy>
+
+
                                         </Link>
                                     </li>
-                                    <li className='tw-ml-4'>
-                                        <img src='/images/avatar.jpg' className="tw-rounded-full tw-h-9 tw-w-9" />
+                                    <li className={`${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
+                                        <HeadlessTippy
+                                            trigger="click"
+                                            placement='top-start'
+                                            interactive
+                                            allowHTML
+
+                                            render={(attrs) => (
+                                                <Wrapper
+                                                    style={{
+                                                        background: theme.palette.background.paper,
+                                                        width: '400px',
+                                                        maxHeight: '70vh',
+                                                        overflow: 'auto'
+                                                    }}
+                                                    {...attrs}
+                                                >
+                                                    <span></span>
+                                                </Wrapper>
+                                            )}
+                                        >
+                                            <img src='/images/avatar.jpg' className="tw-rounded-full tw-h-9 tw-w-9 tw-object-cover tw-max-w-full tw-max-h-full tw-min-w-[36px] tw-min-h-[36px]" />
+
+
+                                        </HeadlessTippy>
                                     </li>
                                 </>) : (<>
                                     <li>
@@ -243,18 +403,9 @@ const Navbar: React.FC = () => {
                                 </>)
                             }
                         </ul>
-
-                        <div onClick={handleToggleNavMobile} className="tw-cursor-pointer md:tw-hidden tw-flex tw-items-center tw-justify-center">
-
-                            {homeState.opened ? <BiX /> : <BiListUl />}
-                        </div>
                     </div>
                 </div>
-
-
             </div>
-
-            <MobileNavbar isShow={homeState.opened} />
         </nav>
     );
 };
