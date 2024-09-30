@@ -1,4 +1,4 @@
 const Baiviet = () => {
-    return <div>day la trang bai viet</div>;
+    return <div>day la trang bai viet moi nhat</div>;
 };
 export default Baiviet;
