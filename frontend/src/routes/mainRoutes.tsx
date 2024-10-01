@@ -12,9 +12,9 @@ const LogAuth = Loadable(lazy(() => import('@/views/pages/logAuth')));
 const Register3 = Loadable(
   lazy(() => import('@/views/pages/authentication3/Register3'))
 );
-const Baiviet = Loadable(lazy(() => import('@/views/pages/Baiviet')));
+
 import RouteProp from '@/interfaces/route';
-import Profile from '@/views/pages/Profile';
+
 const publicRoutes: RouteProp[] = [
   {
     path: '/',
@@ -44,17 +44,7 @@ const publicRoutes: RouteProp[] = [
     path: path.client.auth.register,
     layout: MainLayout,
     page: Register3,
-  },
-  {
-    path: path.client.news,
-    layout: MainLayout,
-    page: Register3,
-  },
-  {
-    path: path.client.profile,
-    layout: MainLayout,
-    page: Profile,
-  },
+  }
 ];
 
 export default publicRoutes;

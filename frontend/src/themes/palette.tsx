@@ -1,9 +1,28 @@
-/**
- * Color intention that you want to used in your theme
- * @param {JsonObject} theme Theme customization object
- */
+// src/theme/theme.d.ts
 
-// Mở rộng Theme interface của MUI
+// Mở rộng kiểu `Palette` và `PaletteOptions` để thêm thuộc tính `border` và mở rộng `background` với `paper2`
+declare module "@mui/material/styles" {
+  interface TypeBackground {
+    paper2: string;  // Thêm thuộc tính paper2 vào TypeBackground
+  }
+
+  interface Palette {
+    border: {
+      borderLv1: string;
+      borderLv2: string;
+      default: string;
+    };
+  }
+
+  interface PaletteOptions {
+    border?: {
+      borderLv1?: string;
+      borderLv2?: string;
+      default?: string;
+    };
+    background?: Partial<TypeBackground>;  // Cho phép mở rộng background
+  }
+}
 
 export default function themePalette(theme: any) {
   return {
@@ -72,11 +91,11 @@ export default function themePalette(theme: any) {
       borderLv2: theme.paper2,
       default: theme.colors,
     },
-
     background: {
       paper: theme.paper,
-      paper2: theme.paper2,
+      paper2: theme.paper2,  // Thêm paper2 vào background
       default: theme.backgroundDefault,
     },
   };
 }
+

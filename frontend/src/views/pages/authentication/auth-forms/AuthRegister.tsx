@@ -25,7 +25,7 @@ import * as Yup from 'yup';
 import { Formik, FormikHelpers } from 'formik';
 
 // project imports
-import Google from '@/assets/images/icons/social-google.svg';
+
 import AnimateButton from '@/ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from '@/utils/password-strength';
 
