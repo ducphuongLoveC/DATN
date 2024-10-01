@@ -5,46 +5,56 @@ import Loadable from '@/ui-component/Loadable';
 import path from '@/constants/routes';
 
 const Home = Loadable(lazy(() => import('@/views/pages/Home')));
-const Login3 = Loadable (lazy(() => import('@/views/pages/authentication3/Login3')));
-const LogAuth = Loadable (lazy(() => import('@/views/pages/logAuth')));
-const Register3 = Loadable (lazy(() => import('@/views/pages/authentication3/Register3')));
-const Baiviet = Loadable (lazy(() => import('@/views/pages/Baiviet')));
+const Login3 = Loadable(
+  lazy(() => import('@/views/pages/authentication3/Login3'))
+);
+const LogAuth = Loadable(lazy(() => import('@/views/pages/logAuth')));
+const Register3 = Loadable(
+  lazy(() => import('@/views/pages/authentication3/Register3'))
+);
+const Baiviet = Loadable(lazy(() => import('@/views/pages/Baiviet')));
 import RouteProp from '@/interfaces/route';
+import Profile from '@/views/pages/Profile';
 const publicRoutes: RouteProp[] = [
-    {
-        path: '/',
-        layout: BannerLayout,
-        page: Home,
-    },
-    {
-        path: path.client.contact,
-        layout: MainLayout,
-        page: () => <h1>Bài viết</h1>,
-    },
-    {
-        path: path.client.news,
-        layout: MainLayout,
-        page: () => <h1>Liên hệ</h1>,
-    },
-    {
-        path: path.client.auth.login,
-        layout: MainLayout,
-        page: Login3,
-    },
-    {
-        path: path.client.log_auth,
-        page: LogAuth,
-    },
-    {
-        path: path.client.auth.register,
-        layout: MainLayout,
-        page: Register3,
-    },
-    {
-        path: path.client.news,
-        layout: MainLayout,
-        page: Baiviet,
-    },
+  {
+    path: '/',
+    layout: BannerLayout,
+    page: Home,
+  },
+  {
+    path: path.client.contact,
+    layout: MainLayout,
+    page: () => <h1>Bài viết</h1>,
+  },
+  {
+    path: path.client.news,
+    layout: MainLayout,
+    page: () => <h1>Liên hệ</h1>,
+  },
+  {
+    path: path.client.auth.login,
+    layout: MainLayout,
+    page: Login3,
+  },
+  {
+    path: path.client.log_auth,
+    page: LogAuth,
+  },
+  {
+    path: path.client.auth.register,
+    layout: MainLayout,
+    page: Register3,
+  },
+  {
+    path: path.client.news,
+    layout: MainLayout,
+    page: Register3,
+  },
+  {
+    path: path.client.profile,
+    layout: MainLayout,
+    page: Profile,
+  },
 ];
 
 export default publicRoutes;

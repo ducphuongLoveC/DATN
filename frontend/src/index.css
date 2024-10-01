@@ -2,37 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 body {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: var(--system-ui);
-    text-rendering: optimizeLegibility;
-    -moz-osx-font-smoothing: grayscale;
-    overflow-y: auto;
-    overscroll-behavior: none;
-    touch-action: manipulation;
-    -webkit-user-drag: none;
-    -ms-content-zooming: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--system-ui);
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-y: auto;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  -webkit-user-drag: none;
+  -ms-content-zooming: none;
 }
 ul {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 li {
-    list-style: none;
-    margin: 5px;
+  list-style: none;
+  margin: 5px;
 }
 #root {
-    width: 100%;
+  width: 100%;
 }
 :root {
-    --white-primary: #eef2f6;
-    --gray-primary: #c0c0c0;
-    --color-primary: linear-gradient(to right, #00c9ff, #92fe9d);
-    --head-font-size: 20px;
-    --main-font-size: 14px;
-    --mini-font-size: 12px;
+  --white-primary: #eef2f6;
+  --gray-primary: #c0c0c0;
+  --color-primary: linear-gradient(to right, #00c9ff, #92fe9d);
+  --head-font-size: 20px;
+  --main-font-size: 14px;
+  --mini-font-size: 12px;
 
-    --main-border-radius: 15px;
-    --mini-border-radius: 10px;
+  --main-border-radius: 15px;
+  --mini-border-radius: 10px;
 }

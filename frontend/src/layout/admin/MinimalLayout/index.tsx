@@ -6,10 +6,10 @@ import Customization from '../Customization';
 // ==============================|| MINIMAL LAYOUT ||============================== //
 
 const MinimalLayout: React.FC = () => (
-    <>
-        <Outlet />
-        <Customization />
-    </>
+  <>
+    <Outlet />
+    <Customization />
+  </>
 );
 
 export default MinimalLayout;

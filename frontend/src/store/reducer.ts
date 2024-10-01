@@ -7,8 +7,8 @@ import homeReducer from './homeReducer';
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const reducer = combineReducers({
-    customization: customizationReducer,
-    homeReducer: homeReducer,
+  customization: customizationReducer,
+  homeReducer: homeReducer,
 });
 
 export default reducer;

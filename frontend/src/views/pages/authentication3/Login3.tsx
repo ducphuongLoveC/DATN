@@ -17,113 +17,108 @@ import AuthLogin from '../authentication/auth-forms/AuthLogin';
 // ================================|| AUTH3 - LOGIN ||================================ //
 
 const Login: React.FC = () => {
-    const theme = useTheme();
-    const downMD = useMediaQuery(theme.breakpoints.down('md')); // Kiểm tra màn hình nhỏ hơn md
+  const theme = useTheme();
+  const downMD = useMediaQuery(theme.breakpoints.down('md')); // Kiểm tra màn hình nhỏ hơn md
 
-    return (
-        <AuthWrapper1>
+  return (
+    <AuthWrapper1>
+      <Grid container direction="column" justifyContent="flex-end">
+        <Grid item xs={12}>
+          <Grid
+            container
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              background: theme.palette.background.paper,
+            }}
+          >
+            {!downMD && ( // Ẩn banner khi nhỏ hơn MD
+              <Grid item md={6}>
+                <img width="80%" src="/images/banauth.webp" alt="Banner" />
+              </Grid>
+            )}
             <Grid
-                container
-                direction="column"
-                justifyContent="flex-end"
+              item
+              xs={12}
+              md={6}
+              container
+              justifyContent="center"
+              alignItems="center"
             >
-                <Grid item xs={12}>
+              <AuthCardWrapper>
+                <Grid>
+                  <Grid item sx={{ mb: 3 }}></Grid>
+                  <Grid item xs={12}>
                     <Grid
-                        container
-                        justifyContent="center"
-                        alignItems="center"
-                        sx={{
-                            background: theme.palette.background.paper,
-                        }}
+                      container
+                      direction={{
+                        xs: 'column-reverse',
+                        md: 'row',
+                      }}
+                      alignItems="center"
+                      justifyContent="center"
                     >
-                        {!downMD && ( // Ẩn banner khi nhỏ hơn MD
-                            <Grid item md={6}>
-                                <img
-                                    width='80%'
-                                    src="/images/banauth.webp"
-                                    alt="Banner"
-                                />
-                            </Grid>
-                        )}
-                        <Grid item xs={12} md={6}
-                            container
-                            justifyContent="center"
-                            alignItems="center" >
-                            <AuthCardWrapper>
-                                <Grid>
-                                    <Grid item sx={{ mb: 3 }}></Grid>
-                                    <Grid item xs={12}>
-                                        <Grid
-                                            container
-                                            direction={{
-                                                xs: 'column-reverse',
-                                                md: 'row',
-                                            }}
-                                            alignItems="center"
-                                            justifyContent="center"
-                                        >
-                                            <Grid item>
-                                                <Stack
-                                                    alignItems="center"
-                                                    justifyContent="center"
-                                                    spacing={1}
-                                                    marginBottom={'20px'}
-                                                >
-                                                    <Typography
-                                                        sx={{
-                                                            background: 'var(--color-primary)',
-                                                            WebkitBackgroundClip: 'text',
-                                                            WebkitTextFillColor: 'transparent',
-                                                        }}
-                                                        gutterBottom
-                                                        variant={downMD ? 'h3' : 'h2'}
-                                                    >
-                                                        Đăng nhập
-                                                    </Typography>
-
-                                                </Stack>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <AuthLogin />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Divider
-                                            sx={{
-                                                bgcolor: theme.palette.divider,
-                                            }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Grid
-                                            item
-                                            container
-                                            direction="column"
-                                            alignItems="center"
-                                            xs={12}
-                                        >
-                                            <Typography
-                                                component={Link}
-                                                to="/auth/register"
-                                                variant="subtitle1"
-                                                sx={{
-                                                    textDecoration: 'none',
-                                                    color: theme.palette.primary.main,
-                                                }}
-                                            >
-                                                Bạn chưa có tài khoản?
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </AuthCardWrapper>
-                        </Grid>
+                      <Grid item>
+                        <Stack
+                          alignItems="center"
+                          justifyContent="center"
+                          spacing={1}
+                          marginBottom={'20px'}
+                        >
+                          <Typography
+                            sx={{
+                              background: 'var(--color-primary)',
+                              WebkitBackgroundClip: 'text',
+                              WebkitTextFillColor: 'transparent',
+                            }}
+                            gutterBottom
+                            variant={downMD ? 'h3' : 'h2'}
+                          >
+                            Đăng nhập
+                          </Typography>
+                        </Stack>
+                      </Grid>
                     </Grid>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AuthLogin />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Divider
+                      sx={{
+                        bgcolor: theme.palette.divider,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Grid
+                      item
+                      container
+                      direction="column"
+                      alignItems="center"
+                      xs={12}
+                    >
+                      <Typography
+                        component={Link}
+                        to="/auth/register"
+                        variant="subtitle1"
+                        sx={{
+                          textDecoration: 'none',
+                          color: theme.palette.primary.main,
+                        }}
+                      >
+                        Bạn chưa có tài khoản?
+                      </Typography>
+                    </Grid>
+                  </Grid>
                 </Grid>
+              </AuthCardWrapper>
             </Grid>
-        </AuthWrapper1>
-    );
+          </Grid>
+        </Grid>
+      </Grid>
+    </AuthWrapper1>
+  );
 };
 
 export default Login;

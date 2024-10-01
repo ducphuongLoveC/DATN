@@ -1,13 +1,12 @@
 {
-
-    "include": ["src"], // Bao gồm tất cả các tệp trong thư mục src
-    "exclude": ["node_modules", "dist"], // Loại trừ các thư mục không cần thiết
-    "references": [
-        {
-            "path": "./tsconfig.node.json",
-        },
-        {
-            "path": "./tsconfig.app.json",
-        }
-    ]
+  "include": ["src"], // Bao gồm tất cả các tệp trong thư mục src
+  "exclude": ["node_modules", "dist"], // Loại trừ các thư mục không cần thiết
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ]
 }

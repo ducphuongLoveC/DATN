@@ -22,11 +22,11 @@ import './index.css';
 const store = configureStore({ reducer });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <Provider store={store}>
-        <React.StrictMode>
-            <QueryClientProvider client={new QueryClient}>
-                <App />
-            </QueryClientProvider>
-        </React.StrictMode>
-    </Provider>
+  <Provider store={store}>
+    <React.StrictMode>
+      <QueryClientProvider client={new QueryClient()}>
+        <App />
+      </QueryClientProvider>
+    </React.StrictMode>
+  </Provider>
 );

@@ -7,7 +7,7 @@ import utilities from './utilities';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-    items: [dashboard, pages, courses, other, utilities],
+  items: [dashboard, pages, courses, other, utilities],
 };
 
 export default menuItems;

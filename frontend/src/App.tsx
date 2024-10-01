@@ -11,26 +11,24 @@ import NavigationScroll from '@/layout/admin/NavigationScroll';
 
 import { router } from '@/routes';
 import getMainDomain from './utils/getMainDoumain';
-const App: React.FC = () => {    
+const App: React.FC = () => {
+  const state = useSelector(
+    (state: any) =>
+      window.location.hostname.startsWith('admin')
+        ? state.customization
+        : state.homeReducer,
+    (prev, next) => prev === next // So sánh nông để tránh re-render không cần thiết
+  );
 
-
-    const state = useSelector(
-        (state: any) =>
-            window.location.hostname.startsWith('admin')
-                ? state.customization
-                : state.homeReducer,
-        (prev, next) => prev === next // So sánh nông để tránh re-render không cần thiết
-    );
-
-    return (
-        <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={themes(state)}>
-                <CssBaseline />
-                <NavigationScroll>
-                    <div>{router}</div>
-                </NavigationScroll>
-            </ThemeProvider>
-        </StyledEngineProvider>
-    );
+  return (
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={themes(state)}>
+        <CssBaseline />
+        <NavigationScroll>
+          <div>{router}</div>
+        </NavigationScroll>
+      </ThemeProvider>
+    </StyledEngineProvider>
+  );
 };
 export default App;
