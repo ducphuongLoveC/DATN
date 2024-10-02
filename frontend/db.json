@@ -1,0 +1,76 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "name": "Phuuu",
+        "username": "TranHuuPhu",
+        "avatar": "/images/avatar.jpg",
+        "memberSince": "1 Năm Trước",
+        "referring": "Yêu cái đẹp",
+        "recentActivity": "Không có hoạt động gần đây"
+      }
+    ],
+    "courses": [
+      {
+        "id": 1,
+        "title": "KHÓA HỌC: REACT CƠ BẢN",
+        "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+        "image": "/frontend/public/images/react.png"
+      },
+      {
+        "id": 1,
+        "title": "KHÓA HỌC: REACT CƠ BẢN",
+        "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+        "image": "/frontend/public/images/react.png"
+      },
+      {
+        "id": 1,
+        "title": "KHÓA HỌC: REACT CƠ BẢN",
+        "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+        "image": "/frontend/public/images/react.png"
+      },
+      {
+        "id": 1,
+        "title": "KHÓA HỌC: REACT CƠ BẢN",
+        "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+        "image": "/frontend/public/images/react.png"
+      },
+      {
+        "id": 1,
+        "title": "KHÓA HỌC: REACT CƠ BẢN",
+        "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+        "image": "/frontend/public/images/react.png"
+      },
+      {
+        "id": 1,
+        "title": "KHÓA HỌC: REACT CƠ BẢN",
+        "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+        "image": "/frontend/public/images/react.png"
+      },
+      {
+        "id": 1,
+        "title": "KHÓA HỌC: REACT CƠ BẢN",
+        "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+        "image": "/frontend/public/images/react.png"
+      },
+      {
+        "id": 1,
+        "title": "KHÓA HỌC: REACT CƠ BẢN",
+        "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+        "image": "/frontend/public/images/react.png"
+      },
+      {
+        "id": 1,
+        "title": "KHÓA HỌC: REACT CƠ BẢN",
+        "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+        "image": "/frontend/public/images/react.png"
+      },
+      {
+        "id": 1,
+        "title": "KHÓA HỌC: REACT CƠ BẢN",
+        "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+        "image": "/frontend/public/images/react.png"
+      }
+    ]
+  }
+  
