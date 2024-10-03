@@ -9,6 +9,7 @@ const path = {
     news: '/news',
     contact: '/contact',
     profile: '/profile',
+    setting: '/setting',
   },
 };
 export default path;
