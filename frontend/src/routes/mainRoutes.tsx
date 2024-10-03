@@ -5,7 +5,8 @@ import Loadable from '@/ui-component/Loadable';
 import path from '@/constants/routes';
 
 const Home = Loadable(lazy(() => import('@/views/pages/Home')));
-const ProFile = Loadable(lazy(() => import('@/views/pages/ProfileUser')))
+const SettingUser = Loadable(lazy(() => import('@/views/pages/SettingUser')));
+const ProFile = Loadable(lazy(() => import('@/views/pages/ProfileUser')));
 const Login3 = Loadable(
   lazy(() => import('@/views/pages/authentication3/Login3'))
 );
@@ -50,6 +51,11 @@ const publicRoutes: RouteProp[] = [
     path: path.client.profile,
     layout: MainLayout,
     page: ProFile,
+  },
+  {
+    path: path.client.setting,
+
+    page: SettingUser,
   },
 ];
 

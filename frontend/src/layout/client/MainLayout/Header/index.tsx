@@ -430,7 +430,7 @@ const Header: React.FC = () => {
                               <Link to="/saved-posts">Bài viết đã lưu</Link>
                             </li>
                             <li className="tw-py-2 tw-cursor-pointer">
-                              <Link to="/settings">Cài đặt</Link>
+                              <Link to="/setting">Cài đặt</Link>
                             </li>
                             <li className="tw-py-2 tw-text-red-500 tw-cursor-pointer">
                               Đăng xuất
