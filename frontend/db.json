@@ -2,20 +2,18 @@
   "users": [
     {
       "id": "1",
-      "name": "trần hữu phú",
-      "username": "phuuuuu",
-      "email": "anhphu11124@gmail.com",
-      "password": "123456789",
-      "referring": "làm tí không em",
-      "fa": true,
+      "name": "TranHuuPhu",
+      "username": "Phusssss",
+      "referring": "hello bay bê",
       "avatar": "./public/images/avatar.jpg",
-      "memberSince": "01/10/2025",
-      "personalWebsite": "",
-      "github": "https://github.com/tranphu1112004",
-      "linkedin": "",
-      "facebook": "https://www.facebook.com/trnhphu/",
-      "youtube": "",
-      "tiktok": ""
+      "email": "phu20cm@gmail.com",
+      "password": "123456789",
+      "fa": "false",
+      "personalWebsite": "https://phuuuuuu.com",
+      "github": "https://github.com/phuuuuuu",
+      "linkedin": "https://linkedin.com/in/phuuuuuu",
+      "facebook": "https://facebook.com/phuuuuuu",
+      "youtube": "https://youtube.com/phuuuuuu"
     }
   ],
   "courses": [
