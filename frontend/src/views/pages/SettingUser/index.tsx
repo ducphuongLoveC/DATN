@@ -47,7 +47,7 @@ const SettingUser: React.FC = () => {
   const handleSave = () => {
     axios
       .put(`http://localhost:3000/users/1`, { [currentField]: fieldValue })
-      .then((response) => {
+      .then(() => {
         setUser((prevUser: any) => ({
           ...prevUser,
           [currentField]: fieldValue,
@@ -79,9 +79,6 @@ const SettingUser: React.FC = () => {
   const handleClosePage = () => {
     navigate('/');
   };
-
- 
-
   return (
     <div
       className="tw-w-full"
