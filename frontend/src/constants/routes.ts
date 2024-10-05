@@ -7,6 +7,8 @@ const path = {
     },
     log_auth: 'log_auth',
     news: '/news',
+    news1: '/news/baiviet',
+    news2: '/news/baiviet/add',
     contact: '/contact',
     profile: '/profile',
     setting: '/setting',

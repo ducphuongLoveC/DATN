@@ -16,6 +16,9 @@ const Register3 = Loadable(
 );
 
 import RouteProp from '@/interfaces/route';
+import Article from '@/views/pages/BaiViet/Article';
+import DetailArticle from '@/views/pages/BaiViet/DetailArticle';
+import AddArtile from '@/views/pages/BaiViet/AddArtile';
 
 const publicRoutes: RouteProp[] = [
   {
@@ -31,7 +34,17 @@ const publicRoutes: RouteProp[] = [
   {
     path: path.client.news,
     layout: MainLayout,
-    page: () => <h1>Liên hệ</h1>,
+    page: Article,
+  },
+  {
+    path: path.client.news2,
+    layout: MainLayout,
+    page: AddArtile,
+  },
+  {
+    path: path.client.news1,
+    layout: MainLayout,
+    page: DetailArticle,
   },
   {
     path: path.client.auth.login,
