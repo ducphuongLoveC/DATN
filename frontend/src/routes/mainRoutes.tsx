@@ -13,6 +13,9 @@ const Register3 = Loadable(
   lazy(() => import('@/views/pages/authentication3/Register3'))
 );
 
+const Contact = Loadable(lazy(() => import('@/views/pages/Contact')));
+const Baiviet = Loadable(lazy(() => import('@/views/pages/Article')));
+
 import RouteProp from '@/interfaces/route';
 
 const publicRoutes: RouteProp[] = [
@@ -24,12 +27,12 @@ const publicRoutes: RouteProp[] = [
   {
     path: path.client.contact,
     layout: MainLayout,
-    page: () => <h1>Bài viết</h1>,
+    page: Contact,
   },
   {
     path: path.client.news,
     layout: MainLayout,
-    page: () => <h1>Liên hệ</h1>,
+    page: Baiviet,
   },
   {
     path: path.client.auth.login,
@@ -44,7 +47,7 @@ const publicRoutes: RouteProp[] = [
     path: path.client.auth.register,
     layout: MainLayout,
     page: Register3,
-  }
+  },
 ];
 
 export default publicRoutes;
