@@ -7,6 +7,12 @@ import path from '@/constants/routes';
 const Home = Loadable(lazy(() => import('@/views/pages/Home')));
 const SettingUser = Loadable(lazy(() => import('@/views/pages/SettingUser')));
 const ProFile = Loadable(lazy(() => import('@/views/pages/ProfileUser')));
+const ForgotPassword = Loadable(
+  lazy(() => import('@/views/pages/ForgotPassword'))
+);
+const ResetPassword = Loadable(
+  lazy(() => import('@/views/pages/ForgotPassword/ResetPassword'))
+);
 const Login3 = Loadable(
   lazy(() => import('@/views/pages/authentication3/Login3'))
 );
@@ -54,8 +60,15 @@ const publicRoutes: RouteProp[] = [
   },
   {
     path: path.client.setting,
-
     page: SettingUser,
+  },
+  {
+    path: path.client.forgotPassword,
+    page: ForgotPassword,
+  },
+  {
+    path: path.client.ResetPassword,
+    page: ResetPassword,
   },
 ];
 

@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PasswordModal: React.FC<{
   open: boolean;
@@ -21,6 +22,7 @@ const PasswordModal: React.FC<{
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSave = () => {
     const isCurrentPasswordValid = validateCurrentPassword(currentPassword);
@@ -43,6 +45,10 @@ const PasswordModal: React.FC<{
 
   const validateCurrentPassword = (password: string) => {
     return password === '123456'; //test pass
+  };
+
+  const HandlForGotPassword = () => {
+    navigate('/setting/forgotpassword');
   };
 
   return (
@@ -102,7 +108,7 @@ const PasswordModal: React.FC<{
         )}
         <Typography
           variant="body2"
-          onClick={onForgotPassword}
+          onClick={HandlForGotPassword}
           sx={{
             cursor: 'pointer',
             color: '#ec5e5e',

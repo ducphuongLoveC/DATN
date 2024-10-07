@@ -10,6 +10,8 @@ const path = {
     contact: '/contact',
     profile: '/profile',
     setting: '/setting',
+    forgotPassword: '/setting/forgotpassword',
+    ResetPassword: '/setting/forgotpassword/reset',
   },
 };
 export default path;
