@@ -13,6 +13,8 @@ body {
   touch-action: manipulation;
   -webkit-user-drag: none;
   -ms-content-zooming: none;
+  overflow: 'hidden',
+
 }
 ul {
   margin: 0;
@@ -25,6 +27,7 @@ li {
 #root {
   width: 100%;
 }
+
 :root {
   --white-primary: #eef2f6;
   --gray-primary: #c0c0c0;
@@ -33,6 +36,23 @@ li {
   --main-font-size: 14px;
   --mini-font-size: 12px;
 
-  --main-border-radius: 15px;
-  --mini-border-radius: 10px;
+  --main-border-radius: 10px;
+  --mini-border-radius: 5px;
+
+
+  --width-sibar: 70px;
+}
+
+::-webkit-scrollbar {
+  width: 5px; 
+  background: rgba(255, 255, 255, 0.5);
+ 
+}
+
+::-webkit-scrollbar-thumb {
+  background: gray;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.8);
 }

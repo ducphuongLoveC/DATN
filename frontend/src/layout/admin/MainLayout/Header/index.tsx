@@ -1,17 +1,18 @@
 import { FC } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 
 // project imports
-import LogoSection from '../LogoSection';
+
 import SearchSection from './SearchSection';
 import NotificationSection from './NotificationSection';
 import ProfileSection from './ProfileSection';
 
 // assets
 import { IconMenu2 } from '@tabler/icons-react';
+import Logo from '@/ui-component/Logo';
 
 interface HeaderProps {
   handleLeftDrawerToggle: () => void;
@@ -44,7 +45,7 @@ const Header: FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
             flexGrow: 1,
           }}
         >
-          <LogoSection />
+          <Logo/>
         </Box>
         <ButtonBase
           sx={{
@@ -55,14 +56,11 @@ const Header: FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
           <Avatar
             variant="rounded"
             sx={{
-              ...theme.typography.commonAvatar,
-              ...theme.typography.mediumAvatar,
               transition: 'all .2s ease-in-out',
-              background: theme.palette.secondary.light,
-              color: theme.palette.secondary.dark,
+              background: 'none',
+              color: theme.palette.text.primary,
               '&:hover': {
-                background: theme.palette.secondary.dark,
-                color: theme.palette.secondary.light,
+                background: theme.palette.background.paper2,
               },
             }}
             onClick={handleLeftDrawerToggle}

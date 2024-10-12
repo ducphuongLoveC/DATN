@@ -97,7 +97,7 @@ const NotificationSection: React.FC = () => {
         <ButtonBase
           sx={{
             borderRadius: '12px',
-            boxShadow: theme.shadows[16],
+            // boxShadow: theme.shadows[16],
           }}
           ref={anchorRef}
           aria-controls={open ? 'menu-list-grow' : undefined}

@@ -2,14 +2,13 @@
 import * as actionTypes from './actions';
 
 export const initialState = {
-  isOpen: [], // for active default menu
+  isOpen: [],
   defaultId: 'default',
   fontFamily: `'Roboto', sans-serif`,
-  borderRadius: 12,
+  borderRadius: 5,
   opened: true,
   theme: 'light',
 };
-
 // ==============================|| CUSTOMIZATION REDUCER ||============================== //
 
 const customizationReducer = (state = initialState, action: any) => {

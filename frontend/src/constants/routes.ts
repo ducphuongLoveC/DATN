@@ -10,6 +10,7 @@ const path = {
     contact: '/contact',
     profile: '/profile',
     setting: '/setting',
+    learning: '/learning',
   },
 };
 export default path;

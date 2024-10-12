@@ -8,11 +8,10 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import { BrowserView, MobileView } from 'react-device-detect';
 
 // Project imports
-
 import MenuList from './MenuList';
-import LogoSection from '../LogoSection';
 import Chip from '@/ui-component/extended/Chip';
 import { drawerWidth } from '@/store/constant';
+import Logo from '@/ui-component/Logo';
 
 // Define the props interface
 interface SidebarProps {
@@ -52,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             mx: 'auto',
           }}
         >
-          <LogoSection />
+         <Logo/>
         </Box>
       </Box>
       <BrowserView>
@@ -66,23 +65,24 @@ const Sidebar: React.FC<SidebarProps> = ({
         >
           <MenuList />
 
-          <Stack
-            direction="row"
-            justifyContent="center"
-            sx={{
-              mb: 2,
-            }}
-          >
-            <Chip
-              label={import.meta.env.VITE_APP_VERSION}
-              disabled
-              chipcolor="secondary"
-              size="small"
+            {/* <Stack
+              direction="row"
+              justifyContent="center"
               sx={{
-                cursor: 'pointer',
+                mb: 2,
               }}
-            />
-          </Stack>
+            >
+              <Chip
+                label={import.meta.env.VITE_APP_VERSION}
+                disabled
+                chipcolor="secondary"
+                size="small"
+                sx={{
+                  cursor: 'pointer',
+                }}
+              />
+            
+            </Stack> */}
         </PerfectScrollbar>
       </BrowserView>
       <MobileView>

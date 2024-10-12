@@ -14,6 +14,7 @@ import themeTypography from './typography';
  */
 
 export const theme = (state: any) => {
+  
   const color = colors;
   const themeOptionsLight = {
     colors: color,
@@ -51,7 +52,7 @@ export const theme = (state: any) => {
   const themeOptions: any = {
     direction: 'ltr',
     palette: themePalette(
-      state.theme === 'dark' ? themeOptionsLight : themeOptionsDark
+      state.theme === 'light' ? themeOptionsLight : themeOptionsDark
     ),
     mixins: {
       toolbar: {
@@ -63,14 +64,14 @@ export const theme = (state: any) => {
       },
     },
     typography: themeTypography(
-      state.theme === 'dark' ? themeOptionsLight : themeOptionsDark
+      state.theme === 'light' ? themeOptionsLight : themeOptionsDark
     ),
   };
 
   const themes = createTheme(themeOptions);
 
   themes.components = componentStyleOverrides(
-    state.theme === 'dark' ? themeOptionsLight : themeOptionsDark
+    state.theme === 'light' ? themeOptionsLight : themeOptionsDark
   );
 
   return themes;

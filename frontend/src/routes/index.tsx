@@ -3,8 +3,7 @@ import { Fragment, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
+  Route
 } from 'react-router-dom';
 import RouteProp from '@/interfaces/route';
 
