@@ -18,6 +18,7 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import axios from 'axios';
 
 // import my project
+import Logo from '@/ui-component/Logo';
 import Wrapper from '@/components/Wrapper';
 import GradientIcon from '@/components/GradientIcon';
 import s from './Header.module.scss';
@@ -27,7 +28,7 @@ import { useTheme, styled } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
 
 import useDebounce from '@/hooks/useDebounce';
-import sleep from '@/utils/useSleep';
+import sleep from '../../../../utils/sleep';
 
 import { BeatLoader } from 'react-spinners';
 import Dropdown from '@/components/Dropdown';
@@ -115,6 +116,8 @@ const Header: React.FC = () => {
     }
   }, [debounced]);
 
+  console.log(homeState);
+  
   const handleToggleThemeMode = () => {
     const newTheme = homeState.theme === 'light' ? 'dark' : 'light';
     dispatch({
@@ -152,11 +155,14 @@ const Header: React.FC = () => {
       >
         <div className="tw-flex tw-justify-between tw-items-center">
           {/* Box chứa logo */}
-          <div className="tw-flex tw-items-center">
-            <Link to="/" className="tw-flex tw-items-center">
-              <img src="/images/ftech-c.png" alt="Logo" width={'60'} />
-            </Link>
-          </div>
+          {!downSM && (
+            <div className="tw-flex tw-items-center">
+              <Link to="/" className="tw-flex tw-items-center">
+               <Logo/>
+                <span className='tw-font-bold'>Lập trình Ftech</span>
+              </Link>
+            </div>
+          )}
 
           {/* Box chứa tìm kiếm */}
           <div
@@ -211,7 +217,7 @@ const Header: React.FC = () => {
                     style={{
                       border: `2px solid ${theme.palette.border.borderLv2}`,
                     }}
-                    placeholder="Search..."
+                    placeholder="Tìm kiếm khóa học"
                     onChange={(e) => handleSearchValue(e.target.value)}
                   />
 
@@ -385,6 +391,7 @@ const Header: React.FC = () => {
                       </HeadlessTippy>
                     </Link>
                   </li>
+                  {/* logined */}
                   <li className={`${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
                     <HeadlessTippy
                       trigger="click"
@@ -442,7 +449,7 @@ const Header: React.FC = () => {
                       <div className="tw-cursor-pointer">
                         <img
                           src="/images/avatar.jpg"
-                          className="tw-rounded-full tw-h-9 tw-w-9 tw-object-cover"
+                          className="tw-rounded-full tw-h-9 tw-w-9 tw-object-cover tw-max-w-full tw-max-h-full tw-min-w-[36px] tw-min-h-[36px]"
                           alt="User Avatar"
                         />
                       </div>

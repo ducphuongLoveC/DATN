@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -48,15 +48,19 @@ interface NavItemProps {
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
 const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
-  const theme: any = useTheme();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const customization = useSelector((state: any) => state.customization);
   const matchesSM = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const Icon = item.icon;
+  const Icon : any = item.icon;
   const itemIcon = Icon ? (
-    <Icon stroke={1.5} size="1.3rem" />
+    <Icon
+      stroke={1.5}
+      size="1.3rem"
+      style={{ color: theme.palette.text.primary }}
+    />
   ) : (
     <FiberManualRecordIcon
       sx={{
@@ -128,6 +132,12 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
         backgroundColor: level > 1 ? 'transparent !important' : 'inherit',
         py: level > 1 ? 1 : 1.25,
         pl: `${level * 24}px`,
+        ':hover': {
+          backgroundColor: theme.palette.background.paper2, 
+        },
+        ':focus': {
+          backgroundColor: theme.palette.background.paper2, 
+        },
       }}
       selected={customization.isOpen.includes(item.id)}
       onClick={() => itemHandler(item.id)}
@@ -144,21 +154,13 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
         primary={
           <Typography
             variant={customization.isOpen.includes(item.id) ? 'h5' : 'body1'}
-            color="inherit"
           >
             {item.title}
           </Typography>
         }
         secondary={
           item.caption && (
-            <Typography
-              variant="caption"
-              sx={{
-                ...theme.typography.subMenuCaption,
-              }}
-              display="block"
-              gutterBottom
-            >
+            <Typography variant="caption" display="block" gutterBottom>
               {item.caption}
             </Typography>
           )

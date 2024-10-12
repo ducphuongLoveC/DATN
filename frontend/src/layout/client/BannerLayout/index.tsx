@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 import SideBar from '../MainLayout/SideBar';
 import Carousel from '@/components/Carousel';
-import Navbar from '../MainLayout/Header';
+import Header from '../MainLayout/Header';
 import Footer from '../MainLayout/Footer';
 import Layout from '../Layout.scss.module.scss';
 
@@ -103,7 +103,6 @@ const fakeSlider = [
       'Trở thành chuyên gia Java, phát triển ứng dụng doanh nghiệp, hệ thống lớn và phần mềm di động với Java Spring.',
   },
 ];
-
 const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
   const theme: Theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
@@ -114,8 +113,7 @@ const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
       }}
     >
       {/* header */}
-      <Navbar />
-
+      <Header />
       <div
         style={{
           background: theme.palette.background.paper,

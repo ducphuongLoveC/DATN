@@ -1,5 +1,5 @@
 .side-bar {
-  width: 70px;
+  width: var(--width-sibar);
   margin: 10px 20px 0 10px;
   font-size: var(--mini-font-size);
 }
@@ -32,6 +32,7 @@
     bottom: 0;
     width: 100%;
     z-index: 999;
+    margin: 0;
   }
 
   .item-side-bar {

@@ -19,7 +19,8 @@ const App: React.FC = () => {
         : state.homeReducer,
     (prev, next) => prev === next // So sánh nông để tránh re-render không cần thiết
   );
-
+  console.log(state);
+  
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={themes(state)}>

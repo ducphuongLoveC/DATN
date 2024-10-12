@@ -1,7 +1,7 @@
 import * as actionTypes from './actions';
-
+//light, dark
 export const initialState = {
-  theme: 'dark',
+  theme: 'light',
 };
 
 const homeReducer = (state = initialState, action: any) => {
@@ -11,7 +11,6 @@ const homeReducer = (state = initialState, action: any) => {
         ...state,
         theme: action.theme,
       };
-
     default:
       return state;
   }

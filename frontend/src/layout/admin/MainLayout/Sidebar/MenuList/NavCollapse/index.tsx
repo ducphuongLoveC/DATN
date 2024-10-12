@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/';
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -17,6 +17,7 @@ import NavItem from '../NavItem';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { RootState } from '@/store/reducer';
 
 // Define the types for the NavCollapseProps and MenuItem
 interface MenuItem {
@@ -37,8 +38,8 @@ interface NavCollapseProps {
 // ==============================|| SIDEBAR MENU LIST COLLAPSE ITEMS ||============================== //
 
 const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
-  const theme: any = useTheme();
-  const customization = useSelector((state: any) => state.customization);
+  const theme = useTheme();
+  const customization = useSelector((state: RootState) => state.customization);
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
@@ -95,11 +96,13 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
   const Icon: any = menu.icon;
   const menuIcon = menu.icon ? (
     <Icon
+
       strokeWidth={1.5}
       size="1.3rem"
       style={{
         marginTop: 'auto',
         marginBottom: 'auto',
+        color: theme.palette.text.primary
       }}
     />
   ) : (
@@ -108,7 +111,6 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
         width: selected === menu.id ? 8 : 6,
         height: selected === menu.id ? 8 : 6,
       }}
-      fontSize={level > 0 ? 'inherit' : 'medium'}
     />
   );
 
@@ -119,9 +121,15 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
           borderRadius: `${customization.borderRadius}px`,
           mb: 0.5,
           alignItems: 'flex-start',
-          backgroundColor: level > 1 ? 'transparent !important' : 'inherit',
+          backgroundColor: level > 1 ? 'transparent !important' : theme.palette.background.paper,
           py: level > 1 ? 1 : 1.25,
           pl: `${level * 24}px`,
+          ':hover': {
+            backgroundColor: theme.palette.background.paper2, 
+          },
+          ':focus': {
+            backgroundColor: theme.palette.background.paper2, 
+          },
         }}
         selected={selected === menu.id}
         onClick={handleClick}
@@ -138,7 +146,6 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
           primary={
             <Typography
               variant={selected === menu.id ? 'h5' : 'body1'}
-              color="inherit"
               sx={{
                 my: 'auto',
               }}
@@ -150,9 +157,6 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
             menu.caption && (
               <Typography
                 variant="caption"
-                sx={{
-                  ...theme.typography.subMenuCaption,
-                }}
                 display="block"
                 gutterBottom
               >

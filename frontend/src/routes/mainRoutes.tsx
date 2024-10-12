@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 import MainLayout from '@/layout/client/MainLayout';
 import BannerLayout from '@/layout/client/BannerLayout';
+import LearningLayout from '@/layout/client/LearningLayout';
 import Loadable from '@/ui-component/Loadable';
 import path from '@/constants/routes';
 
@@ -14,6 +15,8 @@ const LogAuth = Loadable(lazy(() => import('@/views/pages/logAuth')));
 const Register3 = Loadable(
   lazy(() => import('@/views/pages/authentication3/Register3'))
 );
+
+const Learning = Loadable(lazy(() => import('@/views/pages/Learning')));
 
 import RouteProp from '@/interfaces/route';
 
@@ -54,8 +57,12 @@ const publicRoutes: RouteProp[] = [
   },
   {
     path: path.client.setting,
-
     page: SettingUser,
+  },
+  {
+    layout: LearningLayout,
+    path: path.client.learning,
+    page: Learning,
   },
 ];
 
