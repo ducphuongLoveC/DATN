@@ -34,7 +34,7 @@ const BoxHeaderAndNote = styled(Box)(({ theme }) => ({
 
 const BoxLearningList = styled(Box)(({ theme }) => ({
   position: 'static',
-  zIndex: 998,
+  zIndex: 887,
   width: '450px',
   [theme.breakpoints.down('md')]: {
     position: 'absolute',
@@ -59,7 +59,7 @@ const LessonNavigation = styled(Box)(({ theme }) => ({
   right: 0,
   background: theme.palette.background.paper2,
   height: '50px',
-  zIndex: 999,
+  zIndex: 888,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -175,7 +175,6 @@ const Learning: React.FC = () => {
             </Typography>
           </Box>
         </Box>
-
         {isLearningPlayList && (
           <BoxLearningList>
             <LearningList onClose={toggleLearningList} />
@@ -185,7 +184,7 @@ const Learning: React.FC = () => {
       <LessonNavigation>
         {/* sử dụng placement để mở 1 popup kéo từ bên placement vào */}
         <PlacementToggle
-          placement="right"
+          placement="left"
           Connect={(connect) => (
             <Button
               onClick={connect}
