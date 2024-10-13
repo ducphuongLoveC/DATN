@@ -1,8 +1,10 @@
 import React from 'react'
+import BannerArtile from './BannerArtile'
 
 const Article = () => {
   return (
    <>
+   <BannerArtile/>
    <div className="max-w-7xl mx-auto my-8 px-2">
 
 <div className="flex">

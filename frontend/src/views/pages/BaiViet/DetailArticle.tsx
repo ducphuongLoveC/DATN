@@ -1,8 +1,10 @@
 import React from 'react';
+import BannerArtile from './BannerArtile';
 
 const DetailArticle = () => {
   return (
     <>
+    <BannerArtile/>
       <div className="max-w-7xl mx-auto my-8 px-2">
         <div className="flex">
           <div className="flex">
@@ -53,7 +55,6 @@ const DetailArticle = () => {
               </div>
             </div>
           </div>
-
           <div className="w-7/10   p-4">
             <div className="flex m-3 text-2xl md:text-3xl font-bold">
               Mình đã làm thế nào để hoàn thành một website chỉ trong 15 ngày
