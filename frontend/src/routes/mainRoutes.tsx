@@ -7,6 +7,9 @@ import path from '@/constants/routes';
 const Home = Loadable(lazy(() => import('@/views/pages/Home')));
 const SettingUser = Loadable(lazy(() => import('@/views/pages/SettingUser')));
 const ProFile = Loadable(lazy(() => import('@/views/pages/ProfileUser')));
+const LearningPath = Loadable(lazy(() => import('@/views/pages/learning-path/LearningPath')));
+const BackEnd = Loadable(lazy(() => import('@/views/pages/back-end/BackEnd')));
+const FrontEnd = Loadable(lazy(() => import('@/views/pages/front-end/FrontEnd')));
 const Login3 = Loadable(
   lazy(() => import('@/views/pages/authentication3/Login3'))
 );
@@ -54,8 +57,22 @@ const publicRoutes: RouteProp[] = [
   },
   {
     path: path.client.setting,
-
     page: SettingUser,
+  },
+  {
+    path:'/learning-path',
+    layout: MainLayout,
+    page: LearningPath,
+  },
+  {
+    path: 'back-end',
+    layout: MainLayout,
+    page: BackEnd,
+  },
+  {
+    path: 'front-end',
+    layout: MainLayout,
+    page: FrontEnd,
   },
 ];
 

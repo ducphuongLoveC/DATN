@@ -26,7 +26,7 @@ const menus: Props[] = [
   {
     icon: BiSolidObjectsHorizontalLeft,
     title: 'Lộ trình',
-    url: '/learning_path',
+    url: '/learning-path',
     target: false,
   },
   {

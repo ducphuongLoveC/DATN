@@ -15,25 +15,33 @@ import subDomainRouter from '../helpers/subDomainRouter';
 import subRouterProp from '@/interfaces/sub';
 import getMainDomain from '@/utils/getMainDoumain';
 const createRoutes = (routes: RouteProp[]) => {
+  const renderRoutes = (routes: RouteProp[]) => {
+    return routes.map((route, index) => {
+      const Layout: any = route.layout || Fragment;
+      const Page = route.page;
+
+      return (
+        <Route
+          key={index}
+          path={route.path}
+          element={
+            <Layout>
+              <Suspense fallback={<div>Loading...</div>}>
+                <Page />
+              </Suspense>
+            </Layout>
+          }
+        >
+          {route.children && renderRoutes(route.children)}
+        </Route>
+      );
+    });
+  };
+
   return (
     <Router>
       <Routes>
-        {routes.map((route, index) => {
-          const Layout: any = route.layout || Fragment;
-          const Page = route.page;
-
-          return (
-            <Route
-              key={index}
-              path={route.path}
-              element={
-                <Layout>
-                  <Page />
-                </Layout>
-              }
-            />
-          );
-        })}
+        {renderRoutes(routes)}
         {!getMainDomain().url.hostname.includes('admin') && (
           <Route path="*" element={<h1>Không thể tìm thấy trang này</h1>} />
         )}
@@ -41,6 +49,7 @@ const createRoutes = (routes: RouteProp[]) => {
     </Router>
   );
 };
+
 
 const authenticateUser = () => {
   const token = localStorage.getItem('token');
