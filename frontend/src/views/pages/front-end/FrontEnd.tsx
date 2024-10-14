@@ -1,4 +1,4 @@
-import styles from './Frontend.module.scss'; // Import SCSS module
+import styles from './FrontEnd.module.scss';
 import nhapmonit from '@/assets/images/course/nhapmonit.png';
 import htmlcsspro from '@/assets/images/course/htmlcsspro.png';
 import responsive from '@/assets/images/course/responsive.png';

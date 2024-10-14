@@ -11,7 +11,7 @@ const BackEnd = () => {
     return (
         <div className={styles.container}>
             <div className={styles.routeDetail}>
-                <h2 className={styles.routeDetailTitle}>Lộ trình học Front-end</h2>
+                <h2 className={styles.routeDetailTitle}>Lộ trình học Back-end</h2>
                 <p className={styles.routeDetailSubtitle}>
                     Hầu hết các websites hoặc ứng dụng di động đều có 2 phần là Front-end và Back-end. Front-end là phần giao diện người dùng nhìn thấy và có thể tương tác, đó chính là các ứng dụng mobile hay những website bạn đã từng sử dụng. Nhiệm vụ của lập trình viên Front-end là xây dựng các giao diện đẹp, dễ sử dụng và tối ưu trải nghiệm người dùng.
                 </p>
@@ -154,10 +154,10 @@ const BackEnd = () => {
                             <img src={nodejs} alt="NodeJS" />
                         </div>
                         <div className={styles.courseInfor}>
-                            <h3 className={styles.courseTitle}>ReactJS</h3>
+                            <h3 className={styles.courseTitle}>Node & ExpressJS</h3>
                             <span className={styles.coursePrice}>Miễn phí</span>
                             <p className={styles.courseDesc}>
-                                Học về thư viện phổ biến nhất hiện nay là ReactJS. Khóa học bao gồm các kiến thức căn bản đến nâng cao, từ xây dựng giao diện đơn giản tới ứng dụng phức tạp.
+                                Học Back-end với Node & ExpressJS framework, hiểu các khái niệm khi làm Back-end và xây dựng RESTful API cho trang web.
                             </p>
                             <button className={styles.watch}>XEM KHÓA HỌC</button>
                         </div>

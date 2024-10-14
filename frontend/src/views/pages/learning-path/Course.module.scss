@@ -86,7 +86,8 @@
   left: 50%;
   transform: translate(-50%, -50%);
   color: #FFF;
-  font-size: 27px;
+  font-size: 20px;
+  font-family: "Poppins";
   z-index: 2; 
 }
 
@@ -111,13 +112,16 @@
 }
 
 .view {
-  background-color: yellowgreen;
+  background-color: rgb(0, 255, 30);
   border: none;
   padding: 10px 20px;
   color: #FFF;
   cursor: pointer;
   font-size: 16px;
   margin-top: 10px;
+  transition: background-color 0.5s ease;
+  border-radius: 20px;
+  padding: 10px 20px;
 }
 
 .view:hover {

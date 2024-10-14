@@ -1,5 +1,3 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
 import RouteProp from '../interfaces/route';
 
 import MainLayout from '@/layout/admin/MainLayout';

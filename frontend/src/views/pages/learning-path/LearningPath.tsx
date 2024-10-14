@@ -56,7 +56,7 @@ const LearningPath: React.FC = () => {
                           {item.description}
                         </p>
                         <button className={styles.view}>
-                          <Link to={`/learning-path/${item.path}`}>Xem ngay</Link>
+                          <Link to={`/${item.path}`}>Xem ngay</Link>
                         </button>
                       </div>
                     </div>
