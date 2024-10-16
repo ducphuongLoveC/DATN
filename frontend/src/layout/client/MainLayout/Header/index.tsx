@@ -18,6 +18,7 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import axios from 'axios';
 
 // import my project
+import path from '@/constants/routes';
 import Logo from '@/ui-component/Logo';
 import Wrapper from '@/components/Wrapper';
 import GradientIcon from '@/components/GradientIcon';
@@ -90,7 +91,7 @@ const Header: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   const [dataSearch, setDataSearch] = useState([]);
 
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
 
   const [isShowNavMobile, setIsShowNavMobile] = useState(false);
 
@@ -117,7 +118,7 @@ const Header: React.FC = () => {
   }, [debounced]);
 
   console.log(homeState);
-  
+
   const handleToggleThemeMode = () => {
     const newTheme = homeState.theme === 'light' ? 'dark' : 'light';
     dispatch({
@@ -158,8 +159,8 @@ const Header: React.FC = () => {
           {!downSM && (
             <div className="tw-flex tw-items-center">
               <Link to="/" className="tw-flex tw-items-center">
-               <Logo/>
-                <span className='tw-font-bold'>Lập trình Ftech</span>
+                <Logo />
+                <span className="tw-font-bold">Lập trình Ftech</span>
               </Link>
             </div>
           )}
@@ -298,8 +299,9 @@ const Header: React.FC = () => {
                                   </div>
                                 }
                               />
-                              {notifications.map((n) => (
+                              {notifications.map((n, index) => (
                                 <Dropdown.ImageDescription
+                                  key={index}
                                   hover
                                   thumbnail="images/ktnt.png"
                                   bodyHead={n.bodyHead}
@@ -356,8 +358,9 @@ const Header: React.FC = () => {
                                   </div>
                                 }
                               />
-                              {courses.map((c) => (
+                              {courses.map((c, index) => (
                                 <Dropdown.ImageDescription
+                                  key={index}
                                   hover
                                   thumbnail="images/ktnt.png"
                                   bodyHead={c.title}
@@ -425,19 +428,25 @@ const Header: React.FC = () => {
                           <hr className="tw-my-2" />
                           <ul>
                             <li className="tw-py-2 tw-cursor-pointer">
-                              <Link to="/profile">Trang cá nhân</Link>
+                              <Link to={path.client.profile}>
+                                Trang cá nhân
+                              </Link>
                             </li>
                             <li className="tw-py-2 tw-cursor-pointer">
-                              <Link to="/write-blog">Viết blog</Link>
+                              <Link to={path.client.newPost}>Viết blog</Link>
                             </li>
                             <li className="tw-py-2 tw-cursor-pointer">
-                              <Link to="/my-posts">Bài viết của tôi</Link>
+                              <Link to={path.client.myPost}>
+                                Bài viết của tôi
+                              </Link>
                             </li>
                             <li className="tw-py-2 tw-cursor-pointer">
-                              <Link to="/saved-posts">Bài viết đã lưu</Link>
+                              <Link to={path.client.bookmark}>
+                                Bài viết đã lưu
+                              </Link>
                             </li>
                             <li className="tw-py-2 tw-cursor-pointer">
-                              <Link to="/setting">Cài đặt</Link>
+                              <Link to={path.client.setting}>Cài đặt</Link>
                             </li>
                             <li className="tw-py-2 tw-text-red-500 tw-cursor-pointer">
                               Đăng xuất

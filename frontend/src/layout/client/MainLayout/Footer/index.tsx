@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme, useMediaQuery } from '@mui/material';
 import s from './Footer.module.scss';
+import Logo from '@/ui-component/Logo';
 // ===============================|| FOOTER ||=============================== //
 
 const Footer: React.FC = () => {
@@ -19,37 +20,37 @@ const Footer: React.FC = () => {
         <div className="tw-flex tw-flex-col md:tw-flex-row">
           <div className="tw-basis-2/6">
             <div className="tw-p-5">
-              <img alt="logo-footer" className="tw-w-10" />
+              <Logo />
               <div>
-                <h3
+                <h5
                   className="tw-font-medium tw-mt-4 tw-mb-3"
                   style={{
                     color: theme.palette.text.secondary,
                   }}
                 >
                   Liên hệ với chúng tôi
-                </h3>
+                </h5>
                 <div className="tw-text-sm">
-                  <h4 className="tw-mb-2">+0123456789</h4>
-                  <h4 className="tw-mb-2">email.com</h4>
-                  <h4 className="tw-mb-2">9AM- 5PM, Monday - Friday</h4>
-                  <h4 className="tw-mb-2">
+                  <div className="tw-mb-2">+0123456789</div>
+                  <div className="tw-mb-2">email.com</div>
+                  <div className="tw-mb-2">9AM- 5PM, Monday - Friday</div>
+                  <div className="tw-mb-2">
                     Nhà số 10, 379 Xuân Phương, Nam Từ Liêm, Hà Nội
-                  </h4>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <div className="tw-basis-1/6">
             <div className="tw-p-4">
-              <h3
+              <h5
                 className="tw-font-medium tw-mt-4 tw-mb-3"
                 style={{
                   color: theme.palette.text.secondary,
                 }}
               >
                 Các liên kết khác
-              </h3>
+              </h5>
               <ul className="tw-list-none tw-mt-4">
                 {[
                   'Start here',
@@ -77,14 +78,14 @@ const Footer: React.FC = () => {
           </div>
           <div className="tw-basis-1/6">
             <div className="tw-p-4">
-              <h3
+              <h5
                 className="tw-font-medium tw-mt-4 tw-mb-3"
                 style={{
                   color: theme.palette.text.secondary,
                 }}
               >
                 Sản phẩm
-              </h3>
+              </h5>
               <ul className="tw-list-none tw-mt-4">
                 {[
                   'Start here',
@@ -112,14 +113,14 @@ const Footer: React.FC = () => {
           </div>
           <div className="tw-basis-2/6">
             <div className="tw-p-4">
-              <h3
+              <h5
                 className="tw-font-medium tw-mt-4 tw-mb-3"
                 style={{
                   color: theme.palette.text.secondary,
                 }}
               >
                 Mạng xã hội
-              </h3>
+              </h5>
               <p className="tw-text-sm">
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut
                 odit magnam officia sequi aliquid facere corporis dolorem
@@ -148,7 +149,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
         <div className="tw-text-center tw-mt-4">
-          &copy; Đồ án tốt nghiệp by Duc Phuong
+          {/* &copy; Đồ án tốt nghiệp by Duc Phuong */}
         </div>
         <div>
           <a

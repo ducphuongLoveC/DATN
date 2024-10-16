@@ -13,8 +13,7 @@ const WrapperCard: React.FC<WrapperCardProps> = ({ children }) => {
         transform: 'translateY(-5px)',
       },
       borderRadius: 'var(--main-border-radius)',
-      cursor: 'pointer',
-      overflow: 'hidden', // Add this to ensure children don't overflow the rounded corners
+      overflow: 'hidden',
     }}
   >
     {children}

@@ -20,7 +20,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 // my pj
 import ArtPlayerComponent from '@/components/ArtplayComponent';
-import BackgroundOverlay from '@/components/BackgroundOverlay';
+import BackgroundOverlay from '../../../components/BackgroundOverlay';
 import LearningList from './LearningList';
 import PlacementToggle from '@/components/PlacementToggle';
 import Comment from './Comment';

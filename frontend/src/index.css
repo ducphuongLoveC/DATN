@@ -13,15 +13,13 @@ body {
   touch-action: manipulation;
   -webkit-user-drag: none;
   -ms-content-zooming: none;
-  overflow: 'hidden',
-
+  overflow: 'hidden';
 }
 ul {
   margin: 0;
   padding: 0;
 }
 li {
-  list-style: none;
   margin: 5px;
 }
 #root {
@@ -29,6 +27,7 @@ li {
 }
 
 :root {
+  /* main color */
   --white-primary: #eef2f6;
   --gray-primary: #c0c0c0;
   --color-primary: linear-gradient(to right, #00c9ff, #92fe9d);
@@ -36,17 +35,57 @@ li {
   --main-font-size: 14px;
   --mini-font-size: 12px;
 
-  --main-border-radius: 10px;
+  /* border radius */
+  --main-border-radius: 15px;
   --mini-border-radius: 5px;
 
-
+  /* width */
   --width-sibar: 70px;
+
+  /* space */
+  --space-grid: 2px;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: inherit; /* Hoặc kích thước mong muốn, ví dụ: 2.5rem cho h1 */
+  font-weight: bold; /* Trọng số chữ */
+  margin: 16px 0; /* Khoảng cách */
+}
+
+/* Nếu bạn muốn chỉ định kích thước cụ thể cho từng thẻ */
+h1 {
+  font-size: 2.5rem; /* Kích thước chữ cho h1 */
+}
+
+h2 {
+  font-size: 2rem; /* Kích thước chữ cho h2 */
+}
+
+h3 {
+  font-size: 1.75rem; /* Kích thước chữ cho h3 */
+}
+
+h4 {
+  font-size: 1.5rem; /* Kích thước chữ cho h4 */
+}
+
+h5 {
+  font-size: 1.25rem; /* Kích thước chữ cho h5 */
+}
+
+h6 {
+  font-size: 1rem; /* Kích thước chữ cho h6 */
+}
+
+
 ::-webkit-scrollbar {
-  width: 5px; 
+  width: 5px;
   background: rgba(255, 255, 255, 0.5);
- 
 }
 
 ::-webkit-scrollbar-thumb {

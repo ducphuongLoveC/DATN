@@ -1,15 +1,7 @@
 import React from 'react';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Checkbox,
-  Typography,
-  Box,
-  useTheme,
-} from '@mui/material';
-import { ExpandMore } from '@mui/icons-material';
-//icon
+import Module from '@/components/Module';
+import { Typography, Box, useTheme } from '@mui/material';
+
 import CloseIcon from '@mui/icons-material/Close';
 
 // Dữ liệu khóa học
@@ -17,31 +9,31 @@ const LearningLists = [
   {
     title: '1: Giới thiệu về JavaScript',
     children: [
-      { title: 'JavaScript là gì?', path: '1' },
-      { title: 'Lịch sử của JavaScript', path: '2' },
+      { title: 'JavaScript là gì?', path: '1', time: 600, },
+      { title: 'Lịch sử của JavaScript', path: '2', time: 600 },
     ],
   },
   {
     title: '2: Biến và kiểu dữ liệu',
     children: [
-      { title: 'Khai báo biến', path: '3' },
-      { title: 'Các kiểu dữ liệu cơ bản', path: '4' },
-      { title: 'Toán tử trong JavaScript', path: '5' },
+      { title: 'Khai báo biến', path: '3', time: 900 },
+      { title: 'Các kiểu dữ liệu cơ bản', path: '4', time: 600 },
+      { title: 'Toán tử trong JavaScript', path: '5', time: 600 },
     ],
   },
   {
     title: '3: Cấu trúc điều khiển',
     children: [
-      { title: 'Câu lệnh điều kiện', path: '6' },
-      { title: 'Vòng lặp', path: '' },
+      { title: 'Câu lệnh điều kiện', path: '6', time: 600 },
+      { title: 'Vòng lặp', path: '', time: 600 },
     ],
   },
   {
     title: '4: Hàm trong JavaScript',
     children: [
-      { title: 'Khai báo và sử dụng hàm', path: '7' },
-      { title: 'Tham số và giá trị trả về', path: '8' },
-      { title: 'Hàm mũi tên', path: '' },
+      { title: 'Khai báo và sử dụng hàm', path: '7', time: 600 },
+      { title: 'Tham số và giá trị trả về', path: '8', time: 600 },
+      { title: 'Hàm mũi tên', path: '', time: 600 },
     ],
   },
   {
@@ -54,37 +46,37 @@ const LearningLists = [
   {
     title: '6: Lập trình hướng đối tượng',
     children: [
-      { title: 'Class và object', path: '' },
-      { title: 'Kế thừa', path: '' },
+      { title: 'Class và object', path: '', time: 600 },
+      { title: 'Kế thừa', path: '', time: 600 },
     ],
   },
   {
     title: '7: Xử lý bất đồng bộ',
     children: [
-      { title: 'Callback', path: '' },
-      { title: 'Promises', path: '' },
-      { title: 'Async/Await', path: '' },
+      { title: 'Callback', path: '', time: 600 },
+      { title: 'Promises', path: '', time: 600 },
+      { title: 'Async/Await', path: '', time: 600 },
     ],
   },
   {
     title: '8: Làm việc với DOM',
     children: [
-      { title: 'Chọn và thao tác với các phần tử DOM', path: '' },
-      { title: 'Sự kiện DOM', path: '' },
+      { title: 'Chọn và thao tác với các phần tử DOM', path: '', time: 600 },
+      { title: 'Sự kiện DOM', path: '', time: 600 },
     ],
   },
   {
     title: '9: AJAX và Fetch API',
     children: [
-      { title: 'Giới thiệu về AJAX', path: '' },
-      { title: 'Sử dụng Fetch API', path: '' },
+      { title: 'Giới thiệu về AJAX', path: '', time: 600 },
+      { title: 'Sử dụng Fetch API', path: '', time: 600 },
     ],
   },
   {
     title: '10: Công cụ và thư viện',
     children: [
-      { title: 'Sử dụng npm', path: '' },
-      { title: 'Các thư viện phổ biến', path: '' },
+      { title: 'Sử dụng npm', path: '', time: 600 },
+      { title: 'Các thư viện phổ biến', path: '', time: 600 },
     ],
   },
 ];
@@ -130,54 +122,7 @@ const LearningList: React.FC<LearningListProps> = ({ onClose }) => {
       </Box>
       <Box>
         {LearningLists.map((list, index) => (
-          <Accordion key={index} disableGutters>
-            <AccordionSummary
-              expandIcon={
-                <ExpandMore
-                  sx={{
-                    color: theme.palette.text.primary,
-                    borderRadius: 'none',
-                  }}
-                />
-              }
-            >
-              <Box>
-                <Typography fontSize={'16px'}>{list.title}</Typography>
-                <Typography variant="caption">0/9 | 01:46:20</Typography>
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails
-              sx={{ backgroundColor: theme.palette.background.paper2 }}
-            >
-              {list.children.map((child, idx) => (
-                <Box
-                  key={idx}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Box>
-                    <Box display={'flex'}>
-                      <Checkbox
-                        sx={{
-                          '&.MuiCheckbox-root': {
-                            padding: 0,
-                            '& .MuiSvgIcon-root': {
-                              fontSize: '1rem',
-                            },
-                          },
-                          marginRight: '10px',
-                        }}
-                      />
-                      <Typography>{child.title}</Typography>
-                    </Box>
-                    <Typography variant="caption">15:03</Typography>
-                  </Box>
-                </Box>
-              ))}
-            </AccordionDetails>
-          </Accordion>
+          <Module styleM='two' key={index} title={list.title} items={list.children} />
         ))}
       </Box>
     </Box>

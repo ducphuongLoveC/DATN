@@ -1,3 +1,4 @@
+
 import { useTheme } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react';
 import { useState } from 'react';
@@ -14,26 +15,33 @@ const TextEditor: React.FC<TextEditorProps> = ({
   exportContent,
   initialValue,
   preview = false,
-  value,
   initialHeight,
   mode = 'basic',
 }) => {
   const [content, setContent] = useState<string>('');
-  const [savedContent, setSavedContent] = useState<string>('');
 
-  const theme = useTheme(); 
-  const handleEditorChange = (content: string) => {
-    setContent(content);
+  const handleSave = (value: string) => {
+    const styledContent = value
+      .replace(
+        /<ul>/g,
+        '<ul style="list-style-type: disc !important; margin-left: 20px !important;">'
+      )
+      .replace(/<\/ul>/g, '</ul>')
+      .replace(
+        /<ol>/g,
+        '<ol style="list-style-type: decimal !important; margin-left: 20px !important;">'
+      )
+      .replace(/<\/ol>/g, '</ol>')
+      .replace(
+        /<a /g,
+        '<a style="color: blue !important; text-decoration: underline !important;" '
+      )
+      .replace(/<\/a>/g, '</a>')
+
+    setContent(styledContent);
+    exportContent(styledContent);
   };
 
-  const handleSave = () => {
-    setSavedContent(content);
-    console.log('Saved content:', content);
-    exportContent(content);
-  };
-
-  // Configure TinyMCE settings based on mode
- 
   const editorConfig = {
     height: initialHeight || '200px',
     branding: false,
@@ -86,38 +94,28 @@ const TextEditor: React.FC<TextEditorProps> = ({
         : 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'ducphuongdepzai',
-    content_style: `
-    `, // Corrected background color style without quotes
+
+    ai_request: (request: any, respondWith: any) =>
+      respondWith.string(() =>
+        Promise.reject('See docs to implement AI Assistant')
+      ),
   };
-  
 
   return (
     <div>
       <Editor
         apiKey="ueuhdxl8g56p7r2mgk3rlx89o4yvqsx093m5lui8g7e73h2b"
         init={editorConfig}
-        value={value}
         initialValue={initialValue}
         onEditorChange={(content) => {
-          handleEditorChange(content);
-          exportContent(content);
+          handleSave(content);
         }}
       />
-
       {preview && (
         <>
-          <div style={{ marginTop: '20px' }}>
-            <button
-              type="button"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleSave}
-            >
-              Lưu nội dung
-            </button>
-          </div>
           <div>
-            <h3>Content Preview:</h3>
-            <div dangerouslySetInnerHTML={{ __html: savedContent }} />
+            <h5>Content Preview:</h5>
+            <div dangerouslySetInnerHTML={{ __html: content }} />
           </div>
         </>
       )}
@@ -126,3 +124,8 @@ const TextEditor: React.FC<TextEditorProps> = ({
 };
 
 export default TextEditor;
+
+
+
+
+

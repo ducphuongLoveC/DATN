@@ -5,12 +5,17 @@ const path = {
       login: '/auth/login',
       register: '/auth/register',
     },
-    log_auth: 'log_auth',
+    learning: '/learning',
+    courses: '/courses',
+    logAuth: 'log-auth',
     news: '/news',
     contact: '/contact',
     profile: '/profile',
     setting: '/setting',
-    learning: '/learning',
+    newPost: '/new-post',
+    myPost: '/my-post',
+    bookmark: '/me/bookmark',
+
   },
 };
 export default path;

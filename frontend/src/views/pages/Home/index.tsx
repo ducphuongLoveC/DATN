@@ -1,14 +1,8 @@
-import CourseCardLayouts from '@/components/CardLayouts';
-import Carousel from '@/components/Carousel';
 import { Box, useTheme, Typography } from '@mui/material';
-import { BiPlay } from 'react-icons/bi';
-
 import Course from './Course/Course';
 import Post from './Post/Post';
 
 const Home: React.FC = () => {
-  const theme: any = useTheme();
-
   return (
     <Box>
       <Typography variant="h2">Các khóa học để bạn bắt đầu</Typography>

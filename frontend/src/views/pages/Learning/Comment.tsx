@@ -14,6 +14,8 @@ import {
   Reply as ReplyIcon,
 } from '@mui/icons-material';
 
+// import './Comment.css';
+
 // my project
 import TextEditor from '@/components/TextEditor';
 
@@ -35,7 +37,6 @@ interface CommentInputProps {
 interface CommentItemProps extends CommentData {
   deep?: number;
 }
-
 
 const initialComments: CommentData[] = [
   {
@@ -79,31 +80,27 @@ const initialComments: CommentData[] = [
   },
 ];
 
-
 export default function Comment() {
   const [comments, setComments] = useState<CommentData[]>(initialComments);
 
-  const handleComment = (comment: string)=> {
+  const handleComment = (comment: string) => {
     setComments([
       {
         username: 'Duong Duc Phuong',
         avatar: '/placeholder.svg?height=40&width=40',
         comment: comment,
         likes: 0,
-        timestamp: 'a few seconds ago',
+        timestamp: 'Vài giây trước',
       },
       ...comments,
-    ])
-  }
+    ]);
+  };
   return (
     <Box maxWidth="md" margin="auto" padding={2}>
       <Typography variant="h4" gutterBottom fontWeight="bold">
         Bình luận
       </Typography>
-      <CommentInput
-        onSubmit={handleComment}
-        buttonText='Bình luận'
-      />
+      <CommentInput onSubmit={handleComment} buttonText="Bình luận" />
       <Stack spacing={3} mt={4}>
         {comments.map((c: any, index: number) => (
           <CommentItem
@@ -153,9 +150,10 @@ function CommentInput({
       <Box flexGrow={1}>
         <TextEditor
           mode="basic"
-          value={comment}
           initialValue={init}
           exportContent={(data) => {
+            console.log(data);
+            
             setComment(data);
           }}
         />
@@ -243,6 +241,8 @@ function CommentItem({
             sx={{ mt: 0.5, color: 'text.primary' }}
             dangerouslySetInnerHTML={{ __html: comment }} 
           />
+          
+      
           <Box display="flex" alignItems="center">
             <IconButton size="small" aria-label="like">
               <ThumbUpIcon

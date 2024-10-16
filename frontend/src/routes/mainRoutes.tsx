@@ -1,7 +1,11 @@
 import { lazy } from 'react';
+
+// layout
 import MainLayout from '@/layout/client/MainLayout';
 import BannerLayout from '@/layout/client/BannerLayout';
 import LearningLayout from '@/layout/client/LearningLayout';
+import BasicLayout from '@/layout/client/BasicLayout';
+
 import Loadable from '@/ui-component/Loadable';
 import path from '@/constants/routes';
 
@@ -16,7 +20,12 @@ const Register3 = Loadable(
   lazy(() => import('@/views/pages/authentication3/Register3'))
 );
 
+//learning
 const Learning = Loadable(lazy(() => import('@/views/pages/Learning')));
+const Course = Loadable(lazy(() => import('@/views/pages/Course')));
+
+//posts route
+const NewPost = Loadable(lazy(() => import('@/views/pages/Post/NewPost')));
 
 import RouteProp from '@/interfaces/route';
 
@@ -42,13 +51,23 @@ const publicRoutes: RouteProp[] = [
     page: Login3,
   },
   {
-    path: path.client.log_auth,
+    path: path.client.logAuth,
     page: LogAuth,
   },
   {
     path: path.client.auth.register,
     layout: MainLayout,
     page: Register3,
+  },
+  {
+    layout: LearningLayout,
+    path: path.client.learning,
+    page: Learning,
+  },
+  {
+    layout: MainLayout,
+    path: path.client.courses,
+    page: Course,
   },
   {
     path: path.client.profile,
@@ -60,9 +79,9 @@ const publicRoutes: RouteProp[] = [
     page: SettingUser,
   },
   {
-    layout: LearningLayout,
-    path: path.client.learning,
-    page: Learning,
+    layout: BasicLayout,
+    path: path.client.newPost,
+    page: NewPost,
   },
 ];
 

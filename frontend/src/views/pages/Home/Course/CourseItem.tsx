@@ -2,6 +2,7 @@ import { styled, CardMedia, Box, Typography, useTheme } from '@mui/material';
 // pj
 import AverageRating from '@/components/AverageRating';
 import WrapperCard from '../WrapperCard';
+import { Link } from 'react-router-dom';
 const CustomCardMedia = styled(CardMedia)({
   height: '160px',
   overflow: 'hidden',
@@ -17,6 +18,7 @@ interface CourseItemProp {
   salePrice: number;
   totalUserRate: number;
   totalStars: number;
+  to: string;
 }
 
 const CourseItem: React.FC<CourseItemProp> = ({
@@ -28,15 +30,24 @@ const CourseItem: React.FC<CourseItemProp> = ({
   totalRatings,
   totalUserRate,
   totalStars,
+  to,
 }) => {
   const theme = useTheme();
+
   return (
+    <Link to={to}>
     <WrapperCard>
       <CustomCardMedia image={thumbnail} />
       <Box
-        sx={{ padding: 3, backgroundColor: theme.palette.background.paper2 }}
+        sx={{
+          padding: 1,
+          backgroundColor: theme.palette.background.paper2,
+          height: '140px',
+        }}
       >
-        <Typography variant="h4">{title}</Typography>
+        <Typography variant="h4" mb={1}>
+          {title}
+        </Typography>
         <Typography variant="body1">Đăng bởi {postUser}</Typography>
 
         <AverageRating
@@ -58,6 +69,7 @@ const CourseItem: React.FC<CourseItemProp> = ({
         </Box>
       </Box>
     </WrapperCard>
+    </Link>
   );
 };
 

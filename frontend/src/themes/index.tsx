@@ -66,6 +66,13 @@ export const theme = (state: any) => {
     typography: themeTypography(
       state.theme === 'light' ? themeOptionsLight : themeOptionsDark
     ),
+   
+    //  components: { 
+    //   MuiCssBaseline: {
+    //     styleOverrides: {},
+    //   },
+    // },
+    // classnamePrefix: 'ftech' 
   };
 
   const themes = createTheme(themeOptions);

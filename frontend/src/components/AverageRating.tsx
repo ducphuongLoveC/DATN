@@ -21,7 +21,7 @@ const AverageRating: React.FC<AverageRatingProps> = ({
     console.log('error star');
   }
 
-  const averageRating = totalRatings / (totalUserRate);
+  const averageRating = +(totalRatings / totalUserRate).toFixed(1);
 
   return (
     <Box display={'flex'} alignItems={'center'}>

@@ -4,7 +4,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 
 import s from './Carousel.module.scss';
 
@@ -13,9 +13,8 @@ const Container = styled('div')(({ theme }) => ({
   marginBottom: '10px',
   padding: 0,
   overflow: 'hidden',
-  borderRadius: '10px',
+  borderRadius: 'var(--main-border-radius)',
   height: '250px',
-  // width: '90vw',
 }));
 
 const Sliders = styled('div')(({ theme }) => ({
@@ -26,7 +25,7 @@ const Sliders = styled('div')(({ theme }) => ({
   height: '100%',
 }));
 
-const Slider = styled(Link)(({ theme }) => ({
+const Slider = styled(Box)(({ theme }) => ({
   padding: '20px 10px 0 50px',
   flex: '0 0 100%',
 }));
@@ -160,27 +159,64 @@ const Carousel: React.FC<CarouselProps> = ({
               <Slider
                 key={slider._id}
                 style={{ background: slider.background }}
-                to={slider.path}
               >
-                <Box sx={{ display: 'flex', height: '100%' }}>
-                  <Box sx={{ flex: 1, color: 'white' }}>
-                    <Typography
-                      sx={{
-                        color: 'white',
-                        marginBottom: '10px',
-                      }}
-                      variant="h1"
-                      component="h1"
-                    >
-                      {slider.title}
-                    </Typography>
-                    <Typography
-                      sx={{ lineHeight: '25px' }}
-                      variant="body1"
-                      component="p"
-                    >
-                      {slider.description}
-                    </Typography>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    height: '100%',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      flex: 1,
+                      color: 'white',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    <Box>
+                      <Typography
+                        sx={{
+                          color: 'white',
+                          marginBottom: '10px',
+                        }}
+                        variant="h1"
+                        component="h1"
+                      >
+                        {slider.title}
+                      </Typography>
+                      <Typography
+                        sx={{ lineHeight: '25px' }}
+                        variant="body1"
+                        component="p"
+                      >
+                        {slider.description}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Link to={slider.path}>
+                        <Button
+                          sx={{
+                            backgroundColor: 'transparent',
+                            color: theme.palette.background.paper,
+                            border: `2px solid ${theme.palette.background.paper}`,
+                            marginBottom: '35px',
+                            padding: '3px 20px',
+                            borderRadius: 'var(--main-border-radius)',
+                            fontWeight: '600',
+                            transition: 'background-color 0.3s, color 0.3s',
+                            '&:hover': {
+                              backgroundColor: theme.palette.background.paper,
+                              color: theme.palette.text.primary,
+                            },
+                          }}
+                        >
+                          Học ngay nào
+                        </Button>
+                      </Link>
+                    </Box>
                   </Box>
 
                   <Box
@@ -188,7 +224,7 @@ const Carousel: React.FC<CarouselProps> = ({
                       display: { xs: 'none', sm: 'flex' },
                       justifyContent: 'center',
                       alignItems: 'center',
-                      flex: 2,
+                      flex: 1,
                       padding: '10px',
                     }}
                   >

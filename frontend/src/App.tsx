@@ -8,9 +8,8 @@ import themes from '@/themes';
 
 // project imports
 import NavigationScroll from '@/layout/admin/NavigationScroll';
-
 import { router } from '@/routes';
-import getMainDomain from './utils/getMainDoumain';
+
 const App: React.FC = () => {
   const state = useSelector(
     (state: any) =>
@@ -19,7 +18,6 @@ const App: React.FC = () => {
         : state.homeReducer,
     (prev, next) => prev === next // So sánh nông để tránh re-render không cần thiết
   );
-  console.log(state);
   
   return (
     <StyledEngineProvider injectFirst>
