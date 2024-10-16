@@ -7,6 +7,7 @@ const path = {
     },
     log_auth: 'log_auth',
     news: '/news',
+    news_detail: '/news_detail',
     contact: '/contact',
     profile: '/profile',
   },

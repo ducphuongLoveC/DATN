@@ -15,7 +15,9 @@ const Register3 = Loadable(
 
 const Contact = Loadable(lazy(() => import('@/views/pages/Contact')));
 const Baiviet = Loadable(lazy(() => import('@/views/pages/Article')));
-
+const BaivietDetail = Loadable(
+  lazy(() => import('@/views/pages/Article_details'))
+);
 import RouteProp from '@/interfaces/route';
 
 const publicRoutes: RouteProp[] = [
@@ -33,6 +35,11 @@ const publicRoutes: RouteProp[] = [
     path: path.client.news,
     layout: MainLayout,
     page: Baiviet,
+  },
+  {
+    path: path.client.news_detail,
+    layout: MainLayout,
+    page: BaivietDetail,
   },
   {
     path: path.client.auth.login,

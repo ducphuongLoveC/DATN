@@ -95,7 +95,10 @@ const Baiviet = () => {
                 alt=""
               />
               <div className={clsx(s['main-baiviet-content'])}>
-                <h4>{article.title}</h4>
+                <a href="/news_detail">
+                  {' '}
+                  <h4>{article.title}</h4>
+                </a>
                 <p>
                   <span>📅 {article.date}</span>
                   <span> 💬 {article.comments}</span>
