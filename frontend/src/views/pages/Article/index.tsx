@@ -10,7 +10,7 @@ const Baiviet = () => {
   const articles = [
     {
       imgSrc: 'images/baiviet-img3.jpg',
-      title: 'Minh đã làm thế nào để hoàn thành một website chỉ trong 15 ngày',
+      title: 'Mình đã làm thế nào để hoàn thành một website chỉ trong 15 ngày',
       date: '23/02/24',
       comments: '3 bình luận',
       description:

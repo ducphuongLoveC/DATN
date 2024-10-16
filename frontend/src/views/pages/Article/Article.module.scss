@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
 .main-baiviet {
   margin: 25px 0px 0px 10px;
 }
@@ -31,7 +33,7 @@
 
 .main-baiviet-item-wrapper {
   width: 42%;
-  margin-left: 25px;
+  margin-left: 50px;
   margin-bottom: 30px; /* Khoảng cách dưới giữa các bài viết */
 }
 
@@ -62,7 +64,9 @@
 .main-baiviet-href a {
   text-decoration: none;
   padding: 8px 10px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .main-baiviet-href a:hover {
@@ -76,18 +80,39 @@
 }
 
 .main-baiviet-item {
-  height: 350px;
+  height: 254px;
   object-fit: cover;
   margin: 20px 0px 0px 0px;
+  border-radius: 10px;
+
+  /* Mặc định ảnh sẽ có hiệu ứng đen trắng */
+  filter: grayscale(100%);
+  transition: filter 0.3s ease; /* Thêm chuyển đổi mượt mà */
+}
+
+.main-baiviet-item:hover {
+  /* Khi hover sẽ trở lại màu sắc ban đầu */
+  filter: grayscale(0%);
 }
 
 .main-baiviet-content h4 {
   font-size: 1.2rem;
   font-weight: 600;
+  font-family: "Oswald", sans-serif;
+  margin-top: 15px;
 }
 
 .main-baiviet-content p {
-  font-size: 0.9rem;
+  font-size: 0.7rem;
+  margin: 10px 0px 10px 0px;
+  font-family: "Oswald", sans-serif;
+  
+}
+
+.main-baiviet-content a {
+  font-family: "Afacad Flux", sans-serif;
+  font-optical-sizing: auto;
+  font-size: var(--main-font-size);
 }
 
 .tags {
