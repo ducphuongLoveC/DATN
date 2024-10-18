@@ -1,6 +1,4 @@
 import React, { useState, forwardRef, ReactNode } from 'react';
-import PropTypes from 'prop-types';
-
 // material-ui
 import { useTheme } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -64,8 +62,6 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
   setValue,
   popupState,
 }) => {
-  const theme = useTheme();
-
   return (
     <OutlinedInput
       id="input-search-header"

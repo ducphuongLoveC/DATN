@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs, Tab, Box, Typography, styled, Grid } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { Tabs, Tab, Box, Typography, Grid } from '@mui/material';
 
 const courses = [
   {
@@ -96,7 +95,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
 };
 const Course: React.FC = () => {
   const [value, setValue] = useState(0);
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
   return (
@@ -112,7 +111,7 @@ const Course: React.FC = () => {
       </Tabs>
       <TabPanel value={value} index={0}>
         <Grid container spacing={2}>
-          {courses.map((c, id: number) => (
+          {courses.map((c, _id: number) => (
             <Grid item xs={12} sm={6} md={4} lg={3}>
               <CourseItem
                 to='/courses/'

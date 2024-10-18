@@ -1,5 +1,4 @@
 
-import { useTheme } from '@mui/material';
 import { Editor } from '@tinymce/tinymce-react';
 import { useState } from 'react';
 
@@ -95,10 +94,10 @@ const TextEditor: React.FC<TextEditorProps> = ({
     tinycomments_mode: 'embedded',
     tinycomments_author: 'ducphuongdepzai',
 
-    ai_request: (request: any, respondWith: any) =>
-      respondWith.string(() =>
-        Promise.reject('See docs to implement AI Assistant')
-      ),
+    // ai_request: (request: any, respondWith: any) =>
+    //   respondWith.string(() =>
+    //     Promise.reject('See docs to implement AI Assistant')
+    //   ),
   };
 
   return (

@@ -1,9 +1,8 @@
-import { Box, useTheme, Typography, Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 
 import PostItem from './PostItem';
 
 const Post: React.FC = () => {
-  const theme = useTheme();
   return (
     <Box mt={2}>
       <Grid container spacing={2}>

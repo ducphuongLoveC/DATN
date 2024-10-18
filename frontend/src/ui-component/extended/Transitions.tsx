@@ -6,7 +6,6 @@ import {
   Grow,
   Slide,
   Zoom,
-  BoxProps,
   CollapseProps,
   FadeProps,
   GrowProps,

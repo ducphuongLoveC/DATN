@@ -26,7 +26,7 @@ import PlacementToggle from '@/components/PlacementToggle';
 import Comment from './Comment';
 import Wrapper from '@/components/Wrapper';
 import TextEditor from '@/components/TextEditor';
-const BoxHeaderAndNote = styled(Box)(({ theme }) => ({
+const BoxHeaderAndNote = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
   padding: '0 20px',

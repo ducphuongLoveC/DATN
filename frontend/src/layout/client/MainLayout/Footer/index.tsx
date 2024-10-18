@@ -1,13 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTheme, useMediaQuery } from '@mui/material';
-import s from './Footer.module.scss';
+import { useTheme } from '@mui/material';
+
 import Logo from '@/ui-component/Logo';
 // ===============================|| FOOTER ||=============================== //
 
 const Footer: React.FC = () => {
-  const theme = useTheme(); // Lấy theme từ hook useTheme
-  const downMD = useMediaQuery(theme.breakpoints.down('md')); // Sử dụng theme breakpoints
+  const theme = useTheme(); 
   return (
     <footer
       style={{
@@ -61,8 +60,8 @@ const Footer: React.FC = () => {
                   'Courses',
                 ].map((link, index) => (
                   <li key={index}>
-                    <a
-                      href="#"
+                    <Link
+                      to="/"
                       className="tw-text-sm"
                       style={{
                         color: theme.palette.text.primary,
@@ -70,7 +69,7 @@ const Footer: React.FC = () => {
                     >
                       <i className="fa-solid fa-chevron-right tw-text-xs tw-mr-3"></i>
                       {link}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -96,8 +95,8 @@ const Footer: React.FC = () => {
                   'Courses',
                 ].map((info, index) => (
                   <li key={index}>
-                    <a
-                      href="#"
+                    <Link
+                      to="/"
                       className="tw-text-sm"
                       style={{
                         color: theme.palette.text.primary,
@@ -105,7 +104,7 @@ const Footer: React.FC = () => {
                     >
                       <i className="fa-solid fa-chevron-right tw-text-xs tw-mr-3"></i>
                       {info}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -152,16 +151,16 @@ const Footer: React.FC = () => {
           {/* &copy; Đồ án tốt nghiệp by Duc Phuong */}
         </div>
         <div>
-          <a
+          <Link
             id="scroll-to-top"
-            href="#top"
+            to="#top"
             className="tw-transition tw-hidden tw-shadow tw-bottom-1 tw-right-1 tw-w-14 tw-h-14 tw-rounded-[50%] tw-bg-red-600 tw-hover:opacity-80 tw-z-50 tw-border tw-group"
             style={{
               backgroundColor: theme.palette.primary.main,
             }}
           >
             <i className="fa-solid fa-arrow-up tw-transition tw-pt-5 tw-pl-5 tw-text-white tw-group-hover:-translate-y-2"></i>
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

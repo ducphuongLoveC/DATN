@@ -1,4 +1,4 @@
-import { Fragment, Suspense } from 'react';
+import { Fragment } from 'react';
 
 import NotFound from '@/views/pages/notFound';
 import {

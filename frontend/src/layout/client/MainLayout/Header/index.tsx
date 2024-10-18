@@ -7,9 +7,7 @@ import { Box } from '@mui/material';
 import {
   BiAdjust,
   BiBell,
-  BiBook,
   BiChalkboard,
-  BiCog,
   BiX,
 } from 'react-icons/bi';
 import Tippy from '@tippyjs/react';
@@ -36,12 +34,12 @@ import Dropdown from '@/components/Dropdown';
 
 // ==============================|| NAVBAR ||============================== //
 
-const ContentSearch = styled(Box)(({ theme }) => ({
+const ContentSearch = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
   margin: '10px 15px',
 }));
-const ImageContentSearch = styled('img')(({ theme }) => ({
+const ImageContentSearch = styled('img')(() => ({
   width: '30px',
   height: '30px',
   borderRadius: '50%',
@@ -93,7 +91,9 @@ const Header: React.FC = () => {
 
   const [isLogin, setIsLogin] = useState(false);
 
-  const [isShowNavMobile, setIsShowNavMobile] = useState(false);
+  useEffect(()=> {
+    setIsLogin(true);
+  },[]);
 
   const debounced = useDebounce(searchValue, 500);
 
@@ -342,6 +342,7 @@ const Header: React.FC = () => {
                         allowHTML
                         render={(attrs) => (
                           <Wrapper
+                            {...attrs}
                             style={{
                               background: theme.palette.background.paper,
                               width: '400px',

@@ -120,7 +120,6 @@ export default function Comment() {
 
 function CommentInput({
   onSubmit,
-  placeholder = 'Add a comment...',
   buttonText = 'Bình luận',
   init = '',
 }: CommentInputProps) {

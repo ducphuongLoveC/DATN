@@ -18,7 +18,7 @@ const NewPost: React.FC = () => {
     content: '',
     thumbnail: null,
   });
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
+
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
@@ -38,8 +38,7 @@ const NewPost: React.FC = () => {
   const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const selectedThumbnail = event.target.files[0];
-      setThumbnail(selectedThumbnail);
-
+      
       const previewUrl = URL.createObjectURL(selectedThumbnail);
       setThumbnailPreview(previewUrl);
 

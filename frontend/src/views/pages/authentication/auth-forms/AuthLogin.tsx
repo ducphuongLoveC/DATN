@@ -42,7 +42,7 @@ interface AuthLoginProps {
   onSubmit?: (values: FormValues) => void;
 }
 
-const MainInput = styled(OutlinedInput)(({ theme }) => ({
+const MainInput = styled(OutlinedInput)(() => ({
   input: {
     color: 'black',
   },
@@ -175,7 +175,7 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ onSubmit, ...others }) => {
         })}
         onSubmit={(
           values: FormValues,
-          { setSubmitting, setErrors }: FormikHelpers<FormValues>
+          { setSubmitting }: FormikHelpers<FormValues>
         ) => {
           onSubmit && onSubmit(values);
           setSubmitting(false);

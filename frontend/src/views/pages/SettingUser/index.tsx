@@ -1,4 +1,4 @@
-import { useTheme, IconButton, useMediaQuery } from '@mui/material';
+import { useTheme, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -33,8 +33,6 @@ const SettingUser: React.FC = () => {
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const downMD = useMediaQuery('(max-width-768px');
-
   useEffect(() => {
     axios.get('http://localhost:3000/users/1').then((response) => {
       setUser(response.data);
@@ -58,7 +56,7 @@ const SettingUser: React.FC = () => {
   const handleSave = () => {
     axios
       .put(`http://localhost:3000/users/1`, { [currentField]: fieldValue })
-      .then((response) => {
+      .then((_response) => {
         setUser((prevUser: any) => ({
           ...prevUser,
           [currentField]: fieldValue,
