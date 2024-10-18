@@ -43,7 +43,19 @@ li {
   --width-sibar: 70px;
 
   /* space */
-  --space-grid: 2px;
+  --large-space: 32px;
+  --medium-space: 16px;
+  --small-space: 8px;
+
+  /* fontwight */
+  --bold-font-weight: 600;
+  --medium-font-weight: 500;
+  --thin-font-weight: 400;
+
+  /*icon */
+  --large-icon: 55px;
+  --medium-icon: 25px;
+  --small-icon: 15px;
 }
 
 h1,
@@ -81,7 +93,6 @@ h5 {
 h6 {
   font-size: 1rem; /* Kích thước chữ cho h6 */
 }
-
 
 ::-webkit-scrollbar {
   width: 5px;

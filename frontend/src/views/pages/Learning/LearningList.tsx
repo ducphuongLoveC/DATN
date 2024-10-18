@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import Module from '@/components/Module';
 import { Typography, Box, useTheme } from '@mui/material';
 
@@ -9,7 +10,7 @@ const LearningLists = [
   {
     title: '1: Giới thiệu về JavaScript',
     children: [
-      { title: 'JavaScript là gì?', path: '1', time: 600, },
+      { title: 'JavaScript là gì?', path: '1', time: 600 },
       { title: 'Lịch sử của JavaScript', path: '2', time: 600 },
     ],
   },
@@ -84,6 +85,14 @@ interface LearningListProps {
   onClose: () => void;
 }
 const LearningList: React.FC<LearningListProps> = ({ onClose }) => {
+  const [expandedIndexs, setExpandedIndexs] = useState<number[]>([0]);
+
+  const handleToggleExpanded = (index: number) => {
+    setExpandedIndexs((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+
   const theme = useTheme();
   return (
     <Box
@@ -122,7 +131,13 @@ const LearningList: React.FC<LearningListProps> = ({ onClose }) => {
       </Box>
       <Box>
         {LearningLists.map((list, index) => (
-          <Module styleM='two' key={index} title={list.title} items={list.children} />
+          <Module
+            onClick={() => handleToggleExpanded(index)}
+            expanded={expandedIndexs.includes(index)}
+            key={index}
+            title={list.title}
+            items={list.children}
+          />
         ))}
       </Box>
     </Box>

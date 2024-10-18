@@ -1,7 +1,24 @@
-import { Box, Grid, Typography, Button, useTheme } from '@mui/material';
-import DoneIcon from '@mui/icons-material/Done';
 import { useState } from 'react';
+
+// ui
+import {
+  Box,
+  Grid,
+  Typography,
+  Button,
+  CardMedia,
+  styled,
+} from '@mui/material';
+
+//my pj
+import AverageRating from '@/components/AverageRating';
 import Module from '@/components/Module';
+import ButtonPrimary from '@/components/ButtonPrimary';
+
+//icon
+import DoneIcon from '@mui/icons-material/Done';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+
 const LearningOutcome = [
   { id: 1, title: 'Hiểu được các khái niệm cơ bản và nền tảng của ngành IT' },
   { id: 2, title: 'Nắm vững các kiến thức cơ bản về lập trình web' },
@@ -104,40 +121,79 @@ const LearningLists = [
   },
 ];
 
-const Course: React.FC = () => {
+const BoxPreviewVideo = styled(Box)(({}) => ({
+  position: 'relative',
+  cursor: 'pointer',
+  '&::after': {
+    content: '" "',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 'var(--main-border-radius)',
+    zIndex: 1,
+  },
+}));
+
+const CourseDetail: React.FC = () => {
   const [isShowMoreLearningOutCome, setIsShowMoreLearningOutCome] =
     useState(false);
+  const [expandedIndexs, setExpandedIndexs] = useState<number[]>([0]);
 
-  const theme = useTheme();
+  const handleToggleExpanded = (index: number) => {
+    setExpandedIndexs((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+
+  const handleToggleExpandedAll = () => {
+    if (LearningLists.length == expandedIndexs.length) {
+      setExpandedIndexs([]);
+    } else {
+      setExpandedIndexs(LearningLists.map((_, index) => index));
+    }
+  };
 
   const handleToggleShowMoreLearningOutCome = () => {
-    setIsShowMoreLearningOutCome((pre) => !pre);
+    setIsShowMoreLearningOutCome((prev) => !prev);
   };
+
   return (
-    <Box padding={5}>
+    <Box mt={'var(--large-space)'}>
       <Grid
         container
-        spacing={2}
+        spacing={{ xs: 0, sm: 13 }}
+        width={'100%'}
         sx={{
           flexDirection: {
             xs: 'column-reverse',
-            sm: 'row',
+            md: 'row',
+          },
+          px: {
+            xs: '20px',
+            md: '0',
           },
         }}
       >
         <Grid item xs={12} md={8} xl={8}>
-          {/* Nội dung cột 1 */}
           <Typography variant="h1">Kiến Thức Nhập Môn IT</Typography>
-          <Typography variant="body1" mt={2}>
+          <Typography variant="body1" mt={'var(--medium-space)'}>
             Để có cái nhìn tổng quan về ngành IT - Lập trình web các bạn nên xem
             các videos tại khóa này trước nhé.
           </Typography>
-          <Typography variant="h3" mt={3}>
+          <AverageRating totalRatings={25} totalUserRate={5} totalStars={5} />
+          <Typography
+            fontWeight={'var(--bold-font-weight)'}
+            mt={'var(--medium-space)'}
+          >
+            Đăng bởi admin
+          </Typography>
+          <Typography variant="h3" mt={'var(--medium-space)'}>
             Bạn sẽ học được những gì?
           </Typography>
-          <Box
-      
-          >
+          <Box>
             <Grid
               container
               sx={{
@@ -145,9 +201,9 @@ const Course: React.FC = () => {
                 maxHeight: isShowMoreLearningOutCome ? 'none' : '400px',
               }}
               spacing={1}
-              mt={3}
+              mt={'var(--medium-space)'}
               p={2}
-              border={'1px solid #d1d7dc'}
+              border="1px solid #d1d7dc"
             >
               {LearningOutcome.map((l) => (
                 <Grid item xs={6} key={l.id} display={'flex'}>
@@ -161,21 +217,117 @@ const Course: React.FC = () => {
               {isShowMoreLearningOutCome ? 'Ẩn bớt' : 'Xem thêm'}
             </Button>
           </Box>
-          <Typography variant="h3" mt={3}>
+          <Typography variant="h3" mt={'var(--medium-space)'}>
             Nội dung khóa học
           </Typography>
-          <Typography variant="body1" mt={2}>
-            4 chương • 12 bài học • Thời lượng 03 giờ 26 phút
-          </Typography>
-          <Box>
+          <Box
+            display={'flex'}
+            justifyContent={'space-between'}
+            alignItems={'center'}
+          >
+            <Typography variant="body1" mt={'var(--medium-space)'}>
+              4 chương • 12 bài học • Thời lượng 03 giờ 26 phút
+            </Typography>
+            <Button onClick={handleToggleExpandedAll}>
+              {expandedIndexs.length == LearningLists.length
+                ? 'Đóng tất cả'
+                : 'Mở tất cả'}
+            </Button>
+          </Box>
+          <Box
+            mt={'var(--medium-space)'}
+            sx={{
+              border: '1px solid #d1d7dc',
+            }}
+          >
             {LearningLists.map((list, index) => (
-              <Module styleM='two' key={index} title={list.title} items={list.children} />
+              <Module
+                onClick={() => handleToggleExpanded(index)}
+                expanded={expandedIndexs.includes(index)}
+                styleM="two"
+                key={index}
+                title={list.title}
+                items={list.children}
+              />
             ))}
           </Box>
         </Grid>
         <Grid item xs={12} md={4} xl={4}>
-          <Box>
-            <Typography variant="h5">Video</Typography>
+          <Box position={'sticky'} top="97px">
+            <BoxPreviewVideo>
+              <CardMedia
+                component="img"
+                image="https://i.ytimg.com/vi/wm5gMKuwSYk/maxresdefault.jpg"
+                sx={{
+                  width: '100%',
+                  borderRadius: 'var(--main-border-radius)',
+                }}
+              />
+              <PlayCircleIcon
+                sx={{
+                  position: 'absolute',
+                  fontSize: 'var(--large-icon)',
+                  color: 'white',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  zIndex: 2,
+                }}
+              />
+              <Typography
+                variant="body1"
+                sx={{
+                  position: 'absolute',
+                  bottom: '20px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  color: 'white',
+                  zIndex: 2,
+                }}
+              >
+                Xem giới thiệu
+              </Typography>
+            </BoxPreviewVideo>
+            <Grid
+              container
+              spacing={2} 
+              sx={{
+                px: {
+                  sm: 0,
+                  md: 3,
+                },
+              }}
+            >
+              <Grid item xs={12} mt={'var(--medium-space)'}>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item>
+                    <Typography variant="h2">
+                      {Number(120000).toLocaleString('vi-VN')} VND
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Typography
+                      variant="h5"
+                      sx={{ textDecoration: 'line-through' }}
+                    >
+                      {Number(120000).toLocaleString('vi-VN')} VND
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid item xs={12}>
+                <ButtonPrimary
+                  fullWidth
+                >
+                  Mua ngay
+                </ButtonPrimary>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography>Khóa học bao gồm:</Typography>
+              </Grid>
+            </Grid>
           </Box>
         </Grid>
       </Grid>
@@ -183,4 +335,4 @@ const Course: React.FC = () => {
   );
 };
 
-export default Course;
+export default CourseDetail;

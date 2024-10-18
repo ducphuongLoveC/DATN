@@ -22,7 +22,7 @@ const Register3 = Loadable(
 
 //learning
 const Learning = Loadable(lazy(() => import('@/views/pages/Learning')));
-const Course = Loadable(lazy(() => import('@/views/pages/Course')));
+const CourseDetail = Loadable(lazy(() => import('../views/pages/CourseDetail')));
 
 //posts route
 const NewPost = Loadable(lazy(() => import('@/views/pages/Post/NewPost')));
@@ -67,7 +67,7 @@ const publicRoutes: RouteProp[] = [
   {
     layout: MainLayout,
     path: path.client.courses,
-    page: Course,
+    page: CourseDetail,
   },
   {
     path: path.client.profile,

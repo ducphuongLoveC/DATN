@@ -19,7 +19,7 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({
 
       artPlayerInstance.current = new ArtPlayer({
         container: artPlayerRef.current,
-        url: hls.url,
+        url: videoUrl,
         customType: {
           m3u8: function (video) {
             hls.attachMedia(video);

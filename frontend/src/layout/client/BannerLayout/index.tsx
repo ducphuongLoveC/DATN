@@ -1,4 +1,4 @@
-import { useTheme, Theme, useMediaQuery } from '@mui/material';
+import { useTheme, Theme, useMediaQuery, Box } from '@mui/material';
 import clsx from 'clsx';
 
 import SideBar from '../MainLayout/SideBar';
@@ -112,7 +112,6 @@ const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
         background: theme.palette.background.paper,
       }}
     >
-      {/* header */}
       <Header />
       <div
         style={{
@@ -123,7 +122,7 @@ const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
         <SideBar />
         <div className={clsx(Layout['content-main'], downMD ? 'tw-px-2' : '')}>
           <Carousel dot auto time={4000} sliders={fakeSlider} />
-          {children}
+          <Box mt='var(--large-space)'>{children}</Box>
         </div>
       </div>
       <Footer />
