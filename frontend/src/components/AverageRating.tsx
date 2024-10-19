@@ -29,7 +29,7 @@ const AverageRating: React.FC<AverageRatingProps> = ({
         {averageRating}
       </Typography>
 
-      <Typography>
+     
         <StarRatings
           rating={averageRating} // Cập nhật để hiển thị đánh giá trung bình
           starRatedColor={starRatedColor || '#f69c08'} // Màu của sao đã được đánh giá
@@ -39,8 +39,6 @@ const AverageRating: React.FC<AverageRatingProps> = ({
           numberOfStars={totalStars} // Số lượng sao
           name="averageRating"
         />
-      </Typography>
-
       <Typography ml={1}>
         ({totalUserRate} đánh giá)
       </Typography>
