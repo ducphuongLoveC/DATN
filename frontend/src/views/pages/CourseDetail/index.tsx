@@ -8,16 +8,33 @@ import {
   Button,
   CardMedia,
   styled,
+  useTheme,
+  Avatar,
 } from '@mui/material';
 
 //my pj
 import AverageRating from '@/components/AverageRating';
 import Module from '@/components/Module';
 import ButtonPrimary from '@/components/ButtonPrimary';
+import InputPrimary from '@/components/InputPrimary';
+import RatingPreview from '@/components/RatingPreview';
 
 //icon
 import DoneIcon from '@mui/icons-material/Done';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+
+import SpeedIcon from '@mui/icons-material/Speed';
+import DvrIcon from '@mui/icons-material/Dvr';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PaymentIcon from '@mui/icons-material/Payment';
+
+const BoxCenter = styled(Box)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  marginTop: 'var(--medium-space)',
+}));
 
 const LearningOutcome = [
   { id: 1, title: 'Hiểu được các khái niệm cơ bản và nền tảng của ngành IT' },
@@ -44,13 +61,12 @@ const LearningOutcome = [
   { id: 19, title: 'Biết cách tối ưu hóa hiệu suất của trang web' },
   { id: 20, title: 'Hiểu về các mô hình thiết kế phổ biến trong lập trình' },
 ];
-
 const LearningLists = [
   {
     title: '1: Giới thiệu về JavaScript',
     children: [
-      { title: 'JavaScript là gì?', path: '1', time: 600 },
-      { title: 'Lịch sử của JavaScript', path: '2', time: 600 },
+      { title: 'JavaScript là gì?', path: '1', time: 661 },
+      { title: 'Lịch sử của JavaScript', path: '2', time: 620 },
     ],
   },
   {
@@ -79,8 +95,8 @@ const LearningLists = [
   {
     title: '5: Mảng và đối tượng',
     children: [
-      { title: 'Làm việc với mảng', path: '9' },
-      { title: 'Làm việc với đối tượng', path: '10' },
+      { title: 'Làm việc với mảng', path: '9', time: 1256 },
+      { title: 'Làm việc với đối tượng', path: '10', time: 2318 },
     ],
   },
   {
@@ -120,7 +136,6 @@ const LearningLists = [
     ],
   },
 ];
-
 const BoxPreviewVideo = styled(Box)(({}) => ({
   position: 'relative',
   cursor: 'pointer',
@@ -142,6 +157,7 @@ const CourseDetail: React.FC = () => {
     useState(false);
   const [expandedIndexs, setExpandedIndexs] = useState<number[]>([0]);
 
+  const theme = useTheme();
   const handleToggleExpanded = (index: number) => {
     setExpandedIndexs((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
@@ -164,7 +180,7 @@ const CourseDetail: React.FC = () => {
     <Box mt={'var(--large-space)'}>
       <Grid
         container
-        spacing={{ xs: 0, sm: 13 }}
+        spacing={{ xs: 0, sm: 2, lg: 4 }}
         width={'100%'}
         sx={{
           flexDirection: {
@@ -172,28 +188,38 @@ const CourseDetail: React.FC = () => {
             md: 'row',
           },
           px: {
-            xs: '20px',
+            xs: '10px',
             md: '0',
           },
         }}
       >
         <Grid item xs={12} md={8} xl={8}>
-          <Typography variant="h1">Kiến Thức Nhập Môn IT</Typography>
+          <Typography variant="h2">Kiến Thức Nhập Môn IT</Typography>
           <Typography variant="body1" mt={'var(--medium-space)'}>
             Để có cái nhìn tổng quan về ngành IT - Lập trình web các bạn nên xem
             các videos tại khóa này trước nhé.
           </Typography>
           <AverageRating totalRatings={25} totalUserRate={5} totalStars={5} />
-          <Typography
-            fontWeight={'var(--bold-font-weight)'}
-            mt={'var(--medium-space)'}
+          <Button
+            sx={{
+              padding: 0,
+              my: 'var(--medium-space)',
+            }}
           >
-            Đăng bởi admin
-          </Typography>
+            <Avatar src="/images/avatar.jpg" />
+            <Typography variant="h4" ml="var(--medium-space)">
+              Dương Đức Phương
+            </Typography>
+            <CheckCircleIcon sx={{fontSize:'var(--small-icon)', ml:'3px'}} />
+          </Button>
           <Typography variant="h3" mt={'var(--medium-space)'}>
             Bạn sẽ học được những gì?
           </Typography>
-          <Box>
+          <Box
+            sx={{
+              backgroundColor: theme.palette.background.paper2,
+            }}
+          >
             <Grid
               container
               sx={{
@@ -203,7 +229,6 @@ const CourseDetail: React.FC = () => {
               spacing={1}
               mt={'var(--medium-space)'}
               p={2}
-              border="1px solid #d1d7dc"
             >
               {LearningOutcome.map((l) => (
                 <Grid item xs={6} key={l.id} display={'flex'}>
@@ -251,16 +276,31 @@ const CourseDetail: React.FC = () => {
               />
             ))}
           </Box>
+
+          {/* đánh giá */}
+          <Typography variant="h3" mt={'var(--medium-space)'}>
+            Đánh giá
+          </Typography>
+          <RatingPreview ratingCounts={[5, 5, 1, 6, 200]} />
         </Grid>
+        {/* box 2 */}
         <Grid item xs={12} md={4} xl={4}>
-          <Box position={'sticky'} top="97px">
+          <Box
+            position={'sticky'}
+            top="97px"
+            mb={'var(--medium-space)'}
+            sx={{
+              backgroundColor: theme.palette.background.paper2,
+              paddingBottom: '20px',
+            }}
+          >
+            {/* preview video */}
             <BoxPreviewVideo>
               <CardMedia
                 component="img"
                 image="https://i.ytimg.com/vi/wm5gMKuwSYk/maxresdefault.jpg"
                 sx={{
                   width: '100%',
-                  borderRadius: 'var(--main-border-radius)',
                 }}
               />
               <PlayCircleIcon
@@ -288,16 +328,18 @@ const CourseDetail: React.FC = () => {
                 Xem giới thiệu
               </Typography>
             </BoxPreviewVideo>
+
             <Grid
               container
-              spacing={2} 
+              spacing={2}
               sx={{
                 px: {
                   sm: 0,
-                  md: 3,
+                  md: 5,
                 },
               }}
             >
+              {/* giá */}
               <Grid item xs={12} mt={'var(--medium-space)'}>
                 <Grid container spacing={2} alignItems="center">
                   <Grid item>
@@ -316,16 +358,51 @@ const CourseDetail: React.FC = () => {
                 </Grid>
               </Grid>
 
+              {/* mã giảm giá */}
               <Grid item xs={12}>
-                <ButtonPrimary
-                  fullWidth
-                >
-                  Mua ngay
-                </ButtonPrimary>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item xs={8}>
+                    <InputPrimary label="Khuyến mãi" type="text" fullWidth />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <ButtonPrimary customVariant="outlined" fullWidth>
+                      Áp dụng
+                    </ButtonPrimary>
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid item xs={12}>
-                <Typography>Khóa học bao gồm:</Typography>
+                <ButtonPrimary fullWidth>Thanh toán ngay <PaymentIcon/> </ButtonPrimary>
+              </Grid>
+
+              {/* nhận lại sau khóa học */}
+              <Grid item xs={12}>
+                <Typography variant="h4" fontWeight={'var(--bold-font-weight)'}>
+                  Khóa học bao gồm:
+                </Typography>
+
+                <BoxCenter>
+                  <SpeedIcon />
+                  <Typography ml={2}>Trình độ học mức cơ bản</Typography>
+                </BoxCenter>
+
+                <BoxCenter>
+                  <DvrIcon />
+                  <Typography ml={2}>Tất cả 50 bài học</Typography>
+                </BoxCenter>
+
+                <BoxCenter>
+                  <AccessTimeIcon />
+                  <Typography ml={2}>Tổng thời lượng 10 giờ 20 phút</Typography>
+                </BoxCenter>
+
+                <BoxCenter>
+                  <EmojiEventsIcon />
+                  <Typography ml={2}>
+                    Cấp chứng khi sau khi hoàn thành
+                  </Typography>
+                </BoxCenter>
               </Grid>
             </Grid>
           </Box>
