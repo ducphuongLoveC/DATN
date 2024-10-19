@@ -65,7 +65,7 @@ const LearningLists = [
   {
     title: '1: Giới thiệu về JavaScript',
     children: [
-      { title: 'JavaScript là gì?', path: '1', time: 600 },
+      { title: 'JavaScript là gì?', path: '1', time: 661 },
       { title: 'Lịch sử của JavaScript', path: '2', time: 600 },
     ],
   },
