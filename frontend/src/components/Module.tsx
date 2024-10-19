@@ -30,10 +30,6 @@
 // }) => {
 //   const theme = useTheme();
 
-
-  
-
-
 //   const renderTitle = () => (
 //     <Typography fontSize={'16px'}>
 //       {styleM === 'two' &&
@@ -131,8 +127,6 @@
 
 // export default memo(Module);
 
-
-
 import {
   Accordion,
   AccordionSummary,
@@ -148,12 +142,12 @@ import { useTheme } from '@mui/material';
 import { memo } from 'react';
 import moment from 'moment';
 
-interface ModuleProps  {
+interface ModuleProps {
   styleM?: 'one' | 'two';
   title: string;
   items: any[];
   expanded?: boolean;
-  onClick : (e: any)=> void
+  onClick: (e: any) => void;
 }
 
 const Module: React.FC<ModuleProps> = ({
@@ -161,31 +155,33 @@ const Module: React.FC<ModuleProps> = ({
   title,
   items,
   expanded = false,
-  onClick
+  onClick,
 }) => {
   const theme = useTheme();
 
   const renderTitle = () => (
-    <Typography fontSize={'16px'}>
-      {styleM === 'two' &&
-        (expanded ? (
-          <RemoveIcon sx={{ fontSize: '17px' }} />
-        ) : (
-          <AddIcon sx={{ fontSize: '17px' }} />
-        ))}{' '}
-      {title}
-      {styleM === 'two' && (
-        <Box
-          fontSize={'15px'}
-          position={'absolute'}
-          right={10}
-          top={'50%'}
-          sx={{ transform: 'translateY(-50%)' }}
-        >
-          {items.length} bài học
-        </Box>
-      )}
-    </Typography>
+    <Box> 
+      <Box fontSize={'16px'}>
+        {styleM === 'two' &&
+          (expanded ? (
+            <RemoveIcon sx={{ fontSize: '17px' }} />
+          ) : (
+            <AddIcon sx={{ fontSize: '17px' }} />
+          ))}{' '}
+        {title}
+        {styleM === 'two' && (
+          <Box
+            fontSize={'15px'}
+            position={'absolute'}
+            right={10}
+            top={'50%'}
+            sx={{ transform: 'translateY(-50%)' }}
+          >
+            {items.length} bài học
+          </Box>
+        )}
+      </Box>
+    </Box>
   );
 
   const renderSummary = () => (
@@ -220,12 +216,11 @@ const Module: React.FC<ModuleProps> = ({
 
   return (
     <Accordion
-      onClick={(e)=> onClick(e)}
+      onClick={(e) => onClick(e)}
       expanded={expanded}
       disableGutters
       sx={{
         mb: styleM === 'two' ? '10px' : '0',
-       
       }}
     >
       <AccordionSummary

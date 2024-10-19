@@ -56,6 +56,12 @@ li {
   --large-icon: 55px;
   --medium-icon: 25px;
   --small-icon: 15px;
+
+  /* padding */
+  --large-p: 20px;
+  --medium-p: 15px;
+  --small-p: 12px;
+
 }
 
 h1,
