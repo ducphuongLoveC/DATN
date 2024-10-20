@@ -1,7 +1,7 @@
 import { Grid, Typography, styled, useTheme } from '@mui/material';
 import React from 'react';
 
-const Thumbnail = styled('img')(({ theme }) => ({
+const Thumbnail = styled('img')(() => ({
   width: '70px',
   objectFit: 'contain',
 }));

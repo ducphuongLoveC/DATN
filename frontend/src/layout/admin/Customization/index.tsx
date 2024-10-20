@@ -55,7 +55,7 @@ const Customization: React.FC = () => {
     customization.borderRadius
   );
   const handleBorderRadius = (
-    event: Event | SyntheticEvent,
+    _event: Event | SyntheticEvent,
     newValue: number | number[]
   ) => {
     if (typeof newValue === 'number') {

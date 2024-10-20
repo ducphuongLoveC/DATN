@@ -4,13 +4,20 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import clsx from 'clsx';
 import { Box } from '@mui/material';
-import { BiAdjust, BiBell, BiChalkboard, BiX } from 'react-icons/bi';
+import {
+  BiAdjust,
+  BiBell,
+  BiChalkboard,
+  BiX,
+} from 'react-icons/bi';
 import Tippy from '@tippyjs/react';
 import HeadlessTippy from '@tippyjs/react/headless';
 
 import axios from 'axios';
 
 // import my project
+import path from '@/constants/routes';
+import Logo from '@/ui-component/Logo';
 import Wrapper from '@/components/Wrapper';
 import GradientIcon from '@/components/GradientIcon';
 import s from './Header.module.scss';
@@ -20,19 +27,19 @@ import { useTheme, styled } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
 
 import useDebounce from '@/hooks/useDebounce';
-import sleep from '@/utils/useSleep';
+import sleep from '../../../../utils/sleep';
 
 import { BeatLoader } from 'react-spinners';
 import Dropdown from '@/components/Dropdown';
 
 // ==============================|| NAVBAR ||============================== //
 
-const ContentSearch = styled(Box)(({ theme }) => ({
+const ContentSearch = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
   margin: '10px 15px',
 }));
-const ImageContentSearch = styled('img')(({ theme }) => ({
+const ImageContentSearch = styled('img')(() => ({
   width: '30px',
   height: '30px',
   borderRadius: '50%',
@@ -82,9 +89,11 @@ const Header: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   const [dataSearch, setDataSearch] = useState([]);
 
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
 
-  const [isShowNavMobile, setIsShowNavMobile] = useState(false);
+  useEffect(()=> {
+    setIsLogin(true);
+  },[]);
 
   const debounced = useDebounce(searchValue, 500);
 
@@ -107,6 +116,8 @@ const Header: React.FC = () => {
       fetch();
     }
   }, [debounced]);
+
+  console.log(homeState);
 
   const handleToggleThemeMode = () => {
     const newTheme = homeState.theme === 'light' ? 'dark' : 'light';
@@ -145,11 +156,14 @@ const Header: React.FC = () => {
       >
         <div className="tw-flex tw-justify-between tw-items-center">
           {/* Box chứa logo */}
-          <div className="tw-flex tw-items-center">
-            <Link to="/" className="tw-flex tw-items-center">
-              <img src="/images/ftech-c.png" alt="Logo" width={'60'} />
-            </Link>
-          </div>
+          {!downSM && (
+            <div className="tw-flex tw-items-center">
+              <Link to="/" className="tw-flex tw-items-center">
+                <Logo />
+                <span className="tw-font-bold">Lập trình Ftech</span>
+              </Link>
+            </div>
+          )}
 
           {/* Box chứa tìm kiếm */}
           <div
@@ -204,7 +218,7 @@ const Header: React.FC = () => {
                     style={{
                       border: `2px solid ${theme.palette.border.borderLv2}`,
                     }}
-                    placeholder="Search..."
+                    placeholder="Tìm kiếm khóa học"
                     onChange={(e) => handleSearchValue(e.target.value)}
                   />
 
@@ -285,8 +299,9 @@ const Header: React.FC = () => {
                                   </div>
                                 }
                               />
-                              {notifications.map((n) => (
+                              {notifications.map((n, index) => (
                                 <Dropdown.ImageDescription
+                                  key={index}
                                   hover
                                   thumbnail="images/ktnt.png"
                                   bodyHead={n.bodyHead}
@@ -327,6 +342,7 @@ const Header: React.FC = () => {
                         allowHTML
                         render={(attrs) => (
                           <Wrapper
+                            {...attrs}
                             style={{
                               background: theme.palette.background.paper,
                               width: '400px',
@@ -343,8 +359,9 @@ const Header: React.FC = () => {
                                   </div>
                                 }
                               />
-                              {courses.map((c) => (
+                              {courses.map((c, index) => (
                                 <Dropdown.ImageDescription
+                                  key={index}
                                   hover
                                   thumbnail="images/ktnt.png"
                                   bodyHead={c.title}
@@ -378,30 +395,74 @@ const Header: React.FC = () => {
                       </HeadlessTippy>
                     </Link>
                   </li>
+                  {/* logined */}
                   <li className={`${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
                     <HeadlessTippy
                       trigger="click"
-                      placement="top-start"
+                      placement="bottom-end"
                       interactive
                       allowHTML
                       render={(attrs) => (
                         <Wrapper
                           style={{
                             background: theme.palette.background.paper,
-                            width: '400px',
-                            maxHeight: '70vh',
-                            overflow: 'auto',
+                            width: '250px',
+                            borderRadius: '8px',
+                            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                            padding: '1rem',
                           }}
                           {...attrs}
                         >
-                          <span></span>
+                          <div className="tw-flex tw-items-center tw-mb-4">
+                            <img
+                              src="/images/avatar.jpg"
+                              className="tw-rounded-full tw-h-12 tw-w-12 tw-object-cover tw-max-w-full tw-max-h-full tw-min-w-[48px] tw-min-h-[48px]"
+                              alt="User Avatar"
+                            />
+                            <div className="tw-ml-3">
+                              <p className="tw-font-semibold">Phu Anh</p>
+                              <p className="tw-text-white-500 tw-text-sm">
+                                @anhphu1
+                              </p>
+                            </div>
+                          </div>
+                          <hr className="tw-my-2" />
+                          <ul>
+                            <li className="tw-py-2 tw-cursor-pointer">
+                              <Link to={path.client.profile}>
+                                Trang cá nhân
+                              </Link>
+                            </li>
+                            <li className="tw-py-2 tw-cursor-pointer">
+                              <Link to={path.client.newPost}>Viết blog</Link>
+                            </li>
+                            <li className="tw-py-2 tw-cursor-pointer">
+                              <Link to={path.client.myPost}>
+                                Bài viết của tôi
+                              </Link>
+                            </li>
+                            <li className="tw-py-2 tw-cursor-pointer">
+                              <Link to={path.client.bookmark}>
+                                Bài viết đã lưu
+                              </Link>
+                            </li>
+                            <li className="tw-py-2 tw-cursor-pointer">
+                              <Link to={path.client.setting}>Cài đặt</Link>
+                            </li>
+                            <li className="tw-py-2 tw-text-red-500 tw-cursor-pointer">
+                              Đăng xuất
+                            </li>
+                          </ul>
                         </Wrapper>
                       )}
                     >
-                      <img
-                        src="/images/avatar.jpg"
-                        className="tw-rounded-full tw-h-9 tw-w-9 tw-object-cover tw-max-w-full tw-max-h-full tw-min-w-[36px] tw-min-h-[36px]"
-                      />
+                      <div className="tw-cursor-pointer">
+                        <img
+                          src="/images/avatar.jpg"
+                          className="tw-rounded-full tw-h-9 tw-w-9 tw-object-cover tw-max-w-full tw-max-h-full tw-min-w-[36px] tw-min-h-[36px]"
+                          alt="User Avatar"
+                        />
+                      </div>
                     </HeadlessTippy>
                   </li>
                 </>

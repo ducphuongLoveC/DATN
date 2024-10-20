@@ -39,7 +39,7 @@ interface AuthRegisterProps {
   // Define any additional props here if necessary
 }
 
-const MainInput = styled(OutlinedInput)(({ theme }) => ({
+const MainInput = styled(OutlinedInput)(() => ({
   input: {
     color: 'black',
   },
@@ -48,7 +48,7 @@ const MainInput = styled(OutlinedInput)(({ theme }) => ({
 const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
   const theme: any = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-  const customization = useSelector((state: any) => state.customization);
+
   const [showPassword, setShowPassword] = useState(false);
   const [checked, setChecked] = useState(true);
 
@@ -60,10 +60,6 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
       }
     | undefined
   >();
-
-  const googleHandler = async () => {
-    console.error('Register');
-  };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -122,7 +118,8 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
           }>
         ) => {
           // Handle form submission
-
+          console.log(values);
+          
           setSubmitting(false);
         }}
       >

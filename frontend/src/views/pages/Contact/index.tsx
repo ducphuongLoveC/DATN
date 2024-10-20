@@ -51,7 +51,7 @@ const Contact: React.FC = () => {
             </div>
             <div className={clsx(s['icon-wrapper'])}>
               <EmailIcon />
-              <span>Email: contact@devshunt.com</span>
+              <span>Email: email.com</span>
             </div>
           </div>
           <div className={clsx(s['main-contact-box1-form'])}>

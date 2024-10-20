@@ -1,9 +1,9 @@
-import { useTheme, Theme, useMediaQuery } from '@mui/material';
+import { useTheme, Theme, useMediaQuery, Box } from '@mui/material';
 import clsx from 'clsx';
 
 import SideBar from '../MainLayout/SideBar';
 import Carousel from '@/components/Carousel';
-import Navbar from '../MainLayout/Header';
+import Header from '../MainLayout/Header';
 import Footer from '../MainLayout/Footer';
 import Layout from '../Layout.scss.module.scss';
 
@@ -103,7 +103,6 @@ const fakeSlider = [
       'Trở thành chuyên gia Java, phát triển ứng dụng doanh nghiệp, hệ thống lớn và phần mềm di động với Java Spring.',
   },
 ];
-
 const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
   const theme: Theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
@@ -113,9 +112,7 @@ const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
         background: theme.palette.background.paper,
       }}
     >
-      {/* header */}
-      <Navbar />
-
+      <Header />
       <div
         style={{
           background: theme.palette.background.paper,
@@ -125,7 +122,7 @@ const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
         <SideBar />
         <div className={clsx(Layout['content-main'], downMD ? 'tw-px-2' : '')}>
           <Carousel dot auto time={4000} sliders={fakeSlider} />
-          {children}
+          <Box mt='var(--large-space)'>{children}</Box>
         </div>
       </div>
       <Footer />

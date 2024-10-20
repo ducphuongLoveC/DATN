@@ -1,8 +1,6 @@
 import React, { useState, forwardRef, ReactNode } from 'react';
-import PropTypes from 'prop-types';
-
 // material-ui
-import { useTheme, Theme } from '@mui/material/styles';
+import { useTheme } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -31,20 +29,18 @@ interface HeaderAvatarProps {
 
 const HeaderAvatar = forwardRef<HTMLDivElement, HeaderAvatarProps>(
   ({ children, ...others }, ref) => {
-    const theme: any = useTheme();
+    const theme = useTheme();
 
     return (
       <Avatar
         ref={ref}
         variant="rounded"
         sx={{
-          ...theme.typography.commonAvatar,
-          ...theme.typography.mediumAvatar,
-          bgcolor: 'secondary.light',
-          color: 'secondary.dark',
+          color: theme.palette.text.primary,
+          background: 'none',
+          cursor: 'pointer',
           '&:hover': {
-            bgcolor: 'secondary.dark',
-            color: 'secondary.light',
+            background: theme.palette.background.paper2,
           },
         }}
         {...others}
@@ -54,10 +50,6 @@ const HeaderAvatar = forwardRef<HTMLDivElement, HeaderAvatarProps>(
     );
   }
 );
-
-HeaderAvatar.propTypes = {
-  children: PropTypes.node,
-};
 
 interface MobileSearchProps {
   value: string;
@@ -70,8 +62,6 @@ const MobileSearch: React.FC<MobileSearchProps> = ({
   setValue,
   popupState,
 }) => {
-  const theme = useTheme<Theme>();
-
   return (
     <OutlinedInput
       id="input-search-header"

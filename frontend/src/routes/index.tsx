@@ -1,10 +1,9 @@
-import { Fragment, Suspense } from 'react';
+import { Fragment } from 'react';
 
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
+  Route
 } from 'react-router-dom';
 import RouteProp from '@/interfaces/route';
 
@@ -34,9 +33,7 @@ const createRoutes = (routes: RouteProp[]) => {
             />
           );
         })}
-        {!getMainDomain().url.hostname.includes('admin') && (
-          <Route path="*" element={<h1>Không thể tìm thấy trang này</h1>} />
-        )}
+       
       </Routes>
     </Router>
   );

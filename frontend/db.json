@@ -1,0 +1,46 @@
+{
+  "users": [
+    {
+      "name": "TRAN HUU PHU",
+      "id": "1"
+    }
+  ],
+  "courses": [
+    {
+      "id": "1",
+      "title": "KHÓA HỌC: REACT CƠ BẢN",
+      "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
+      "image": "/images/react.png"
+    },
+    {
+      "id": "1",
+      "title": "KHÓA HỌC: JAVA CƠ BẢN",
+      "description": "Học JAVA cơ bản phù hợp cho người mới bắt đầu",
+      "image": "/images/react.png"
+    },
+    {
+      "id": "1",
+      "title": "KHÓA HỌC: JAVASCRIPT CƠ BẢN",
+      "description": "Học JAVASCRIPT cơ bản phù hợp cho người mới bắt đầu",
+      "image": "/images/react.png"
+    },
+    {
+      "id": "1",
+      "title": "KHÓA HỌC: PYTHON CƠ BẢN",
+      "description": "Học PYTHON cơ bản phù hợp cho người mới bắt đầu",
+      "image": "/images/react.png"
+    },
+    {
+      "id": "1",
+      "title": "KHÓA HỌC: PHP CƠ BẢN",
+      "description": "Học PHP cơ bản phù hợp cho người mới bắt đầu",
+      "image": "/images/react.png"
+    },
+    {
+      "id": "1",
+      "title": "KHÓA HỌC: AI CƠ BẢN",
+      "description": "Học AI cơ bản phù hợp cho người mới bắt đầu",
+      "image": "/images/react.png"
+    }
+  ]
+}

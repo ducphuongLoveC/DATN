@@ -5,11 +5,18 @@ const path = {
       login: '/auth/login',
       register: '/auth/register',
     },
-    log_auth: 'log_auth',
+    learning: '/learning',
+    courses: '/courses',
+    logAuth: 'log-auth',
     news: '/news',
-    news_detail: '/news_detail',
+    newsDetail: '/news-detail',
     contact: '/contact',
     profile: '/profile',
+    setting: '/setting',
+    newPost: '/new-post',
+    myPost: '/my-post',
+    bookmark: '/me/bookmark',
+
   },
 };
 export default path;

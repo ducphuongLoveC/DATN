@@ -8,18 +8,18 @@ import themes from '@/themes';
 
 // project imports
 import NavigationScroll from '@/layout/admin/NavigationScroll';
-
 import { router } from '@/routes';
-import getMainDomain from './utils/getMainDoumain';
+
 const App: React.FC = () => {
+  console.log('check');
   const state = useSelector(
     (state: any) =>
       window.location.hostname.startsWith('admin')
         ? state.customization
         : state.homeReducer,
-    (prev, next) => prev === next // So sánh nông để tránh re-render không cần thiết
+    (prev, next) => prev === next
   );
-
+  
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={themes(state)}>
