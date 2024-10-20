@@ -6,6 +6,8 @@ const path = {
       register: '/auth/register',
     },
     learning: '/learning',
+    learningPath: '/learning-path',
+    learningPathDetail: '/learning-path-detail',
     courses: '/courses',
     logAuth: 'log-auth',
     news: '/news',

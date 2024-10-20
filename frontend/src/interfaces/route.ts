@@ -3,5 +3,6 @@ interface RouteProp {
   layout?: React.ComponentType | Function;
   page: React.ComponentType;
   isPrivate?: boolean;
+  children?: RouteProp[];
 }
 export default RouteProp;

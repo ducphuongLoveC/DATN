@@ -1,4 +1,3 @@
-
 import RouteProp from '../interfaces/route';
 
 import MainLayout from '@/layout/admin/MainLayout';

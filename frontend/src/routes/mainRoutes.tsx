@@ -1,5 +1,4 @@
 import { lazy } from 'react';
-
 // layout
 import MainLayout from '@/layout/client/MainLayout';
 import BannerLayout from '@/layout/client/BannerLayout';
@@ -12,6 +11,12 @@ import path from '@/constants/routes';
 const Home = Loadable(lazy(() => import('@/views/pages/Home')));
 const SettingUser = Loadable(lazy(() => import('@/views/pages/SettingUser')));
 const ProFile = Loadable(lazy(() => import('@/views/pages/ProfileUser')));
+const LearningPath = Loadable(
+  lazy(() => import('@/views/pages/LearningPath/LearningPath'))
+);
+const LearningPathDetail = Loadable(
+  lazy(() => import('@/views/pages/LearningPathDetail/LearningPathDetail'))
+);
 const Login3 = Loadable(
   lazy(() => import('@/views/pages/authentication3/Login3'))
 );
@@ -19,17 +24,12 @@ const LogAuth = Loadable(lazy(() => import('@/views/pages/logAuth')));
 const Register3 = Loadable(
   lazy(() => import('@/views/pages/authentication3/Register3'))
 );
-
 const Contact = Loadable(lazy(() => import('@/views/pages/Contact')));
-const PostOverview = Loadable(lazy(() => import('../views/pages/PostOverview')));
-const PostDetail = Loadable(
-  lazy(() => import('../views/pages/PostDetail'))
-);
-
+const PostOverview = Loadable(lazy(() => import('@/views/pages/PostOverview')));
+const PostDetail = Loadable(lazy(() => import('@/views/pages/PostDetail')));
 //learning
 const Learning = Loadable(lazy(() => import('@/views/pages/Learning')));
-const CourseDetail = Loadable(lazy(() => import('../views/pages/CourseDetail')));
-
+const CourseDetail = Loadable(lazy(() => import('@/views/pages/CourseDetail')));
 //posts route
 const NewPost = Loadable(lazy(() => import('@/views/pages/Post/NewPost')));
 
@@ -74,6 +74,16 @@ const publicRoutes: RouteProp[] = [
     layout: LearningLayout,
     path: path.client.learning,
     page: Learning,
+  },
+  {
+    layout: MainLayout,
+    path: path.client.learningPath,
+    page: LearningPath,
+  },
+  {
+    layout: MainLayout,
+    path: path.client.learningPathDetail,
+    page: LearningPathDetail,
   },
   {
     layout: MainLayout,
