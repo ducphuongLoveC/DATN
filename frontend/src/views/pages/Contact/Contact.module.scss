@@ -1,0 +1,108 @@
+.main {
+  padding-left: 30px;
+}
+
+.main-contact-title {
+  width: 70%;
+}
+
+.contact-h3 {
+  font-size: var(--head-font-size);
+  font-weight: 800;
+  margin: 20px 0px 0px 0px;
+}
+
+.contact-span {
+  display: flex;
+  /* Sử dụng flexbox */
+  flex-direction: column;
+  /* Đặt hướng của các dòng theo chiều dọc */
+  justify-content: flex-start;
+  /* Đảm bảo các dòng bắt đầu từ trên cùng */
+  line-height: 1.5;
+  /* Tăng chiều cao dòng để dễ đọc */
+  margin-top: 15px;
+  font-size: var(--main-font-size);
+}
+
+//
+
+.main-contact-boxs {
+  border: 0px solid black;
+  width: 100%;
+  margin: 60px 0px 0px 0px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  /* Cho phép các box xuống hàng khi không đủ không gian */
+}
+
+.main-contact-box1 {
+  border: 0px solid black;
+  flex: 1 1 45%;
+  /* Mỗi box sẽ chiếm tối thiểu 45% chiều rộng */
+  box-sizing: border-box;
+  /* Đảm bảo padding không làm tăng kích thước box */
+}
+
+.main-contact-box2 {
+  margin: 64px 0px 0px 0px;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  /* Căn giữa icon và text */
+  margin-bottom: 10px;
+  /* Khoảng cách giữa các dòng icon */
+  font-size: var(--main-font-size);
+}
+
+.icon-wrapper span {
+  margin-left: 8px;
+  /* Khoảng cách giữa icon và text */
+}
+
+.main-contact-box1-form {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 5px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    div {
+      margin-bottom: 15px;
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+
+        &:focus {
+          border-color: #007bff;
+          outline: none;
+        }
+      }
+    }
+  }
+}
+
+.button-send {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.error {
+  color: red;
+  font-size: 14px; /* Bạn có thể điều chỉnh kích thước nếu muốn */
+  margin-top: 4px; /* Khoảng cách giữa lỗi và input */
+}

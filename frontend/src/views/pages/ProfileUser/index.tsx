@@ -1,4 +1,4 @@
-import Header from '@/layout/client/MainLayout/Header';
+
 import { useTheme } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -40,7 +40,7 @@ const ProFile: React.FC = () => {
             alt="User Avatar"
           />
           <div className="tw-ml-4 tw-pt-16">
-            <h2 className="tw-text-2xl tw-font-bold">{user.name}</h2>
+            <h6 className="tw-text-2xl tw-font-bold">{user.name}</h6>
             <p className="tw-text-gray-500">@{user.username}</p>
           </div>
         </div>
@@ -83,7 +83,7 @@ const ProFile: React.FC = () => {
                   className="tw-w-16 tw-h-16 tw-rounded-lg tw-object-cover"
                 />
                 <div>
-                  <h4 className="tw-font-semibold">{course.title}</h4>
+                  <h6 className="tw-font-semibold">{course.title}</h6>
                   <p className="tw-text-sm tw-text-gray-500">
                     {course.description}
                   </p>

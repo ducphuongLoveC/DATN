@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, MouseEvent } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -46,6 +46,8 @@ import {
 const ProfileSection: React.FC = () => {
   const theme: any = useTheme();
   const customization = useSelector((state: any) => state.customization);
+  console.log(customization);
+  
   const navigate = useNavigate();
 
   const [sdm, setSdm] = useState<boolean>(true);

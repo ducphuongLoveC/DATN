@@ -1,28 +1,23 @@
-import Header from '@/layout/client/MainLayout/Header';
-
-import CourseCardLayouts from '@/components/CardLayouts';
-import Carousel from '@/components/Carousel';
-import { useTheme } from '@mui/material';
-import { BiPlay } from 'react-icons/bi';
+import { Box, Typography } from '@mui/material';
+import Course from './Course/Course';
+import Post from './Post/Post';
 
 const Home: React.FC = () => {
-  const theme: any = useTheme();
-
   return (
-    <div>
-      <span
-        className="tw-font-bold tw-text-2xl tw-px-4 tw-py-2"
-        style={{
-          color: theme.palette.text.primary,
-        }}
-      >
-        Khóa học mới nhất
-      </span>
-
-      {/* <h2 className="tw-bg-gradient-to-r tw-from-[#00C9FF] tw-to-[#92FE9D] tw-text-white tw-px-5 tw-py-2 tw-rounded-md" style={{height: '100px', borderRadius: '45%', width: '100px', display: 'flex', alignItems: 'center', justifyContent:"center", fontSize: '25px', fontFamily: 'fantasy'}}>FTECH <BiPlay></BiPlay></h2> */}
-
-      <CourseCardLayouts />
-    </div>
+    <Box>
+      <Typography variant="h2">Các khóa học để bạn bắt đầu</Typography>
+      <Typography mt={1} variant="body1">
+        Khám phá các khóa học do các chuyên gia giàu kinh nghiệm trong ngành
+        giảng dạy.
+      </Typography>
+      <Course />
+      <Typography mt={5} variant="h2">Bài viết nổi bật</Typography>
+      <Typography mt={1} variant="body1">
+        Khám phá các khóa học do các chuyên gia giàu kinh nghiệm trong ngành
+        giảng dạy.
+      </Typography>
+      <Post />
+    </Box>
   );
 };
 export default Home;

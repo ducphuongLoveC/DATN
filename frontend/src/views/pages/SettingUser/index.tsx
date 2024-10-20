@@ -8,12 +8,23 @@ import EditFieldModal from './EditFieldModal';
 import PasswordModal from './PasswordModal';
 import AvatarUploadModal from './AvatarUploadModal';
 
+import Section from './Section';
+import { SectionItem } from './Section';
+
+const sections: SectionItem[] = [
+  {
+    field: 'Thông tin người dùng',
+    section: 'personalInfo',
+  },
+  {
+    field: 'Đổi mật khẩu và bảo mật',
+    section: 'securitySettings',
+  },
+];
 const SettingUser: React.FC = () => {
   const theme = useTheme();
   const [user, setUser] = useState<any>(null);
-  const [activeSection, setActiveSection] = useState<
-    'personalInfo' | 'securitySettings'
-  >('personalInfo');
+  const [activeSection, setActiveSection] = useState<string>('personalInfo');
   const navigate = useNavigate();
 
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -32,9 +43,7 @@ const SettingUser: React.FC = () => {
     return <div>Chưa tìm thấy dữ liệu</div>;
   }
 
-  const handleSectionChange = (
-    section: 'personalInfo' | 'securitySettings'
-  ) => {
+  const handleSectionChange = (section: string) => {
     setActiveSection(section);
   };
 
@@ -47,7 +56,7 @@ const SettingUser: React.FC = () => {
   const handleSave = () => {
     axios
       .put(`http://localhost:3000/users/1`, { [currentField]: fieldValue })
-      .then((response) => {
+      .then((_response) => {
         setUser((prevUser: any) => ({
           ...prevUser,
           [currentField]: fieldValue,
@@ -80,8 +89,6 @@ const SettingUser: React.FC = () => {
     navigate('/');
   };
 
- 
-
   return (
     <div
       className="tw-w-full"
@@ -95,46 +102,24 @@ const SettingUser: React.FC = () => {
         >
           <CloseIcon />
         </IconButton>
-        <div
-          className="tw-w-full md:tw-w-1/4 tw-p-4 md:tw-p-20  tw-border-r-2"
-          style={{ background: theme.palette.background.paper }}
-        >
-          <h2 className="tw-text-2xl tw-text-black tw-font-bold tw-mb-3">
-            Cài đặt tài khoản
-          </h2>
-          <p className="tw-mb-3 tw-text-xs tw-text-black">
-            Quản lý cài đặt tài khoản của bạn như thông tin cá nhân, cài đặt bảo
-            mật, quản lý thông báo, v.v.
-          </p>
-          <div className="tw-space-y-4">
-            <button
-              className={`tw-w-full tw-py-2 tw-px-4 tw-rounded-md ${activeSection === 'personalInfo' ? 'tw-bg-[#36404D] tw-text-white' : 'tw-bg-transparent tw-hover:bg-gray-100 tw-text-black'}`}
-              onClick={() => handleSectionChange('personalInfo')}
-            >
-              <span className="tw-font-semibold">Thông tin cá nhân</span>
-            </button>
-            <button
-              className={`tw-w-full tw-py-2 tw-px-4 tw-rounded-md ${activeSection === 'securitySettings' ? 'tw-bg-[#36404D] tw-text-white' : 'tw-bg-transparent tw-hover:bg-gray-100 tw-text-black'}`}
-              onClick={() => handleSectionChange('securitySettings')}
-            >
-              <span className="tw-font-semibold">Mật khẩu và bảo mật</span>
-            </button>
-          </div>
-        </div>
+        <Section
+          data={sections}
+          onChange={(s) => handleSectionChange(s.section)}
+        />
         <div
           className="tw-w-full md:tw-w-3/4 tw-p-8 "
           style={{ background: theme.palette.background.paper }}
         >
           {activeSection === 'personalInfo' && (
             <>
-              <h3 className="tw-text-2xl tw-font-semibold tw-mb-2 tw-font-bold tw-text-black">
+              <h3 className="tw-text-2xl tw-font-semibold tw-mb-2 tw-font-bold">
                 Thông tin cá nhân
               </h3>
               <p className="tw-text-xs tw-mb-6 tw-text-gray-400">
                 Quản lý thông tin cá nhân của bạn.
               </p>
               <div className="tw-mb-12">
-                <h4 className="tw-text-lg tw-font-medium tw-mb-2 tw-text-black">
+                <h4 className="tw-text-lg tw-font-medium tw-mb-2 ">
                   Thông tin cơ bản
                 </h4>
                 <p className="tw-text-xs tw-mb-6 tw-text-gray-400">
@@ -145,12 +130,8 @@ const SettingUser: React.FC = () => {
                     className="tw-border tw-border-gray-300 tw-rounded-md tw-p-4 hover:tw-shadow-md"
                     onClick={() => handleFieldEdit('name', user.name || '')}
                   >
-                    <span className="tw-text-gray-500 tw-text-black">
-                      Họ và tên
-                    </span>
-                    <p className="tw-text-gray-500">
-                      {user.name || 'Chưa cập nhật'}
-                    </p>
+                    <span className=" ">Họ và tên</span>
+                    <p className="">{user.name || 'Chưa cập nhật'}</p>
                   </div>
                   <div
                     className="tw-border tw-border-gray-300 tw-rounded-md tw-p-4 hover:tw-shadow-md"
@@ -158,12 +139,8 @@ const SettingUser: React.FC = () => {
                       handleFieldEdit('username', user.username || '')
                     }
                   >
-                    <span className="tw-text-gray-500 tw-text-black">
-                      Tên người dùng
-                    </span>
-                    <p className="tw-text-gray-500">
-                      {user.username || 'Chưa cập nhật'}
-                    </p>
+                    <span className=" ">Tên người dùng</span>
+                    <p className="">{user.username || 'Chưa cập nhật'}</p>
                   </div>
                   <div
                     className="tw-border tw-border-gray-300 tw-rounded-md tw-p-4 hover:tw-shadow-md"
@@ -171,15 +148,11 @@ const SettingUser: React.FC = () => {
                       handleFieldEdit('referring', user.referring || '')
                     }
                   >
-                    <span className="tw-text-gray-500 tw-text-black">
-                      Giới thiệu
-                    </span>
-                    <p className="tw-text-gray-500">
-                      {user.referring || 'Chưa cập nhật'}
-                    </p>
+                    <span className=" ">Giới thiệu</span>
+                    <p className="">{user.referring || 'Chưa cập nhật'}</p>
                   </div>
                   <div className="tw-border tw-border-gray-300 tw-rounded-md tw-p-4">
-                    <span className="tw-text-gray-500">Ảnh đại diện</span>
+                    <span className="">Ảnh đại diện</span>
                     <img
                       src={user.avatar}
                       className="tw-w-20 tw-h-20 tw-rounded-full tw-cursor-pointer"
@@ -190,12 +163,13 @@ const SettingUser: React.FC = () => {
                       open={isModalOpen}
                       onClose={() => setIsModalOpen(false)}
                       currentAvatarUrl={user.avatar}
+                      onUpload={() => {}}
                     />
                   </div>
                 </div>
               </div>
               <div>
-                <h4 className="tw-text-lg tw-font-medium tw-text-black">
+                <h4 className="tw-text-lg tw-font-medium ">
                   Thông tin mạng xã hội
                 </h4>
                 <p className="tw-text-xs tw-mb-6 tw-text-gray-400">
@@ -211,8 +185,8 @@ const SettingUser: React.FC = () => {
                       )
                     }
                   >
-                    <span className=" tw-text-black">Trang web cá nhân</span>
-                    <p className="tw-text-gray-500">
+                    <span className=" ">Trang web cá nhân</span>
+                    <p className="">
                       {user.personalWebsite || 'Chưa cập nhật'}
                     </p>
                   </div>
@@ -220,10 +194,8 @@ const SettingUser: React.FC = () => {
                     className="tw-border tw-border-gray-300 tw-rounded-md tw-p-4 hover:tw-shadow-md"
                     onClick={() => handleFieldEdit('github', user.github || '')}
                   >
-                    <span className=" tw-text-black">GitHub</span>
-                    <p className="tw-text-gray-500">
-                      {user.github || 'Chưa cập nhật'}
-                    </p>
+                    <span className=" ">GitHub</span>
+                    <p className="">{user.github || 'Chưa cập nhật'}</p>
                   </div>
                   <div
                     className="tw-border tw-border-gray-300 tw-rounded-md tw-p-4 hover:tw-shadow-md"
@@ -231,10 +203,8 @@ const SettingUser: React.FC = () => {
                       handleFieldEdit('linkedin', user.linkedin || '')
                     }
                   >
-                    <span className=" tw-text-black">LinkedIn</span>
-                    <p className="tw-text-gray-500">
-                      {user.linkedin || 'Chưa cập nhật'}
-                    </p>
+                    <span className=" ">LinkedIn</span>
+                    <p className="">{user.linkedin || 'Chưa cập nhật'}</p>
                   </div>
                   <div
                     className="tw-border tw-border-gray-300 tw-rounded-md tw-p-4 hover:tw-shadow-md"
@@ -242,10 +212,8 @@ const SettingUser: React.FC = () => {
                       handleFieldEdit('facebook', user.facebook || '')
                     }
                   >
-                    <span className=" tw-text-black">Facebook</span>
-                    <p className="tw-text-gray-500">
-                      {user.facebook || 'Chưa cập nhật'}
-                    </p>
+                    <span className=" ">Facebook</span>
+                    <p className="">{user.facebook || 'Chưa cập nhật'}</p>
                   </div>
                   <div
                     className="tw-border tw-border-gray-300 tw-rounded-md tw-p-4 hover:tw-shadow-md"
@@ -253,10 +221,8 @@ const SettingUser: React.FC = () => {
                       handleFieldEdit('youtube', user.youtube || '')
                     }
                   >
-                    <span className=" tw-text-black">YouTube</span>
-                    <p className="tw-text-gray-500">
-                      {user.youtube || 'Chưa cập nhật'}
-                    </p>
+                    <span className=" ">YouTube</span>
+                    <p className="">{user.youtube || 'Chưa cập nhật'}</p>
                   </div>
                 </div>
               </div>
@@ -265,7 +231,7 @@ const SettingUser: React.FC = () => {
 
           {activeSection === 'securitySettings' && (
             <>
-              <h3 className="tw-text-2xl tw-font-semibold tw-mb-2 tw-font-bold hover:tw-shadow-md tw-text-black">
+              <h3 className="tw-text-2xl tw-font-semibold tw-mb-2 tw-font-bold hover:tw-shadow-md ">
                 Mật khẩu và bảo mật
               </h3>
               <p className="tw-mb-10 tw-text-xs tw-text-gray-400">
@@ -276,9 +242,7 @@ const SettingUser: React.FC = () => {
                   className="tw-border tw-border-gray-300 hover:tw-shadow-md tw-rounded-md tw-p-4"
                   onClick={handleOpenPasswordModal}
                 >
-                  <span className="tw-text-gray-500 tw-text-black">
-                    Đổi mật khẩu
-                  </span>
+                  <span className=" ">Đổi mật khẩu</span>
                   <p className="tw-text-xs tw-text-gray-400">
                     Bạn có muốn đổi mật khẩu chứ
                   </p>
@@ -287,12 +251,11 @@ const SettingUser: React.FC = () => {
                   open={openPasswordModal}
                   onClose={handleClosePasswordModal}
                   onSave={handleSavePassword}
+                  onForgotPassword={() => {}}
                 />
                 <div className="tw-border tw-border-gray-300 hover:tw-shadow-md tw-rounded-md tw-p-4">
-                  <span className="tw-text-gray-500 tw-text-black">
-                    Xác thực hai yếu tố
-                  </span>
-                  <p className="tw-text-gray-500">
+                  <span className=" ">Xác thực hai yếu tố</span>
+                  <p className="">
                     {user.fa === 'true' ? 'Đã bật' : 'Chưa bật'}
                   </p>
                 </div>

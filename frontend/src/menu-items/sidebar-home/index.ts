@@ -3,12 +3,11 @@ import {
   BiNews,
   BiLogoTelegram,
   BiSolidObjectsHorizontalLeft,
+  BiLaptop
 } from 'react-icons/bi';
 
-import { FaRoad } from 'react-icons/fa6';
-
-console.log(FaRoad);
 import path from '@/constants/routes';
+
 export interface Props {
   icon: React.ReactNode | Function;
   title: string;
@@ -39,6 +38,12 @@ const menus: Props[] = [
     icon: BiLogoTelegram,
     title: 'Liên hệ',
     url: '/contact',
+    target: false,
+  },
+  {
+    icon: BiLaptop,
+    title: 'test learning',
+    url: '/learning',
     target: false,
   },
 ];

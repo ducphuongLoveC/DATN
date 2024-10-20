@@ -4,10 +4,8 @@ import clsx from 'clsx';
 import Footer from './Footer';
 import Navbar from './Header';
 import SideBar from './SideBar';
-import s from './MainLayout.scss.module.scss';
-import Layout from '../Layout.scss.module.scss';
 
-import { useState } from 'react';
+import Layout from '../Layout.scss.module.scss';
 
 interface MainLayoutProp {
   children: React.ReactNode;
@@ -21,7 +19,6 @@ const MainLayout: React.FC<MainLayoutProp> = ({ children }) => {
       }}
     >
       <Navbar />
-
       <div
         style={{
           background: theme.palette.background.paper,

@@ -1,19 +1,8 @@
 {
   "users": [
     {
-      "id": "1",
-      "name": "TranHuuPhu",
-      "username": "Phusssss",
-      "referring": "hello bay bê",
-      "avatar": "./public/images/avatar.jpg",
-      "email": "phu20cm@gmail.com",
-      "password": "123456789",
-      "fa": "false",
-      "personalWebsite": "https://phuuuuuu.com",
-      "github": "https://github.com/phuuuuuu",
-      "linkedin": "https://linkedin.com/in/phuuuuuu",
-      "facebook": "https://facebook.com/phuuuuuu",
-      "youtube": "https://youtube.com/phuuuuuu"
+      "name": "TRAN HUU PHU",
+      "id": "1"
     }
   ],
   "routes" : [
@@ -47,37 +36,37 @@
       "id": "1",
       "title": "KHÓA HỌC: REACT CƠ BẢN",
       "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/frontend/public/images/react.png"
+      "image": "/images/react.png"
     },
     {
       "id": "2",
       "title": "KHÓA HỌC: JAVA CƠ BẢN",
       "description": "Học JAVA cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/frontend/public/images/react.png"
+      "image": "/images/react.png"
     },
     {
       "id": "3",
       "title": "KHÓA HỌC: JAVASCRIPT CƠ BẢN",
       "description": "Học JAVASCRIPT cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/frontend/public/images/react.png"
+      "image": "/images/react.png"
     },
     {
       "id": "1",
       "title": "KHÓA HỌC: PYTHON CƠ BẢN",
       "description": "Học PYTHON cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/frontend/public/images/react.png"
+      "image": "/images/react.png"
     },
     {
       "id": "1",
       "title": "KHÓA HỌC: PHP CƠ BẢN",
       "description": "Học PHP cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/frontend/public/images/react.png"
+      "image": "/images/react.png"
     },
     {
       "id": "1",
       "title": "KHÓA HỌC: AI CƠ BẢN",
       "description": "Học AI cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/frontend/public/images/react.png"
+      "image": "/images/react.png"
     }
   ]
 }

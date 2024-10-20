@@ -1,4 +1,4 @@
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
