@@ -1,7 +1,9 @@
 import { Router } from "express";
-import CoursesController from '../controllers/CoursesController.js'
+import routerCourse from "./courses.js";
+import routerAuth from "./auth.js";
 const router = Router();
 
-router.use('/courses',CoursesController.getCourses);
+router.use('/courses',routerCourse);
+router.use('/auth', routerAuth)
 
 export default router;
