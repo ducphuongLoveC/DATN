@@ -16,7 +16,6 @@ import AuthCardWrapper from '../AuthCardWrapper';
 
 import AuthRegister from '../authentication/auth-forms/AuthRegister';
 
-
 // ===============================|| AUTH3 - REGISTER ||=============================== //
 
 const Register: React.FC = () => {

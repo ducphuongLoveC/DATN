@@ -20,6 +20,12 @@ const Register3 = Loadable(
   lazy(() => import('@/views/pages/authentication3/Register3'))
 );
 
+const Contact = Loadable(lazy(() => import('@/views/pages/Contact')));
+const PostOverview = Loadable(lazy(() => import('../views/pages/PostOverview')));
+const PostDetail = Loadable(
+  lazy(() => import('../views/pages/PostDetail'))
+);
+
 //learning
 const Learning = Loadable(lazy(() => import('@/views/pages/Learning')));
 const CourseDetail = Loadable(lazy(() => import('../views/pages/CourseDetail')));
@@ -38,12 +44,17 @@ const publicRoutes: RouteProp[] = [
   {
     path: path.client.contact,
     layout: MainLayout,
-    page: () => <h1>Bài viết</h1>,
+    page: Contact,
   },
   {
     path: path.client.news,
     layout: MainLayout,
-    page: () => <h1>Liên hệ</h1>,
+    page: PostOverview,
+  },
+  {
+    path: path.client.newsDetail,
+    layout: MainLayout,
+    page: PostDetail,
   },
   {
     path: path.client.auth.login,

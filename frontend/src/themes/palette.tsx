@@ -1,9 +1,9 @@
 // src/theme/theme.d.ts
 
 // Mở rộng kiểu `Palette` và `PaletteOptions` để thêm thuộc tính `border` và mở rộng `background` với `paper2`
-declare module "@mui/material/styles" {
+declare module '@mui/material/styles' {
   interface TypeBackground {
-    paper2: string;  // Thêm thuộc tính paper2 vào TypeBackground
+    paper2: string; // Thêm thuộc tính paper2 vào TypeBackground
   }
 
   interface Palette {
@@ -20,7 +20,7 @@ declare module "@mui/material/styles" {
       borderLv2?: string;
       default?: string;
     };
-    background?: Partial<TypeBackground>;  // Cho phép mở rộng background
+    background?: Partial<TypeBackground>; // Cho phép mở rộng background
   }
 }
 
@@ -93,9 +93,8 @@ export default function themePalette(theme: any) {
     },
     background: {
       paper: theme.paper,
-      paper2: theme.paper2,  // Thêm paper2 vào background
+      paper2: theme.paper2, // Thêm paper2 vào background
       default: theme.backgroundDefault,
     },
   };
 }
-

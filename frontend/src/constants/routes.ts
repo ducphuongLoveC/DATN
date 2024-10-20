@@ -9,6 +9,7 @@ const path = {
     courses: '/courses',
     logAuth: 'log-auth',
     news: '/news',
+    newsDetail: '/news-detail',
     contact: '/contact',
     profile: '/profile',
     setting: '/setting',

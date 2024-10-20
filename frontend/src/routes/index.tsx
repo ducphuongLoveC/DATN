@@ -1,6 +1,5 @@
 import { Fragment } from 'react';
 
-import NotFound from '@/views/pages/notFound';
 import {
   BrowserRouter as Router,
   Routes,
@@ -34,9 +33,7 @@ const createRoutes = (routes: RouteProp[]) => {
             />
           );
         })}
-        {!getMainDomain().url.hostname.includes('admin') && (
-          <Route path="*" element={<NotFound/>} />
-        )}
+       
       </Routes>
     </Router>
   );
