@@ -15,8 +15,6 @@
     "@fortawesome/fontawesome-free": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@mui/icons-material": "^5.16.7",
-    "@mui/material": "^5.16.5",
     "@reduxjs/toolkit": "^2.2.6",
     "@tabler/icons-react": "^3.11.0",
     "@tanstack/react-query": "^5.54.1",
