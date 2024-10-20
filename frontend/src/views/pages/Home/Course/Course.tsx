@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs, Tab, Box, Typography, Grid } from '@mui/material';
+import { Tabs, Tab, Box, Grid } from '@mui/material';
 
 const courses = [
   {
@@ -100,7 +100,7 @@ const Course: React.FC = () => {
         <Tab label="Thịnh hành" />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           {courses.map((c, _id: number) => (
               <Grid key={_id} item xs={12} sm={6} md={4} lg={3}>
                 <CourseItem
