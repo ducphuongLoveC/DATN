@@ -7,7 +7,6 @@ import { CssBaseline, StyledEngineProvider } from '@mui/material';
 import themes from '@/themes';
 
 // project imports
-import NavigationScroll from '@/layout/admin/NavigationScroll';
 import { router } from '@/routes';
 
 const App: React.FC = () => {
@@ -19,14 +18,12 @@ const App: React.FC = () => {
         : state.homeReducer,
     (prev, next) => prev === next
   );
-  
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={themes(state)}>
         <CssBaseline />
-        <NavigationScroll>
-          <div>{router}</div>
-        </NavigationScroll>
+        <div>{router}</div>
       </ThemeProvider>
     </StyledEngineProvider>
   );

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   AppBar,
   Box,
-  CssBaseline,
   Toolbar,
   useMediaQuery,
   styled,
@@ -12,10 +11,11 @@ import {
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Customization from '../Customization';
-import Breadcrumbs from '@/ui-component/extended/Breadcrumbs';
+
 import { SET_MENU } from '@/store/actions';
 import { drawerWidth } from '@/store/constant';
-import { IconChevronRight } from '@tabler/icons-react';
+
+import Breadcrumb from '@/components/Breadcrumb';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -79,7 +79,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         background: theme.palette.background.paper,
       }}
     >
-      <CssBaseline />
       <AppBar
         enableColorOnDark
         position="fixed"
@@ -103,14 +102,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       />
 
       <Main theme={theme} open={leftDrawerOpened}>
-        <Breadcrumbs
-          separator={IconChevronRight}
-          navigation={[]}
-          icon
-          title
-          rightAlign
-        />
         {/* Assuming Outlet is imported correctly */}
+        <Breadcrumb />
         {children}
       </Main>
       <Customization />

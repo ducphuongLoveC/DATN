@@ -5,19 +5,19 @@ import { IconDashboard } from '@tabler/icons-react';
 const icons = { IconDashboard };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
-
+import path from '@/constants/routes';
 const dashboard = {
   id: 'dashboard',
   title: 'Dashboard',
   type: 'group',
   children: [
     {
-      id: 'default',
+      id: 'dashboard',
       title: 'Dashboard',
       type: 'item',
-      url: '/dashboard/default',
+      url: path.admin.dashboards,
       icon: icons.IconDashboard,
-      breadcrumbs: false,
+      breadcrumbs: true,
     },
   ],
 };

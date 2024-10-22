@@ -1,5 +1,15 @@
 const path = {
-  admin: {},
+  admin: {
+    dashboards: '/dashboards',
+    courses: '/courses',
+    newCourse: '/courses/new',
+    posts: '/posts',
+    newPosts: '/posts/new',
+    transaction: '/transaction',
+    transactionHistory: '/transaction/history',
+    statistics: '/statistics',
+    profiles: '/profiles',
+  },
   client: {
     auth: {
       login: '/auth/login',
@@ -18,7 +28,6 @@ const path = {
     newPost: '/new-post',
     myPost: '/my-post',
     bookmark: '/me/bookmark',
-
   },
 };
 export default path;

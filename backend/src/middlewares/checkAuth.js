@@ -27,74 +27,67 @@ export const checkAuth = async (req, res, next) => {
   }
 };
 
-export const checkIsAdmin = async (req,res,next) => {
-    try {
-        if(req.user.role === "admin"){
-            return next()
-        }
-        console.log("admin");
-        
-    } catch (error) {
-        return res.status(401).json({
-            message: "Unthorized",
-          }); 
+export const checkIsAdmin = async (req, res, next) => {
+  try {
+    if (req.user.role === "admin") {
+      return next();
     }
-}
+    console.log("admin");
+  } catch (error) {
+    return res.status(401).json({
+      message: "Unthorized",
+    });
+  }
+};
 
-export const checkIsPostManager = async (req,res,next) => {
-    try {
-        if(req.user.role === "post manager"){
-            return next()
-        }
-        console.log("post manager");
-        
-    } catch (error) {
-        return res.status(401).json({
-            message: "Unthorized",
-          }); 
+export const checkIsPostManager = async (req, res, next) => {
+  try {
+    if (req.user.role === "post manager") {
+      return next();
     }
-}
+    console.log("post manager");
+  } catch (error) {
+    return res.status(401).json({
+      message: "Unthorized",
+    });
+  }
+};
 
-export const checkIsCourseManager = async (req,res,next) => {
-    try {
-        if(req.user.role === "course manager"){
-            return next()
-        }
-        console.log("course manager");
-        
-    } catch (error) {
-        return res.status(401).json({
-            message: "Unthorized",
-          }); 
+export const checkIsCourseManager = async (req, res, next) => {
+  try {
+    if (req.user.role === "course manager") {
+      return next();
     }
-}
+    console.log("course manager");
+  } catch (error) {
+    return res.status(401).json({
+      message: "Unthorized",
+    });
+  }
+};
 
-export const checkIsStatisticsManager = async (req,res,next) => {
-    try {
-        if(req.user.role === "statistics manager"){
-            return next()
-        }
-        console.log("statistics manager");
-        
-    } catch (error) {
-        return res.status(401).json({
-            message: "Unthorized",
-          }); 
+export const checkIsStatisticsManager = async (req, res, next) => {
+  try {
+    if (req.user.role === "statistics manager") {
+      return next();
     }
-}
+    console.log("statistics manager");
+  } catch (error) {
+    return res.status(401).json({
+      message: "Unthorized",
+    });
+  }
+};
 
-export const checkIsCommentManager = async (req,res,next) => {
-    try {
-        if(req.user.role === "comment manager"){
-            return next()
-        }
-        console.log("comment manager");
-        
-    } catch (error) {
-        return res.status(401).json({
-            message: "Unthorized",
-          }); 
+export const checkIsCommentManager = async (req, res, next) => {
+  try {
+    if (req.user.role === "comment manager") {
+      return next();
     }
-}
-
-      
+    console.log("comment manager");
+  } catch (error) {
+    return res.status(401).json({
+      message: "Unthorized",
+    });
+  }
+};

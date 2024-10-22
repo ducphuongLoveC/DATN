@@ -89,11 +89,7 @@ const Header: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   const [dataSearch, setDataSearch] = useState([]);
 
-  const [isLogin, setIsLogin] = useState(false);
-
-  useEffect(()=> {
-    setIsLogin(true);
-  },[]);
+ 
 
   const debounced = useDebounce(searchValue, 500);
 
@@ -259,7 +255,7 @@ const Header: React.FC = () => {
                 </Link>
               </li>
 
-              {isLogin ? (
+              {false ? (
                 <>
                   <li
                     className={`tw-relative ${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}

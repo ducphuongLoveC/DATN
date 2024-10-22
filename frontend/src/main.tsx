@@ -10,8 +10,6 @@ import App from './App';
 import '@/assets/scss/style.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import '@fortawesome/fontawesome-free/css/all.min.css';
-
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 import 'tippy.js/animations/scale-subtle.css';

@@ -17,6 +17,7 @@ import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // my pj
 import ArtPlayerComponent from '@/components/ArtplayComponent';
@@ -26,6 +27,7 @@ import PlacementToggle from '@/components/PlacementToggle';
 import Comment from './Comment';
 import Wrapper from '@/components/Wrapper';
 import TextEditor from '@/components/TextEditor';
+
 const BoxHeaderAndNote = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
@@ -100,8 +102,8 @@ const Learning: React.FC = () => {
         }}
       >
         {/* box content bên trái gồm video nội dung */}
-        <Box
-          sx={{
+        <PerfectScrollbar
+          style={{
             width: '100%',
             height: '87vh',
             overflow: 'auto',
@@ -174,7 +176,7 @@ const Learning: React.FC = () => {
               Lorem ipsum dolor, sit amet consectetur adipisicing elit...
             </Typography>
           </Box>
-        </Box>
+        </PerfectScrollbar>
         {isLearningPlayList && (
           <BoxLearningList>
             <LearningList onClose={toggleLearningList} />

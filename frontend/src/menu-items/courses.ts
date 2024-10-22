@@ -1,6 +1,6 @@
 // assets
 import { IconKey } from '@tabler/icons-react';
-
+import path from '@/constants/routes';
 const icons = {
   IconKey,
 };
@@ -19,18 +19,18 @@ const courses = {
 
       children: [
         {
-          id: 'login3',
-          title: 'Login',
+          id: 'courseList',
+          title: 'Courses list',
           type: 'item',
-          url: '/pages/login/login3',
-          target: true,
+          url: path.admin.courses,
+          target: false,
         },
         {
-          id: 'register3',
-          title: 'Register',
+          id: 'createCourses',
+          title: 'New courses',
           type: 'item',
-          url: '/pages/register/register3',
-          target: true,
+          url: path.admin.newCourse,
+          target: false,
         },
       ],
     },

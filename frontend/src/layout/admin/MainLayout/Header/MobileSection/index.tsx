@@ -7,7 +7,7 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import Toolbar from '@mui/material/Toolbar';
-import { MoreOutlined } from '@ant-design/icons';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import SearchSection from '../SearchSection';
 import ProfileSection from '../ProfileSection';
 import Transitions from '@/ui-component/extended/Transitions';
@@ -61,7 +61,7 @@ const MobileSection: React.FC = () => {
           onClick={handleToggle}
           color="inherit"
         >
-          <MoreOutlined />
+          <MoreHorizIcon />
         </IconButton>
       </Box>
       <Popper

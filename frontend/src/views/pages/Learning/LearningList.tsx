@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import Module from '@/components/Module';
 import { Typography, Box, useTheme } from '@mui/material';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -95,13 +96,13 @@ const LearningList: React.FC<LearningListProps> = ({ onClose }) => {
 
   const theme = useTheme();
   return (
-    <Box
-      sx={{
+    <PerfectScrollbar
+      style={{
         overflow: 'auto',
-        height: {
-          sm: '93vh',
-          md: '87vh',
-        },
+        height: '87vh',
+        //   sm: '93vh',
+        //   md: '87vh',
+        // },
         backgroundColor: theme.palette.background.paper2,
       }}
     >
@@ -140,7 +141,7 @@ const LearningList: React.FC<LearningListProps> = ({ onClose }) => {
           />
         ))}
       </Box>
-    </Box>
+    </PerfectScrollbar>
   );
 };
 
