@@ -11,6 +11,7 @@ class learningPath {
                     message: "create successfuly",
                 });
             }
+            next()
         } catch (error) {
             next(error);
         }
