@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const postTagSchema = new mongoose.Schema(
   {
-    post_id: {
+    post: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
       required: [true, "PostId is required"],
     },
 
-    tag_id: {
+    tag: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tag",
       required: [true, "TagId is required"],

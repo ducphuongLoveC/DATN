@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const questionSchema = new mongoose.Schema(
   {
-    resource_id: {
+    resource: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Resource",
       required: [true, "ResourceId is required"],

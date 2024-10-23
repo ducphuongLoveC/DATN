@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema(
   {
-    user_id: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "UserId is required"],
@@ -19,7 +19,7 @@ const commentSchema = new mongoose.Schema(
       enum: ["post", "resource"], // Chỉ nhận giá trị 'post' hoặc 'resource'
       required: true,
     },
-    commentable_id: {
+    commentable: {
       type: mongoose.Schema.Types.ObjectId, // Tham chiếu đến post hoặc resource
       required: true,
     },

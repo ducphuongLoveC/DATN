@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const resourceSchema = new mongoose.Schema(
   {
-    course_id: {
+    course: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
       required: [true, "CourseId is required"],

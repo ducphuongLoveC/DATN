@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const accsessSchema = new mongoose.Schema(
     {
-        user_id: {
+        user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: [true, "UserId is required"]
         },
 
-        course_id: {
+        course: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Course",
             required: [true, "CourseId is required"]

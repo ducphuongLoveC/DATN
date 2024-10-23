@@ -1,11 +1,11 @@
 import Joi from "joi";
 
 export const courseSchema = Joi.object({
-    learning_path_id: Joi.string().required().messages({
+    learning_path: Joi.string().required().messages({
         "string.base": "Learning path must be a string",
         "string.empty": "Learning path can not be empty",
     }),
-    user_id: Joi.string().required().messages({
+    user: Joi.string().required().messages({
         "string.base": "User must be a string",
         "string.empty": "User can not be empty",
     }),

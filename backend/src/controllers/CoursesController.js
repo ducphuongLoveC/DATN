@@ -11,7 +11,7 @@ class CoursesController {
 
             if (data) {
                 const updateLearningPath = await LearningPath.findByIdAndUpdate(
-                    req.body.learning_path_id,
+                    req.body.learning_path,
                     {
                         $push: { course: data._id }
                     },
