@@ -19,6 +19,13 @@ const learningPathSchema = new Schema(
       type: String,
       maxlength: 255,
     },
+
+    course: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course"
+      }
+    ]
   },
   {
     timestamps: true,

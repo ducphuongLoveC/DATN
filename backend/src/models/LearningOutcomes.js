@@ -2,11 +2,10 @@ import mongoose from "mongoose";
 
 const learningOutcomesSchema = new mongoose.Schema(
   {
-    course_id: {
+    course: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
-      required: [true, "CourseId is required"],
-    },
+    }],
 
     title: {
       type: String,
