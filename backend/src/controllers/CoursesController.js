@@ -43,7 +43,7 @@ class CoursesController {
 
     async get(req, res, next) {
         try {
-            const data = await Course.find()
+            const data = await Course.find().populate('learningOutcomes')
             if (data) {
                 return res.status(200).json({
                     success: true,

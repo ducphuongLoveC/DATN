@@ -19,7 +19,7 @@ class learningPath {
 
     async getAll(req, res, next) {
         try {
-            const data = await LearningPath.find()
+            const data = await LearningPath.find().populate('course')
             if (data) {
                 return res.status(200).json({
                     success: true,
