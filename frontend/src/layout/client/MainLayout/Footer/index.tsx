@@ -6,7 +6,7 @@ import Logo from '@/ui-component/Logo';
 // ===============================|| FOOTER ||=============================== //
 
 const Footer: React.FC = () => {
-  const theme = useTheme(); 
+  const theme = useTheme();
   return (
     <footer
       style={{

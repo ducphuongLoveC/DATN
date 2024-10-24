@@ -7,6 +7,9 @@ import Loadable from '@/ui-component/Loadable';
 import { lazy } from 'react';
 
 const Courses = Loadable(lazy(() => import('@/views/pages/admin/Courses')));
+const TransactionHistory = Loadable(
+  lazy(() => import('@/views/pages/admin/Transactions/transactionHistory'))
+);
 
 const PrivateRoutes: RouteProp[] = [
   {
@@ -47,7 +50,7 @@ const PrivateRoutes: RouteProp[] = [
   {
     path: path.admin.transactionHistory,
     layout: MainLayout,
-    page: () => <h1>Transaction History</h1>,
+    page: TransactionHistory,
   },
   {
     path: path.admin.statistics,

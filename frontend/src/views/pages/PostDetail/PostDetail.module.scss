@@ -5,8 +5,8 @@
 .main-post-detail-box {
   border: 0px solid #ccc;
   width: 620px;
-  margin:  auto; 
-  line-height: 2; 
+  margin: auto;
+  line-height: 2;
 }
 
 .main-post-detail-h1 {
@@ -39,14 +39,13 @@
   border: 0px solid #ccc;
 }
 
-.span-name { 
+.span-name {
   font-weight: 600;
   font-size: 16px;
 }
 
 .p-time {
   font-size: 12px;
-  
 }
 
 .div-icons {
@@ -59,7 +58,7 @@
 }
 
 .bookmarked {
-  color: orangered; 
+  color: orangered;
 }
 
 .icon-more {
@@ -71,7 +70,6 @@
   font-size: 12px;
   font-weight: 600;
 }
-
 
 .img-post {
   margin: 10px auto;
@@ -91,9 +89,8 @@
   margin-left: 10px;
 }
 
-
-@media (max-width: 768px) { 
+@media (max-width: 768px) {
   .main-post-detail-box {
-    width: 95%; 
+    width: 95%;
   }
 }

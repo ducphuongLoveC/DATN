@@ -30,7 +30,7 @@ const TabsCustom: React.FC<TabsCustomProps> = ({ labels, contents }) => {
           '& .MuiTabs-indicator': {
             backgroundColor: theme.palette.text.primary,
           },
-          boxShadow: "var(--main-box-shadow)"
+          boxShadow: 'var(--main-box-shadow)',
         }}
       >
         {labels.map((label, index) => (

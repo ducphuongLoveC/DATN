@@ -96,13 +96,12 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
   const Icon: any = menu.icon;
   const menuIcon = menu.icon ? (
     <Icon
-
       strokeWidth={1.5}
       size="1.3rem"
       style={{
         marginTop: 'auto',
         marginBottom: 'auto',
-        color: theme.palette.text.primary
+        color: theme.palette.text.primary,
       }}
     />
   ) : (
@@ -121,14 +120,17 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
           borderRadius: `${customization.borderRadius}px`,
           mb: 0.5,
           alignItems: 'flex-start',
-          backgroundColor: level > 1 ? 'transparent !important' : theme.palette.background.paper,
+          backgroundColor:
+            level > 1
+              ? 'transparent !important'
+              : theme.palette.background.paper,
           py: level > 1 ? 1 : 1.25,
           pl: `${level * 24}px`,
           ':hover': {
-            backgroundColor: theme.palette.background.paper2, 
+            backgroundColor: theme.palette.background.paper2,
           },
           ':focus': {
-            backgroundColor: theme.palette.background.paper2, 
+            backgroundColor: theme.palette.background.paper2,
           },
         }}
         selected={selected === menu.id}
@@ -155,11 +157,7 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ menu, level }) => {
           }
           secondary={
             menu.caption && (
-              <Typography
-                variant="caption"
-                display="block"
-                gutterBottom
-              >
+              <Typography variant="caption" display="block" gutterBottom>
                 {menu.caption}
               </Typography>
             )

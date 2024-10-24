@@ -122,7 +122,7 @@ const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
         <SideBar />
         <div className={clsx(Layout['content-main'], downMD ? 'tw-px-2' : '')}>
           <Carousel dot auto time={4000} sliders={fakeSlider} />
-          <Box mt='var(--large-space)'>{children}</Box>
+          <Box mt="var(--large-space)">{children}</Box>
         </div>
       </div>
       <Footer />

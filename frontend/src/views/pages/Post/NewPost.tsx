@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import TextEditor from '@/components/TextEditor';
- 
+
 import {
   Box,
   Input,
@@ -13,7 +13,11 @@ import {
 } from '@mui/material';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'; // Import the camera icon
 const NewPost: React.FC = () => {
-  const [post, setPost] = useState<{ title: string; content: string; thumbnail: string | null }>({
+  const [post, setPost] = useState<{
+    title: string;
+    content: string;
+    thumbnail: string | null;
+  }>({
     title: '',
     content: '',
     thumbnail: null,
@@ -21,7 +25,6 @@ const NewPost: React.FC = () => {
 
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPost((prevPost) => ({
@@ -35,10 +38,12 @@ const NewPost: React.FC = () => {
       content,
     }));
   };
-  const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleThumbnailChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     if (event.target.files && event.target.files[0]) {
       const selectedThumbnail = event.target.files[0];
-      
+
       const previewUrl = URL.createObjectURL(selectedThumbnail);
       setThumbnailPreview(previewUrl);
 
@@ -48,7 +53,7 @@ const NewPost: React.FC = () => {
       }));
     }
   };
-//   modal handle
+  //   modal handle
   const handleOpen = () => {
     setOpen(true);
   };
@@ -74,10 +79,10 @@ const NewPost: React.FC = () => {
                   alt="Uploaded Thumbnail"
                   onClick={handleOpen}
                   style={{
-                    width: '150px', 
-                    height: 'auto', 
-                    objectFit: 'cover', 
-                    borderRadius: '8px', 
+                    width: '150px',
+                    height: 'auto',
+                    objectFit: 'cover',
+                    borderRadius: '8px',
                     cursor: 'pointer',
                   }}
                 />
@@ -89,18 +94,15 @@ const NewPost: React.FC = () => {
             style={{ display: 'none' }}
             id="icon-button-file"
             type="file"
-            onChange={handleThumbnailChange} 
+            onChange={handleThumbnailChange}
           />
           <label htmlFor="icon-button-file">
-            <IconButton
-              color="primary"
-              component="span"
-            >
+            <IconButton color="primary" component="span">
               <PhotoCameraIcon fontSize="large" />
             </IconButton>
           </label>
         </Grid>
-        
+
         <Grid item xs={5} sm={2}>
           <Button
             sx={{
@@ -108,7 +110,7 @@ const NewPost: React.FC = () => {
               color: 'white',
             }}
             fullWidth
-            onClick={() => console.log(post)} 
+            onClick={() => console.log(post)}
           >
             Xuất bản
           </Button>

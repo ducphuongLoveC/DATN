@@ -14,7 +14,7 @@ export const RatingPreview: React.FC<RatingPreviewProps> = ({
     totalRatings;
 
   return (
-    <Box mt='var(--medium-space)'>
+    <Box mt="var(--medium-space)">
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
         <Typography
           variant="h3"

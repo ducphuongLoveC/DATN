@@ -13,7 +13,7 @@ interface DialogProps {
   onClose: () => void;
   children: React.ReactNode;
   title?: string;
-  open: boolean;  
+  open: boolean;
 }
 
 const Dialog: React.FC<DialogProps> = ({
@@ -26,9 +26,8 @@ const Dialog: React.FC<DialogProps> = ({
     <Box>
       <MuiDialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
-          <Typography >{title}</Typography>
+          <Typography>{title}</Typography>
           <IconButton
-
             onClick={onClose}
             aria-label="close"
             sx={{

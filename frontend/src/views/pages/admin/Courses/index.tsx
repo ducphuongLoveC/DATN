@@ -203,10 +203,9 @@ const NewCourse: React.FC = () => {
 
     const hanldeAddResouce = (data: any) => {
       let cloneModule = [...modules];
-      
+
       cloneModule[currentModuleIndex].resource.push(data);
       setModules(cloneModule);
-      
     };
     return (
       <>

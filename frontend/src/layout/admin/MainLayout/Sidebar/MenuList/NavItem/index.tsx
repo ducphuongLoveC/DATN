@@ -54,7 +54,7 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
   const customization = useSelector((state: any) => state.customization);
   const matchesSM = useMediaQuery(theme.breakpoints.down('lg'));
 
-  const Icon : any = item.icon;
+  const Icon: any = item.icon;
   const itemIcon = Icon ? (
     <Icon
       stroke={1.5}
@@ -133,10 +133,10 @@ const NavItem: React.FC<NavItemProps> = ({ item, level }) => {
         py: level > 1 ? 1 : 1.25,
         pl: `${level * 24}px`,
         ':hover': {
-          backgroundColor: theme.palette.background.paper2, 
+          backgroundColor: theme.palette.background.paper2,
         },
         ':focus': {
-          backgroundColor: theme.palette.background.paper2, 
+          backgroundColor: theme.palette.background.paper2,
         },
       }}
       selected={customization.isOpen.includes(item.id)}

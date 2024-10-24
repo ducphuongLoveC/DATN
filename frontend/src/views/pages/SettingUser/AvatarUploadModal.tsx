@@ -56,7 +56,8 @@ const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
       </DialogTitle>
       <DialogContent>
         <Typography variant="body2" sx={{ marginBottom: 2 }}>
-          Ảnh đại diện giúp mọi người nhận biết bạn dễ dàng hơn qua các  bài viết, bình luận, tin nhắn...
+          Ảnh đại diện giúp mọi người nhận biết bạn dễ dàng hơn qua các bài
+          viết, bình luận, tin nhắn...
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
           <Avatar

@@ -59,7 +59,9 @@
 .main-baiviet-href a {
   text-decoration: none;
   padding: 8px 10px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .main-baiviet-href a:hover {

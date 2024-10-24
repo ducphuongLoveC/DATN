@@ -1,4 +1,3 @@
-
 import { Editor } from '@tinymce/tinymce-react';
 import { useState } from 'react';
 
@@ -35,7 +34,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
         /<a /g,
         '<a style="color: blue !important; text-decoration: underline !important;" '
       )
-      .replace(/<\/a>/g, '</a>')
+      .replace(/<\/a>/g, '</a>');
 
     setContent(styledContent);
     exportContent(styledContent);
@@ -93,7 +92,6 @@ const TextEditor: React.FC<TextEditorProps> = ({
         : 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'ducphuongdepzai',
-
   };
 
   return (
@@ -119,8 +117,3 @@ const TextEditor: React.FC<TextEditorProps> = ({
 };
 
 export default TextEditor;
-
-
-
-
-

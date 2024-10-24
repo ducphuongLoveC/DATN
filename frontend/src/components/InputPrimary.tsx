@@ -8,41 +8,32 @@ interface InputPrimaryProps extends Omit<TextFieldProps, 'variant'> {
   height?: string | number; // Thêm thuộc tính height để điều chỉnh chiều cao
 }
 
-const InputPrimary: React.FC<InputPrimaryProps> = ({
-  ...props
-}) => {
+const InputPrimary: React.FC<InputPrimaryProps> = ({ ...props }) => {
   const theme = useTheme();
 
   const sxes = {
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
-        borderColor: theme.palette.text.primary, 
+        borderColor: theme.palette.text.primary,
       },
       '&:hover fieldset': {
-        borderColor: theme.palette.text.primary, 
+        borderColor: theme.palette.text.primary,
       },
       '&.Mui-focused fieldset': {
-        borderColor: theme.palette.text.primary, 
+        borderColor: theme.palette.text.primary,
       },
       backgroundColor: theme.palette.background.paper,
     },
     '& .MuiInputLabel-root': {
       color: theme.palette.text.primary,
       '&.Mui-focused': {
-        color: theme.palette.text.primary, 
+        color: theme.palette.text.primary,
       },
     },
     ...(props.sx || {}), // Kết hợp với các prop sx khác nếu có
   };
 
-  return (
-    <TextField
-      fullWidth
-      variant="outlined" 
-      {...props}
-      sx={sxes}
-    />
-  );
+  return <TextField fullWidth variant="outlined" {...props} sx={sxes} />;
 };
 
 export default InputPrimary;

@@ -1,117 +1,117 @@
 .container {
-    width: 80%;
-    margin: 30px auto;
+  width: 80%;
+  margin: 30px auto;
 }
 
 .routeDetailTitle {
-    font-size: 27px;
-    font-weight: bold;
-    font-family: "Roboto";
-    padding: 25px 0;
+  font-size: 27px;
+  font-weight: bold;
+  font-family: 'Roboto';
+  padding: 25px 0;
 }
 
 .routeDetailSubtitle {
-    padding-bottom: 30px;
-    line-height: 1.7;
-    font-size: 15px;
+  padding-bottom: 30px;
+  line-height: 1.7;
+  font-size: 15px;
 }
 
 .routeDetailPrice {
-    font-size: 15px;
-    padding-bottom: 15px;
+  font-size: 15px;
+  padding-bottom: 15px;
 }
 
 .routeDetailPr {
-    color: #DC704E;
-    text-decoration: underline;
-    font-weight: bold;
+  color: #dc704e;
+  text-decoration: underline;
+  font-weight: bold;
 }
 
 .routeDetailCourse {
-    font-weight: 100;
+  font-weight: 100;
 }
 
 .routeDetailBuild {
-    height: 30px;
-    border-left: 3px solid #DC704E;
-    margin: 20px 0;
+  height: 30px;
+  border-left: 3px solid #dc704e;
+  margin: 20px 0;
 }
 
 .routeDetailDesc {
-    line-height: 30px;
-    padding-left: 20px;
-    font-weight: bold;
+  line-height: 30px;
+  padding-left: 20px;
+  font-weight: bold;
 }
 
 .course {
-    border: 1px solid rgb(234, 234, 234);
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    margin: 15px 0;
-    border-radius: 20px;
+  border: 1px solid rgb(234, 234, 234);
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  margin: 15px 0;
+  border-radius: 20px;
 }
 
 .courseImg {
-    width: 90%;
+  width: 90%;
 }
 
 .courseImg img {
-    border-radius: 15px;
-    height: 90%;
-    margin: 10px 15px;
+  border-radius: 15px;
+  height: 90%;
+  margin: 10px 15px;
 }
 
 .courseInfor {
-    max-width: 95%;
-    position: relative;
+  max-width: 95%;
+  position: relative;
 }
 
 .courseTitle {
-    color: #000000;
-    font-size: 20px;
-    font-weight: 600;
-    font-family: "Roboto";
-    line-height: 45px;
+  color: #000000;
+  font-size: 20px;
+  font-weight: 600;
+  font-family: 'Roboto';
+  line-height: 45px;
 }
 
 .coursePrice {
-    font-weight: bold;
-    margin-top: 10px;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 .courseOld {
-    color: #000000;
-    font-weight: bold;
+  color: #000000;
+  font-weight: bold;
 }
 
 .courseNew {
-    color: red;
-    font-weight: bold;
-    margin-left: 10px;
+  color: red;
+  font-weight: bold;
+  margin-left: 10px;
 }
 
 .courseDesc {
-    margin: 15px 0;
+  margin: 15px 0;
 }
 
 .watch {
-    position: absolute;
-    border: none;
-    outline: none;
-    padding: 10px 20px;
-    right: 0;
-    bottom: calc(100% - 185px);
-    border-radius: 20px;
-    font-size: 13px;
-    color: #fff;
-    background-color: #fe775a;
-    transition: background-color 1s ease;
-    font-family: "Poppins";
-    font-weight: 500;
+  position: absolute;
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+  right: 0;
+  bottom: calc(100% - 185px);
+  border-radius: 20px;
+  font-size: 13px;
+  color: #fff;
+  background-color: #fe775a;
+  transition: background-color 1s ease;
+  font-family: 'Poppins';
+  font-weight: 500;
 }
 
 .watch:hover {
-    color: #000;
-    background-color: #fff;
-    border: 1px solid #DC704E;
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #dc704e;
 }

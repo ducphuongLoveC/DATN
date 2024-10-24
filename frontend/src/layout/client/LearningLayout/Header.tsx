@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 import {
   Box,
@@ -48,8 +48,6 @@ const StyledDescriptionBox = styled(BoxCenter)({
   cursor: 'pointer',
 });
 
-
-
 const Header: React.FC = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -68,9 +66,9 @@ const Header: React.FC = () => {
     <BoxHeader isMobile={isMobile}>
       <Box color="white" display="flex" alignItems="center">
         <Link to={'/'}>
-        <StyledButton>
-          <BiChevronLeft color="white" />
-        </StyledButton>
+          <StyledButton>
+            <BiChevronLeft color="white" />
+          </StyledButton>
         </Link>
         <Typography variant={isMobile ? 'h5' : 'h4'} color="white">
           HTML CSS từ Zero đến Hero
@@ -87,7 +85,7 @@ const Header: React.FC = () => {
         </BoxCenter>
 
         <PlacementToggle
-          placement='right'
+          placement="right"
           Connect={(connect) => (
             <StyledDescriptionBox onClick={connect}>
               <DescriptionIcon

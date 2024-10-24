@@ -30,7 +30,6 @@ const CardCourse: React.FC<CardCourseProps> = ({
 
     console.log(file);
     setThumbnail(file);
-  
   };
 
   const handleCreate = () => {

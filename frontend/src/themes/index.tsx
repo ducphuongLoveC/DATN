@@ -14,7 +14,6 @@ import themeTypography from './typography';
  */
 
 export const theme = (state: any) => {
-  
   const color = colors;
   const themeOptionsLight = {
     colors: color,
@@ -66,13 +65,13 @@ export const theme = (state: any) => {
     typography: themeTypography(
       state.theme === 'light' ? themeOptionsLight : themeOptionsDark
     ),
-   
-    //  components: { 
+
+    //  components: {
     //   MuiCssBaseline: {
     //     styleOverrides: {},
     //   },
     // },
-    // classnamePrefix: 'ftech' 
+    // classnamePrefix: 'ftech'
   };
 
   const themes = createTheme(themeOptions);

@@ -5,16 +5,11 @@ import { useLocation, Link as RouterLink } from 'react-router-dom';
 
 const Breadcrumb: React.FC = () => {
   const location = useLocation();
-  
-  const pathnames = location.pathname.split('/').filter((x) => x); 
+
+  const pathnames = location.pathname.split('/').filter((x) => x);
 
   return (
-    <Breadcrumbs 
-    sx={{mb:1}}
-      aria-label="breadcrumb"
-      separator={'/'}
-    >
-  
+    <Breadcrumbs sx={{ mb: 1 }} aria-label="breadcrumb" separator={'/'}>
       <Link underline="hover" color="inherit" component={RouterLink} to="/">
         Home
       </Link>
@@ -28,7 +23,13 @@ const Breadcrumb: React.FC = () => {
             {value.charAt(0).toUpperCase() + value.slice(1)}
           </Typography>
         ) : (
-          <Link key={to} underline="hover" color="inherit" component={RouterLink} to={to}>
+          <Link
+            key={to}
+            underline="hover"
+            color="inherit"
+            component={RouterLink}
+            to={to}
+          >
             {value.charAt(0).toUpperCase() + value.slice(1)}
           </Link>
         );

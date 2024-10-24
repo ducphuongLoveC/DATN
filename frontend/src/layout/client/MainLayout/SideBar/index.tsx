@@ -42,9 +42,7 @@ const SideBar: React.FC = () => {
                 className={clsx(s['item-side-bar'])}
                 to={m.url}
               >
-                <i className={clsx(s['icon'])}>
-                  {Icon && <Icon />}
-                </i>
+                <i className={clsx(s['icon'])}>{Icon && <Icon />}</i>
                 {m.title}
               </Link>
             </li>

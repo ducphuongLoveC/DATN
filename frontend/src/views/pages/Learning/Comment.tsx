@@ -152,7 +152,7 @@ function CommentInput({
           initialValue={init}
           exportContent={(data) => {
             console.log(data);
-            
+
             setComment(data);
           }}
         />
@@ -238,10 +238,9 @@ function CommentItem({
             variant="body2"
             paragraph
             sx={{ mt: 0.5, color: 'text.primary' }}
-            dangerouslySetInnerHTML={{ __html: comment }} 
+            dangerouslySetInnerHTML={{ __html: comment }}
           />
-          
-      
+
           <Box display="flex" alignItems="center">
             <IconButton size="small" aria-label="like">
               <ThumbUpIcon

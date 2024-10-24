@@ -1,11 +1,8 @@
-
 import clsx from 'clsx';
 import s from './PostOverview.module.scss';
 
 import { Link } from 'react-router-dom';
-const PostOverview : React.FC = () => {
-
-  
+const PostOverview: React.FC = () => {
   const articles = [
     {
       imgSrc: 'images/baiviet-img3.jpg',
@@ -54,16 +51,11 @@ const PostOverview : React.FC = () => {
     },
   ];
 
-
-
-
   return (
     <div className={clsx(s['main-baiviet'])}>
-    
       <div className={clsx(s['main-baiviet-banner'])}>
         <img src="images/banner-baiviet.png" alt="" />
       </div>
-
 
       <div className={clsx(s['main-baiviet-boxs'])}>
         <div className={clsx(s['main-baiviet-box1'])}>
