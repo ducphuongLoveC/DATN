@@ -1,6 +1,6 @@
 import React from 'react';
 import { Breadcrumbs, Link, Typography } from '@mui/material';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 
 const Breadcrumb: React.FC = () => {
@@ -10,6 +10,7 @@ const Breadcrumb: React.FC = () => {
 
   return (
     <Breadcrumbs 
+    sx={{mb:1}}
       aria-label="breadcrumb"
       separator={'/'}
     >
