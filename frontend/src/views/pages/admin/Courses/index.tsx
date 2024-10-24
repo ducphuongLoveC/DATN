@@ -60,7 +60,7 @@ const NewCourse: React.FC = () => {
         {
           title: 'Giới thiệu về khóa học',
           type: 'video',
-          duration: 800, // 13:20 phút
+          duration: 856,
           description: 'Tổng quan về khóa học và cách thức học tập.',
           resource_type: 'video',
           url: 'https://example.com/video1',
