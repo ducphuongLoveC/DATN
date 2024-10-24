@@ -19,7 +19,7 @@ class CertificateContronller {
 
     async get(req, res, next) {
         try {
-            const data = await Certificate.find().populate('user').populate('course')
+            const data = await Certificate.find().populate('course')
             if(data) {
                 return res.status(200).json({
                     success: true,
@@ -35,7 +35,7 @@ class CertificateContronller {
 
     async getDetail(req,res,next) {
         try {
-            const data = await Certificate.findById(req.params.id).populate('user').populate('course')
+            const data = await Certificate.findById(req.params.id).populate('course')
             if(data) {
                 return res.status(200).json({
                     success: true,

@@ -34,7 +34,7 @@ class learningPath {
 
     async getDetail(req, res, next) {
         try {
-            const data = await LearningPath.findById(req.params.id)
+            const data = await LearningPath.findById(req.params.id).populate('course')
             if (data) {
                 return res.status(200).json({
                     success: true,
