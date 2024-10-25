@@ -10,6 +10,9 @@ const Courses = Loadable(lazy(() => import('@/views/pages/admin/Courses')));
 const TransactionHistory = Loadable(
   lazy(() => import('@/views/pages/admin/Transactions/transactionHistory'))
 );
+const Profile = Loadable(
+  lazy(() => import('@/views/pages/admin/Profile/Profile'))
+);
 
 const PrivateRoutes: RouteProp[] = [
   {
@@ -61,6 +64,11 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.profiles,
     layout: MainLayout,
     page: () => <h1>Admin Profiles</h1>,
+  },
+  {
+    path: path.admin.profile,
+    layout: MainLayout,
+    page: Profile,
   },
 ];
 

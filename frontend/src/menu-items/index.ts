@@ -4,10 +4,19 @@ import posts from './posts';
 import other from './other';
 import utilities from './utilities';
 import transaction_history from './transaction_history';
+import Profile from './profile';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, courses, transaction_history, posts, other, utilities],
+  items: [
+    dashboard,
+    courses,
+    transaction_history,
+    Profile,
+    posts,
+    other,
+    utilities,
+  ],
 };
 
 export default menuItems;
