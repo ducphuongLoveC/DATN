@@ -36,9 +36,9 @@ export const courseSchema = Joi.object({
         "number.empty": "Price can not be empty",
         "number.min": "Price minium values > 0",
     }),
-    duration: Joi.string().required().max(255).messages({
-        "string.base": "Duration must be a string",
-        "string.empty": "Duration can not be empty",
-        "string.max": "Duration must have at most 255 character",
+    duration: Joi.number().required().messages({
+        "number.base": "Duration must be a number",
+        "number.empty": "Duration can not be empty",
+        // "number.max": "Duration must have at most 255 character",
     }),
 })

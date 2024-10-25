@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema(
   {
-    learning_path: {
+    learning_path: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "LearningPath",
       required: [true, "LearningPathId is required"],
-    },
+    }],
 
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -53,7 +53,7 @@ const courseSchema = new mongoose.Schema(
     },
 
     duration: {
-      type: String,
+      type: Number,
       required: [true, "Duration is required"],
       maxlength: 255,
     },
