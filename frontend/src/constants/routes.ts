@@ -9,6 +9,9 @@ const path = {
     transactionHistory: '/transaction/history',
     statistics: '/statistics',
     profiles: '/profiles',
+    categorys: '/categorys',
+    Articlecategorys: '/categorys/article',
+    Coursecategorys: '/categorys/course',
   },
   client: {
     auth: {

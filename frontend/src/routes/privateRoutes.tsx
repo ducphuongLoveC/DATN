@@ -1,6 +1,9 @@
 import RouteProp from '../interfaces/route';
 import MainLayout from '@/layout/admin/MainLayout';
 import path from '@/constants/routes';
+import Category from '@/views/pages/admin/Category/Category';
+import Articlecategory from '@/views/pages/admin/Category/Articlecategory';
+import Coursecategory from '@/views/pages/admin/Category/Coursecategory';
 
 
 const PrivateRoutes: RouteProp[] = [
@@ -18,6 +21,21 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.courses, 
     layout: MainLayout,
     page: () => <h1>Manage Courses</h1>,
+  },
+  {
+    path: path.admin.categorys, 
+    layout: MainLayout,
+    page: () => <Category/>
+  },
+  {
+    path: path.admin.Articlecategorys, 
+    layout: MainLayout,
+    page: () => <Articlecategory/>,
+  },
+  {
+    path: path.admin.Coursecategorys, 
+    layout: MainLayout,
+    page: () => <Coursecategory/>,
   },
   {
     path: path.admin.newCourse, 
