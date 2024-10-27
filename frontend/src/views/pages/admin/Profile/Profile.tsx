@@ -194,17 +194,6 @@ const Profile: React.FC = () => {
                   </div>
                 </div>
                 <hr />
-                {/* <div className="">
-                  <div className="col-sm-12">
-                    <a
-                      className="btn btn-info "
-                      target="__blank"
-                      href="https://www.bootdey.com/snippets/view/profile-edit-data-and-skills"
-                    >
-                      Edit
-                    </a>
-                  </div>
-                </div> */}
                 <button className={clsx(s['button-edit-profile'])}>Edit</button>
               </div>
             </div>
