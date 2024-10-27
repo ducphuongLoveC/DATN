@@ -7,14 +7,12 @@ const moduleSchema = new mongoose.Schema(
       ref: "Course",
       required: [true, "CourseId is required"],
     },
-
     title: {
       type: String,
       required: [true, "Title is required"],
       minlength: 6,
       maxlength: 255,
     },
-
     status: {
       type: String,
       enum: ["not started", "in progress", "completed"],
@@ -28,3 +26,4 @@ const moduleSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("Module", moduleSchema);
+  

@@ -22,7 +22,13 @@ const accsessSchema = new mongoose.Schema(
 
         expiration_date: {
             type: Date,
-            required: true
+            required: true,
+            default: function () {
+               
+                const currentDate = new Date();
+                const expirationDate = new Date(currentDate.setDate(currentDate.getDate() + 30));
+                return expirationDate;
+              }
         }
     },
     {

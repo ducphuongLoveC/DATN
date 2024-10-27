@@ -1,10 +1,25 @@
-import RouteProp from '../interfaces/route';
 import MainLayout from '@/layout/admin/MainLayout';
+
+import RouteProp from '../interfaces/route';
 import path from '@/constants/routes';
 import Loadable from '@/ui-component/Loadable';
+
 import { lazy } from 'react';
 
-const Dashboard = Loadable(lazy(() => import('@/views/pages/admin/Home')));
+const LearningPathList = Loadable(
+  lazy(() => import('../views/pages/admin/LearningPath/LearningPathList'))
+);
+const NewLearningPath = Loadable(
+  lazy(() => import('../views/pages/admin/LearningPath/NewLearningPath'))
+);
+const NewCourses = Loadable(
+  lazy(() => import('../views/pages/admin/Courses/NewCourse'))
+);
+const UpdateCourse = Loadable(
+  lazy(() => import('../views/pages/admin/Courses/UpdateCourse'))
+);
+const Dashboard = Loadable(lazy(() => import('../views/pages/admin/Home')));
+
 const PrivateRoutes: RouteProp[] = [
   {
     path: '/',
@@ -14,7 +29,7 @@ const PrivateRoutes: RouteProp[] = [
   {
     path: path.admin.dashboards,
     layout: MainLayout,
-    page: () => <h1>Dashboard</h1>,
+    page: Dashboard,
   },
   {
     path: path.admin.courses,
@@ -22,9 +37,24 @@ const PrivateRoutes: RouteProp[] = [
     page: () => <h1>Manage Courses</h1>,
   },
   {
+    path: path.admin.newLearningPath,
+    layout: MainLayout,
+    page: NewLearningPath,
+  },
+  {
+    path: path.admin.LearningPathList,
+    layout: MainLayout,
+    page: LearningPathList,
+  },
+  {
+    path: path.admin.updateCourse,
+    layout: MainLayout,
+    page: UpdateCourse,
+  },
+  {
     path: path.admin.newCourse,
     layout: MainLayout,
-    page: () => <h1>Create Course</h1>,
+    page: NewCourses,
   },
   {
     path: path.admin.posts,

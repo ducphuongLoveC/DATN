@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const promocodeSchema = new mongoose.Schema(
     {
-        code: {
+        code_id: {
             type: String,
             maxlength: 100,
             required: [true, "Code is required"]

@@ -32,7 +32,7 @@ const resourceSchema = new mongoose.Schema(
       maxlength: 255,
     },
 
-    questions: [
+    questions_id: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Question",

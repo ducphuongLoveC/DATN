@@ -46,16 +46,15 @@ const courseSchema = new mongoose.Schema(
       maxlength: 255,
     },
 
-    price: {
+    original_price: {
       type: Number,
-      required: [true, "Price is required"],
+      required: [true, "original_price is required"],
       min: 1,
     },
-
-    duration: {
-      type: String,
-      required: [true, "Duration is required"],
-      maxlength: 255,
+    sale_price: {
+      type: Number,
+      required: [true, "sale_price is required"],
+      min: 1,
     },
   },
   {

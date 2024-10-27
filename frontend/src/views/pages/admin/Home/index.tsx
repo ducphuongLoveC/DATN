@@ -119,9 +119,7 @@ const Dashboard: React.FC = () => {
         </button>
       </div>
 
-      {/* Main Grid */}
       <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3">
-        {/* Revenue Bar Chart */}
         <div className="md:tw-col-span-3 ">
           <div
             className="tw-p-5"
@@ -138,7 +136,9 @@ const Dashboard: React.FC = () => {
               <p className=" tw-text-xs md:tw-text-base tw-mb-1">
                 Tải xuống báo các thông kê thu nhập của bạn
               </p>
-              <p className="tw-text-[10px] cmd:tw-text-xs">Thống kê tài chính khóa học</p>
+              <p className="tw-text-[10px] cmd:tw-text-xs">
+                Thống kê tài chính khóa học
+              </p>
             </div>
             <button className=" tw-bg-violet-500 tw-text-white tw-py-2 tw-px-4">
               Tải xuống
@@ -146,7 +146,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Student Count */}
         <div
           style={{ background: theme.palette.background.default }}
           className="  tw-shadow-md  tw-relative"
@@ -218,7 +217,9 @@ const Dashboard: React.FC = () => {
                   style={{ background: theme.palette.background.default }}
                   className=" tw-px-4 tw-shadow-md "
                 >
-                  <h3 className="tw-text-base tw-font-semibold">Doanh thu hôm nay</h3>
+                  <h3 className="tw-text-base tw-font-semibold">
+                    Doanh thu hôm nay
+                  </h3>
                   <p className="tw-text-2xl tw-pb-0 tw-text-center tw-font-bold">
                     {revenue.totalRevenue.toLocaleString()}
                   </p>
@@ -227,13 +228,14 @@ const Dashboard: React.FC = () => {
                   style={{ background: theme.palette.background.default }}
                   className=" tw-px-4 tw-shadow-md  "
                 >
-                  <h3 className="tw-text-base tw-font-semibold">Khoá học đã bán hôm nay</h3>
+                  <h3 className="tw-text-base tw-font-semibold">
+                    Khoá học đã bán hôm nay
+                  </h3>
                   <p className="tw-text-2xl tw-pb-10 tw-text-center tw-font-bold">
-                   10
+                    10
                   </p>
                 </div>
               </div>
-              {/* Student Management */}
               <div
                 style={{ background: theme.palette.background.default }}
                 className="tw-shadow-md tw-overflow-hidden tw-h-[350px]"
@@ -282,8 +284,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Course Management */}
-
         <div
           style={{ background: theme.palette.background.default }}
           className="md:tw-col-span-2  tw-shadow-md  tw-overflow-hidden"
@@ -320,7 +320,6 @@ const Dashboard: React.FC = () => {
           </table>
         </div>
 
-        {/* Top Teams */}
         <div
           style={{ background: theme.palette.background.default }}
           className="tw-shadow-md  tw-overflow-hidden md:tw-col-span-2"

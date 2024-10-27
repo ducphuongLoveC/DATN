@@ -143,7 +143,7 @@ const Learning: React.FC = () => {
                         key={isVisibleNote ? 'visible' : 'hidden'} // Force reinitialization when visibility changes
                         initialHeight="150px"
                         initialValue=""
-                        exportContent={(content) => {
+                        onChange={(content) => {
                           console.log(content);
                         }}
                       />
