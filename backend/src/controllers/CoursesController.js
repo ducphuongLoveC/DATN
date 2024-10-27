@@ -45,7 +45,7 @@ class CoursesController {
     async get(req, res, next) {
        
         try {
-            const data = await Course.find().populate('learningOutcomes').populate('learning_path')
+            const data = await Course.find()
             if (data) {
                 return res.status(200).json({
                     success: true,
@@ -57,7 +57,7 @@ class CoursesController {
             next(error)
         }
     }
-
+        
     async getDetail(req, res, next) {
         try {
             const data = await Course.findById(req.params.id).populate('learningOutcomes').populate('learning_path')

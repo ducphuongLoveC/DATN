@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
 import {
-  Box,
   Dialog as MuiDialog,
   DialogContent,
   DialogTitle,
@@ -23,8 +21,8 @@ const Dialog: React.FC<DialogProps> = ({
   open,
 }) => {
   return (
-    <Box>
-      <MuiDialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+
+      <MuiDialog component={'div'} open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
           <Typography >{title}</Typography>
           <IconButton
@@ -42,7 +40,6 @@ const Dialog: React.FC<DialogProps> = ({
         </DialogTitle>
         <DialogContent>{children}</DialogContent>
       </MuiDialog>
-    </Box>
   );
 };
 

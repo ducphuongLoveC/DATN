@@ -6,6 +6,8 @@ import { learningPathSchema } from "../validSchema/learningPathSchema.js";
 
 const routerLearningPath = Router();
 routerLearningPath.get('/', learningPath.getAll);
+routerLearningPath.get('/getLearningPathWithAllDetails', learningPath.getLearningPathWithAllDetails);
+
 routerLearningPath.get('/:id', learningPath.getDetail);
 
 // routerLearningPath.use('/', checkAuth,  checkRoles(['admin', 'post manager']))

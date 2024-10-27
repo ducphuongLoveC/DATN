@@ -16,8 +16,5 @@ export const learningPathSchema = Joi.object({
     description: Joi.string().max(255).messages({
         "string.base": "Description must be a string",
         "string.max": "Description must have at most 255 character",
-    }),
-    course: Joi.string().messages({
-        "string.base": "Course must be a string"
     })
 })

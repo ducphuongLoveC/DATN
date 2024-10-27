@@ -1,4 +1,4 @@
-import { useState, forwardRef, useImperativeHandle } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   Box,
@@ -27,7 +27,12 @@ interface CourseData {
   level: level;
 }
 
-const OptionOther: React.FC = forwardRef((_, ref) => {
+interface OptionOtherProps {
+  defaultValues: CourseData;
+  onChange: (datas: CourseData) => void;
+}
+
+const OptionOther: React.FC<OptionOtherProps> = ({ defaultValues, onChange }) => {
   const {
     control,
     handleSubmit,
@@ -36,7 +41,7 @@ const OptionOther: React.FC = forwardRef((_, ref) => {
     getValues,
     watch,
   } = useForm<CourseData>({
-    defaultValues: {
+    defaultValues: defaultValues ?? {
       original_price: 0,
       sale_price: 0,
       learning_outcomes: [],
@@ -44,14 +49,19 @@ const OptionOther: React.FC = forwardRef((_, ref) => {
     },
   });
 
+  const watchedFields = watch([
+    'learning_outcomes',
+    'level',
+    'original_price',
+    'sale_price',
+  ]);
+
+  useEffect(() => {
+    onChange(getValues());
+  }, [watchedFields]); 
+
   const learning_outcomes = watch('learning_outcomes');
   const [newOutcome, setNewOutcome] = useState<string>('');
-
-  const getData = () => ({ ...getValues() });
-
-  useImperativeHandle(ref, () => ({
-    getData,
-  }));
 
   const handleAddOutcome = () => {
     if (newOutcome.trim() !== '') {
@@ -237,6 +247,6 @@ const OptionOther: React.FC = forwardRef((_, ref) => {
       </form>
     </Paper>
   );
-});
+};
 
 export default OptionOther;

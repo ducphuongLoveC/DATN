@@ -6,7 +6,13 @@ import path from '@/constants/routes';
 import Loadable from '@/ui-component/Loadable';
 import { lazy } from 'react';
 
-const Courses = Loadable(lazy(() => import('@/views/pages/admin/Courses')));
+const LearningPathList = Loadable(lazy(() => import('../views/pages/admin/LearningPath/LearningPathList')));
+const NewLearningPath = Loadable(lazy(() => import('../views/pages/admin/LearningPath/NewLearningPath')));
+const NewCourses = Loadable(lazy(() => import('../views/pages/admin/Courses/NewCourse'))); 
+const UpdateCourse = Loadable(lazy(() => import('../views/pages/admin/Courses/UpdateCourse'))); 
+
+
+
 
 const PrivateRoutes: RouteProp[] = [
   {
@@ -23,11 +29,27 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.courses,
     layout: MainLayout,
     page: () => <h1>Manage Courses</h1>,
+
+  },
+  {
+    path: path.admin.LearningPathList,
+    layout: MainLayout,
+    page: LearningPathList,
+  },
+  {
+    path: path.admin.newLearningPath,
+    layout: MainLayout,
+    page: NewLearningPath,
+  },
+  {
+    path: path.admin.updateCourse,
+    layout: MainLayout,
+    page: UpdateCourse,
   },
   {
     path: path.admin.newCourse,
     layout: MainLayout,
-    page: Courses,
+    page: NewCourses,
   },
   {
     path: path.admin.posts,

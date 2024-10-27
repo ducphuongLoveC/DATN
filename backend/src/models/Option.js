@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const optionSchema = new mongoose.Schema(
   {
-    question: {
+    question_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Question",
       required: [true, "QuestionId is required"],
