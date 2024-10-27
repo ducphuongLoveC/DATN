@@ -11,7 +11,7 @@ const learningPathSchema = new Schema(
 
     thumbnail: {
       type: String,
-      required: [true, "Thubnail is required"],
+      required: [true, "Thumbnail is required"],
       maxlength: 255,
     },
 
@@ -19,13 +19,6 @@ const learningPathSchema = new Schema(
       type: String,
       maxlength: 255,
     },
-
-    course: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course"
-      }
-    ]
   },
   {
     timestamps: true,

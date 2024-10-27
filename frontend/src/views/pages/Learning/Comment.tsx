@@ -150,7 +150,7 @@ function CommentInput({
         <TextEditor
           mode="basic"
           initialValue={init}
-          exportContent={(data) => {
+          onChange={(data) => {
             console.log(data);
             
             setComment(data);

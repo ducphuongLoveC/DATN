@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const resourceSchema = new mongoose.Schema(
   {
-    course: {
+    course_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
       required: [true, "CourseId is required"],
@@ -32,7 +32,7 @@ const resourceSchema = new mongoose.Schema(
       maxlength: 255,
     },
 
-    questions: [
+    questions_id: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Question",

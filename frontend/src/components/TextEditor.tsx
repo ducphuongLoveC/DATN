@@ -1,21 +1,22 @@
-
 import { Editor } from '@tinymce/tinymce-react';
 import { useState } from 'react';
 
 interface TextEditorProps {
-  exportContent: (content: string) => void;
+  onChange: (content: string) => void;
   initialValue: string;
   preview?: boolean;
   value?: string;
   initialHeight?: string;
   mode?: 'basic' | 'advanced';
+  disabled?: boolean;
 }
 const TextEditor: React.FC<TextEditorProps> = ({
-  exportContent,
+  onChange,
   initialValue,
   preview = false,
   initialHeight,
   mode = 'basic',
+  disabled = false,
 }) => {
   const [content, setContent] = useState<string>('');
 
@@ -35,10 +36,10 @@ const TextEditor: React.FC<TextEditorProps> = ({
         /<a /g,
         '<a style="color: blue !important; text-decoration: underline !important;" '
       )
-      .replace(/<\/a>/g, '</a>')
+      .replace(/<\/a>/g, '</a>');
 
     setContent(styledContent);
-    exportContent(styledContent);
+    onChange(styledContent);
   };
 
   const editorConfig = {
@@ -93,13 +94,13 @@ const TextEditor: React.FC<TextEditorProps> = ({
         : 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'ducphuongdepzai',
-
   };
 
   return (
     <div>
       <Editor
-        apiKey="ueuhdxl8g56p7r2mgk3rlx89o4yvqsx093m5lui8g7e73h2b"
+        disabled={disabled}
+        apiKey="6uvtfylm3hff7y4ws5s2mcci2epzmixosm7y149r6kiw604n"
         init={editorConfig}
         initialValue={initialValue}
         onEditorChange={(content) => {
@@ -119,8 +120,3 @@ const TextEditor: React.FC<TextEditorProps> = ({
 };
 
 export default TextEditor;
-
-
-
-
-

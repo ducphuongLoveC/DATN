@@ -6,9 +6,9 @@ class CoursesController {
 
     async create(req, res, next) {
         try {
-            const data = await Course.create(req.body)
+            const data = await Course.create(req.body);
             console.log(data);
-
+    
             if (data) {
                 const updateLearningPath = await LearningPath.findByIdAndUpdate(
                     req.body.learning_path,
@@ -16,35 +16,36 @@ class CoursesController {
                         $push: { course: data._id }
                     },
                     { new: true }
-                )
-
-                const updateLearningOutcome = await LearningOutcomes.findByIdAndUpdate(
-                    req.body.learningOutcomes,
+                );
+    
+                // Tìm và cập nhật hoặc tạo mới trong bảng LearningOutcomes
+                const updateLearningOutcome = await LearningOutcomes.findOneAndUpdate(
+                    { _id: req.body.learningOutcomes }, // Điều kiện tìm kiếm dựa trên learningOutcomesId
                     {
-                        $push: { course: data._id }
+                        $set: { ...req.body.learningOutcomes }, // Cập nhật dữ liệu LearningOutcomes
+                        $set: { course: data._id } // Đẩy ID khoá học vào mảng course
                     },
-                    { new: true }
-                )
-
+                    { upsert: true, new: true } // Tạo mới nếu không tìm thấy, trả về tài liệu mới sau khi cập nhật
+                );
+    
                 if (data && updateLearningPath && updateLearningOutcome) {
                     return res.status(201).json({
                         success: true,
                         data,
-                        message: "create Course successfuly"
-                    })
+                        message: "Course created/updated successfully"
+                    });
                 }
             }
-            next()
-
+            next();
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
-
+    
     async get(req, res, next) {
        
         try {
-            const data = await Course.find().populate('learningOutcomes')
+            const data = await Course.find()
             if (data) {
                 return res.status(200).json({
                     success: true,
@@ -56,10 +57,10 @@ class CoursesController {
             next(error)
         }
     }
-
+        
     async getDetail(req, res, next) {
         try {
-            const data = await Course.findById(req.params.id).populate('learningOutcomes')
+            const data = await Course.findById(req.params.id).populate('learningOutcomes').populate('learning_path')
             if (data) {
                 return res.status(200).json({
                     success: true,

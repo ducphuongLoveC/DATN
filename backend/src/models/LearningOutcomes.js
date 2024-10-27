@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const learningOutcomesSchema = new mongoose.Schema(
   {
-    course: [{
+    course_id: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
     }],
