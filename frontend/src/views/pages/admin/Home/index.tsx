@@ -113,34 +113,35 @@ const Dashboard: React.FC = () => {
         <h1 className="tw-text-xl tw-font-semibold">Bảng điều khiển</h1>
         <button
           style={{ background: theme.palette.background.default }}
-          className=" tw-py-2 tw-px-4"
+          className="tw-py-2 tw-px-4"
         >
           Bảng điều khiển
         </button>
       </div>
 
       <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3">
-        <div className="md:tw-col-span-3 ">
+        <div className="md:tw-col-span-3">
           <div
             className="tw-p-5"
             style={{ background: theme.palette.background.default }}
           >
-            <h2 className="tw-text-lg tw-font-semibold  ">Số tiền</h2>
+            <h2 className="tw-text-lg tw-font-semibold">Số tiền</h2>
             <Bar data={data} options={options} />
           </div>
+
           <div
             style={{ background: theme.palette.background.default }}
-            className="tw-h-20 tw-flex tw-justify-between  tw-mt-4  tw-p-4  tw-shadow-md"
+            className="tw-h-20 tw-flex tw-justify-between tw-mt-4 tw-p-4 tw-shadow-md"
           >
             <div>
-              <p className=" tw-text-xs md:tw-text-base tw-mb-1">
-                Tải xuống báo các thông kê thu nhập của bạn
+              <p className="tw-text-xs md:tw-text-base tw-mb-1">
+                Tải xuống báo cáo thống kê thu nhập của bạn
               </p>
               <p className="tw-text-[10px] cmd:tw-text-xs">
                 Thống kê tài chính khóa học
               </p>
             </div>
-            <button className=" tw-bg-violet-500 tw-text-white tw-py-2 tw-px-4">
+            <button className="tw-bg-violet-500 tw-text-white tw-py-2 tw-px-4">
               Tải xuống
             </button>
           </div>
@@ -148,7 +149,7 @@ const Dashboard: React.FC = () => {
 
         <div
           style={{ background: theme.palette.background.default }}
-          className="  tw-shadow-md  tw-relative"
+          className="tw-shadow-md tw-relative"
         >
           <div className="tw-flex tw-justify-between tw-px-4">
             <h3 className="tw-text-lg tw-font-semibold">Học viên</h3>
@@ -157,14 +158,14 @@ const Dashboard: React.FC = () => {
           <div className="tw-text-[90px] tw-text-white tw-bg-violet-500 tw-rounded-full tw-h-[200px] tw-w-[200px] tw-flex tw-items-center tw-justify-center tw-mx-auto tw-my-10">
             {students.length}
           </div>
-          <div className="tw-bg-black tw-text-white tw-h-[25%] tw-w-[100%]  lg:tw-absolute tw-bottom-0 tw-p-5">
+          <div className="tw-bg-black tw-text-white tw-h-[25%] tw-w-[100%] lg:tw-absolute tw-bottom-0 tw-p-5">
             <p className="tw-text-[#AAC8C6] tw-font-medium tw-text-lg tw-mb-2">
-              Doanh thu tháng này{' '}
+              Doanh thu tháng này
             </p>
             <p className="tw-font-semibold tw-text-2xl">
               {revenue.thisMonth.toLocaleString()} VND
             </p>
-            <p className=" tw-text-[13px] tw-mb-3 tw-text-[#AAC8C6]">
+            <p className="tw-text-[13px] tw-mb-3 tw-text-[#AAC8C6]">
               <span className="tw-text-green-500">10%</span> so với tháng trước
             </p>
           </div>

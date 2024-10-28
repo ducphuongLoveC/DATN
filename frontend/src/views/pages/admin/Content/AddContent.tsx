@@ -1,122 +1,121 @@
 import React, { useState } from 'react';
 import {
   Button,
-  MenuItem,
-  Select,
   TextField,
+  Grid,
+  MenuItem,
+  Typography,
+  Paper,
+  Box,
 } from '@mui/material';
 
-const AddPostForm = () => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+const AddPost = () => {
   const [category, setCategory] = useState('');
   const [author, setAuthor] = useState('');
 
-  const handleSubmit = () => {
-    // Handle form submission logic
-    alert('Post submitted!');
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value);
   };
 
-  const handleCancel = () => {
-    // Handle cancel logic
-    setTitle('');
-    setContent('');
-    setCategory('');
-    setAuthor('');
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value);
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-semibold text-gray-800 mb-6">
-        Thêm bài viết
-      </h1>
+    <Box
+      maxWidth="md"
+      sx={{
+        mx: 'auto',
+        p: 3,
+        minHeight: '100vh',
+        minWidth: '100%',
+      }}
+    >
+      <Paper elevation={3} sx={{ p: 4 }}>
+        {/* Header */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <Typography variant="h3">Thêm bài viết</Typography>
+          <Button variant="outlined">Bảng điều khiển</Button>
+        </Box>
 
-      <form className="space-y-6">
-        {/* Title Input */}
-        <div>
-          <TextField
-            fullWidth
-            label="Tiêu đề bài viết"
-            variant="outlined"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Thêm tiêu đề..."
-          />
-        </div>
-
-        {/* Content TextArea */}
-        <div>
-          <TextField
-            fullWidth
-            label="Nội dung bài viết"
-            variant="outlined"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            multiline
-            rows={10}
-            placeholder="Viết nội dung ở đây"
-          />
-        </div>
-
-        {/* Dropdowns for Category and Author */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Select
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="subtitle1">Tiêu đề bài viết</Typography>
+            <TextField
+              placeholder="Thêm tiêu đề..."
+              variant="outlined"
               fullWidth
+              margin="dense"
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography variant="subtitle1">Nội dung bài viết</Typography>
+            <TextField
+              placeholder="viết nội dung ở đây"
+              variant="outlined"
+              fullWidth
+              margin="dense"
+              multiline
+              rows={10}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">Danh mục bài viết</Typography>
+            <TextField
+              select
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              displayEmpty
+              onChange={handleCategoryChange}
               variant="outlined"
-            >
-              <MenuItem value="" disabled>
-                Chọn danh mục
-              </MenuItem>
-              <MenuItem value="Tech">Tech</MenuItem>
-              <MenuItem value="Life">Life</MenuItem>
-              <MenuItem value="Education">Education</MenuItem>
-            </Select>
-          </div>
-
-          <div>
-            <Select
               fullWidth
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              displayEmpty
-              variant="outlined"
+              margin="dense"
+              placeholder="Chọn danh mục"
             >
-              <MenuItem value="" disabled>
-                Chọn tác giả
+              <MenuItem value="">
+                <em>Chọn danh mục</em>
               </MenuItem>
-              <MenuItem value="Admin">Admin</MenuItem>
-              <MenuItem value="Student">Student</MenuItem>
-            </Select>
-          </div>
-        </div>
+              <MenuItem value="category1">Danh mục 1</MenuItem>
+              <MenuItem value="category2">Danh mục 2</MenuItem>
+            </TextField>
+          </Grid>
 
-        {/* Buttons */}
-        <div className="flex justify-end space-x-4">
-          <Button
-            variant="outlined"
-            color="default"
-            onClick={handleCancel}
-            className="bg-gray-300"
-          >
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">Tác giả</Typography>
+            <TextField
+              select
+              value={author}
+              onChange={handleAuthorChange}
+              variant="outlined"
+              fullWidth
+              margin="dense"
+              placeholder="Chọn tác giả"
+            >
+              <MenuItem value="">
+                <em>Chọn tác giả</em>
+              </MenuItem>
+              <MenuItem value="author1">Tác giả 1</MenuItem>
+              <MenuItem value="author2">Tác giả 2</MenuItem>
+            </TextField>
+          </Grid>
+        </Grid>
+
+        <Box mt={3} display="flex" justifyContent="space-between">
+          <Button variant="contained" color="inherit">
             Hủy
           </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            className="bg-purple-500 hover:bg-purple-600 text-white"
-          >
+          <Button variant="contained" color="primary">
             Thêm bài viết
           </Button>
-        </div>
-      </form>
-    </div>
+        </Box>
+      </Paper>
+    </Box>
   );
 };
 
-export default AddPostForm;
-F
+export default AddPost;
