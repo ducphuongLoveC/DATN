@@ -9,6 +9,9 @@ const path = {
     transactionHistory: '/transaction/history',
     statistics: '/statistics',
     profiles: '/profiles',
+    users: '/users',
+    student: '/students',
+    nhansu: '/nhansu'
   },
   client: {
     auth: {

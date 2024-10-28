@@ -1,6 +1,8 @@
 import RouteProp from '../interfaces/route';
 import MainLayout from '@/layout/admin/MainLayout';
 import path from '@/constants/routes';
+import Student from '@/views/pages/admin/Student';
+import Nhansu from '@/views/pages/admin/Nhansu';
 
 
 const PrivateRoutes: RouteProp[] = [
@@ -53,6 +55,16 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.profiles, 
     layout: MainLayout,
     page: () => <h1>Admin Profiles</h1>,
+  },
+  {
+    path: path.admin.student,
+    layout: MainLayout,
+    page: Student,
+  },
+  {
+    path: path.admin.nhansu,
+    layout: MainLayout,
+    page: Nhansu,
   },
 ];
 

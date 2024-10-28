@@ -104,6 +104,7 @@ const publicRoutes: RouteProp[] = [
     path: path.client.newPost,
     page: NewPost,
   },
+  
 ];
 
 export default publicRoutes;
