@@ -18,6 +18,16 @@ const NewCourses = Loadable(
 const UpdateCourse = Loadable(
   lazy(() => import('../views/pages/admin/Courses/UpdateCourse'))
 );
+const ListCategory = Loadable(
+  lazy(() => import('../views/pages/admin/ListCategory'))
+);
+const ListContent = Loadable(
+  lazy(() => import('../views/pages/admin/Content'))
+);
+const AddContent = Loadable(
+  lazy(() => import('../views/pages/admin/Content/AddContent'))
+);
+
 const Dashboard = Loadable(lazy(() => import('../views/pages/admin/Home')));
 
 const PrivateRoutes: RouteProp[] = [
@@ -34,7 +44,7 @@ const PrivateRoutes: RouteProp[] = [
   {
     path: path.admin.courses,
     layout: MainLayout,
-    page: () => <h1>Manage Courses</h1>,
+    page: () => <h1>Courses</h1>,
   },
   {
     path: path.admin.newLearningPath,
@@ -55,6 +65,21 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.newCourse,
     layout: MainLayout,
     page: NewCourses,
+  },
+  {
+    path: path.admin.listCategory,
+    layout: MainLayout,
+    page: ListCategory,
+  },
+  {
+    path: path.admin.listContent,
+    layout: MainLayout,
+    page: ListContent,
+  },
+  {
+    path: path.admin.addContent,
+    layout: MainLayout,
+    page: AddContent,
   },
   {
     path: path.admin.posts,
