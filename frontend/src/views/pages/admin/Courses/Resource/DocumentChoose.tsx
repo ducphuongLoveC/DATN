@@ -35,6 +35,7 @@ const chooseDocument: React.FC = forwardRef((_, ref) => {
       resource_type: 'video',
       url: 'video1.test',
       questions: [],
+      duration: 1000
     };
   };
   useImperativeHandle(ref, () => ({
@@ -50,7 +51,6 @@ const chooseDocument: React.FC = forwardRef((_, ref) => {
     { name: 'Ảnh', icon: <Image />, addComponent: <ImageUpload /> },
     { name: 'Video', icon: <VideoLibrary />, addComponent: <VideoUpload /> },
     { name: 'Quiz', icon: <Quiz />, addComponent: <QuizCreation /> },
-    { name: 'Thực hành', icon: <Build />, addComponent: <PracticeCreation /> },
   ];
 
   const handleContentChange = (event: any) => {
@@ -60,7 +60,7 @@ const chooseDocument: React.FC = forwardRef((_, ref) => {
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={12}>
           <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
             <Typography variant="h6" gutterBottom>
               Chọn nội dung
@@ -96,57 +96,6 @@ const chooseDocument: React.FC = forwardRef((_, ref) => {
               }
             </Paper>
           )}
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Thông tin
-            </Typography>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1" gutterBottom>
-                <AccessTime
-                  fontSize="small"
-                  sx={{ mr: 1, verticalAlign: 'middle' }}
-                />
-                Thời lượng
-              </Typography>
-              <TextField
-                type="time"
-                defaultValue="00:00"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                //   inputProps={{
-                //     step: 300, // 5 min
-                //   }}
-                fullWidth
-              />
-            </Box>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle1" gutterBottom>
-                Cho phép xem trước?
-              </Typography>
-              <Switch
-                checked={allowPreview}
-                onChange={(e) => setAllowPreview(e.target.checked)}
-              />
-            </Box>
-            <Box>
-              <Typography variant="subtitle1" gutterBottom>
-                <Visibility
-                  fontSize="small"
-                  sx={{ mr: 1, verticalAlign: 'middle' }}
-                />
-                Lượt xem
-              </Typography>
-              <Typography variant="body2">
-                Số lượt xem công khai: {publicViews}
-              </Typography>
-              <Typography variant="body2">
-                Tổng lượt xem: {totalViews}
-              </Typography>
-            </Box>
-          </Paper>
         </Grid>
       </Grid>
     </Box>
@@ -227,33 +176,6 @@ function QuizCreation() {
   );
 }
 
-function PracticeCreation() {
-  return (
-    <Box>
-      <TextField
-        fullWidth
-        label="Tiêu đề bài thực hành"
-        variant="outlined"
-        margin="normal"
-      />
-      <TextField
-        fullWidth
-        label="Mô tả"
-        variant="outlined"
-        margin="normal"
-        multiline
-        rows={4}
-      />
-      <TextField
-        fullWidth
-        label="Hướng dẫn"
-        variant="outlined"
-        margin="normal"
-        multiline
-        rows={4}
-      />
-    </Box>
-  );
-}
+
 
 export default chooseDocument;

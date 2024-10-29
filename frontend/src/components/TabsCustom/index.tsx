@@ -5,14 +5,16 @@ import TabPanel from './TabPanel';
 export interface TabsCustomProps {
   labels: string[] | React.ReactNode[];
   contents: React.ReactNode[];
+  onChange: ()=> void;
 }
 
-const TabsCustom: React.FC<TabsCustomProps> = ({ labels, contents }) => {
+const TabsCustom: React.FC<TabsCustomProps> = ({ labels, contents, onChange }) => {
   const [value, setValue] = useState(0);
   const theme = useTheme();
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    onChange();
   };
 
   return (

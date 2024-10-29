@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { useForm, Controller } from 'react-hook-form';
-
 // ui frw
 import {
   Box,
@@ -39,7 +39,8 @@ import {
 } from '@/api/learningPathApi';
 
 import path from '@/constants/routes';
-import { Link } from 'react-router-dom';
+import HeaderTitle from '../Title';
+
 export interface LearningPath {
   _id: string;
   title: string;
@@ -162,11 +163,14 @@ export default function LearningPathList() {
 
   return (
     <>
-      <Box sx={{ width: '100%', p: 3 }}>
-        <Button>
-          <Link to={path.admin.newLearningPath}>Thêm Lộ trình học</Link>
-        </Button>
-        <TableContainer component={Paper} elevation={3}>
+      <HeaderTitle
+        des='Chức năng "danh sách lộ trình học" cho phép quản trị viên có 
+        cái nhìn trực quan về tổng thể lộ trình. Bao gồm Chi tiết, Sửa, Xóa'
+        link={path.admin.newLearningPath}
+        titleButton="Tạo lộ trình học"
+      />
+      <Box sx={{ width: '100%' }}>
+        <TableContainer component={Paper}sx={{borderRadius:0}}>
           <Table sx={{ minWidth: 650 }} aria-label="learning paths table">
             <TableHead>
               <TableRow>
@@ -280,9 +284,9 @@ export default function LearningPathList() {
             <TextEditor
               initialValue={getValues('description')}
               onChange={(content) => setValue('description', content)}
-              mode='advanced'
+              mode="advanced"
               disabled={!editMode}
-              initialHeight='300px'
+              initialHeight="300px"
             />
             <Button onClick={handleCloseDialog} color="primary">
               {editMode ? 'Cancel' : 'Close'}

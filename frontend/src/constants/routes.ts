@@ -3,7 +3,7 @@ const path = {
     dashboards: '/dashboards',
     courses: '/courses',
     newCourse: '/courses/new',
-    updateCourse: '/courses/update',
+    updateCourse: '/courses/:id/update',
     LearningPathList: '/learning-path',
     newLearningPath: '/learning-path/new',
     posts: '/posts',
