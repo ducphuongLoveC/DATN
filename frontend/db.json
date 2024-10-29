@@ -5,68 +5,178 @@
       "id": "1"
     }
   ],
-  "routes" : [
-  {
-    "id" : "1",
-    "title" : "BACKEND",
-    "description" : "dữ liệu và cơ sở hạ tầng giúp ứng dụng của bạn hoạt động. Backend lưu trữ và xử lý dữ liệu ứng dụng cho người dùng của bạn.",
-    "path" : "back-end"
-  },
-  {
-    "id": "2",
-    "title": "FRONTEND",
-    "description": "dữ liệu và cơ sở hạ tầng giúp ứng dụng của bạn hoạt động. Backend lưu trữ và xử lý dữ liệu ứng dụng cho người dùng của bạn.",
-    "path": "front-end"
-  },
-  {
-    "id": "3",
-    "title": "AI",
-    "description": "dữ liệu và cơ sở hạ tầng giúp ứng dụng của bạn hoạt động. Backend lưu trữ và xử lý dữ liệu ứng dụng cho người dùng của bạn.",
-    "path": ""
-  },
-  {
-    "id": "4",
-    "title": "FULLSTACK",
-    "description": "dữ liệu và cơ sở hạ tầng giúp ứng dụng của bạn hoạt động. Backend lưu trữ và xử lý dữ liệu ứng dụng cho người dùng của bạn.",
-    "path": ""
-  }
+  "routes": [
+    {
+      "id": "1",
+      "title": "BACKEND",
+      "description": "dữ liệu và cơ sở hạ tầng giúp ứng dụng của bạn hoạt động. Backend lưu trữ và xử lý dữ liệu ứng dụng cho người dùng của bạn.",
+      "path": "back-end"
+    },
+    {
+      "id": "2",
+      "title": "FRONTEND",
+      "description": "dữ liệu và cơ sở hạ tầng giúp ứng dụng của bạn hoạt động. Backend lưu trữ và xử lý dữ liệu ứng dụng cho người dùng của bạn.",
+      "path": "front-end"
+    },
+    {
+      "id": "3",
+      "title": "AI",
+      "description": "dữ liệu và cơ sở hạ tầng giúp ứng dụng của bạn hoạt động. Backend lưu trữ và xử lý dữ liệu ứng dụng cho người dùng của bạn.",
+      "path": ""
+    },
+    {
+      "id": "4",
+      "title": "FULLSTACK",
+      "description": "dữ liệu và cơ sở hạ tầng giúp ứng dụng của bạn hoạt động. Backend lưu trữ và xử lý dữ liệu ứng dụng cho người dùng của bạn.",
+      "path": ""
+    }
   ],
   "courses": [
     {
       "id": "1",
       "title": "KHÓA HỌC: REACT CƠ BẢN",
       "description": "Học Raect cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/images/react.png"
+      "image": "/images/react.png",
+      "sale": 1000
     },
     {
       "id": "2",
       "title": "KHÓA HỌC: JAVA CƠ BẢN",
       "description": "Học JAVA cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/images/react.png"
+      "image": "/images/react.png",
+      "sale": 23423
     },
     {
       "id": "3",
       "title": "KHÓA HỌC: JAVASCRIPT CƠ BẢN",
       "description": "Học JAVASCRIPT cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/images/react.png"
+      "image": "/images/react.png",
+      "sale": 26
     },
     {
       "id": "1",
       "title": "KHÓA HỌC: PYTHON CƠ BẢN",
       "description": "Học PYTHON cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/images/react.png"
+      "image": "/images/react.png",
+      "sale": 26
     },
     {
       "id": "1",
       "title": "KHÓA HỌC: PHP CƠ BẢN",
       "description": "Học PHP cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/images/react.png"
+      "image": "/images/react.png",
+      "sale": 26
     },
     {
       "id": "1",
       "title": "KHÓA HỌC: AI CƠ BẢN",
       "description": "Học AI cơ bản phù hợp cho người mới bắt đầu",
-      "image": "/images/react.png"
+      "image": "/images/react.png",
+      "sale": 26
+    },
+    {
+      "id": "1",
+      "title": "KHÓA HỌC: PYTHON CƠ BẢN",
+      "description": "Học PYTHON cơ bản phù hợp cho người mới bắt đầu",
+      "image": "/images/react.png",
+      "sale": 26
+    },
+    {
+      "id": "1",
+      "title": "KHÓA HỌC: PHP CƠ BẢN",
+      "description": "Học PHP cơ bản phù hợp cho người mới bắt đầu",
+      "image": "/images/react.png",
+      "sale": 26
+    },
+    {
+      "id": "1",
+      "title": "KHÓA HỌC: AI CƠ BẢN",
+      "description": "Học AI cơ bản phù hợp cho người mới bắt đầu",
+      "image": "/images/react.png",
+      "sale": 26
     }
-  ]
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "name": "Trần Hữu Phú",
+      "date": "26/09/2024",
+      "amount": 1900000
+    },
+    {
+      "id": 2,
+      "name": "Trần Hữu Phú",
+      "date": "26/09/2024",
+      "amount": 1900000
+    },
+    {
+      "id": 3,
+      "name": "Trần Hữu Phú",
+      "date": "26/09/2024",
+      "amount": 1900000
+    },
+    {
+      "id": 4,
+      "name": "Trần Hữu Phú",
+      "date": "26/09/2024",
+      "amount": 1900000
+    },
+    {
+      "id": 5,
+      "name": "Trần Hữu Phú",
+      "date": "26/09/2024",
+      "amount": 1900000
+    },
+    {
+      "id": 2,
+      "name": "Trần Hữu Phú",
+      "date": "26/09/2024",
+      "amount": 1900000
+    },
+    {
+      "id": 3,
+      "name": "Trần Hữu Phú",
+      "date": "26/09/2024",
+      "amount": 1900000
+    },
+    {
+      "id": 4,
+      "name": "Trần Hữu Phú",
+      "date": "26/09/2024",
+      "amount": 1900000
+    },
+    {
+      "id": 5,
+      "name": "Trần Hữu Phú",
+      "date": "26/09/2024",
+      "amount": 1900000
+    }
+  ],
+  "chartData": [
+    { "day": "Thứ 2", "value": 20 },
+    { "day": "Thứ 3", "value": 25 },
+    { "day": "Thứ 4", "value": 30 },
+    { "day": "Thứ 5", "value": 10 },
+    { "day": "Thứ 6", "value": 35 },
+    { "day": "Thứ 7", "value": 15 },
+    { "day": "Chủ nhật", "value": 6 }
+  ],
+  "students": [
+    { "id": 1, "name": "Nguyễn Văn Phong", "email": "phong@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
+    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" }
+  ],
+  "revenue": {
+    "thisMonth": 96350000,
+    "totalRevenue": 9500000
+  }
 }
