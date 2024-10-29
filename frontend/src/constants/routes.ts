@@ -6,7 +6,7 @@ const path = {
     listCategory: '/category',
     listContent: '/content',
     addContent: '/content/add',
-    updateCourse: '/courses/update',
+    updateCourse: '/courses/:id/update',
     LearningPathList: '/learning-path',
     newLearningPath: '/learning-path/new',
     posts: '/posts',
