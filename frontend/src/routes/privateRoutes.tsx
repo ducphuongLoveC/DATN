@@ -42,11 +42,6 @@ const PrivateRoutes: RouteProp[] = [
     page: Dashboard,
   },
   {
-    path: path.admin.courses,
-    layout: MainLayout,
-    page: () => <h1>Courses</h1>,
-  },
-  {
     path: path.admin.newLearningPath,
     layout: MainLayout,
     page: NewLearningPath,
@@ -55,6 +50,11 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.LearningPathList,
     layout: MainLayout,
     page: LearningPathList,
+  },
+  {
+    path: path.admin.newLearningPath,
+    layout: MainLayout,
+    page: NewLearningPath,
   },
   {
     path: path.admin.updateCourse,
@@ -82,11 +82,6 @@ const PrivateRoutes: RouteProp[] = [
     page: AddContent,
   },
   {
-    path: path.admin.posts,
-    layout: MainLayout,
-    page: () => <h1>Manage Posts</h1>,
-  },
-  {
     path: path.admin.newPosts,
     layout: MainLayout,
     page: () => <h1>Create Post</h1>,
@@ -95,16 +90,6 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.transaction,
     layout: MainLayout,
     page: () => <h1>Transactions</h1>,
-  },
-  {
-    path: path.admin.transactionHistory,
-    layout: MainLayout,
-    page: () => <h1>Transaction History</h1>,
-  },
-  {
-    path: path.admin.statistics,
-    layout: MainLayout,
-    page: () => <h1>Statistics</h1>,
   },
   {
     path: path.admin.profiles,

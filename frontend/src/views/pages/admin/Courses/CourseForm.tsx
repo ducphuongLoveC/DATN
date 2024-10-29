@@ -1,4 +1,4 @@
-import { useState, forwardRef, useImperativeHandle } from 'react';
+import { useState, forwardRef, useImperativeHandle, memo, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 
 import {
@@ -32,11 +32,14 @@ import CardCourse from './CardCourse';
 import TextEditor from '@/components/TextEditor';
 
 // my pj
+
 import Dialog from '@/components/Dialog';
-import documentChoose from './ChooseDocument/DocumentChoose';
+import documentChoose from './Resource/DocumentChoose';
 import OptionOther from './OptionOther';
+import CreateCodePractice from './Resource/CreateCodePractice';
 
 interface Resource {
+  _id?: string;
   title: string;
   type: string;
   url: string;
@@ -45,15 +48,17 @@ interface Resource {
   resource_type: string;
 }
 interface Module {
-  _id: number;
+  _id?: string;
   title: string;
   resources: Resource[];
 }
 export interface Course {
+  _id: string;
   title: string;
+  learning_path_id?: string;
   description: string;
   learning_outcomes: string[];
-  level: 'easy' | 'medium' | 'advanced';
+  level: 'easy' | 'medium' | 'high';
   modules: Module[];
   original_price: string;
   sale_price: string;
@@ -68,30 +73,55 @@ interface CourseFormProps {
 const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
   const [modules, setModules] = useState<Module[]>(datas?.modules || []);
 
-  // các phần có forwardRef để trả data cho CardCourse
-  const Description = forwardRef((_, ref) => {
-    const [description, setDescription] = useState('');
-    const handleSetDes = (content: string) => {
-      setDescription(content);
-    };
+  const DescriptionResource = memo(
+    forwardRef((_, ref) => {
+      const [description, setDescription] = useState('');
+      const handleSetDes = (content: string) => {
+        setDescription(content);
+      };
 
-    const getData = () => {
-      console.log('check');
+      const getData = () => {
+        return { description };
+      };
+      useImperativeHandle(ref, () => ({
+        getData,
+      }));
+      return <TextEditor initialValue={datas?.description || ''} onChange={handleSetDes} />;
+    })
+  );
 
-      return { description };
-    };
-    useImperativeHandle(ref, () => ({
-      getData,
-    }));
-    return (
-      <TextEditor
-        initialValue={datas?.description || ''}
-        onChange={handleSetDes}
-      />
-    );
-  });
+  const Description = memo(
+    forwardRef(({ defaultValue }: any, ref) => {
+      const [description, setDescription] = useState(defaultValue?.description || '');
 
-  const Row = ({ row, currentModuleIndex }: any) => {
+      useEffect(() => {
+        if (defaultValue?.description) {
+          setDescription(defaultValue.description); // Cập nhật khi defaultValue thay đổi
+        }
+      }, [defaultValue]);
+
+      const handleSetDes = (content: string) => {
+        setDescription(content);
+      };
+
+      const getData = () => {
+        return { description };
+      };
+
+      useImperativeHandle(ref, () => ({
+        getData,
+      }));
+
+      return (
+        <TextEditor
+          value={description} // Sử dụng value thay vì chỉ initialValue
+          onChange={handleSetDes}
+        />
+      );
+    })
+  );
+
+  const Row = memo(({ row, currentModuleIndex }: any) => {
     const [open, setOpen] = useState(false);
     const [idEdit, setIdEdit] = useState<string | null>(null);
     const [isOpenModalDocument, setIsOpenModalDocument] = useState(false);
@@ -111,17 +141,29 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
       setIsOpenModalDocument(!isOpenModalDocument);
     };
 
-    const hanldeAddResouce = (resouce: Resource) => {
+    const hanldeAddResource = (resouce: Resource) => {
       let cloneModules: Module[] = [...modules];
 
       cloneModules[currentModuleIndex].resources.push(resouce);
       setModules(cloneModules);
     };
 
-    const handleDeleteModules = (_id: string | number) => {
+    const handleDeleteResource = (indexResource: number) => {
+      if (confirm(`Xác nhận xóa tài liệu "${modules[currentModuleIndex].resources[indexResource].title}" ?`)) {
+        let cloneModules: Module[] = [...modules];
+
+        cloneModules[currentModuleIndex].resources = cloneModules[currentModuleIndex].resources.filter(
+          (_, i: number) => i != indexResource
+        );
+
+        setModules(cloneModules);
+      }
+    };
+
+    const handleDeleteModules = (index: string | number) => {
       if (confirm('Bạn có muốn xóa chương này không?')) {
         let cloneModules: Module[] = [...modules];
-        const removedModule = cloneModules.filter((m) => m._id != _id);
+        const removedModule = cloneModules.filter((_, indexModule) => indexModule != index);
         setModules(removedModule);
       }
     };
@@ -133,7 +175,6 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
     };
 
     const onSubmit = (data: { title: string }) => {
-      console.log(data);
       handleEditTitleModule(data.title);
     };
     return (
@@ -144,24 +185,16 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
           </TableCell>
-          <TableCell>{row._id}</TableCell>
           <TableCell>{row.title}</TableCell>
           <TableCell align="right">{row.resources.length}</TableCell>
           <TableCell align="right">
-            {moment
-              .utc(
-                row.resources.reduce(
-                  (acc: number, c: any) => acc + c.duration,
-                  0
-                ) * 1000
-              )
-              .format('HH:mm:ss')}
+            {moment.utc(row.resources.reduce((acc: number, c: any) => acc + c.duration, 0) * 1000).format('HH:mm:ss')}
           </TableCell>
           <TableCell align="right">
             <Tippy arrow content="Sửa">
               <Button
                 onClick={() => {
-                  setIdEdit(row._id);
+                  setIdEdit(currentModuleIndex);
                   reset({
                     title: row.title,
                   });
@@ -172,7 +205,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
             </Tippy>
           </TableCell>
           <TableCell align="right">
-            <Button onClick={() => handleDeleteModules(row._id)}>
+            <Button onClick={() => handleDeleteModules(currentModuleIndex)}>
               <DeleteOutlineIcon sx={{ color: 'red' }} />
             </Button>
           </TableCell>
@@ -183,7 +216,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
             <Collapse in={open} timeout={0} unmountOnExit>
               <Box sx={{ margin: 1 }}>
                 <Typography variant="h6" gutterBottom component="div">
-                  Các bài học con
+                  Các tài liệu con
                 </Typography>
                 <Table size="small" aria-label="resource">
                   <TableHead>
@@ -203,9 +236,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
                         <TableCell>{resource.title}</TableCell>
                         <TableCell>{resource.resource_type}</TableCell>
                         <TableCell>{resource.description}</TableCell>
-                        <TableCell align="right">
-                          {moment.utc(resource.duration * 1000).format('mm:ss')}
-                        </TableCell>
+                        <TableCell align="right">{moment.utc(resource.duration * 1000).format('mm:ss')}</TableCell>
 
                         <TableCell align="right">
                           <Tippy arrow content="Sửa">
@@ -215,7 +246,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
                           </Tippy>
                         </TableCell>
                         <TableCell align="right">
-                          <Button>
+                          <Button onClick={() => handleDeleteResource(index)}>
                             <DeleteOutlineIcon sx={{ color: 'red' }} />
                           </Button>
                         </TableCell>
@@ -242,17 +273,13 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
               duration: number;
               description: string;
               resource_type: string;
-            }) => hanldeAddResouce(datas)}
+            }) => hanldeAddResource(datas)}
             widthIconImage="50px"
-            labels={['Tài liệu', 'Mô tả']}
-            contents={[documentChoose, Description]}
+            labels={['Tài liệu', 'Mô tả', 'Bài thực hành']}
+            contents={[documentChoose, DescriptionResource, CreateCodePractice]}
           />
         </Dialog>
-        <Dialog
-          open={Boolean(idEdit)}
-          onClose={() => setIdEdit(null)}
-          title={`Edit chương ${row.title}`}
-        >
+        <Dialog open={Boolean(idEdit !== null)} onClose={() => setIdEdit(null)} title={`Edit chương ${row.title}`}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name="title"
@@ -276,110 +303,109 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
         </Dialog>
       </>
     );
-  };
-
-  const TableModule = forwardRef((_, ref) => {
-    const [openModalTitle, setOpenModalTitle] = useState(false);
-    const [newModuleTitle, setNewModuleTitle] = useState('');
-
-    const getData = () => {
-      return { modules };
-    };
-
-    useImperativeHandle(ref, () => ({
-      getData,
-    }));
-
-    const handleAddModule = (title: string) => {
-      setModules((prevModules) => [
-        ...prevModules,
-        {
-          _id: prevModules.length + 1,
-          title: title,
-          resources: [],
-          totalDuration: 0,
-        },
-      ]);
-      setNewModuleTitle('');
-      setOpenModalTitle(false);
-    };
-
-    return (
-      <TableContainer component={Paper} sx={{ mt: 2 }}>
-        <Table sx={{ minWidth: 650 }} aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>#</TableCell>
-              <TableCell>Tiêu đề</TableCell>
-              <TableCell align="right">
-                Số lượng bài học con <DescriptionIcon />
-              </TableCell>
-              <TableCell align="right">
-                Tổng thời lượng <AccessTimeIcon />
-              </TableCell>
-              <TableCell align="right" colSpan={2}>
-                Hành động
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {modules.map((module: Module, index: number) => (
-              <Row key={module._id} row={module} currentModuleIndex={index} />
-            ))}
-          </TableBody>
-        </Table>
-        <Button onClick={() => setOpenModalTitle(true)} sx={{ mt: 2 }}>
-          Thêm chương
-        </Button>
-        <Dialog
-          open={openModalTitle}
-          onClose={() => setOpenModalTitle(false)}
-          title="Thêm chương"
-        >
-          <Box sx={{ p: 3 }}>
-            <TextField
-              value={newModuleTitle}
-              onChange={(e) => setNewModuleTitle(e.target.value)}
-              placeholder="Nhập tiêu đề chương"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-            />
-            <Button
-              onClick={() => handleAddModule(newModuleTitle)}
-              disabled={!newModuleTitle}
-              variant="outlined"
-              fullWidth
-            >
-              Thêm
-            </Button>
-          </Box>
-        </Dialog>
-      </TableContainer>
-    );
   });
 
-  const Options = forwardRef(({}, ref) => {
-    const [optionData, setOptionData] = useState({});
+  const TableModule = memo(
+    forwardRef((_, ref) => {
+      const [openModalTitle, setOpenModalTitle] = useState(false);
+      const [newModuleTitle, setNewModuleTitle] = useState('');
 
-    const getData = () => ({ ...optionData });
-    useImperativeHandle(ref, () => ({
-      getData,
-    }));
+      const getData = () => {
+        return { modules };
+      };
 
-    return (
-      <OptionOther
-        onChange={(datasFromOther) => setOptionData(datasFromOther)}
-        defaultValues={{
-          original_price: parseInt(datas?.original_price || '0'),
-          sale_price: parseInt(datas?.sale_price || '0'),
-          learning_outcomes: datas?.learning_outcomes || [],
-          level: datas?.level || 'easy',
-        }}
-      />
-    );
-  });
+      useImperativeHandle(ref, () => ({
+        getData,
+      }));
+
+      const handleAddModule = (title: string) => {
+        setModules((prevModules) => [
+          ...prevModules,
+          {
+            title: title,
+            resources: [],
+          },
+        ]);
+        setNewModuleTitle('');
+        setOpenModalTitle(false);
+      };
+
+      return (
+        <TableContainer component={Paper} sx={{ mt: 2 }}>
+          <Table sx={{ minWidth: 650 }} aria-label="collapsible table">
+            <TableHead>
+              <TableRow>
+                <TableCell />
+                <TableCell>Tiêu đề</TableCell>
+                <TableCell align="right">
+                  bài học con <DescriptionIcon />
+                </TableCell>
+                <TableCell align="right">
+                  Tổng thời lượng <AccessTimeIcon />
+                </TableCell>
+                <TableCell align="right" colSpan={2}>
+                  Hành động
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {modules.map((module: Module, index: number) => (
+                <Row key={module._id} row={module} currentModuleIndex={index} />
+              ))}
+            </TableBody>
+          </Table>
+          <Button onClick={() => setOpenModalTitle(true)} sx={{ mt: 2 }}>
+            Thêm chương
+          </Button>
+          <Dialog open={openModalTitle} onClose={() => setOpenModalTitle(false)} title="Thêm chương">
+            <Box sx={{ p: 3 }}>
+              <TextField
+                value={newModuleTitle}
+                onChange={(e) => setNewModuleTitle(e.target.value)}
+                placeholder="Nhập tiêu đề chương"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+              />
+              <Button
+                onClick={() => handleAddModule(newModuleTitle)}
+                disabled={!newModuleTitle}
+                variant="outlined"
+                fullWidth
+              >
+                Thêm
+              </Button>
+            </Box>
+          </Dialog>
+        </TableContainer>
+      );
+    })
+  );
+  const Options = memo(
+    forwardRef(({ defaultValue }: any, ref) => {
+      const [optionData, setOptionData] = useState({});
+
+      const getData = () => ({ ...optionData });
+
+      useImperativeHandle(ref, () => ({
+        getData,
+      }));
+
+      return (
+        <OptionOther
+          onChange={(datasFromOther) => setOptionData(datasFromOther)}
+          defaultValues={{
+            learning_path_id: '6521438fd3f1e2a1a1a0b1c1',
+            user_id: '6521438fd3f1e2a1a1a0b1d1',
+            original_price: parseInt(datas?.original_price || defaultValue?.original_price || '0'),
+            sale_price: parseInt(datas?.sale_price || defaultValue?.sale_price || '0'),
+            learning_outcomes: datas?.learning_outcomes || defaultValue?.learning_outcomes || [],
+            level: datas?.level || defaultValue?.level || 'easy',
+          }}
+        />
+      );
+    })
+  );
 
   return (
     <Box>
