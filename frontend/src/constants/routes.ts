@@ -16,6 +16,8 @@ const path = {
     statistics: '/statistics',
     profiles: '/profiles',
     profile: '/profile',
+    hr: '/hr',
+    studentList: '/student-list',
     
   },
   client: {

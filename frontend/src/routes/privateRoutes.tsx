@@ -40,6 +40,52 @@ const Profile = Loadable(
 
 const Dashboard = Loadable(lazy(() => import('../views/pages/admin/Home')));
 
+const StudentList = Loadable(lazy(() => import('../views/pages/admin/StudentList')));
+
+const HR = Loadable(lazy(() => import('../views/pages/admin/HR')));
+
+
+
+import RouteProp from '../interfaces/route';
+import path from '@/constants/routes';
+import Loadable from '@/ui-component/Loadable';
+
+import { lazy } from 'react';
+
+const LearningPathList = Loadable(
+  lazy(() => import('../views/pages/admin/LearningPath/LearningPathList'))
+);
+const NewLearningPath = Loadable(
+  lazy(() => import('../views/pages/admin/LearningPath/NewLearningPath'))
+);
+const CoursesList = Loadable(
+  lazy(() => import('../views/pages/admin/Courses/CourseList'))
+);
+const NewCourses = Loadable(
+  lazy(() => import('../views/pages/admin/Courses/NewCourse'))
+);
+const UpdateCourse = Loadable(
+  lazy(() => import('../views/pages/admin/Courses/UpdateCourse'))
+);
+const CategoryList = Loadable(
+  lazy(() => import('../views/pages/admin/ListCategory'))
+);
+const ContentList = Loadable(
+  lazy(() => import('../views/pages/admin/Content'))
+);
+const AddContent = Loadable(
+  lazy(() => import('../views/pages/admin/Content/AddContent'))
+);
+
+const TransactionHistory = Loadable(
+  lazy(() => import('@/views/pages/admin/Transactions/transactionHistory'))
+);
+const Profile = Loadable(
+  lazy(() => import('@/views/pages/admin/Profile/Profile'))
+);
+
+const Dashboard = Loadable(lazy(() => import('../views/pages/admin/Home')));
+
 const PrivateRoutes: RouteProp[] = [
   {
     path: '/',
@@ -120,6 +166,16 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.profiles,
     layout: MainLayout,
     page: () => <h1>Admin Profiles</h1>,
+  },
+  {
+    path: path.admin.studentList,
+    layout: MainLayout,
+    page: StudentList,
+  },
+  {
+    path: path.admin.hr,
+    layout: MainLayout,
+    page: HR,
   },
 ];
 
