@@ -2,8 +2,8 @@ import MainLayout from '@/layout/admin/MainLayout';
 
 import RouteProp from '../interfaces/route';
 import path from '@/constants/routes';
-
 import Loadable from '@/ui-component/Loadable';
+
 import { lazy } from 'react';
 
 const LearningPathList = Loadable(
@@ -18,25 +18,33 @@ const NewCourses = Loadable(
 const UpdateCourse = Loadable(
   lazy(() => import('../views/pages/admin/Courses/UpdateCourse'))
 );
-const CourseList = Loadable(
-  lazy(() => import('../views/pages/admin/Courses/CourseList'))
+const ListCategory = Loadable(
+  lazy(() => import('../views/pages/admin/ListCategory'))
 );
+const ListContent = Loadable(
+  lazy(() => import('../views/pages/admin/Content'))
+);
+const AddContent = Loadable(
+  lazy(() => import('../views/pages/admin/Content/AddContent'))
+);
+
+const Dashboard = Loadable(lazy(() => import('../views/pages/admin/Home')));
 
 const PrivateRoutes: RouteProp[] = [
   {
     path: '/',
     layout: MainLayout,
-    page: () => <h1>Dashboard</h1>,
+    page: Dashboard,
   },
   {
     path: path.admin.dashboards,
     layout: MainLayout,
-    page: () => <h1>Dashboard</h1>,
+    page: Dashboard,
   },
   {
-    path: path.admin.courses,
+    path: path.admin.newLearningPath,
     layout: MainLayout,
-    page: CourseList,
+    page: NewLearningPath,
   },
   {
     path: path.admin.LearningPathList,
@@ -59,9 +67,19 @@ const PrivateRoutes: RouteProp[] = [
     page: NewCourses,
   },
   {
-    path: path.admin.posts,
+    path: path.admin.listCategory,
     layout: MainLayout,
-    page: () => <h1>Manage Posts</h1>,
+    page: ListCategory,
+  },
+  {
+    path: path.admin.listContent,
+    layout: MainLayout,
+    page: ListContent,
+  },
+  {
+    path: path.admin.addContent,
+    layout: MainLayout,
+    page: AddContent,
   },
   {
     path: path.admin.newPosts,
@@ -72,16 +90,6 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.transaction,
     layout: MainLayout,
     page: () => <h1>Transactions</h1>,
-  },
-  {
-    path: path.admin.transactionHistory,
-    layout: MainLayout,
-    page: () => <h1>Transaction History</h1>,
-  },
-  {
-    path: path.admin.statistics,
-    layout: MainLayout,
-    page: () => <h1>Statistics</h1>,
   },
   {
     path: path.admin.profiles,
