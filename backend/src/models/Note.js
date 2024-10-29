@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const noteSchema = new mongoose.Schema(
   {
-    resource: {
+    resource_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Resource",
       required: [true, "ResourceId is required"],
     },
 
-    user: {
+    user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "UserId is required"],
