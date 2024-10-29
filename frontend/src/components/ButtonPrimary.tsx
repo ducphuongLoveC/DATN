@@ -15,7 +15,8 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
   const theme = useTheme();
 
   let sxes = {
-    padding: 'var(--small-p)',
+
+    padding: 'var(--small-p) 50px',
     ...(props.sx || {}),
   };
 

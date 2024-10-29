@@ -8,7 +8,7 @@ const viewSchema = new mongoose.Schema(
       required: [true, "PostId is required"],
     },
 
-    userId: {
+    user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "UserId is required"],

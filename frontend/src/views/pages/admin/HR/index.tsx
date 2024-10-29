@@ -31,7 +31,7 @@ interface UserData {
   phone: string;
 }
 
-const Nhansu = () => {
+const HR = () => {
   const [rows, setRows] = useState<UserData[]>([
     {
       id: 1,
@@ -492,4 +492,4 @@ const Nhansu = () => {
   );
 };
 
-export default Nhansu;
+export default HR;

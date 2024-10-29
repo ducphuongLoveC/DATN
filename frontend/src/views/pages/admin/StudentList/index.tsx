@@ -14,7 +14,7 @@ interface NewUser {
     avatar: File | null;
 }
 
-const Student = () => {
+const StudentList = () => {
     const [rows, setRows] = useState([
         { id: 1, avatar: 'https://via.placeholder.com/50', name: 'Nguyễn Văn A', email: 'nguyenvana@gmail.com',phone : '0382641223',password : '123456',address : "Ha Noi" , totalCourses: 10, completedCourses: 8 },
         { id: 2, avatar: 'https://via.placeholder.com/50', name: 'Trần Thị B', email: 'tranthib@gmail.com', phone: '0382641223', password: '123456', address: "Ha Noi", totalCourses: 12, completedCourses: 10 },
@@ -322,4 +322,4 @@ const Student = () => {
     );
 };
 
-export default Student;
+export default StudentList;

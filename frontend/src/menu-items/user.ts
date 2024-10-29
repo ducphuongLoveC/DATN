@@ -5,7 +5,7 @@ const icons = {
   PermIdentityIcon,
 };
 
-const User = {
+const user = {
   id: 'user',
   title: 'User',
   caption: 'User Caption',
@@ -21,14 +21,14 @@ const User = {
           id: 'userStudent',
           title: 'Student Manager',
           type: 'item',
-          url: path.admin.student,
+          url: path.admin.studentList,
           target: false,
         },
         {
           id: 'userAdmin',
           title: 'Admin Manager',
           type: 'item',
-          url: path.admin.nhansu,
+          url: path.admin.hr,
           target: false,
         },
       ],
@@ -37,4 +37,4 @@ const User = {
 };
 
 
-export default User;
+export default user;

@@ -136,7 +136,7 @@ const Customization: React.FC = () => {
             borderBottomLeftRadius: '50%',
             borderTopRightRadius: '50%',
             borderBottomRightRadius: '4px',
-            top: '25%',
+            bottom: '0',
             position: 'fixed',
             right: 10,
             zIndex: theme.zIndex.speedDial,

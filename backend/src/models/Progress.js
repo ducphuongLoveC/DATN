@@ -8,7 +8,7 @@ const progressSchema = new mongoose.Schema(
       required: [true, "UserId is required"],
     },
 
-    course_d: {
+    course_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
       required: [true, "CourseId is required"],

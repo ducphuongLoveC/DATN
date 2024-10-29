@@ -83,12 +83,12 @@ const PlacementToggle: React.FC<PlacementToggleProps> = React.memo(
 
     return (
       <Box position="relative">
-        {/* control */}
+    
         {Connect(handleToggleWrapper)}
         <BackgroundOverlay onClick={handleToggleWrapper} open={isOpenWrapper} />
         <Wrapper open={isOpenWrapper} placement={placement}>
           {children}
-          {/* close */}
+    
           <Button
             onClick={handleToggleWrapper}
             sx={{ position: 'absolute', top: '0', right: '0' }}

@@ -3,15 +3,22 @@ const path = {
     dashboards: '/dashboards',
     courses: '/courses',
     newCourse: '/courses/new',
+    listCategory: '/category',
+    listContent: '/content',
+    addContent: '/content/add',
+    updateCourse: '/courses/:id/update',
+    LearningPathList: '/learning-path',
+    newLearningPath: '/learning-path/new',
     posts: '/posts',
     newPosts: '/posts/new',
     transaction: '/transaction',
     transactionHistory: '/transaction/history',
     statistics: '/statistics',
     profiles: '/profiles',
-    users: '/users',
-    student: '/students',
-    nhansu: '/nhansu'
+    profile: '/profile',
+    hr: '/hr',
+    studentList: '/student-list',
+    
   },
   client: {
     auth: {
