@@ -31,6 +31,13 @@ const AddContent = Loadable(
   lazy(() => import('../views/pages/admin/Content/AddContent'))
 );
 
+const TransactionHistory = Loadable(
+  lazy(() => import('@/views/pages/admin/Transactions/transactionHistory'))
+);
+const Profile = Loadable(
+  lazy(() => import('@/views/pages/admin/Profile/Profile'))
+);
+
 const Dashboard = Loadable(lazy(() => import('../views/pages/admin/Home')));
 
 const PrivateRoutes: RouteProp[] = [
@@ -88,6 +95,16 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.addContent,
     layout: MainLayout,
     page: AddContent,
+  },
+  {
+    path: path.admin.profile,
+    layout: MainLayout,
+    page: Profile,
+  },
+  {
+    path: path.admin.transactionHistory,
+    layout: MainLayout,
+    page: TransactionHistory,
   },
   {
     path: path.admin.newPosts,

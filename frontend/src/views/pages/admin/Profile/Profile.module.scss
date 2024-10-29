@@ -1,0 +1,47 @@
+.main-body {
+  padding: 15px;
+}
+
+.card {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 0.25rem;
+  background-color: #fff;
+}
+
+.card-body {
+  padding: 1rem;
+  min-height: 360px;
+}
+
+.card-body-user {
+  background-color: #1e293a;
+  color: #fff;
+  padding: 20px;
+}
+
+.button-edit-profile {
+  width: 100%;
+  max-width: 100px;
+  height: 35px;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #ff9800 50%, #1a202c 60%);
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: background-position 0.5s ease;
+  background-size: 200% 100%;
+  background-position: left bottom;
+}
+
+.button-edit-profile:hover {
+  background-position: right bottom;
+}
+
+.rounded-circle {
+  border-radius: 50%;
+  margin-top: 20px;
+}
+
+.rounded-circle:hover {
+  filter: drop-shadow(10px 10px 10px pink);
+}
