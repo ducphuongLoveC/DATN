@@ -6,7 +6,7 @@ export interface SectionItem {
   section: string;
 }
 interface SectionProps {
-  data: SectionItem[];
+    data: SectionItem[]
   onChange: (section: SectionItem) => void;
 }
 

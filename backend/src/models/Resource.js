@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const resourceSchema = new mongoose.Schema(
   {
-    course: {
+    module_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
-      required: [true, "CourseId is required"],
+      ref: "Module",
+      required: [true, "Module is required"],
     },
 
     resource_type: {
@@ -32,7 +32,7 @@ const resourceSchema = new mongoose.Schema(
       maxlength: 255,
     },
 
-    questions: [
+    questions_id: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Question",
@@ -40,9 +40,9 @@ const resourceSchema = new mongoose.Schema(
     ],
 
     duration: {
-      type: String,
-      required: [true, "Duration is required"],
-      minlength: 6,
+      type: Number,
+      required: [true, "duration is required"],
+      minlength: 1,
       maxlength: 255,
     },
   },

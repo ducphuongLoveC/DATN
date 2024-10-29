@@ -210,9 +210,7 @@ const CourseDetail: React.FC = () => {
             <Typography variant="h4" ml="var(--medium-space)">
               Dương Đức Phương
             </Typography>
-            <CheckCircleIcon
-              sx={{ fontSize: 'var(--small-icon)', ml: '3px' }}
-            />
+            <CheckCircleIcon sx={{fontSize:'var(--small-icon)', ml:'3px'}} />
           </Button>
           <Typography variant="h3" mt={'var(--medium-space)'}>
             Bạn sẽ học được những gì?
@@ -375,9 +373,7 @@ const CourseDetail: React.FC = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <ButtonPrimary fullWidth>
-                  Thanh toán ngay <PaymentIcon />{' '}
-                </ButtonPrimary>
+                <ButtonPrimary fullWidth>Thanh toán ngay <PaymentIcon/> </ButtonPrimary>
               </Grid>
 
               {/* nhận lại sau khóa học */}

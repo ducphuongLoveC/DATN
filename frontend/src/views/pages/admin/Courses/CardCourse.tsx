@@ -5,9 +5,11 @@ import TabsCustom from '@/components/TabsCustom';
 
 interface CardCourseProps {
   labels: React.ReactNode[];
-  widthIconImage?: string;
   contents: React.ComponentType<any>[];
-  onSubmit?: (data: { title: string; thumbnail: File | null }) => void;
+  widthIconImage?: string;
+  onSubmit?: (datas: { title: string; thumbnail: File | null } | any) => void;
+  initialTitle?: string;
+  initialThumbnail?: File | null;
 }
 
 const CardCourse: React.FC<CardCourseProps> = ({
@@ -15,11 +17,18 @@ const CardCourse: React.FC<CardCourseProps> = ({
   contents,
   widthIconImage,
   onSubmit,
+  initialTitle = '',
+  initialThumbnail = null,
 }) => {
   const theme = useTheme();
-  const [title, setTitle] = useState<string>('');
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const contentRefs = useRef<(React.RefObject<any> | null)[]>([]);
+  const [datas, setDatas] = useState({});
+  const [title, setTitle] = useState<string>(initialTitle);
+  const [thumbnail, setThumbnail] = useState<File | null>(initialThumbnail);
+  const contentRefs = useRef<(React.RefObject<any> | null)[]>(
+    Array(contents.length)
+      .fill(null)
+      .map(() => React.createRef())
+  );
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -27,12 +36,10 @@ const CardCourse: React.FC<CardCourseProps> = ({
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
-
-    console.log(file);
     setThumbnail(file);
   };
 
-  const handleCreate = () => {
+  const getDatas = () => {
     const contentsData = contentRefs.current.reduce((acc, ref) => {
       if (ref && ref.current && typeof ref.current.getData === 'function') {
         acc = { ...acc, ...ref.current.getData() };
@@ -42,13 +49,19 @@ const CardCourse: React.FC<CardCourseProps> = ({
       }
       return acc;
     }, {});
+    return contentsData;
+  };
 
+  const handleSubmit = () => {
     if (onSubmit) {
-      onSubmit({ title, thumbnail, ...contentsData });
+      onSubmit({ title, thumbnail, ...getDatas() });
     }
   };
 
-  // Initialize refs when contents change or component mounts
+  const handleCreateData = () => {
+    setDatas(getDatas());
+  };
+
   useEffect(() => {
     contentRefs.current = contents.map(
       (_, index) => contentRefs.current[index] || React.createRef()
@@ -76,6 +89,7 @@ const CardCourse: React.FC<CardCourseProps> = ({
         <Grid item lg={10}>
           <input
             placeholder="Nhập tiêu đề nội dung"
+            value={title}
             onChange={handleTitleChange}
             style={{
               border: 'none',
@@ -102,29 +116,50 @@ const CardCourse: React.FC<CardCourseProps> = ({
             id="upload-image"
           />
           <label htmlFor="upload-image">
-            <AddAPhotoIcon
-              sx={{
-                fontSize: {
-                  sm: '30px',
-                  md: widthIconImage ?? '100px',
-                },
-                opacity: 0.4,
-              }}
-            />
+            {thumbnail ? (
+              <img
+                src={
+                  typeof thumbnail == 'string'
+                    ? thumbnail
+                    : URL.createObjectURL(thumbnail)
+                }
+                alt="Thumbnail"
+                style={{
+                  width: widthIconImage || '100px',
+                  height: widthIconImage || '100px',
+                  objectFit: 'cover',
+                }}
+              />
+            ) : (
+              <AddAPhotoIcon
+                sx={{
+                  fontSize: {
+                    sm: '30px',
+                    md: widthIconImage ?? '100px',
+                  },
+                  opacity: 0.4,
+                }}
+              />
+            )}
           </label>
         </Grid>
       </Grid>
 
       {/* content */}
       <TabsCustom
+        onChange={handleCreateData}
         labels={labels}
         contents={contents.map((Content, index) => (
-          <Content key={index} ref={contentRefs.current[index]} />
+          <Content
+            key={index}
+            ref={contentRefs.current[index]}
+            defaultValue={datas}
+          />
         ))}
       />
 
-      <Button sx={{ mt: 2 }} onClick={handleCreate}>
-        Tạo
+      <Button variant="outlined" sx={{ mt: 2 }} onClick={handleSubmit}>
+        Lưu
       </Button>
     </Box>
   );

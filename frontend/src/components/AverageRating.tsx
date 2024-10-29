@@ -25,27 +25,23 @@ const AverageRating: React.FC<AverageRatingProps> = ({
 
   return (
     <Box display={'flex'} alignItems={'center'}>
-      <Typography
-        color={'#f69c08'}
-        variant="inherit"
-        fontSize="16px"
-        fontWeight="bold"
-        mr={1}
-        mt={0.5}
-      >
+      <Typography color={'#f69c08'} variant="inherit" fontSize="16px" fontWeight="bold" mr={1} mt={0.5}>
         {averageRating}
       </Typography>
 
-      <StarRatings
-        rating={averageRating} // Cập nhật để hiển thị đánh giá trung bình
-        starRatedColor={starRatedColor || '#f69c08'} // Màu của sao đã được đánh giá
-        starEmptyColor={starEmptyColor || 'gray'} // Màu của sao chưa được đánh giá
-        starDimension="14px" // Kích thước sao
-        starSpacing="1px" // Khoảng cách giữa các sao
-        numberOfStars={totalStars} // Số lượng sao
-        name="averageRating"
-      />
-      <Typography ml={1}>({totalUserRate} đánh giá)</Typography>
+     
+        <StarRatings
+          rating={averageRating} // Cập nhật để hiển thị đánh giá trung bình
+          starRatedColor={starRatedColor || '#f69c08'} // Màu của sao đã được đánh giá
+          starEmptyColor={starEmptyColor || 'gray'} // Màu của sao chưa được đánh giá
+          starDimension="14px" // Kích thước sao
+          starSpacing="1px" // Khoảng cách giữa các sao
+          numberOfStars={totalStars} // Số lượng sao
+          name="averageRating"
+        />
+      <Typography ml={1}>
+        ({totalUserRate} đánh giá)
+      </Typography>
     </Box>
   );
 };

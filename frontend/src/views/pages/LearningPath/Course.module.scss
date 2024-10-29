@@ -12,13 +12,12 @@
   font-weight: 600;
   font-size: 36px;
 }
-.course__subtitle,
-.subtitle {
+.course__subtitle, .subtitle {
   font-size: 16px;
   font-weight: 500;
 }
 .course__select {
-  margin: 20px 0px;
+margin: 20px 0px;
 }
 .course__option {
   font-size: 16px;
@@ -26,78 +25,74 @@
   margin-left: 54px;
 }
 .course__box {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 20px 54px;
+display: flex;
+flex-wrap: wrap;
+margin: 20px 54px;
 }
 .card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 10px;
-  width: 46%;
-  margin: 10px;
+position: relative;
+overflow: hidden;
+border-radius: 10px;
+width: 46%;
+margin: 10px;
 }
 .card__img {
-  position: relative;
+position: relative;
 }
 .card__img > img {
   filter: blur(1.5px);
 }
 .card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 3px;
-  width: 98%;
-  height: 96.5%;
-  border-radius: 5px;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.8),
-    rgba(255, 255, 255, 0)
-  );
-  z-index: 1;
+content: "";
+position: absolute;
+top: 0;
+left: 3px;
+width: 98%;
+height: 96.5%;
+border-radius: 5px;
+background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(255, 255, 255, 0)); 
+z-index: 1; 
 }
 .card__name {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #fff;
-  font-size: 20px;
-  z-index: 2;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+color: #FFF;
+font-size: 20px;
+z-index: 2; 
 }
 .card__details {
-  position: absolute;
-  bottom: -100%;
-  left: 3px;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  width: 98%;
-  margin-bottom: 8px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  text-align: center;
-  padding: 20px;
-  transition: bottom 0.7s ease;
-  z-index: 2;
+position: absolute;
+bottom: -100%;
+left: 3px;
+background-color: rgba(0, 0, 0, 0.8);
+color: #FFF;
+width: 98%;
+margin-bottom: 8px;
+border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;
+text-align: center;
+padding: 20px;
+transition: bottom 0.7s ease;
+z-index: 2; 
 }
 .card:hover .card__details {
-  bottom: 0;
+bottom: 0;
 }
 .view {
-  background-color: rgb(0, 255, 30);
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 10px;
-  transition: background-color 0.5s ease;
-  border-radius: 20px;
-  padding: 10px 20px;
+background-color: rgb(0, 255, 30);
+border: none;
+color: #FFF;
+cursor: pointer;
+font-size: 16px;
+margin-top: 10px;
+transition: background-color 0.5s ease;
+border-radius: 20px;
+padding: 10px 20px;
 }
 .view:hover {
-  background-color: darkgreen;
+background-color: darkgreen;
 }
 .propose {
   width: 40%;
@@ -113,6 +108,6 @@
   padding: 20px 0px;
 }
 .propose__item {
-  list-style: disc;
-  margin-left: 20px;
+list-style: disc;
+margin-left: 20px;
 }

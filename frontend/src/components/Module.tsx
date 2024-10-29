@@ -160,7 +160,7 @@ const Module: React.FC<ModuleProps> = ({
   const theme = useTheme();
 
   const renderTitle = () => (
-    <Box>
+    <Box> 
       <Box fontSize={'16px'}>
         {styleM === 'two' &&
           (expanded ? (

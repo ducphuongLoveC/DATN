@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const progressSchema = new mongoose.Schema(
   {
-    user: {
+    user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "UserId is required"],
     },
 
-    course: {
+    course_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
       required: [true, "CourseId is required"],

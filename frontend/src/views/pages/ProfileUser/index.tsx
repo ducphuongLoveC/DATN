@@ -1,3 +1,4 @@
+
 import { useTheme } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -21,6 +22,7 @@ const ProFile: React.FC = () => {
   if (!user) {
     return <div>Chưa tìm thấy dữ liệu</div>;
   }
+
 
   const indexOfLastCourse = currentPage * coursesPerPage;
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
@@ -52,9 +54,7 @@ const ProFile: React.FC = () => {
             </h3>
             <p className="tw-text-center">{user.referring}</p>
             <hr className="tw-my-4" />
-            <p className="tw-p-4">
-              Thành Viên Của DevShunt ngày {user.memberSince}
-            </p>
+            <p className="tw-p-4">Thành Viên Của DevShunt ngày {user.memberSince}</p>
           </div>
           <div className="tw-rounded-lg  border-solid border-[0.5px] border-sky-500 tw-mb-3">
             <div className="tw-rounded-lg  border-solid border-1 border-sky-500">

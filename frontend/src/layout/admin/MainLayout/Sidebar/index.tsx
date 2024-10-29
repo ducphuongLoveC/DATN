@@ -51,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             mx: 'auto',
           }}
         >
-          <Logo />
+         <Logo/>
         </Box>
       </Box>
       <BrowserView>
@@ -65,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         >
           <MenuList />
 
-          {/* <Stack
+            {/* <Stack
               direction="row"
               justifyContent="center"
               sx={{

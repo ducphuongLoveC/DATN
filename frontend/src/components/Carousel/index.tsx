@@ -279,8 +279,12 @@
 
 // export default Carousel;
 
+
+
+
+
 import React, { useState } from 'react';
-import { styled } from '@mui/material/styles';
+import {  styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
 import Slider from 'react-slick';
@@ -358,7 +362,7 @@ const Carousel: React.FC<CarouselProps> = ({
   sliders,
   ...props
 }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0); 
 
   const settings = {
     dots: dot,
@@ -374,12 +378,12 @@ const Carousel: React.FC<CarouselProps> = ({
     customPaging: (i: number) => {
       return (
         <div
-          onClick={() => setActiveIndex(i)}
+          onClick={() => setActiveIndex(i)} 
           style={{
-            borderRadius: 'var(--main-border-radius)',
+            borderRadius:'var(--main-border-radius)',
             width: '30px',
             height: '5px',
-            background: i === activeIndex ? '#d3d3d3' : 'white',
+            background: i === activeIndex ? '#d3d3d3' : 'white', 
             transition: 'background-color 0.3s',
             cursor: 'pointer',
           }}

@@ -102,20 +102,20 @@ const Course: React.FC = () => {
       <TabPanel value={value} index={0}>
         <Grid container spacing={3}>
           {courses.map((c, _id: number) => (
-            <Grid key={_id} item xs={12} sm={6} md={4} lg={3}>
-              <CourseItem
-                to="/courses/"
-                title={c.title}
-                postUser={c.postUser}
-                price={c.price}
-                salePrice={c.salePrice}
-                thumbnail={c.thumbnail}
-                totalRatings={c.totalRatings}
-                totalUserRate={c.totalUserRate}
-                totalStars={c.totalStars}
-              />
-            </Grid>
-          ))}
+              <Grid key={_id} item xs={12} sm={6} md={4} lg={3}>
+                <CourseItem
+                  to="/courses/"
+                  title={c.title}
+                  postUser={c.postUser}
+                  price={c.price}
+                  salePrice={c.salePrice}
+                  thumbnail={c.thumbnail}
+                  totalRatings={c.totalRatings}
+                  totalUserRate={c.totalUserRate}
+                  totalStars={c.totalStars}
+                />
+              </Grid>
+            ))}
         </Grid>
       </TabPanel>
       <TabPanel value={value} index={1}>

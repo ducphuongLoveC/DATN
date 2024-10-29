@@ -3,7 +3,7 @@ import {
   BiNews,
   BiLogoTelegram,
   BiSolidObjectsHorizontalLeft,
-  BiLaptop,
+  BiLaptop
 } from 'react-icons/bi';
 
 import path from '@/constants/routes';

@@ -1,33 +1,47 @@
 // assets
-import { IconKey } from '@tabler/icons-react';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import path from '@/constants/routes';
 const icons = {
-  IconKey,
+  EditNoteIcon,
 };
 
 const courses = {
   id: 'courses',
-  title: 'courses',
-  caption: 'Courses Caption',
+  title: 'Khóa học',
+  caption: 'Crud khóa học',
   type: 'group',
   children: [
     {
       id: 'CourseManager',
-      title: 'Courses manager',
+      title: 'Khóa học',
       type: 'collapse',
-      icon: icons.IconKey,
+      icon: icons.EditNoteIcon,
 
       children: [
         {
+          id: 'LearningPathList',
+          title: 'Dach sách lộ trình',
+          type: 'item',
+          url: path.admin.LearningPathList,
+          target: false,
+        },
+        {
+          id: 'newLearningPath',
+          title: 'Tạo lộ trình',
+          type: 'item',
+          url: path.admin.newLearningPath,
+          target: false,
+        },
+        {
           id: 'courseList',
-          title: 'Courses list',
+          title: 'Danh sách khóa học',
           type: 'item',
           url: path.admin.courses,
           target: false,
         },
         {
           id: 'createCourses',
-          title: 'New courses',
+          title: 'Tạo khóa học',
           type: 'item',
           url: path.admin.newCourse,
           target: false,

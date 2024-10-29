@@ -3,6 +3,12 @@ const path = {
     dashboards: '/dashboards',
     courses: '/courses',
     newCourse: '/courses/new',
+    listCategory: '/category',
+    listContent: '/content',
+    addContent: '/content/add',
+    updateCourse: '/courses/:id/update',
+    LearningPathList: '/learning-path',
+    newLearningPath: '/learning-path/new',
     posts: '/posts',
     newPosts: '/posts/new',
     transaction: '/transaction',
@@ -10,6 +16,7 @@ const path = {
     statistics: '/statistics',
     profiles: '/profiles',
     profile: '/profile',
+    
   },
   client: {
     auth: {

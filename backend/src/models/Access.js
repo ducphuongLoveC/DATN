@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const accsessSchema = new mongoose.Schema(
     {
-        user: {
+        user_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: [true, "UserId is required"]
         },
 
-        course: {
+        course_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Course",
             required: [true, "CourseId is required"]
@@ -24,7 +24,7 @@ const accsessSchema = new mongoose.Schema(
             type: Date,
             required: true,
             default: function () {
-                // Tính toán ngày hết hạn là 30 ngày sau
+               
                 const currentDate = new Date();
                 const expirationDate = new Date(currentDate.setDate(currentDate.getDate() + 30));
                 return expirationDate;

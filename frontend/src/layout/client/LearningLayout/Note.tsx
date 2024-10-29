@@ -28,7 +28,7 @@ const Note: React.FC = () => {
                 id="filter-notes"
                 className="mr-2 w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="">Lọc theo chương</option>
+                <option value=''>Lọc theo chương</option>
                 <option value={2}>Trong chương này</option>
                 <option value={3}>Tất cả trương</option>
               </select>

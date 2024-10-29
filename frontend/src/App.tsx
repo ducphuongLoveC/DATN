@@ -10,7 +10,6 @@ import themes from '@/themes';
 import { router } from '@/routes';
 
 const App: React.FC = () => {
-  console.log('check');
   const state = useSelector(
     (state: any) =>
       window.location.hostname.startsWith('admin')

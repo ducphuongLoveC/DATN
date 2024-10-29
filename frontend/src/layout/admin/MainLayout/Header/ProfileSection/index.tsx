@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -40,14 +40,15 @@ import {
   IconSettings,
   IconUser,
 } from '@tabler/icons-react';
+import { RootState } from '@/store/reducer';
 
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection: React.FC = () => {
-  const theme: any = useTheme();
-  const customization = useSelector((state: any) => state.customization);
-  console.log(customization);
+  const theme = useTheme();
+  const customization = useSelector((state: RootState) => state.customization);
 
+  
   const navigate = useNavigate();
 
   const [sdm, setSdm] = useState<boolean>(true);
