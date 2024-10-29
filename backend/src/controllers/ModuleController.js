@@ -60,7 +60,7 @@ class ModuleController {
             });
         }
     }
-    async deleteModule(req, res) {
+    async deleteModule(req, res, next) {
         const { id } = req.params;
 
         try {

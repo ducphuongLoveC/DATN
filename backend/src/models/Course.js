@@ -27,13 +27,7 @@ const courseSchema = new mongoose.Schema(
       default: "easy",
     },
 
-    learningOutcomes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "LearningOutcomes",
-        title: String,
-      },
-    ],
+    learning_outcomes: [String],
 
     thumbnail: {
       type: String,
