@@ -4,8 +4,15 @@ import { validBodyRequets } from "../middlewares/validbodyRequets.js";
 import { courseSchema } from "../validSchema/courseSchema.js";
 
 const routerCourse = Router();
+
 routerCourse.get('/', CoursesController.get);
-// routerCourse.get('/relationships', CoursesController.getAllRelationship);
+routerCourse.get('/modules-resources', CoursesController.getCoursesWithModulesAndResources);
+routerCourse.get('/:id/modules-resources', CoursesController.getCourseWithModulesAndResources);
+
+// Route để thêm hoặc cập nhật course
+routerCourse.post('/add-course', CoursesController.addCourseDetail);
+routerCourse.patch('/update-course/:id', CoursesController.updateCourseDetail);
+
 
 routerCourse.get('/:id', CoursesController.getDetail);
 routerCourse.post('/',validBodyRequets(courseSchema), CoursesController.create);

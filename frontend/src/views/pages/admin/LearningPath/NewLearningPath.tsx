@@ -1,21 +1,20 @@
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { TextField, Typography, Paper, Container, Grid, Button } from '@mui/material';
+import { TextField, Paper, Grid, Box, Button } from '@mui/material';
 import { styled } from '@mui/system';
 import { useForm, Controller } from 'react-hook-form';
 import { newLearningPath } from '@/api/learningPathApi';
 import { toast, ToastContainer } from 'react-toastify';
 
+// my pj
+import HeaderTitle from '../Title';
 import TextEditor from '@/components/TextEditor';
-import ButtonPrimary from '@/components/ButtonPrimary';
+
 import path from '@/constants/routes';
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center', 
-  boxShadow: '0 10px 20px rgba(0,0,0,0.1)',
+
+  borderRadius: 0,
 }));
 
 const StyledForm = styled('form')(({ theme }) => ({
@@ -54,13 +53,15 @@ export default function LearningPath() {
   };
 
   return (
-    <Container maxWidth="lg">
-       <Button>
-          <Link to={path.admin.newLearningPath}>Danh sách lộ trình học</Link>
-        </Button>
-      <StyledPaper elevation={6}>
+    <Box>
+      <HeaderTitle
+        des='Chức năng "Tạo lộ trình học"'
+        link={path.admin.LearningPathList}
+        titleButton="Danh sách lộ trình học"
+      />
+      <StyledPaper>
         <StyledForm onSubmit={handleSubmit(onSubmit)} noValidate>
-          <Grid container spacing={3}>
+          <Grid container spacing={3} mb={2} >
             <Grid item xs={12}>
               <Controller
                 name="title"
@@ -106,16 +107,17 @@ export default function LearningPath() {
             </Grid>
           </Grid>
 
-          <ButtonPrimary
+          <Button
+            variant="outlined"
             type="submit"
             fullWidth
             disabled={mutation.isPending}
           >
             {mutation.isPending ? 'Đang tạo...' : 'Tạo lộ trình'}
-          </ButtonPrimary>
+          </Button>
         </StyledForm>
       </StyledPaper>
       <ToastContainer />
-    </Container>
+    </Box>
   );
 }
