@@ -131,6 +131,16 @@ const PrivateRoutes: RouteProp[] = [
     layout: MainLayout,
     page: Articlecategory,
   },
+  {
+    path: path.admin.studentList,
+    layout: MainLayout,
+    page: StudentList,
+  },
+  {
+    path: path.admin.hr,
+    layout: MainLayout,
+    page: HR,
+  },
 ];
 
 export default PrivateRoutes;
