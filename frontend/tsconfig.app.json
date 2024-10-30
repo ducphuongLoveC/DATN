@@ -25,7 +25,6 @@
     "noFallthroughCasesInSwitch": true,
 
     // alias
-
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"] // Đặt alias '@' trỏ tới thư mục src

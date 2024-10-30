@@ -136,7 +136,7 @@ const NewPost: React.FC = () => {
         preview
         initialValue=""
         initialHeight="70vh"
-        exportContent={handleContentChange}
+        onChange={handleContentChange}
       />
     </Box>
   );

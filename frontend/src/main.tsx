@@ -8,7 +8,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import App from './App';
 import '@/assets/scss/style.scss';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
@@ -17,6 +16,8 @@ import 'tippy.js/animations/scale-extreme.css';
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
+import 'react-toastify/dist/ReactToastify.css';
 
 import './index.css';
 

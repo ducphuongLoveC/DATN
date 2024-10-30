@@ -11,7 +11,7 @@ const learningPathSchema = new Schema(
 
     thumbnail: {
       type: String,
-      required: [true, "Thubnail is required"],
+      required: [true, "Thumbnail is required"],
       maxlength: 255,
     },
 

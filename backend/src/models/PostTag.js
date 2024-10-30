@@ -8,7 +8,7 @@ const postTagSchema = new mongoose.Schema(
       required: [true, "PostId is required"],
     },
 
-    tag_id: {
+    tag: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tag",
       required: [true, "TagId is required"],

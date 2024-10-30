@@ -3,11 +3,12 @@ import courses from './courses';
 import posts from './posts';
 import other from './other';
 import utilities from './utilities';
-import categorys from './categorys';
+import transaction_history from './transaction_history';
+import user from './user';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, courses, posts, other, utilities,categorys],
+  items: [dashboard, courses,transaction_history, user , posts, other, utilities],
 };
 
 export default menuItems;

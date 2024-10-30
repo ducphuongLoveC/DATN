@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Articlecategory = () => {
   return (
     <>
@@ -24,7 +22,6 @@ const Articlecategory = () => {
               name="message"
               placeholder="Nhập nội dung của bạn ở đây"
               className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:border-blue-400 transition duration-200"
-              rows="5"
             ></textarea>
           </div>
 
