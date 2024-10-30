@@ -18,7 +18,8 @@ const path = {
     profile: '/profile',
     hr: '/hr',
     studentList: '/student-list',
-    
+    categorys: '/categorys',
+    Articlecategorys: '/categorys/article',
   },
   client: {
     auth: {
