@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-
-// material-ui
-
 import { useTheme, styled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
@@ -18,25 +15,13 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-
-// third party
-import * as Yup from 'yup';
-import { Formik, FormikHelpers } from 'formik';
-
-// project imports
-
+import { z } from 'zod';
+import { useForm, Controller } from 'react-hook-form';
 import AnimateButton from '@/ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from '@/utils/password-strength';
-
-// assets
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
-// ===========================|| FIREBASE - REGISTER ||=========================== //
-
-interface AuthRegisterProps {
-  // Define any additional props here if necessary
-}
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const MainInput = styled(OutlinedInput)(() => ({
   input: {
@@ -44,29 +29,33 @@ const MainInput = styled(OutlinedInput)(() => ({
   },
 }));
 
-const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
+const schema = z.object({
+  fname: z.string().min(1, 'First Name is required'),
+  lname: z.string().min(1, 'Last Name is required'),
+  email: z.string().email('Must be a valid email').max(255),
+  password: z.string().min(1, 'Password is required').max(255),
+});
+
+type AuthLoginData = z.infer<typeof schema>;
+interface AuthRegisterProps {
+  onSubmit: (data: AuthLoginData) => void;
+}
+const AuthRegister: React.FC<AuthRegisterProps> = ({onSubmit ,...others }) => {
   const theme: any = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
   const [showPassword, setShowPassword] = useState(false);
   const [checked, setChecked] = useState(true);
+  const [, setStrength] = useState<number>(0);
+  const [level, setLevel] = useState<{ color: string; label: string } | undefined>();
 
-  const [strength, setStrength] = useState<number>(0);
-  const [level, setLevel] = useState<
-    | {
-        color: string;
-        label: string;
-      }
-    | undefined
-  >();
+  console.log(level);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
@@ -76,147 +65,93 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
     setLevel(strengthColor(temp));
   };
 
-  useEffect(() => {
-    changePassword('123456');
-  }, []);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<AuthLoginData>({
+    resolver: zodResolver(schema),
+  });
 
+  
   return (
     <>
-      <Grid
-        container
-        direction="column"
-        justifyContent="center"
-        spacing={2}
-      ></Grid>
+      <Grid container direction="column" justifyContent="center" spacing={2}></Grid>
 
-      <Formik
-        initialValues={{
-          email: '',
-          password: '',
-          submit: null,
-        }}
-        validationSchema={Yup.object().shape({
-          email: Yup.string()
-            .email('Must be a valid email')
-            .max(255)
-            .required('Email is required'),
-          password: Yup.string().max(255).required('Password is required'),
-        })}
-        onSubmit={(
-          values: {
-            email: string;
-            password: string;
-            submit: null;
-          },
-          {
-            setSubmitting,
-          }: FormikHelpers<{
-            email: string;
-            password: string;
-            submit: null;
-          }>
-        ) => {
-          // Handle form submission
-          console.log(values);
-          
-          setSubmitting(false);
-        }}
-      >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values,
-        }) => (
-          <form noValidate onSubmit={handleSubmit} {...others}>
-            <Grid container spacing={matchDownSM ? 0 : 2}>
-              <Grid item xs={12} sm={6}>
+      <form noValidate onSubmit={handleSubmit(onSubmit)} {...others}>
+        <Grid container spacing={matchDownSM ? 0 : 2}>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="fname"
+              control={control}
+              render={({ field }) => (
                 <TextField
+                  {...field}
                   fullWidth
                   label="First Name"
                   margin="normal"
-                  name="fname"
-                  type="text"
-                  defaultValue=""
                   sx={{
                     ...theme.typography.customInput,
-                    input: {
-                      color: 'black',
-                    },
+                    input: { color: 'black' },
                   }}
+                  error={!!errors.fname}
+                  helperText={errors.fname ? String(errors.fname.message) : ''}
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="lname"
+              control={control}
+              render={({ field }) => (
                 <TextField
+                  {...field}
                   fullWidth
                   label="Last Name"
                   margin="normal"
-                  name="lname"
-                  type="text"
-                  defaultValue=""
                   sx={{
                     ...theme.typography.customInput,
-                    input: {
-                      color: 'black',
-                    },
+                    input: { color: 'black' },
                   }}
+                  error={!!errors.lname}
+                  helperText={errors.lname ? String(errors.lname.message) : ''}
                 />
-              </Grid>
-            </Grid>
-            <FormControl
-              fullWidth
-              error={Boolean(touched.email && errors.email)}
-              sx={{
-                ...theme.typography.customInput,
-              }}
-            >
-              <InputLabel htmlFor="outlined-adornment-email-register">
-                Email Address / Username
-              </InputLabel>
-              <MainInput
-                theme={theme}
-                id="outlined-adornment-email-register"
-                type="email"
-                value={values.email}
-                name="email"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                inputProps={{}}
-              />
-              {touched.email && errors.email && (
-                <FormHelperText
-                  error
-                  id="standard-weight-helper-text--register"
-                >
-                  {errors.email}
-                </FormHelperText>
               )}
-            </FormControl>
+            />
+          </Grid>
+        </Grid>
 
-            <FormControl
-              fullWidth
-              error={Boolean(touched.password && errors.password)}
-              sx={{
-                ...theme.typography.customInput,
-              }}
-            >
-              <InputLabel htmlFor="outlined-adornment-password-register">
-                Password
-              </InputLabel>
+        <FormControl fullWidth error={!!errors.email} sx={{ ...theme.typography.customInput }}>
+          <InputLabel htmlFor="outlined-adornment-email-register">Email Address / Username</InputLabel>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <MainInput {...field} id="outlined-adornment-email-register" type="email" inputProps={{}} />
+            )}
+          />
+          {errors.email && (
+            <FormHelperText error id="standard-weight-helper-text--register">
+              {String(errors.email.message)}
+            </FormHelperText>
+          )}
+        </FormControl>
+
+        <FormControl fullWidth error={!!errors.password} sx={{ ...theme.typography.customInput }}>
+          <InputLabel htmlFor="outlined-adornment-password-register">Password</InputLabel>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
               <MainInput
-                id="outlined-adornment-password-register"
-                type={showPassword ? 'text' : 'password'}
-                value={values.password}
-                name="password"
-                label="Password"
-                onBlur={handleBlur}
+                {...field}
                 onChange={(e) => {
-                  handleChange(e);
+                  field.onChange(e.target.value);
                   changePassword(e.target.value);
                 }}
+                id="outlined-adornment-password-register"
+                type={showPassword ? 'text' : 'password'}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -230,107 +165,79 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ ...others }) => {
                     </IconButton>
                   </InputAdornment>
                 }
-                inputProps={{}}
               />
-              {touched.password && errors.password && (
-                <FormHelperText
-                  error
-                  id="standard-weight-helper-text-password-register"
-                >
-                  {errors.password}
-                </FormHelperText>
-              )}
-            </FormControl>
-
-            {strength !== 0 && (
-              <FormControl fullWidth>
-                <Box
-                  sx={{
-                    mb: 2,
-                  }}
-                >
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item>
-                      <Box
-                        style={{
-                          backgroundColor: level?.color,
-                        }}
-                        sx={{
-                          width: 85,
-                          height: 8,
-                          borderRadius: '7px',
-                        }}
-                      />
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle1" fontSize="0.75rem">
-                        {level?.label}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </FormControl>
             )}
+          />
+          {errors.password && (
+            <FormHelperText error id="standard-weight-helper-text-password-register">
+              {String(errors.password.message)}
+            </FormHelperText>
+          )}
+        </FormControl>
 
-            <Grid container alignItems="center" justifyContent="space-between">
+        <FormControl fullWidth>
+          <Box sx={{ mb: 2 }}>
+            <Grid container spacing={2} alignItems="center">
               <Grid item>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={checked}
-                      onChange={(event) => setChecked(event.target.checked)}
-                      name="checked"
-                      color="primary"
-                    />
-                  }
-                  label={
-                    <Typography variant="subtitle1">
-                      Agree with &nbsp;
-                      <Typography variant="subtitle1" component={Link} to="#">
-                        Terms & Condition.
-                      </Typography>
-                    </Typography>
-                  }
-                />
+                <Box style={{ backgroundColor: level?.color }} sx={{ width: 85, height: 8, borderRadius: '7px' }} />
+              </Grid>
+              <Grid item>
+                <Typography variant="subtitle1" fontSize="0.75rem">
+                  {level?.label}
+                </Typography>
               </Grid>
             </Grid>
-            {errors.submit && (
-              <Box
-                sx={{
-                  mt: 3,
-                }}
-              >
-                <FormHelperText error>{errors.submit}</FormHelperText>
-              </Box>
-            )}
+          </Box>
+        </FormControl>
 
-            <Box
+        <Grid container alignItems="center" justifyContent="space-between">
+          <Grid item>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checked}
+                  onChange={(event) => setChecked(event.target.checked)}
+                  name="checked"
+                  color="primary"
+                />
+              }
+              label={
+                <Typography variant="subtitle1">
+                  Agree with &nbsp;
+                  <Typography variant="subtitle1" component={Link} to="#">
+                    Terms & Condition.
+                  </Typography>
+                </Typography>
+              }
+            />
+          </Grid>
+        </Grid>
+
+        <Box sx={{ mt: 2 }}>
+          <AnimateButton>
+            <Button
+              disableElevation
+              disabled={isSubmitting}
+              fullWidth
+              size="large"
+              type="submit"
+              variant="contained"
               sx={{
-                mt: 2,
+                background: 'var(--color-primary)', // Sử dụng biến CSS đã sửa
+                color: '#fff',
               }}
             >
-              <AnimateButton>
-                <Button
-                  disableElevation
-                  disabled={isSubmitting}
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                  sx={{
-                    background: 'var(--color-primary)', // Sử dụng biến CSS đã sửa
-                    color: '#fff',
-                  }}
-                >
-                  Đăng ký
-                </Button>
-              </AnimateButton>
-            </Box>
-          </form>
-        )}
-      </Formik>
+              Đăng ký
+            </Button>
+          </AnimateButton>
+        </Box>
+      </form>
     </>
   );
 };
 
 export default AuthRegister;
+
+
+
+

@@ -7,20 +7,20 @@ const icons = {
 
 const transaction_history = {
   id: 'transaction_history',
-  title: 'transaction_history',
+  title: '',
   caption: '',
   type: 'group',
   children: [
     {
-      id: 'trans history',
-      title: 'Trans history',
+      id: 'transhistory',
+      title: 'Lịch sử giao dịch',
       type: 'collapse',
       icon: icons.CurrencyExchangeIcon,
 
       children: [
         {
           id: 'history',
-          title: 'History list',
+          title: 'Danh sách giao dịch',
           type: 'item',
           url: path.admin.transactionHistory,
           target: false,

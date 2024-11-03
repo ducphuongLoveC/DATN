@@ -81,7 +81,9 @@ const Login: React.FC = () => {
                     </Grid>
                   </Grid>
                   <Grid item xs={12}>
-                    <AuthLogin />
+                    <AuthLogin onSubmit={(data)=> {
+                      console.log(data);
+                    }} />
                   </Grid>
                   <Grid item xs={12}>
                     <Divider

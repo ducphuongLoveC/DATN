@@ -13,13 +13,13 @@ const user = {
   children: [
     {
       id: 'adminUser',
-      title: 'User Manager',
+      title: 'Quản lý tài khoản',
       type: 'collapse',
       icon: icons.PermIdentityIcon,
       children: [
         {
           id: 'userStudent',
-          title: 'Student Manager',
+          title: 'Danh sách',
           type: 'item',
           url: path.admin.studentList,
           target: false,

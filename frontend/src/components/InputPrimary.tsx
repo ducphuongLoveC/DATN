@@ -4,8 +4,8 @@ import { useTheme } from '@mui/material';
 
 interface InputPrimaryProps extends Omit<TextFieldProps, 'variant'> {
   placeholder?: string;
-  width?: string | number; // Thêm thuộc tính width để điều chỉnh độ rộng
-  height?: string | number; // Thêm thuộc tính height để điều chỉnh chiều cao
+  width?: string | number; 
+  height?: string | number; 
 }
 
 const InputPrimary: React.FC<InputPrimaryProps> = ({
@@ -32,7 +32,7 @@ const InputPrimary: React.FC<InputPrimaryProps> = ({
         color: theme.palette.text.primary, 
       },
     },
-    ...(props.sx || {}), // Kết hợp với các prop sx khác nếu có
+    ...(props.sx || {}), 
   };
 
   return (

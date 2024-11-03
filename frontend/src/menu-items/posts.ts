@@ -13,7 +13,7 @@ const posts = {
   children: [
     {
       id: 'post',
-      title: 'post manager',
+      title: 'Quản lý bài viết',
       type: 'collapse',
       icon: icons.IconDashboard,
       breadcrumbs: true,

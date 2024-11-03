@@ -1,22 +1,16 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import moment from 'moment';
 
 // ui
-import {
-  Box,
-  Grid,
-  Typography,
-  Button,
-  CardMedia,
-  styled,
-  useTheme,
-  Avatar,
-} from '@mui/material';
+import { Box, Grid, Typography, Button, CardMedia, styled, useTheme, Avatar } from '@mui/material';
 
 //my pj
 import AverageRating from '@/components/AverageRating';
 import Module from '@/components/Module';
 import ButtonPrimary from '@/components/ButtonPrimary';
-import InputPrimary from '@/components/InputPrimary';
+// import {InputPrimary} from '@/components/InputPrimary';
 import RatingPreview from '@/components/RatingPreview';
 
 //icon
@@ -30,112 +24,15 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PaymentIcon from '@mui/icons-material/Payment';
 
+//my pj
+import { getCourseFull } from '@/api/courseApi';
+
 const BoxCenter = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
   marginTop: 'var(--medium-space)',
 }));
 
-const LearningOutcome = [
-  { id: 1, title: 'Hiểu được các khái niệm cơ bản và nền tảng của ngành IT' },
-  { id: 2, title: 'Nắm vững các kiến thức cơ bản về lập trình web' },
-  { id: 3, title: 'Biết cách phát triển tư duy logic khi lập trình' },
-  { id: 4, title: 'Tìm hiểu các công cụ và ngôn ngữ lập trình phổ biến' },
-  {
-    id: 5,
-    title: 'Hiểu được quy trình phát triển phần mềm và các giai đoạn chính',
-  },
-  { id: 6, title: 'Học cách giải quyết vấn đề thông qua các bài tập thực tế' },
-  { id: 7, title: 'Nắm được kiến thức về hệ thống và mạng máy tính' },
-  { id: 8, title: 'Chuẩn bị tốt cho các khóa học nâng cao về lập trình' },
-  { id: 9, title: 'Hiểu biết về bảo mật cơ bản và an toàn thông tin' },
-  { id: 10, title: 'Biết cách làm việc với cơ sở dữ liệu và truy vấn SQL' },
-  { id: 11, title: 'Phát triển kỹ năng làm việc nhóm trong dự án phần mềm' },
-  { id: 12, title: 'Xây dựng giao diện người dùng thân thiện với HTML và CSS' },
-  { id: 13, title: 'Hiểu rõ cách thức hoạt động của máy tính và hệ điều hành' },
-  { id: 14, title: 'Làm quen với Git và quản lý phiên bản mã nguồn' },
-  { id: 15, title: 'Tìm hiểu về các phương pháp kiểm thử phần mềm cơ bản' },
-  { id: 16, title: 'Nắm được nguyên lý lập trình hướng đối tượng' },
-  { id: 17, title: 'Hiểu biết về các dịch vụ đám mây và triển khai ứng dụng' },
-  { id: 18, title: 'Xây dựng ứng dụng web đơn giản với JavaScript' },
-  { id: 19, title: 'Biết cách tối ưu hóa hiệu suất của trang web' },
-  { id: 20, title: 'Hiểu về các mô hình thiết kế phổ biến trong lập trình' },
-];
-const LearningLists = [
-  {
-    title: '1: Giới thiệu về JavaScript',
-    children: [
-      { title: 'JavaScript là gì?', path: '1', time: 661 },
-      { title: 'Lịch sử của JavaScript', path: '2', time: 620 },
-    ],
-  },
-  {
-    title: '2: Biến và kiểu dữ liệu',
-    children: [
-      { title: 'Khai báo biến', path: '3', time: 900 },
-      { title: 'Các kiểu dữ liệu cơ bản', path: '4', time: 600 },
-      { title: 'Toán tử trong JavaScript', path: '5', time: 600 },
-    ],
-  },
-  {
-    title: '3: Cấu trúc điều khiển',
-    children: [
-      { title: 'Câu lệnh điều kiện', path: '6', time: 600 },
-      { title: 'Vòng lặp', path: '', time: 600 },
-    ],
-  },
-  {
-    title: '4: Hàm trong JavaScript',
-    children: [
-      { title: 'Khai báo và sử dụng hàm', path: '7', time: 600 },
-      { title: 'Tham số và giá trị trả về', path: '8', time: 600 },
-      { title: 'Hàm mũi tên', path: '', time: 600 },
-    ],
-  },
-  {
-    title: '5: Mảng và đối tượng',
-    children: [
-      { title: 'Làm việc với mảng', path: '9', time: 1256 },
-      { title: 'Làm việc với đối tượng', path: '10', time: 2318 },
-    ],
-  },
-  {
-    title: '6: Lập trình hướng đối tượng',
-    children: [
-      { title: 'Class và object', path: '', time: 600 },
-      { title: 'Kế thừa', path: '', time: 600 },
-    ],
-  },
-  {
-    title: '7: Xử lý bất đồng bộ',
-    children: [
-      { title: 'Callback', path: '', time: 600 },
-      { title: 'Promises', path: '', time: 600 },
-      { title: 'Async/Await', path: '', time: 600 },
-    ],
-  },
-  {
-    title: '8: Làm việc với DOM',
-    children: [
-      { title: 'Chọn và thao tác với các phần tử DOM', path: '', time: 600 },
-      { title: 'Sự kiện DOM', path: '', time: 600 },
-    ],
-  },
-  {
-    title: '9: AJAX và Fetch API',
-    children: [
-      { title: 'Giới thiệu về AJAX', path: '', time: 600 },
-      { title: 'Sử dụng Fetch API', path: '', time: 600 },
-    ],
-  },
-  {
-    title: '10: Công cụ và thư viện',
-    children: [
-      { title: 'Sử dụng npm', path: '', time: 600 },
-      { title: 'Các thư viện phổ biến', path: '', time: 600 },
-    ],
-  },
-];
 const BoxPreviewVideo = styled(Box)(({}) => ({
   position: 'relative',
   cursor: 'pointer',
@@ -153,28 +50,58 @@ const BoxPreviewVideo = styled(Box)(({}) => ({
 }));
 
 const CourseDetail: React.FC = () => {
-  const [isShowMoreLearningOutCome, setIsShowMoreLearningOutCome] =
-    useState(false);
+  const { id } = useParams<{ id: string }>();
+  const [isShowMoreLearningOutCome, setIsShowMoreLearningOutCome] = useState(false);
   const [expandedIndexs, setExpandedIndexs] = useState<number[]>([0]);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['course'],
+    queryFn: () => getCourseFull(id || ''),
+  });
 
   const theme = useTheme();
   const handleToggleExpanded = (index: number) => {
-    setExpandedIndexs((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-    );
+    setExpandedIndexs((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]));
   };
 
   const handleToggleExpandedAll = () => {
-    if (LearningLists.length == expandedIndexs.length) {
+    if (data.modules.length == expandedIndexs.length) {
       setExpandedIndexs([]);
     } else {
-      setExpandedIndexs(LearningLists.map((_, index) => index));
+      setExpandedIndexs(data.modules.map((_: unknown, index: number) => index));
     }
   };
 
   const handleToggleShowMoreLearningOutCome = () => {
     setIsShowMoreLearningOutCome((prev) => !prev);
   };
+
+  const totalResources = useMemo(() => {
+    if (data) {
+      return data.modules.reduce((acc: number, c: any) => acc + c.resources.length, 0);
+    }
+  }, [data]);
+
+  const totalhourse = useMemo(() => {
+    if (data) {
+      const totalSecond = data.modules.reduce((acc: number, c: any) => {
+        return (
+          acc +
+          c.resources.reduce((acc: number, m: any) => {
+            return acc + m.duration;
+          }, 0)
+        );
+      }, 0);
+      const duration = moment.duration(totalSecond, 'seconds');
+      const hours = duration.hours();
+      const minutes = duration.minutes();
+
+      return `${hours} giờ ${minutes} phút`;
+    }
+  }, [data]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error...</div>;
 
   return (
     <Box mt={'var(--large-space)'}>
@@ -194,11 +121,13 @@ const CourseDetail: React.FC = () => {
         }}
       >
         <Grid item xs={12} md={8} xl={8}>
-          <Typography variant="h2">Kiến Thức Nhập Môn IT</Typography>
-          <Typography variant="body1" mt={'var(--medium-space)'}>
-            Để có cái nhìn tổng quan về ngành IT - Lập trình web các bạn nên xem
-            các videos tại khóa này trước nhé.
-          </Typography>
+          <Typography variant="h2">{data.title}</Typography>
+          <Typography
+            variant="body1"
+            mt={'var(--medium-space)'}
+            dangerouslySetInnerHTML={{ __html: data.description }}
+          />
+
           <AverageRating totalRatings={25} totalUserRate={5} totalStars={5} />
           <Button
             sx={{
@@ -208,9 +137,9 @@ const CourseDetail: React.FC = () => {
           >
             <Avatar src="/images/avatar.jpg" />
             <Typography variant="h4" ml="var(--medium-space)">
-              Dương Đức Phương
+              {data.user.name}
             </Typography>
-            <CheckCircleIcon sx={{fontSize:'var(--small-icon)', ml:'3px'}} />
+            <CheckCircleIcon sx={{ fontSize: 'var(--small-icon)', ml: '3px' }} />
           </Button>
           <Typography variant="h3" mt={'var(--medium-space)'}>
             Bạn sẽ học được những gì?
@@ -230,10 +159,10 @@ const CourseDetail: React.FC = () => {
               mt={'var(--medium-space)'}
               p={2}
             >
-              {LearningOutcome.map((l) => (
-                <Grid item xs={6} key={l.id} display={'flex'}>
+              {data.learning_outcomes.map((l: string, index: number) => (
+                <Grid item xs={6} key={index} display={'flex'}>
                   <DoneIcon fontSize="inherit" />
-                  <Typography ml={1}>{l.title}</Typography>
+                  <Typography ml={1}>{l}</Typography>
                 </Grid>
               ))}
             </Grid>
@@ -245,18 +174,12 @@ const CourseDetail: React.FC = () => {
           <Typography variant="h3" mt={'var(--medium-space)'}>
             Nội dung khóa học
           </Typography>
-          <Box
-            display={'flex'}
-            justifyContent={'space-between'}
-            alignItems={'center'}
-          >
+          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <Typography variant="body1" mt={'var(--medium-space)'}>
               4 chương • 12 bài học • Thời lượng 03 giờ 26 phút
             </Typography>
             <Button onClick={handleToggleExpandedAll}>
-              {expandedIndexs.length == LearningLists.length
-                ? 'Đóng tất cả'
-                : 'Mở tất cả'}
+              {expandedIndexs.length == data.modules.length ? 'Đóng tất cả' : 'Mở tất cả'}
             </Button>
           </Box>
           <Box
@@ -265,19 +188,17 @@ const CourseDetail: React.FC = () => {
               border: '1px solid #d1d7dc',
             }}
           >
-            {LearningLists.map((list, index) => (
+            {data.modules.map((module: { title: string; resources: any }, index: number) => (
               <Module
                 onClick={() => handleToggleExpanded(index)}
                 expanded={expandedIndexs.includes(index)}
                 styleM="two"
                 key={index}
-                title={list.title}
-                items={list.children}
+                title={module.title}
+                items={module.resources}
               />
             ))}
           </Box>
-
-          {/* đánh giá */}
           <Typography variant="h3" mt={'var(--medium-space)'}>
             Đánh giá
           </Typography>
@@ -298,8 +219,9 @@ const CourseDetail: React.FC = () => {
             <BoxPreviewVideo>
               <CardMedia
                 component="img"
-                image="https://i.ytimg.com/vi/wm5gMKuwSYk/maxresdefault.jpg"
+                image={data.thumbnail}
                 sx={{
+                  borderRadius: '14px',
                   width: '100%',
                 }}
               />
@@ -343,16 +265,11 @@ const CourseDetail: React.FC = () => {
               <Grid item xs={12} mt={'var(--medium-space)'}>
                 <Grid container spacing={2} alignItems="center">
                   <Grid item>
-                    <Typography variant="h2">
-                      {Number(120000).toLocaleString('vi-VN')} VND
-                    </Typography>
+                    <Typography variant="h2">{Number(data.sale_price).toLocaleString('vi-VN')} VND</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography
-                      variant="h5"
-                      sx={{ textDecoration: 'line-through' }}
-                    >
-                      {Number(120000).toLocaleString('vi-VN')} VND
+                    <Typography variant="h5" sx={{ textDecoration: 'line-through' }}>
+                      {Number(data.original_price).toLocaleString('vi-VN')} VND
                     </Typography>
                   </Grid>
                 </Grid>
@@ -362,18 +279,20 @@ const CourseDetail: React.FC = () => {
               <Grid item xs={12}>
                 <Grid container spacing={1} alignItems="center">
                   <Grid item xs={8}>
-                    <InputPrimary label="Khuyến mãi" type="text" fullWidth />
+                    <input placeholder="nhập mã" style={{ padding: '11px', width: '100%' }} />
                   </Grid>
                   <Grid item xs={4}>
                     <ButtonPrimary customVariant="outlined" fullWidth>
-                      Áp dụng
+                      Áp
                     </ButtonPrimary>
                   </Grid>
                 </Grid>
               </Grid>
 
               <Grid item xs={12}>
-                <ButtonPrimary fullWidth>Thanh toán ngay <PaymentIcon/> </ButtonPrimary>
+                <ButtonPrimary fullWidth>
+                  Thanh toán ngay <PaymentIcon />{' '}
+                </ButtonPrimary>
               </Grid>
 
               {/* nhận lại sau khóa học */}
@@ -384,24 +303,22 @@ const CourseDetail: React.FC = () => {
 
                 <BoxCenter>
                   <SpeedIcon />
-                  <Typography ml={2}>Trình độ học mức cơ bản</Typography>
+                  <Typography ml={2}>Trình độ học mức {data.level}</Typography>
                 </BoxCenter>
 
                 <BoxCenter>
                   <DvrIcon />
-                  <Typography ml={2}>Tất cả 50 bài học</Typography>
+                  <Typography ml={2}>Tổng số bài giảng {totalResources}</Typography>
                 </BoxCenter>
 
                 <BoxCenter>
                   <AccessTimeIcon />
-                  <Typography ml={2}>Tổng thời lượng 10 giờ 20 phút</Typography>
+                  <Typography ml={2}>Tổng thời lượng {totalhourse}</Typography>
                 </BoxCenter>
 
                 <BoxCenter>
                   <EmojiEventsIcon />
-                  <Typography ml={2}>
-                    Cấp chứng khi sau khi hoàn thành
-                  </Typography>
+                  <Typography ml={2}>Cấp chứng khi sau khi hoàn thành</Typography>
                 </BoxCenter>
               </Grid>
             </Grid>

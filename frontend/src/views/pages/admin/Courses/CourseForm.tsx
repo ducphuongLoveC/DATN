@@ -38,7 +38,7 @@ import documentChoose from './Resource/DocumentChoose';
 import OptionOther from './OptionOther';
 import CreateCodePractice from './Resource/CreateCodePractice';
 
-interface Resource {
+export interface Resource {
   _id?: string;
   title: string;
   type: string;
@@ -47,7 +47,7 @@ interface Resource {
   description: string;
   resource_type: string;
 }
-interface Module {
+export interface Module {
   _id?: string;
   title: string;
   resources: Resource[];
@@ -55,6 +55,8 @@ interface Module {
 export interface Course {
   _id: string;
   title: string;
+  user_id?: string;
+
   learning_path_id?: string;
   description: string;
   learning_outcomes: string[];
@@ -92,7 +94,8 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
 
   const Description = memo(
     forwardRef(({ defaultValue }: any, ref) => {
-      const [description, setDescription] = useState(defaultValue?.description || '');
+      
+      const [description, setDescription] = useState(datas ? datas.description : defaultValue?.description || '');
 
       useEffect(() => {
         if (defaultValue?.description) {
@@ -350,7 +353,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
             </TableHead>
             <TableBody>
               {modules.map((module: Module, index: number) => (
-                <Row key={module._id} row={module} currentModuleIndex={index} />
+                <Row key={index} row={module} currentModuleIndex={index} />
               ))}
             </TableBody>
           </Table>

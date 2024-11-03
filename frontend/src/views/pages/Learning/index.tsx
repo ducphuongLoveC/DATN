@@ -1,12 +1,8 @@
-import { useState } from 'react';
-import {
-  Box,
-  Typography,
-  styled,
-  useMediaQuery,
-  Button,
-  Hidden,
-} from '@mui/material';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+
+import { Box, Typography, styled, useMediaQuery, Button, Hidden } from '@mui/material';
 import { useTheme } from '@mui/material';
 
 import HeadlessTippy from '@tippyjs/react/headless';
@@ -27,6 +23,11 @@ import PlacementToggle from '@/components/PlacementToggle';
 import Comment from './Comment';
 import Wrapper from '@/components/Wrapper';
 import TextEditor from '@/components/TextEditor';
+
+import { findModuleByCourseId } from '@/api/moduleApi';
+import useQueryParams from '@/hooks/useQueryParams';
+import { getAdjacentResourceId, getResource } from '@/api/Resource';
+import formatLastUpdated from '@/utils/formatLastUpdated';
 
 const BoxHeaderAndNote = styled(Box)(() => ({
   display: 'flex',
@@ -80,9 +81,26 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
 }));
 
 const Learning: React.FC = () => {
+
+  const { id } = useParams();
+  const query = useQueryParams();
+
+  const idResource = query.get('id') || '';
+
   const [isLearningPlayList, setIsLearningPlayList] = useState<boolean>(true);
   const [isVisibleNote, setIsVisibleNote] = useState<boolean>(false);
 
+  const moduleQuery = useQuery({
+    queryKey: ['module'],
+    queryFn: () => findModuleByCourseId(id || ''),
+  });
+
+  const resourceQuery = useQuery({
+    queryKey: ['resource', idResource],
+    queryFn: () => getResource(idResource || '', ''),
+  });
+
+  
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -93,6 +111,20 @@ const Learning: React.FC = () => {
   const handleToggleNote = () => {
     setIsVisibleNote(!isVisibleNote);
   };
+
+  const handleAdjacentResourceId = async(direction: string)=> {
+    try {
+      const res = await getAdjacentResourceId(idResource, direction);
+      
+      query.set('id',res.id);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  if (moduleQuery.isLoading || resourceQuery.isLoading) return <div>Loading...</div>;
+  if (moduleQuery.isError) return <div>Error</div>;
 
   return (
     <Box>
@@ -110,7 +142,7 @@ const Learning: React.FC = () => {
             background: theme.palette.background.paper,
           }}
         >
-          <ArtPlayerComponent videoUrl="https://vip.opstream11.com/20220723/34981_6ae66f6b/index.m3u8" />
+          <ArtPlayerComponent videoUrl={resourceQuery.data.url} />
           <Box
             sx={{
               marginTop: '10px',
@@ -124,11 +156,9 @@ const Learning: React.FC = () => {
             <BoxHeaderAndNote>
               <Box>
                 <Typography variant="h1" fontWeight={500}>
-                  Javascript là gì?
+                  {resourceQuery.data.title}
                 </Typography>
-                <Typography variant="caption">
-                  Cập nhật tháng 11 năm 2022
-                </Typography>
+                <Typography variant="caption">{formatLastUpdated(resourceQuery.data.updatedAt)}</Typography>
               </Box>
               <Box>
                 <HeadlessTippy
@@ -140,7 +170,7 @@ const Learning: React.FC = () => {
                   render={(attrs) => (
                     <Wrapper {...attrs} style={{ width: '500px' }}>
                       <TextEditor
-                        key={isVisibleNote ? 'visible' : 'hidden'} // Force reinitialization when visibility changes
+                        key={isVisibleNote ? 'visible' : 'hidden'}
                         initialHeight="150px"
                         initialValue=""
                         onChange={(content) => {
@@ -173,13 +203,13 @@ const Learning: React.FC = () => {
                 padding: '20px',
               }}
             >
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit...
+              <Typography dangerouslySetInnerHTML={{ __html: resourceQuery.data.title }} />
             </Typography>
           </Box>
         </PerfectScrollbar>
         {isLearningPlayList && (
           <BoxLearningList>
-            <LearningList onClose={toggleLearningList} />
+            <LearningList modules={moduleQuery.data} idCourse={id} onClose={toggleLearningList} />
           </BoxLearningList>
         )}
       </Box>
@@ -188,10 +218,7 @@ const Learning: React.FC = () => {
         <PlacementToggle
           placement="left"
           Connect={(connect) => (
-            <Button
-              onClick={connect}
-              sx={{ color: theme.palette.text.primary, height: '50px' }}
-            >
+            <Button onClick={connect} sx={{ color: theme.palette.text.primary, height: '50px' }}>
               <MessageIcon />
               <Hidden smDown>
                 <Typography ml={1} variant="h4">
@@ -207,7 +234,7 @@ const Learning: React.FC = () => {
 
         <Box display={'flex'} alignItems={'center'}>
           <Box>
-            <ButtonStyle>
+            <ButtonStyle onClick={()=>handleAdjacentResourceId('previous')}>
               <Typography mr={1} variant="h4">
                 <ArrowBackIosNewIcon sx={{ fontSize: '25px' }} />
                 BÀI TRƯỚC
@@ -215,7 +242,7 @@ const Learning: React.FC = () => {
             </ButtonStyle>
           </Box>
           <Box>
-            <ButtonStyle sx={{ background: 'var(--color-primary)' }}>
+            <ButtonStyle onClick={()=>handleAdjacentResourceId('next')} sx={{ background: 'var(--color-primary)' }}>
               <Typography mr={1} variant="h4" color="white">
                 BÀI TIẾP THEO
                 <ArrowForwardIosIcon />
@@ -224,10 +251,7 @@ const Learning: React.FC = () => {
           </Box>
         </Box>
 
-        <Button
-          sx={{ color: theme.palette.text.primary }}
-          onClick={toggleLearningList}
-        >
+        <Button sx={{ color: theme.palette.text.primary }} onClick={toggleLearningList}>
           <Hidden mdDown>
             <Typography mr={1} variant="h4">
               Biến và kiểu dữ liệu
@@ -240,10 +264,7 @@ const Learning: React.FC = () => {
           )}
         </Button>
       </LessonNavigation>
-      <BackgroundOverlay
-        onClick={toggleLearningList}
-        open={downMD && isLearningPlayList}
-      />
+      <BackgroundOverlay onClick={toggleLearningList} open={downMD && isLearningPlayList} />
     </Box>
   );
 };

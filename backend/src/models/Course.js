@@ -37,7 +37,7 @@ const courseSchema = new mongoose.Schema(
 
     description: {
       type: String,
-      maxlength: 255,
+      maxlength: 25000,
     },
 
     original_price: {

@@ -8,12 +8,12 @@ const icons = { IconDashboard };
 import path from '@/constants/routes';
 const dashboard = {
   id: 'dashboard',
-  title: 'Dashboard',
+  title: 'Bảng điều khiển',
   type: 'group',
   children: [
     {
       id: 'dashboard',
-      title: 'Dashboard',
+      title: 'Điều khiển',
       type: 'item',
       url: path.admin.dashboards,
       icon: icons.IconDashboard,

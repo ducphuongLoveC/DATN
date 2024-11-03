@@ -8,7 +8,7 @@ import { errorCommon, errorNotFound } from './utils/errors.js';
 const app = express();
 
 connectDB();
-
+app.use(express.static('uploads'))
 app.use(cors());
 app.use(express.json());
 

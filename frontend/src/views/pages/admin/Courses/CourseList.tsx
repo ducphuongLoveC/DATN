@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Box, Button, Grid, styled, Typography, useTheme } from '@mui/material';
 import { More } from '@mui/icons-material';
 import moment from 'moment';
+import * as _ from 'lodash';
 
 // my pj
 import CourseListSkl from '@/ui-component/cards/Skeleton/CourseListSkl';
@@ -51,15 +52,13 @@ const CourseList: React.FC = () => {
                     <Grid item>
                       <Typography
                         variant="body1"
-                        dangerouslySetInnerHTML={{ __html: course.description }}
+                        dangerouslySetInnerHTML={{
+                          __html: _.truncate(course.description, { length: 100, omission: '...' }),
+                        }}
                       />
                     </Grid>
                     <Grid item>
-                      <Button
-                        component={Link}
-                        to={`/courses/${course._id}/update`}
-                        variant="outlined"
-                      >
+                      <Button component={Link} to={`/courses/${course._id}/update`} variant="outlined">
                         Xem khóa học
                       </Button>
                     </Grid>
@@ -72,18 +71,11 @@ const CourseList: React.FC = () => {
                       {(() => {
                         let totalDuration = 0;
                         for (let i = 0; i < course.modules.length; i++) {
-                          for (
-                            let j = 0;
-                            j < course.modules[i].resources.length;
-                            j++
-                          ) {
-                            totalDuration +=
-                              course.modules[i].resources[j].duration;
+                          for (let j = 0; j < course.modules[i].resources.length; j++) {
+                            totalDuration += course.modules[i].resources[j].duration;
                           }
                         }
-                        return moment
-                          .utc(totalDuration * 1000)
-                          .format('HH:mm:ss');
+                        return moment.utc(totalDuration * 1000).format('HH:mm:ss');
                       })()}
                     </Typography>
                   </BoxBetween>

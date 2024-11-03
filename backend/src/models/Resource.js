@@ -10,8 +10,8 @@ const resourceSchema = new mongoose.Schema(
 
     resource_type: {
       type: String,
-      enum: ["video", "image", "document"],
-      default: "document",
+      // enum: ["video", "image", "document"],
+      // default: "document",
     },
 
     title: {
@@ -23,7 +23,7 @@ const resourceSchema = new mongoose.Schema(
 
     url: {
       type: String,
-      required: [true, "Url is required"],
+      // required: [true, "Url is required"],
       maxlength: 255,
     },
 

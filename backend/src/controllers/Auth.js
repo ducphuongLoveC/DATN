@@ -56,10 +56,9 @@ class Auth {
       const isMath = comparePassword(password, useExists.password);
       if (!isMath) {
         return res.status(400).json({
-          message: "Mat khau khong dunng",
+          message: "Mat khau khong dung",
         });
       }
-
       const token = generrateToken({ _id: useExists._id }, "100d");
 
       useExists.password = undefined;

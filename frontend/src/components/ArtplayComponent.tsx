@@ -2,22 +2,24 @@ import { useEffect, useRef } from 'react';
 import ArtPlayer from 'artplayer';
 import Hls from 'hls.js';
 import { Box } from '@mui/material';
+
 interface ArtPlayerComponentProps {
   videoUrl: string;
+  poster?: string;
 }
 
-const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({
-  videoUrl,
-}) => {
+const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poster }) => {
   const artPlayerRef = useRef<HTMLDivElement>(null);
-  const artPlayerInstance = useRef<ArtPlayer | null>(null);
+  const art = useRef<ArtPlayer | null>(null);
 
   useEffect(() => {
     if (artPlayerRef.current) {
       const hls = new Hls();
       hls.loadSource(videoUrl);
-
-      artPlayerInstance.current = new ArtPlayer({
+       console.log(hls);
+       
+      art.current = new ArtPlayer({
+        poster: poster || '',
         container: artPlayerRef.current,
         url: videoUrl,
         customType: {
@@ -25,13 +27,30 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({
             hls.attachMedia(video);
           },
         },
-        controls: [],
+        controls: [
+          {
+            position: 'right',
+            html: 'Fullscreen',
+            click: function () {
+              if (art.current) {
+                art.current.fullscreen = !art.current.fullscreen;
+              }
+            },
+          },
+          // {
+          //   position: 'right',
+          //   html: 'Thu nhỏ',
+          //   click: function () {
+          //     if (art.current) art.current.pip = !art.current.pip;
+          //   },
+          // },
+        ],
       });
 
       return () => {
-        if (artPlayerInstance.current) {
-          artPlayerInstance.current.destroy();
-          artPlayerInstance.current = null;
+        if (art.current) {
+          art.current.destroy();
+          art.current = null;
         }
         hls.destroy();
       };

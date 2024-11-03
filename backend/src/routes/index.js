@@ -7,16 +7,17 @@ import routerCertificate from "./certificate.js";
 import routerAccess from "./access.js";
 import routerUser from "./user.js";
 import routerModule from "./module.js";
+import routerResource from "./resource.js";
 const router = Router();
 
-router.use('/courses',routerCourse);
-router.use('/auth', routerAuth);
-router.use('/learning-path', routerLearningPath);
-router.use('/learning-outcomes', routerLearningOutcomes);
-router.use('/certificate', routerCertificate);
-router.use('/access', routerAccess);
-router.use('/user', routerUser);
-router.use('/module', routerModule);
-
+router.use("/courses", routerCourse);
+router.use("/auth", routerAuth);
+router.use("/learning-path", routerLearningPath);
+router.use("/learning-outcomes", routerLearningOutcomes);
+router.use("/certificate", routerCertificate);
+router.use("/access", routerAccess);
+router.use("/user", routerUser);
+router.use("/module", routerModule);
+router.use("/resource", routerResource);
 
 export default router;
