@@ -1,9 +1,8 @@
 import styles from './Course.module.scss';
-import imgLanguage from '@/assets/images/course/iimg-langage.png'
+import imgLanguage from '@/assets/images/course/iimg-langage.png';
 import img3 from '../../../assets/images/course/image-3.png';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
 
 const LearningPath: React.FC = () => {
   interface Course {
@@ -41,9 +40,7 @@ const LearningPath: React.FC = () => {
               </span>
             </div>
             <div className={styles.course__select}>
-              <span className={styles.course__option}>
-                Hãy chọn hướng đi mà bạn mong muốn:
-              </span>
+              <span className={styles.course__option}>Hãy chọn hướng đi mà bạn mong muốn:</span>
               <div className={styles.course__box}>
                 {posts.map((item) => (
                   <div className={styles.card} key={item.id}>
@@ -51,9 +48,7 @@ const LearningPath: React.FC = () => {
                       <img src={imgLanguage} alt="" />
                       <span className={styles.card__name}>{item.title}</span>
                       <div className={styles.card__details}>
-                        <p>
-                          {item.description}
-                        </p>
+                        <p>{item.description}</p>
                         <button className={styles.view}>
                           <Link to={`/${item.path}`}>Xem ngay</Link>
                         </button>
@@ -65,7 +60,6 @@ const LearningPath: React.FC = () => {
             </div>
           </div>
           <div className={styles.propose}>
-          
             <h3 className={styles.propose__title}>Tin tức</h3>
             <div className={styles.propose__question}>
               <ul className={styles.propose__nav}>
