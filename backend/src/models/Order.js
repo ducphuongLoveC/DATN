@@ -22,9 +22,11 @@ const orderSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      maxlength: 255,
+      enum: ["pending", "completed", "failed", "canceled"],
+      default: "pending",
       required: true,
     },
+
     payment_method: {
       type: String,
       maxlength: 255,

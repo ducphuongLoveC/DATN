@@ -53,13 +53,13 @@ const CourseList: React.FC = () => {
                       <Typography
                         variant="body1"
                         dangerouslySetInnerHTML={{
-                          __html: _.truncate(course.description, { length: 100, omission: '...' }),
+                          __html: _.truncate(course.description || '   ', { length: 100, omission: '...' }),
                         }}
                       />
                     </Grid>
                     <Grid item>
                       <Button component={Link} to={`/courses/${course._id}/update`} variant="outlined">
-                        Xem khóa học
+                        Xem và sửa khóa học
                       </Button>
                     </Grid>
                   </Grid>

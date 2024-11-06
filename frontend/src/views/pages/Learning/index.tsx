@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
@@ -97,10 +97,9 @@ const Learning: React.FC = () => {
 
   const resourceQuery = useQuery({
     queryKey: ['resource', idResource],
-    queryFn: () => getResource(idResource || '', ''),
+    queryFn: () => getResource(idResource || ''),
   });
 
-  
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -125,6 +124,9 @@ const Learning: React.FC = () => {
 
   if (moduleQuery.isLoading || resourceQuery.isLoading) return <div>Loading...</div>;
   if (moduleQuery.isError) return <div>Error</div>;
+
+  console.log(moduleQuery.data);
+  console.log(resourceQuery.data);
 
   return (
     <Box>
@@ -203,7 +205,7 @@ const Learning: React.FC = () => {
                 padding: '20px',
               }}
             >
-              <Typography dangerouslySetInnerHTML={{ __html: resourceQuery.data.title }} />
+              <Typography dangerouslySetInnerHTML={{ __html: resourceQuery.data.description }} />
             </Typography>
           </Box>
         </PerfectScrollbar>

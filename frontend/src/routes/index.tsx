@@ -11,12 +11,14 @@ import subRouterProp from '@/interfaces/sub';
 import getMainDomain from '@/utils/getMainDoumain';
 import NotFound from '@/views/pages/NotFound';
 import ResetScroll from '@/components/ResetScroll';
+import Cookies from 'js-cookie';
 const createRoutes = (routes: RouteProp[]) => {
   return (
     <Router>
       <ResetScroll />
       <Routes>
         {routes.map((route, index) => {
+          const Middleware: any = route.middleware || Fragment;
           const Layout: any = route.layout || Fragment;
           const Page = route.page;
 
@@ -25,28 +27,19 @@ const createRoutes = (routes: RouteProp[]) => {
               key={index}
               path={route.path}
               element={
-                <Layout>
-                  <Page />
-                </Layout>
+                <Middleware>
+                  <Layout>
+                    <Page />
+                  </Layout>
+                </Middleware>
               }
             />
           );
         })}
-        {!getMainDomain().url.hostname.includes('admin') && (
-          <Route path="*" element={<NotFound />} />
-        )}
+        {!getMainDomain().url.hostname.includes('admin') && <Route path="*" element={<NotFound />} />}
       </Routes>
     </Router>
   );
-};
-
-const authenticateUser = () => {
-  const token = localStorage.getItem('authToken');
-  return true;
-  if (!token) {
-    window.location.href = `${getMainDomain().link}log-auth`;
-    return false;
-  }
 };
 
 const subRouter: subRouterProp[] = [
@@ -55,7 +48,27 @@ const subRouter: subRouterProp[] = [
     routes: privateRoutes,
     isAuthentication: true,
     handleAuthentication: () => {
-      return authenticateUser();
+      const params = new URLSearchParams(window.location.search);
+
+      const info = params.get('info');
+      const accessToken = params.get('accessToken');
+
+      let user;
+
+      if (info) {
+        user = JSON.parse(decodeURIComponent(info));
+      }
+      if (Cookies.get('user') && Cookies.get('accessToken')) {
+        return true;
+      }
+      if (user && accessToken && user.role === 'admin') {
+        Cookies.set('user', info || '', { domain: 'admin.localhost', expires: 7 });
+        Cookies.set('accessToken', accessToken || '', { domain: 'admin.localhost', expires: 7 });
+
+        return true;
+      }
+      window.location.href = import.meta.env.VITE_URL_MAIN + 'log-auth';
+      return false;
     },
   },
 ];

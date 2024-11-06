@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+
+import { useForm, Controller } from 'react-hook-form';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
 import { useTheme, styled } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
+// import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
+// import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -15,13 +21,12 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { z } from 'zod';
-import { useForm, Controller } from 'react-hook-form';
-import AnimateButton from '@/ui-component/extended/AnimateButton';
-import { strengthColor, strengthIndicator } from '@/utils/password-strength';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { zodResolver } from '@hookform/resolvers/zod';
+
+import AnimateButton from '@/ui-component/extended/AnimateButton';
+import { strengthColor, strengthIndicator } from '@/utils/password-strength';
+import { verifyCaptcha } from '@/api/authApi';
 
 const MainInput = styled(OutlinedInput)(() => ({
   input: {
@@ -33,23 +38,26 @@ const schema = z.object({
   fname: z.string().min(1, 'First Name is required'),
   lname: z.string().min(1, 'Last Name is required'),
   email: z.string().email('Must be a valid email').max(255),
-  password: z.string().min(1, 'Password is required').max(255),
+  password: z.string().min(6, 'Mật khẩu phải hơn hoặc bằng 6 ký tự').max(255),
 });
 
-type AuthLoginData = z.infer<typeof schema>;
+const captchaSecret = import.meta.env.VITE_CAPTCHA_SECRET;
+
+export type AuthRegisterData = z.infer<typeof schema>;
 interface AuthRegisterProps {
-  onSubmit: (data: AuthLoginData) => void;
+  onSubmit: (data: AuthRegisterData) => void;
 }
-const AuthRegister: React.FC<AuthRegisterProps> = ({onSubmit ,...others }) => {
+const AuthRegister: React.FC<AuthRegisterProps> = ({ onSubmit, ...others }) => {
   const theme: any = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [captchaError, setCaptchaError] = useState('');
+
   const [showPassword, setShowPassword] = useState(false);
-  const [checked, setChecked] = useState(true);
+  // const [checked, setChecked] = useState(true);
   const [, setStrength] = useState<number>(0);
   const [level, setLevel] = useState<{ color: string; label: string } | undefined>();
-
-  console.log(level);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -69,16 +77,37 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({onSubmit ,...others }) => {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<AuthLoginData>({
+  } = useForm<AuthRegisterData>({
     resolver: zodResolver(schema),
   });
 
-  
+  const handleCaptchaChange = async (token: string | null) => {
+    let result = await verifyCaptcha(token);
+    setCaptchaVerified(result);
+    if (!result) {
+      setCaptchaError('Xác thực captcha thất bại');
+    } else {
+      setCaptchaError('');
+    }
+    console.log(result);
+  };
+
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}></Grid>
 
-      <form noValidate onSubmit={handleSubmit(onSubmit)} {...others}>
+      <form
+        noValidate
+        onSubmit={handleSubmit((data) => {
+          if (captchaVerified) {
+            setCaptchaError('');
+            onSubmit(data);
+          } else {
+            setCaptchaError('Vui lòng xác thực captcha.');
+          }
+        })}
+        {...others}
+      >
         <Grid container spacing={matchDownSM ? 0 : 2}>
           <Grid item xs={12} sm={6}>
             <Controller
@@ -88,7 +117,7 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({onSubmit ,...others }) => {
                 <TextField
                   {...field}
                   fullWidth
-                  label="First Name"
+                  label="Tên đệm"
                   margin="normal"
                   sx={{
                     ...theme.typography.customInput,
@@ -108,7 +137,7 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({onSubmit ,...others }) => {
                 <TextField
                   {...field}
                   fullWidth
-                  label="Last Name"
+                  label="Tên"
                   margin="normal"
                   sx={{
                     ...theme.typography.customInput,
@@ -123,7 +152,7 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({onSubmit ,...others }) => {
         </Grid>
 
         <FormControl fullWidth error={!!errors.email} sx={{ ...theme.typography.customInput }}>
-          <InputLabel htmlFor="outlined-adornment-email-register">Email Address / Username</InputLabel>
+          <InputLabel htmlFor="outlined-adornment-email-register">Email</InputLabel>
           <Controller
             name="email"
             control={control}
@@ -139,7 +168,7 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({onSubmit ,...others }) => {
         </FormControl>
 
         <FormControl fullWidth error={!!errors.password} sx={{ ...theme.typography.customInput }}>
-          <InputLabel htmlFor="outlined-adornment-password-register">Password</InputLabel>
+          <InputLabel htmlFor="outlined-adornment-password-register">Mật khẩu</InputLabel>
           <Controller
             name="password"
             control={control}
@@ -190,7 +219,7 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({onSubmit ,...others }) => {
           </Box>
         </FormControl>
 
-        <Grid container alignItems="center" justifyContent="space-between">
+        {/* <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <FormControlLabel
               control={
@@ -211,7 +240,11 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({onSubmit ,...others }) => {
               }
             />
           </Grid>
-        </Grid>
+        </Grid> */}
+        <Box>
+          <ReCAPTCHA sitekey={captchaSecret} onChange={handleCaptchaChange} />
+          {captchaError && <FormHelperText error>{captchaError}</FormHelperText>}
+        </Box>
 
         <Box sx={{ mt: 2 }}>
           <AnimateButton>
@@ -237,7 +270,3 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({onSubmit ,...others }) => {
 };
 
 export default AuthRegister;
-
-
-
-

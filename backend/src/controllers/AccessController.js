@@ -1,92 +1,113 @@
 import Access from "../models/Access.js";
 
 class AccessController {
-  async create(req, res, next) {
+  async createAccess(req, res) {
     try {
-      const data = await Access.create(req.body);
-      if (data) {
-        return res.status(201).json({
-          success: true,
-          data,
-          message: "create successfuly",
-        });
-      }
+      const { user_id, course_id, expiration_date } = req.body;
+      console.log(req.body);
 
-      next();
+      const newAccess = new Access({
+        user_id,
+        course_id,
+        expiration_date,
+      });
+
+      const savedAccess = await newAccess.save();
+      res.status(201).json({
+        message: "Access record created successfully",
+        data: savedAccess,
+      });
     } catch (error) {
-      next(error);
+      res.status(500).json({
+        message: "Failed to create access record",
+        error: error.message,
+      });
     }
   }
 
-  async get(req, res, next) {
+  async getAccessByUser(req, res) {
     try {
-      const data = await Access.find().populate('course');
-      if (data) {
-        return res.status(201).json({
-          success: true,
-          data,
-          message: "get successfuly",
-        });
-      }
-
-      next();
+      const { userId } = req.params;
+      const accessRecords = await Access.find({ user_id: userId }).populate(
+        "course_id",
+        "name description"
+      );
+      res.status(200).json({ data: accessRecords });
     } catch (error) {
-      next(error);
+      res.status(500).json({
+        message: "Failed to retrieve access records",
+        error: error.message,
+      });
     }
   }
 
-  async getDetail(req, res, next) {
+  async updateAccess(req, res) {
     try {
-      const data = await Access.findById(req.params.id).populate('course');
-      if (data) {
-        return res.status(201).json({
-          success: true,
-          data,
-          message: "getDetail successfuly",
-        });
-      }
+      const { accessId } = req.params;
+      const { expiration_date } = req.body;
 
-      next();
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async delete(req, res, next) {
-    try {
-      const data = await Access.findByIdAndDelete(req.params.id);
-      if (data) {
-        return res.status(201).json({
-          success: true,
-          data,
-          message: "delete successfuly",
-        });
-      }
-
-      next();
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async update(req, res, next) {
-    try {
-      const data = await Access.findByIdAndUpdate(
-        { _id: req.params.id },
-        { ...req.body, updatedAt: new Date() },
+      const updatedAccess = await Access.findByIdAndUpdate(
+        accessId,
+        { expiration_date },
         { new: true }
       );
-      if (data) {
-        return res.status(201).json({
-          success: true,
-          data,
-          message: "getDetail successfuly",
-        });
+
+      if (!updatedAccess) {
+        return res.status(404).json({ message: "Access record not found" });
       }
 
-      next();
+      res.status(200).json({
+        message: "Access record updated successfully",
+        data: updatedAccess,
+      });
     } catch (error) {
-      next(error);
+      res.status(500).json({
+        message: "Failed to update access record",
+        error: error.message,
+      });
+    }
+  }
+
+  async deleteAccess(req, res) {
+    try {
+      const { accessId } = req.params;
+
+      const deletedAccess = await Access.findByIdAndDelete(accessId);
+      if (!deletedAccess) {
+        return res.status(404).json({ message: "Access record not found" });
+      }
+
+      res.status(200).json({ message: "Access record deleted successfully" });
+    } catch (error) {
+      res.status(500).json({
+        message: "Failed to delete access record",
+        error: error.message,
+      });
+    }
+  }
+
+  async hasAccess(req, res) {
+    try {
+      const { userId, courseId } = req.params;
+
+      const accessRecord = await Access.findOne({
+        user_id: userId,
+        course_id: courseId,
+      });
+
+      if (accessRecord && accessRecord.expiration_date > new Date()) {
+        return res
+          .status(200)
+          .json({ hasAccess: true, message: "User has access to the course" });
+      } else {
+        return res
+          .status(403)
+          .json({ hasAccess: false, message: "Access denied or expired" });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "Failed to verify access", error: error.message });
     }
   }
 }

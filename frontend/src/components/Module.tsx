@@ -97,6 +97,7 @@ const Module: React.FC<ModuleProps> = ({
         onClick={(event) => event.stopPropagation()}
         sx={{
           backgroundColor: styleM === 'two' ? theme.palette.background.paper : theme.palette.background.paper2,
+          
         }}
       >
         {renderItems()}

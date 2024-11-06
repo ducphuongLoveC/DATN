@@ -29,7 +29,7 @@ const path = {
     learning: '/learning/:id/',
     learningPath: '/learning-path',
     learningPathDetail: '/learning-path-detail',
-    courses: '/courses/:slug/:id',
+    courses: '/courses/:id',
     logAuth: 'log-auth',
     news: '/news',
     newsDetail: '/news-detail',

@@ -5,31 +5,38 @@ import path from '@/constants/routes';
 import { getCourse, updateCourse } from '@/api/courseApi';
 import { useParams } from 'react-router-dom';
 
+// toast
+import { ToastContainer, toast } from 'react-toastify';
 const UpdateCourse: React.FC = () => {
-  const { id } = useParams<{ id: string }>(); // Đảm bảo kiểu cho `id`
-  
+  const { id } = useParams<{ id: string }>();
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ['course', id],
     queryFn: () => getCourse(id || ''),
-    enabled: !!id, // Chỉ thực hiện yêu cầu nếu có ID
+    enabled: !!id,
   });
 
   const mutation = useMutation({
-    mutationKey: ['course', id], // Thêm ID vào mutationKey để theo dõi
+    mutationKey: ['course', id],
     mutationFn: (course: Course) => updateCourse(id || '', course),
-    onSuccess: () => {
-      // Xử lý thành công (ví dụ: thông báo cho người dùng)
-      alert('Cập nhật khóa học thành công!');
+    onMutate: () => {
+      toast.loading('Đang cập nhật khóa học...');
     },
-    onError: (error: any) => {
-      // Xử lý lỗi (ví dụ: thông báo cho người dùng)
-      console.error('Cập nhật khóa học thất bại:', error);
+    onSuccess: () => {
+      toast.dismiss();
+
+      toast.success('Cập nhật khóa học thành công...');
+    },
+    onError: (error) => {
+      toast.dismiss();
+      toast.success('Cập nhật khóa học thất bại...');
+      console.log(error);
     },
   });
 
   const handleUpdateCourse = (course: Course) => {
     console.log(course);
-    mutation.mutate(course); 
+    mutation.mutate(course);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -43,6 +50,7 @@ const UpdateCourse: React.FC = () => {
         link={path.admin.courses}
       />
       <CourseForm onSubmit={handleUpdateCourse} datas={data} />
+      <ToastContainer />
     </>
   );
 };

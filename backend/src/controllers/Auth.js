@@ -38,7 +38,7 @@ class Auth {
         message: "dang ky thanh cong",
       });
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
 

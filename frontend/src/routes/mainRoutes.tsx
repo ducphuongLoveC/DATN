@@ -8,6 +8,10 @@ import BasicLayout from '@/layout/client/BasicLayout';
 import Loadable from '@/ui-component/Loadable';
 import path from '@/constants/routes';
 
+// mid
+import RedirectIfAuthenticated from '@/middlewares/RedirectIfAuthenticated';
+import HasAccess from '@/middlewares/HasAccess';
+
 const Home = Loadable(lazy(() => import('@/views/pages/Home')));
 const SettingUser = Loadable(lazy(() => import('@/views/pages/SettingUser')));
 const ProFile = Loadable(lazy(() => import('@/views/pages/ProfileUser')));
@@ -57,20 +61,24 @@ const publicRoutes: RouteProp[] = [
     page: PostDetail,
   },
   {
+    middleware: RedirectIfAuthenticated,
     path: path.client.auth.login,
     layout: MainLayout,
     page: Login3,
   },
   {
+    middleware: RedirectIfAuthenticated,
     path: path.client.logAuth,
     page: LogAuth,
   },
   {
+    middleware: RedirectIfAuthenticated,
     path: path.client.auth.register,
     layout: MainLayout,
     page: Register3,
   },
   {
+    middleware: HasAccess,
     layout: LearningLayout,
     path: path.client.learning,
     page: Learning,

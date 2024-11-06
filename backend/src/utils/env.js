@@ -1,8 +1,23 @@
+import dotenv from "dotenv";
 
-import dotenv from 'dotenv';
+dotenv.config({ path: "././.env.local" });
 
-dotenv.config({ path: '././.env.local' });
+const {
+  PORT,
+  DB_URL,
+  JWT_SECRET,
+  CAPTCHA_SECRET,
+  BASE_URL,
+  BASE_URL_CLIENT,
+  URL_REDIRECT_LEARNING,
+} = process.env;
 
-const { PORT, DB_URL, JWT_SECRET } = process.env;
-
-export { PORT, DB_URL, JWT_SECRET };
+export {
+  PORT,
+  DB_URL,
+  JWT_SECRET,
+  CAPTCHA_SECRET,
+  BASE_URL,
+  BASE_URL_CLIENT,
+  URL_REDIRECT_LEARNING,
+};

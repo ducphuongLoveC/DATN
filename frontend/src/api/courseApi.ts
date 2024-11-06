@@ -21,9 +21,6 @@ export const getCourseFullList = async () => {
   return res.data;
 };
 
-
-
-
 export const newCourse = async (data: Course) => {
   const formData = new FormData();
 
@@ -32,7 +29,7 @@ export const newCourse = async (data: Course) => {
   formData.append('user_id', data.user_id || '');
   formData.append('title', data.title);
   formData.append('level', data.level);
-  
+
   // Kiểm tra xem thumbnail có tệp không, nếu có thì append vào formData
   if (data.thumbnail) {
     formData.append('thumbnail', data.thumbnail);
@@ -50,10 +47,10 @@ export const newCourse = async (data: Course) => {
   // Append modules and their resources
   data.modules.forEach((module, moduleIndex) => {
     formData.append(`modules[${moduleIndex}][title]`, module.title);
-    
+
     module.resources.forEach((resource: any, resourceIndex) => {
       console.log(resource);
-      
+
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][resource_type]`, resource.resource_type);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][title]`, resource.title);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][fileName]`, resource.fileName);
@@ -75,7 +72,51 @@ export const newCourse = async (data: Course) => {
   return res.data;
 };
 
-export const updateCourse = async (id: string, datas: Course) => {
-  const res = await axiosInstance.patch(`api/courses/update-course/${id}`, datas);
+export const updateCourse = async (id: string, data: Course) => {
+  const formData = new FormData();
+
+  formData.append('learning_path_id', data?.learning_path_id || '');
+  formData.append('user_id', data.user_id || '');
+  formData.append('title', data.title);
+  formData.append('level', data.level);
+
+  if (data.thumbnail) {
+    formData.append('thumbnail', data.thumbnail);
+  }
+
+  formData.append('description', data.description);
+  formData.append('original_price', data.original_price.toString());
+  formData.append('sale_price', data.sale_price.toString());
+
+  data.learning_outcomes.forEach((outcome, index) => {
+    formData.append(`learning_outcomes[${index}]`, outcome);
+  });
+
+  data.modules.forEach((module, moduleIndex) => {
+    formData.append(`modules[${moduleIndex}][_id]`, module?._id || '');
+    formData.append(`modules[${moduleIndex}][title]`, module.title);
+
+    module.resources.forEach((resource: any, resourceIndex) => {
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][_id]`, resource?._id || '');
+
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][resource_type]`, resource.resource_type);
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][title]`, resource.title);
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][fileName]`, resource.fileName);
+
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][_id]`, resource._id);
+
+      if (resource.file) {
+        formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][file]`, resource.file);
+      }
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][description]`, resource.description);
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][duration]`, resource.duration.toString());
+    });
+  });
+
+  const res = await axiosInstance.patch(`api/courses/update-course/${id}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return res.data;
 };

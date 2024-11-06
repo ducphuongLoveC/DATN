@@ -14,22 +14,26 @@ import {
 import { Description, Image, VideoLibrary, Quiz, CloudUpload } from '@mui/icons-material';
 
 interface Resourse {
+  _id?: string;
   fileName: string;
   file: File | null;
   resource_type: string;
   question: [];
   duration: number;
+  url: string;
 }
 // Tạo theme tùy chỉnh
-const chooseDocument: React.FC = forwardRef((_, ref) => {
+const chooseDocument: React.FC = forwardRef(({ defaultValue }: any, ref) => {
   const [selectedContent, setSelectedContent] = useState('');
   const [videoSrc, setVideoSrc] = useState<string>('');
   const [formData, setFormData] = useState<Resourse>({
+    _id: defaultValue._id || '',
     fileName: '',
     file: null,
     resource_type: '',
     question: [],
-    duration: 0,
+    duration: defaultValue.duration || '',
+    url: defaultValue.url || '',
   });
 
   const getData = () => {
@@ -39,6 +43,7 @@ const chooseDocument: React.FC = forwardRef((_, ref) => {
     getData,
   }));
 
+  
   const handleContentChange = (event: any) => {
     setSelectedContent(event.target.value);
     setFormData((pre: Resourse) => ({ ...pre, resource_type: event.target.value }));
@@ -67,8 +72,12 @@ const chooseDocument: React.FC = forwardRef((_, ref) => {
 
             videoElement.onloadedmetadata = () => {
               const durationInSeconds = videoElement.duration;
-              setFormData((pre: Resourse) => ({ ...pre, duration: Math.floor(durationInSeconds), fileName:file.name }));
-            
+              setFormData((pre: Resourse) => ({
+                ...pre,
+                duration: Math.floor(durationInSeconds),
+                fileName: file.name,
+              }));
+
               setVideoSrc(videoElement.src);
               console.log('Video duration in seconds:', durationInSeconds);
             };
@@ -83,8 +92,6 @@ const chooseDocument: React.FC = forwardRef((_, ref) => {
       }
     }
   };
-
-  console.log(videoSrc);
 
   const contentTypes = [
     {
@@ -135,7 +142,16 @@ const chooseDocument: React.FC = forwardRef((_, ref) => {
           )}
         </Grid>
       </Grid>
-      {videoSrc && <video controls src={videoSrc}></video>}
+      {videoSrc ? (
+        <video controls src={videoSrc}></video>
+      ) : (
+        formData.url && (
+          <video
+            controls
+            src={formData.url}
+          />
+        )
+      )}
     </Box>
   );
 });

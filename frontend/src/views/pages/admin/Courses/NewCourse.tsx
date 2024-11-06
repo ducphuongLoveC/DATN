@@ -5,9 +5,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 // my pj
-import sleep from '@/utils/sleep';
 import path from '@/constants/routes';
 import HeaderTitle from '../Title';
+import sleep from '@/utils/sleep';
 
 const NewCourse: React.FC = () => {
   const navigate = useNavigate();
@@ -21,9 +21,8 @@ const NewCourse: React.FC = () => {
     onSuccess: async () => {
       toast.dismiss();
       toast.success('Tạo khóa học thành công');
-
-      // await sleep(2000);
-      // navigate(path.admin.courses);
+      await sleep(2000);
+      navigate(path.admin.courses);
     },
     onError: () => {
       toast.dismiss();

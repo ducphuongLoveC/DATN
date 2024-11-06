@@ -23,6 +23,8 @@ import Tippy from '@tippyjs/react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import DescriptionIcon from '@mui/icons-material/Description';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import TuneIcon from '@mui/icons-material/Tune';
 
 import EditIcon from '@mui/icons-material/Edit';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -56,7 +58,6 @@ export interface Course {
   _id: string;
   title: string;
   user_id?: string;
-
   learning_path_id?: string;
   description: string;
   learning_outcomes: string[];
@@ -74,6 +75,8 @@ interface CourseFormProps {
 
 const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
   const [modules, setModules] = useState<Module[]>(datas?.modules || []);
+
+  console.log(modules);
 
   const DescriptionResource = memo(
     forwardRef((_, ref) => {
@@ -94,12 +97,11 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
 
   const Description = memo(
     forwardRef(({ defaultValue }: any, ref) => {
-      
       const [description, setDescription] = useState(datas ? datas.description : defaultValue?.description || '');
 
       useEffect(() => {
         if (defaultValue?.description) {
-          setDescription(defaultValue.description); // Cập nhật khi defaultValue thay đổi
+          setDescription(defaultValue.description);
         }
       }, [defaultValue]);
 
@@ -127,7 +129,12 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
   const Row = memo(({ row, currentModuleIndex }: any) => {
     const [open, setOpen] = useState(false);
     const [idEdit, setIdEdit] = useState<string | null>(null);
+
+    const [idResourceEdit, setIdResourceEdit] = useState<number | null>(null);
+
     const [isOpenModalDocument, setIsOpenModalDocument] = useState(false);
+
+    const [dataEdit, setDataEdit] = useState<any>({});
 
     const {
       control,
@@ -149,6 +156,22 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
 
       cloneModules[currentModuleIndex].resources.push(resouce);
       setModules(cloneModules);
+    };
+
+    const handleEditResource = (resource: Resource) => {
+      console.log(idResourceEdit);
+
+      if (idResourceEdit !== null) {
+        let cloneModules: Module[] = [...modules];
+
+        console.log('check');
+
+        cloneModules[currentModuleIndex].resources[idResourceEdit] = resource;
+
+        setModules(cloneModules);
+        setIdResourceEdit(null);
+        setDataEdit(null);
+      }
     };
 
     const handleDeleteResource = (indexResource: number) => {
@@ -243,7 +266,13 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
 
                         <TableCell align="right">
                           <Tippy arrow content="Sửa">
-                            <Button>
+                            <Button
+                              onClick={() => {
+                                toggleModalAddDocuments();
+                                setDataEdit(resource);
+                                setIdResourceEdit(index);
+                              }}
+                            >
                               <EditIcon />
                             </Button>
                           </Tippy>
@@ -266,9 +295,25 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
         <Dialog
           title={`Thêm tài liệu thứ ${row.resources.length + 1} cho chương '${row.title}'`}
           open={isOpenModalDocument}
-          onClose={toggleModalAddDocuments}
+          onClose={() => {
+            toggleModalAddDocuments();
+            setIdResourceEdit(null);
+            setDataEdit(null);
+          }}
         >
           <CardCourse
+            defaultValue={
+              dataEdit
+                ? {
+                    _id: dataEdit._id,
+                    title: dataEdit.title,
+                    resource_type: dataEdit.resource_type,
+                    url: dataEdit.url,
+                    duration: dataEdit.duration,
+                    description: dataEdit.description,
+                  }
+                : {}
+            }
             onSubmit={(datas: {
               title: string;
               type: string;
@@ -276,7 +321,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
               duration: number;
               description: string;
               resource_type: string;
-            }) => hanldeAddResource(datas)}
+            }) => (dataEdit && Object.keys(dataEdit).length > 0 ? handleEditResource(datas) : hanldeAddResource(datas))}
             widthIconImage="50px"
             labels={['Tài liệu', 'Mô tả', 'Bài thực hành']}
             contents={[documentChoose, DescriptionResource, CreateCodePractice]}
@@ -339,7 +384,10 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
             <TableHead>
               <TableRow>
                 <TableCell />
-                <TableCell>Tiêu đề</TableCell>
+                <TableCell>
+                  Tiêu đề
+                  <ListAltIcon />{' '}
+                </TableCell>
                 <TableCell align="right">
                   bài học con <DescriptionIcon />
                 </TableCell>
@@ -348,6 +396,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
                 </TableCell>
                 <TableCell align="right" colSpan={2}>
                   Hành động
+                  <TuneIcon />
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -413,8 +462,20 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
   return (
     <Box>
       <CardCourse
-        initialTitle={datas?.title}
-        initialThumbnail={datas?.thumbnail}
+        defaultValue={
+          datas
+            ? {
+                title: datas?.title,
+                thumbnail: datas?.thumbnail,
+                description: datas?.description,
+                modules: datas?.modules,
+                level: datas?.level,
+                original_price: datas?.original_price,
+                sale_price: datas?.sale_price,
+                learning_outcomes: datas?.learning_outcomes,
+              }
+            : {}
+        }
         onSubmit={onSubmit}
         labels={['Chương học', 'Mô tả', 'Tùy chỉnh']}
         contents={[TableModule, Description, Options]}

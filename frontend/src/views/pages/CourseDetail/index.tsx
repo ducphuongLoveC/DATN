@@ -1,31 +1,35 @@
 import { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 
 // ui
-import { Box, Grid, Typography, Button, CardMedia, styled, useTheme, Avatar } from '@mui/material';
-
-//my pj
-import AverageRating from '@/components/AverageRating';
-import Module from '@/components/Module';
-import ButtonPrimary from '@/components/ButtonPrimary';
-// import {InputPrimary} from '@/components/InputPrimary';
-import RatingPreview from '@/components/RatingPreview';
-
+import { Box, Grid, Typography, Button, CardMedia, styled, useTheme, Avatar, TextField } from '@mui/material';
 //icon
 import DoneIcon from '@mui/icons-material/Done';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
-
 import SpeedIcon from '@mui/icons-material/Speed';
 import DvrIcon from '@mui/icons-material/Dvr';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PaymentIcon from '@mui/icons-material/Payment';
+// toast
+import { toast, ToastContainer } from 'react-toastify';
+
+//my pj
+import AverageRating from '@/components/AverageRating';
+import Module from '@/components/Module';
+import ButtonPrimary from '@/components/ButtonPrimary';
+import RatingPreview from '@/components/RatingPreview';
 
 //my pj
 import { getCourseFull } from '@/api/courseApi';
+import { createOrder } from '@/api/OrderApi';
+import { RootState } from '@/store/reducer';
+import sleep from '@/utils/sleep';
+import path from '@/constants/routes';
 
 const BoxCenter = styled(Box)(() => ({
   display: 'flex',
@@ -51,15 +55,33 @@ const BoxPreviewVideo = styled(Box)(({}) => ({
 
 const CourseDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const authState = useSelector((state: RootState) => state.authReducer);
+
   const [isShowMoreLearningOutCome, setIsShowMoreLearningOutCome] = useState(false);
   const [expandedIndexs, setExpandedIndexs] = useState<number[]>([0]);
+  const navigate = useNavigate();
+  const theme = useTheme();
 
+  const mutation = useMutation({
+    mutationKey: ['order'],
+    mutationFn: createOrder,
+    onMutate: () => {
+      toast.loading('Vui lòng chờ...');
+    },
+    onSuccess: (data) => {
+      window.location.href = data.payUrl;
+      toast.dismiss();
+    },
+    onError: () => {
+      toast.dismiss();
+      toast.error('Đặt hàng thất bại. Vui lòng thử lại!');
+    },
+  });
   const { data, isLoading, isError } = useQuery({
     queryKey: ['course'],
     queryFn: () => getCourseFull(id || ''),
   });
 
-  const theme = useTheme();
   const handleToggleExpanded = (index: number) => {
     setExpandedIndexs((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]));
   };
@@ -74,6 +96,21 @@ const CourseDetail: React.FC = () => {
 
   const handleToggleShowMoreLearningOutCome = () => {
     setIsShowMoreLearningOutCome((prev) => !prev);
+  };
+
+  const handleOrder = async () => {
+    if (!authState.user || !authState.accessToken) {
+      toast.error('Vui lòng đăng nhập trước khi thanh toán!');
+      await sleep(2000);
+      navigate(path.client.auth.login);
+      return;
+    }
+    mutation.mutate({
+      user_id: authState.user?._id,
+      course_id: data?._id,
+      amount: data?.sale_price,
+      payment_method: 'MOMO',
+    });
   };
 
   const totalResources = useMemo(() => {
@@ -278,20 +315,25 @@ const CourseDetail: React.FC = () => {
               {/* mã giảm giá */}
               <Grid item xs={12}>
                 <Grid container spacing={1} alignItems="center">
-                  <Grid item xs={8}>
-                    <input placeholder="nhập mã" style={{ padding: '11px', width: '100%' }} />
+                  <Grid item xs={6}>
+                    <TextField
+                      placeholder="nhập mã"
+                      variant="outlined"
+                      fullWidth
+                      inputProps={{ style: { padding: '14px' } }}
+                    />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={6}>
                     <ButtonPrimary customVariant="outlined" fullWidth>
-                      Áp
+                      Áp dụng
                     </ButtonPrimary>
                   </Grid>
                 </Grid>
               </Grid>
 
               <Grid item xs={12}>
-                <ButtonPrimary fullWidth>
-                  Thanh toán ngay <PaymentIcon />{' '}
+                <ButtonPrimary onClick={handleOrder} fullWidth>
+                  Thanh toán ngay <PaymentIcon />
                 </ButtonPrimary>
               </Grid>
 
@@ -325,6 +367,7 @@ const CourseDetail: React.FC = () => {
           </Box>
         </Grid>
       </Grid>
+      <ToastContainer />
     </Box>
   );
 };

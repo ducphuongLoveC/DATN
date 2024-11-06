@@ -8,6 +8,8 @@ const TOGGLE_THEME = '@customization/TOGGLE_THEME';
 
 // action - client
 const TOGGLE_THEME_HOME = '@home/TOGGLE_THEME';
+const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN';
+const SET_USER = 'SET_USER';
 
 export {
   SET_MENU,
@@ -17,4 +19,6 @@ export {
   SET_BORDER_RADIUS,
   TOGGLE_THEME,
   TOGGLE_THEME_HOME,
+  SET_USER,
+  SET_ACCESS_TOKEN,
 };

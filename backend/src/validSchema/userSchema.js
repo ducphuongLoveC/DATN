@@ -22,7 +22,7 @@ export const userSchema = Joi.object({
         "string.min": "Phone must have at least 10 character",
         "string.max": "Phone must have at most 10 character",
     }),
-    nickname: Joi.string().required().min(6).max(255).messages({
+    nickname: Joi.string().required().min(3).max(255).messages({
         "string.base": "Nickname must be a string",
         "string.empty": "Nickname can not be empty",
         "string.min": "Nickname must have at least 6 character",

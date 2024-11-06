@@ -5,8 +5,6 @@ import Course from "../models/Course.js";
 import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
 
-import LearningOutcomes from "../models/LearningOutcomes.js";
-import LearningPath from "../models/LearningPath.js";
 
 import cloudinary from "cloudinary";
 
@@ -16,44 +14,6 @@ cloudinary.config({
   api_secret: "h8EpbOZGM4V5dXUMgrq8rRGhOi4",
 });
 class CoursesController {
-  async create(req, res, next) {
-    try {
-      const data = await Course.create(req.body);
-      console.log(data);
-
-      if (data) {
-        const updateLearningPath = await LearningPath.findByIdAndUpdate(
-          req.body.learning_path,
-          {
-            $push: { course: data._id },
-          },
-          { new: true }
-        );
-
-        // Tìm và cập nhật hoặc tạo mới trong bảng LearningOutcomes
-        const updateLearningOutcome = await LearningOutcomes.findOneAndUpdate(
-          { _id: req.body.learningOutcomes }, // Điều kiện tìm kiếm dựa trên learningOutcomesId
-          {
-            $set: { ...req.body.learningOutcomes }, // Cập nhật dữ liệu LearningOutcomes
-            $set: { course: data._id }, // Đẩy ID khoá học vào mảng course
-          },
-          { upsert: true, new: true } // Tạo mới nếu không tìm thấy, trả về tài liệu mới sau khi cập nhật
-        );
-
-        if (data && updateLearningPath && updateLearningOutcome) {
-          return res.status(201).json({
-            success: true,
-            data,
-            message: "Course created/updated successfully",
-          });
-        }
-      }
-      next();
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async get(req, res, next) {
     try {
       const data = await Course.find();
@@ -68,7 +28,6 @@ class CoursesController {
       next(error);
     }
   }
-
   async getCoursesWithModulesAndResources(req, res, next) {
     try {
       const courses = await Course.aggregate([
@@ -175,8 +134,6 @@ class CoursesController {
       next(error);
     }
   }
-
-
   async getCoursesWithModulesAndResourcesUser(req, res, next) {
     try {
       const courses = await Course.aggregate([
@@ -219,9 +176,9 @@ class CoursesController {
         },
         {
           $lookup: {
-            from: "users",          // Collection to join
-            localField: "user_id",   // Field from Course
-            foreignField: "_id",     // Field from User
+            from: "users", // Collection to join
+            localField: "user_id", // Field from Course
+            foreignField: "_id", // Field from User
             as: "user",
           },
         },
@@ -251,7 +208,7 @@ class CoursesController {
           },
         },
       ]);
-  
+
       res.status(200).json(courses);
     } catch (error) {
       next(error);
@@ -260,7 +217,7 @@ class CoursesController {
   async getCourseWithModulesAndResourcesUser(req, res, next) {
     try {
       const { id } = req.params;
-  
+
       const course = await Course.aggregate([
         {
           $match: {
@@ -338,19 +295,16 @@ class CoursesController {
           },
         },
       ]);
-  
+
       if (course.length === 0) {
         return res.status(404).json({ message: "Course not found" });
       }
-  
+
       res.status(200).json(course[0]); // Trả về khóa học đầu tiên
     } catch (error) {
       next(error);
     }
   }
-  
-  
-  
   addCourseDetail = async (req, res, next) => {
     try {
       const {
@@ -368,23 +322,24 @@ class CoursesController {
       console.log("Received body:", req.body);
       console.log("Received files:", req.files);
 
-
-
       if (!req.files) {
         return res
           .status(400)
           .json({ success: false, message: "No files uploaded" });
       }
 
+      const thumbnailFile = req.files.find(
+        (file) => file.fieldname === "thumbnail"
+      );
+      console.log("-----------------", thumbnailFile);
 
-      const thumbnailFile = req.files.find((file)=> file.fieldname === 'thumbnail');
-      console.log('-----------------',thumbnailFile);
-      
       let uploadedThumbnail;
       if (thumbnailFile) {
-        uploadedThumbnail = await cloudinary.v2.uploader.upload(thumbnailFile.path);
+        uploadedThumbnail = await cloudinary.v2.uploader.upload(
+          thumbnailFile.path
+        );
       }
-     
+
       // Tạo khóa học mới
       const newCourse = new Course({
         learning_path_id,
@@ -402,12 +357,10 @@ class CoursesController {
           : [learning_outcomes],
       });
 
-
       fs.unlink(thumbnailFile.path, (err) => {
-        if (err) console.error('Error deleting temp file:', err);
-        else console.log('Temp file deleted');
+        if (err) console.error("Error deleting temp file:", err);
+        else console.log("Temp file deleted");
       });
-
 
       const savedCourse = await newCourse.save();
 
@@ -421,32 +374,34 @@ class CoursesController {
 
           const savedModule = await newModule.save();
 
-         
           for (const resource of module.resources) {
             const resourceFile = req.files?.find(
               (file) => file.originalname === resource.fileName
             );
-          
+
             let uploadedFile;
             if (resourceFile) {
               try {
-                uploadedFile = await cloudinary.v2.uploader.upload(resourceFile.path, {
-                  resource_type: "video",
-                  timeout: 240000,  // Ensures adequate time for longer videos
-                });
-                console.log("Uploaded file URL:", uploadedFile.secure_url);  // Log the uploaded file URL
+                uploadedFile = await cloudinary.v2.uploader.upload(
+                  resourceFile.path,
+                  {
+                    resource_type: "video",
+                    timeout: 240000,
+                  }
+                );
+                console.log("Uploaded file URL:", uploadedFile.secure_url); // Log the uploaded file URL
               } catch (error) {
-                console.error("Error uploading file:", error); 
-                continue;  
+                console.error("Error uploading file:", error);
+                continue;
               }
             }
-          
+
             const newResource = new Resource({
               ...resource,
               module_id: savedModule._id,
               url: uploadedFile ? uploadedFile.secure_url : resource.url,
             });
-          
+
             if (resourceFile && uploadedFile) {
               fs.unlink(resourceFile.path, (err) => {
                 if (err) console.error("Error deleting temp file:", err);
@@ -468,11 +423,8 @@ class CoursesController {
       next(error);
     }
   };
-
   async updateCourseDetail(req, res, next) {
     try {
-      console.log(req.body);
-
       const courseId = req.params.id;
       const {
         title,
@@ -485,98 +437,199 @@ class CoursesController {
         modules,
       } = req.body;
 
-      // Tìm khóa học theo ID và cập nhật thông tin
+      modules.forEach((m)=>{
+        console.log('hêhhe',m);
+        
+      })
+      // Find and update the course
       const updatedCourse = await Course.findByIdAndUpdate(
         courseId,
         {
           title,
           level,
-          learning_outcomes,
-          thumbnail: "test100.png", // Thay đổi tạm thời
+          learning_outcomes: Array.isArray(learning_outcomes)
+            ? learning_outcomes
+            : [learning_outcomes],
+          thumbnail: thumbnail || "default-thumbnail.jpg",
           description,
           original_price,
           sale_price,
         },
-        { new: true, runValidators: true } // Trả về bản ghi mới đã cập nhật và kiểm tra các validator
+        { new: true, runValidators: true }
       );
-
-      // Lấy danh sách module hiện có trong cơ sở dữ liệu
+  
+      if (!updatedCourse) {
+        return res.status(404).json({
+          success: false,
+          message: "Course not found",
+        });
+      }
+  
+      // Get existing modules for the course
       const existingModules = await Module.find({ course_id: courseId });
-
-      // Tạo một tập hợp các ID của module hiện có
       const existingModuleIds = new Set(
         existingModules.map((module) => module._id.toString())
       );
+  
+      // Process modules from the client
+      for (let module of modules) {
+        module.resources = module.resources || []; // Ensure module.resources is an array
 
-      // Xử lý các module từ client
-      for (const module of modules) {
-        if (module._id) {
-          // Nếu có ID, kiểm tra xem module có tồn tại không
+
+        console.log(module);
+        
+        // Check if the module has an ID
+        if (module._id && module._id.trim() !== "") {
+          // Check if the module exists
           if (existingModuleIds.has(module._id.toString())) {
-            // Cập nhật module đã tồn tại
+            // Update existing module
             await Module.findByIdAndUpdate(
               module._id,
               { title: module.title },
               { new: true, runValidators: true }
             );
+  
+            // Handle resources for the existing module
+            const existingResources = await Resource.find({
+              module_id: module._id,
+            });
+           
 
-            // Cập nhật tài nguyên cho module đã tồn tại
+            // Process each resource
             for (const resource of module.resources) {
-              if (resource._id) {
-                // Nếu có ID resource, cập nhật tài nguyên đó
-                await Resource.findByIdAndUpdate(resource._id, resource, {
-                  new: true,
-                  runValidators: true,
-                });
+              if (resource._id[0] && resource._id[0].trim() !== "") {
+                // Update existing resource
+                let updateData = {};
+  
+                if (resource.file) {
+                  // Upload the new file to Cloudinary
+                  const uploadedFile = await cloudinary.v2.uploader.upload(
+                    resource.file.path,
+                    { resource_type: resource.type || "auto" }
+                  );
+                  updateData = {
+                    title: resource.title,
+                    url: uploadedFile.secure_url,
+                  };
+                } else {
+                  // Use existing resource's URL if no new file is provided
+                  const existingResource = await Resource.findById(resource._id[0]);
+                  updateData = {
+                    title: resource.title,
+                    url: existingResource?.url || "",
+                  };
+                }
+  
+                // Update the resource
+                await Resource.findByIdAndUpdate(
+                  resource._id[0],
+                  { ...updateData },
+                  { new: true, runValidators: true }
+                );
               } else {
-                // Nếu không có ID, tạo mới tài nguyên
+                // Create new resource (ignore _id)
+                const { _id, ...restOfResource } = resource;
+                const resourceFile = req.files?.find(
+                  (file) => file.originalname === restOfResource.fileName
+                );
+  
+                let uploadedFile;
+                if (resourceFile) {
+                  try {
+                    uploadedFile = await cloudinary.v2.uploader.upload(
+                      resourceFile.path,
+                      {
+                        resource_type: resource.type || "auto",
+                        timeout: 240000,
+                      }
+                    );
+                  } catch (error) {
+                    console.error("Error uploading file:", error);
+                    continue; // Skip to next resource on upload error
+                  }
+                }
+  
                 const newResource = new Resource({
-                  ...resource,
+                  ...restOfResource,
                   module_id: module._id,
+                  url: uploadedFile ? uploadedFile.secure_url : resource.url,
                 });
                 await newResource.save();
               }
             }
+  
+            // Remove resources not in the updated list
+            for (const existingResource of existingResources) {
+              if (
+                !module.resources.some(
+                  (res) =>
+                    res._id[0] &&
+                    res._id[0].toString() === existingResource._id.toString()
+                )
+              ) {
+                await Resource.findByIdAndDelete(existingResource._id);
+              }
+            }
           } else {
-            // Nếu không tìm thấy module, trả về thông báo lỗi
             return res.status(404).json({
               success: false,
               message: `Module ${module._id} not found`,
             });
           }
         } else {
-          // Nếu không có ID, tạo mới module
+          // Create a new module if no ID is provided
           const newModule = new Module({
             title: module.title,
             course_id: courseId,
           });
           const savedModule = await newModule.save();
-
-          // Cập nhật tài nguyên cho module mới
+  
+          // Handle resources for the new module
           for (const resource of module.resources) {
+            const resourceFile = req.files?.find(
+              (file) => file.originalname === resource.fileName
+            );
+  
+            let uploadedFile;
+            if (resourceFile) {
+              try {
+                uploadedFile = await cloudinary.v2.uploader.upload(
+                  resourceFile.path,
+                  {
+                    resource_type: resource.type || "auto",
+                    timeout: 240000,
+                  }
+                );
+              } catch (error) {
+                console.error("Error uploading file:", error);
+                continue; // Skip to next resource on upload error
+              }
+            }
+  
+            const { _id, ...filId } = resource;
             const newResource = new Resource({
-              ...resource,
+              ...filId,
               module_id: savedModule._id,
+              url: uploadedFile ? uploadedFile.secure_url : resource.url,
             });
+  
             await newResource.save();
           }
         }
       }
-
-      // Xóa các module không còn trong danh sách từ client
+  
+      // Remove modules not present in the updated list
       for (const existingModule of existingModules) {
         if (
           !modules.some(
             (module) =>
-              module._id &&
-              module._id.toString() === existingModule._id.toString()
+              module._id && module._id.toString() === existingModule._id.toString()
           )
         ) {
-          // Nếu module không còn trong danh sách, xóa module
           await Module.findByIdAndDelete(existingModule._id);
         }
       }
-
+  
       return res.status(200).json({
         success: true,
         data: updatedCourse,
@@ -584,61 +637,6 @@ class CoursesController {
       });
     } catch (error) {
       console.error("Error updating course:", error);
-      next(error);
-    }
-  }
-
-  async getDetail(req, res, next) {
-    try {
-      const data = await Course.findById(req.params.id)
-        .populate("learningOutcomes")
-        .populate("learning_path");
-      if (data) {
-        return res.status(200).json({
-          success: true,
-          data,
-          message: "getDetail Learning Path successfuly",
-        });
-      }
-      next();
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async detete(req, res, next) {
-    try {
-      const data = await Course.findByIdAndDelete(req.params.id);
-      if (data) {
-        return res.status(200).json({
-          success: true,
-          data,
-          message: "delete Learning Path successfuly",
-        });
-      }
-      next();
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async update(req, res, next) {
-    try {
-      const data = await Course.findByIdAndUpdate(
-        { _id: req.params.id },
-        { ...req.body, updatedAt: new Date() },
-        { new: true }
-      );
-
-      if (data) {
-        return res.status(200).json({
-          success: true,
-          data,
-          message: "update Learning Path successfuly",
-        });
-      }
-      next();
-    } catch (error) {
       next(error);
     }
   }

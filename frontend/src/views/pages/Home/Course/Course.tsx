@@ -1,73 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Tabs, Tab, Box, Grid } from '@mui/material';
-import * as _ from 'lodash';
-const courses = [
-  {
-    title: 'Javascript cho người mới bắt đầu',
-    postUser: 'admin',
-    price: 4500000,
-    salePrice: 200000,
-    thumbnail: 'https://i.ytimg.com/vi/wm5gMKuwSYk/maxresdefault.jpg',
-    totalRatings: 22,
-    totalUserRate: 5,
-    totalStars: 5,
-  },
-  {
-    title: 'ReactJS từ cơ bản đến nâng cao',
-    postUser: 'admin',
-    price: 6000000,
-    salePrice: 1000000,
-    thumbnail: 'https://i.ytimg.com/vi/wm5gMKuwSYk/maxresdefault.jpg',
-    totalRatings: 18,
-    totalUserRate: 5,
-    totalStars: 5,
-  },
-  {
-    title: 'NodeJS cho Backend',
-    postUser: 'teacher_01',
-    price: 7000000,
-    salePrice: 1500000,
-    thumbnail: 'https://i.ytimg.com/vi/wm5gMKuwSYk/maxresdefault.jpg',
-    totalRatings: 30,
-    totalUserRate: 6,
-    totalStars: 5,
-  },
-  {
-    title: 'CSS Mastery: Từ cơ bản đến chuyên sâu',
-    postUser: 'admin',
-    price: 3000000,
-    salePrice: 500000,
-    thumbnail: 'https://i.ytimg.com/vi/wm5gMKuwSYk/maxresdefault.jpg',
-    totalRatings: 15,
-    totalUserRate: 7,
-    totalStars: 5,
-  },
-  {
-    title: 'Python cho người mới',
-    postUser: 'teacher_02',
-    price: 5000000,
-    salePrice: 1000000,
-    thumbnail: 'https://i.ytimg.com/vi/wm5gMKuwSYk/maxresdefault.jpg',
-    totalRatings: 13,
-    totalUserRate: 3,
-    totalStars: 5,
-  },
-  {
-    title: 'TypeScript nâng cao',
-    postUser: 'admin',
-    price: 5500000,
-    salePrice: 900000,
-    thumbnail: 'https://i.ytimg.com/vi/wm5gMKuwSYk/maxresdefault.jpg',
-    totalRatings: 10,
-    totalUserRate: 5,
-    totalStars: 5,
-  },
-];
 
 // pj
 import CourseItem from './CourseItem';
 import { getCourseFullList } from '@/api/courseApi';
+
 interface TabPanelProps {
   children: React.ReactNode;
   index: number;
@@ -85,6 +23,7 @@ const Course: React.FC = () => {
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['courses'],
@@ -106,7 +45,7 @@ const Course: React.FC = () => {
           {data.map((c: any, _id: number) => (
             <Grid key={_id} item xs={12} sm={6} md={4} lg={3}>
               <CourseItem
-                to={`/courses/${_.kebabCase(c.title)}/${c._id}`}
+                to={`/learning/${c._id}`}
                 title={c.title}
                 postUser={c.user.name}
                 price={c.original_price}

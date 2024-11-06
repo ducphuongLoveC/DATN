@@ -28,19 +28,11 @@ routerCourse.get(
 
 routerCourse.post("/add-course", upload, CoursesController.addCourseDetail);
 
-routerCourse.patch("/update-course/:id", CoursesController.updateCourseDetail);
-
-routerCourse.get("/:id", CoursesController.getDetail);
-routerCourse.post(
-  "/",
-  validBodyRequets(courseSchema),
-  CoursesController.create
-);
 routerCourse.patch(
-  "/:id",
-  validBodyRequets(courseSchema),
-  CoursesController.update
+  "/update-course/:id",
+  upload,
+  CoursesController.updateCourseDetail
 );
-routerCourse.delete("/:id", CoursesController.detete);
+
 
 export default routerCourse;
