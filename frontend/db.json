@@ -101,6 +101,13 @@
       "description": "Học AI cơ bản phù hợp cho người mới bắt đầu",
       "image": "/images/react.png",
       "sale": 26
+    },
+    {
+      "id": "1",
+      "title": "KHÓA HỌC: AI CƠ BẢN",
+      "description": "Học AI cơ bản phù hợp cho người mới bắt đầu",
+      "image": "/images/react.png",
+      "sale": 26
     }
   ],
   "transactions": [
