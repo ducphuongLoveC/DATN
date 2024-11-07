@@ -39,6 +39,7 @@ const path = {
     newPost: '/new-post',
     myPost: '/my-post',
     bookmark: '/me/bookmark',
+    test: '/test',
   },
 };
 export default path;
