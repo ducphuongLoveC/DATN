@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import * as React from 'react';
+
+import { useState, ChangeEvent } from 'react';
 import {
   Button,
   TextField,
@@ -9,15 +11,15 @@ import {
   Box,
 } from '@mui/material';
 
-const AddPost = () => {
-  const [category, setCategory] = useState('');
-  const [author, setAuthor] = useState('');
+const AddPost: React.FC = () => {
+  const [category, setCategory] = useState<string>('');
+  const [author, setAuthor] = useState<string>('');
 
-  const handleCategoryChange = (event) => {
+  const handleCategoryChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCategory(event.target.value);
   };
 
-  const handleAuthorChange = (event) => {
+  const handleAuthorChange = (event: ChangeEvent<HTMLInputElement>) => {
     setAuthor(event.target.value);
   };
 

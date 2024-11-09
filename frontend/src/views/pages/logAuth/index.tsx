@@ -14,9 +14,6 @@ import { TypeAnimation } from 'react-type-animation';
 import * as actionTypes from '@/store/actions';
 import AuthLogin from '../authentication/auth-forms/AuthLogin';
 import { login } from '@/api/authApi';
-import { useEffect } from 'react';
-
-import Cookies from 'js-cookie';
 
 // Thêm import cho js-cookie
 const adminRoles = ['admin'];

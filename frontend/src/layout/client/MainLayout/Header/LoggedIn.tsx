@@ -4,7 +4,7 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import { Link } from 'react-router-dom';
 
 // redux
-import { useDispatch, UseDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as actionTypes from '@/store/actions';
 // icon
 import { BiBell, BiChalkboard } from 'react-icons/bi';

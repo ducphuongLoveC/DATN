@@ -27,13 +27,15 @@ import { BeatLoader } from 'react-spinners';
 import LoggedIn from './LoggedIn';
 import NotLoggedIn from './NotLoggedIn';
 import { RootState } from '@/store/reducer';
+import { getCourseSearch } from '@/api/courseApi';
+import path from '@/constants/routes';
 
 // ==============================|| NAVBAR ||============================== //
 
 const ContentSearch = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
-  margin: '10px 15px',
+  margin: '5px 10px',
 }));
 const ImageContentSearch = styled('img')(() => ({
   width: '30px',
@@ -59,8 +61,8 @@ const Header: React.FC = () => {
     const fetch = async () => {
       try {
         setIsloading(true);
-        const { data } = await axios.get(`https://freetestapi.com/api/v1/products?search=${searchValue}&limit=7`);
-        await sleep(2000);
+        const { data } = await getCourseSearch(searchValue);
+        // await sleep(2000);
         setDataSearch(data);
         setIsloading(false);
       } catch (error) {
@@ -73,6 +75,7 @@ const Header: React.FC = () => {
   }, [debounced]);
 
   console.log(homeState);
+  console.log(dataSearch);
 
   const handleToggleThemeMode = () => {
     const newTheme = homeState.theme === 'light' ? 'dark' : 'light';
@@ -170,13 +173,15 @@ const Header: React.FC = () => {
                     >
                       {dataSearch.length > 0 && (
                         <>
-                          <span className="tw-mb-2">Kết quả cho '{searchValue}'</span>
-                          <h3>Khóa học</h3>
-                          {dataSearch.map((d: any, i: number) => (
-                            <ContentSearch key={i}>
-                              <ImageContentSearch src={d.image} />
-                              <span>{d.name}</span>
-                            </ContentSearch>
+                          <span>Kết quả cho '{searchValue}'</span>
+                          <h6>Khóa học</h6>
+                          {dataSearch.map((c: any, i: number) => (
+                            <Link to={path.client.learningId(c._id)}>
+                              <ContentSearch key={i}>
+                                <ImageContentSearch src={c.thumbnail} />
+                                <span>{c.title}</span>
+                              </ContentSearch>
+                            </Link>
                           ))}
                         </>
                       )}

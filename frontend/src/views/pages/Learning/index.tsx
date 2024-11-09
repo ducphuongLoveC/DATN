@@ -41,6 +41,7 @@ const BoxLearningList = styled(Box)(({ theme }) => ({
   width: '450px',
   [theme.breakpoints.down('md')]: {
     position: 'absolute',
+    top: '0',
     right: '0',
     bottom: '0',
     zIndex: 1000,
@@ -81,7 +82,6 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
 }));
 
 const Learning: React.FC = () => {
-
   const { id } = useParams();
   const query = useQueryParams();
 
@@ -111,16 +111,15 @@ const Learning: React.FC = () => {
     setIsVisibleNote(!isVisibleNote);
   };
 
-  const handleAdjacentResourceId = async(direction: string)=> {
+  const handleAdjacentResourceId = async (direction: string) => {
     try {
       const res = await getAdjacentResourceId(idResource, direction);
-      
-      query.set('id',res.id);
-      
+
+      query.set('id', res.id);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   if (moduleQuery.isLoading || resourceQuery.isLoading) return <div>Loading...</div>;
   if (moduleQuery.isError) return <div>Error</div>;
@@ -129,7 +128,7 @@ const Learning: React.FC = () => {
   console.log(resourceQuery.data);
 
   return (
-    <Box>
+    <Box position={'relative'}>
       <Box
         sx={{
           display: 'flex',
@@ -236,7 +235,7 @@ const Learning: React.FC = () => {
 
         <Box display={'flex'} alignItems={'center'}>
           <Box>
-            <ButtonStyle onClick={()=>handleAdjacentResourceId('previous')}>
+            <ButtonStyle onClick={() => handleAdjacentResourceId('previous')}>
               <Typography mr={1} variant="h4">
                 <ArrowBackIosNewIcon sx={{ fontSize: '25px' }} />
                 BÀI TRƯỚC
@@ -244,7 +243,7 @@ const Learning: React.FC = () => {
             </ButtonStyle>
           </Box>
           <Box>
-            <ButtonStyle onClick={()=>handleAdjacentResourceId('next')} sx={{ background: 'var(--color-primary)' }}>
+            <ButtonStyle onClick={() => handleAdjacentResourceId('next')} sx={{ background: 'var(--color-primary)' }}>
               <Typography mr={1} variant="h4" color="white">
                 BÀI TIẾP THEO
                 <ArrowForwardIosIcon />

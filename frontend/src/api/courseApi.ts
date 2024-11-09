@@ -6,6 +6,11 @@ export const getCourseList = async () => {
   return res.data;
 };
 
+export const getCourseSearch = async (search: string) => {
+  const res = await axiosInstance.get(`api/courses?search=${search}`);
+  return res.data;
+};
+
 export const getCourse = async (id: string) => {
   const res = await axiosInstance.get(`api/courses/${id}/modules-resources`);
   return res.data;

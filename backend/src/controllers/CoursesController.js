@@ -5,7 +5,6 @@ import Course from "../models/Course.js";
 import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
 
-
 import cloudinary from "cloudinary";
 
 cloudinary.config({
@@ -16,18 +15,21 @@ cloudinary.config({
 class CoursesController {
   async get(req, res, next) {
     try {
-      const data = await Course.find();
-      if (data) {
-        return res.status(200).json({
-          success: true,
-          data,
-          message: "get Learning Path successfuly",
-        });
-      }
+      const { search } = req.query;
+      const filter = search ? { title: { $regex: search, $options: "i" } } : {};
+
+      const data = await Course.find(filter);
+
+      return res.status(200).json({
+        success: true,
+        data,
+        message: "Get Learning Path successfully",
+      });
     } catch (error) {
       next(error);
     }
   }
+
   async getCoursesWithModulesAndResources(req, res, next) {
     try {
       const courses = await Course.aggregate([
@@ -437,10 +439,9 @@ class CoursesController {
         modules,
       } = req.body;
 
-      modules.forEach((m)=>{
-        console.log('hêhhe',m);
-        
-      })
+      modules.forEach((m) => {
+        console.log("hêhhe", m);
+      });
       // Find and update the course
       const updatedCourse = await Course.findByIdAndUpdate(
         courseId,
@@ -457,27 +458,26 @@ class CoursesController {
         },
         { new: true, runValidators: true }
       );
-  
+
       if (!updatedCourse) {
         return res.status(404).json({
           success: false,
           message: "Course not found",
         });
       }
-  
+
       // Get existing modules for the course
       const existingModules = await Module.find({ course_id: courseId });
       const existingModuleIds = new Set(
         existingModules.map((module) => module._id.toString())
       );
-  
+
       // Process modules from the client
       for (let module of modules) {
         module.resources = module.resources || []; // Ensure module.resources is an array
 
-
         console.log(module);
-        
+
         // Check if the module has an ID
         if (module._id && module._id.trim() !== "") {
           // Check if the module exists
@@ -488,19 +488,18 @@ class CoursesController {
               { title: module.title },
               { new: true, runValidators: true }
             );
-  
+
             // Handle resources for the existing module
             const existingResources = await Resource.find({
               module_id: module._id,
             });
-           
 
             // Process each resource
             for (const resource of module.resources) {
               if (resource._id[0] && resource._id[0].trim() !== "") {
                 // Update existing resource
                 let updateData = {};
-  
+
                 if (resource.file) {
                   // Upload the new file to Cloudinary
                   const uploadedFile = await cloudinary.v2.uploader.upload(
@@ -513,13 +512,15 @@ class CoursesController {
                   };
                 } else {
                   // Use existing resource's URL if no new file is provided
-                  const existingResource = await Resource.findById(resource._id[0]);
+                  const existingResource = await Resource.findById(
+                    resource._id[0]
+                  );
                   updateData = {
                     title: resource.title,
                     url: existingResource?.url || "",
                   };
                 }
-  
+
                 // Update the resource
                 await Resource.findByIdAndUpdate(
                   resource._id[0],
@@ -532,7 +533,7 @@ class CoursesController {
                 const resourceFile = req.files?.find(
                   (file) => file.originalname === restOfResource.fileName
                 );
-  
+
                 let uploadedFile;
                 if (resourceFile) {
                   try {
@@ -548,7 +549,7 @@ class CoursesController {
                     continue; // Skip to next resource on upload error
                   }
                 }
-  
+
                 const newResource = new Resource({
                   ...restOfResource,
                   module_id: module._id,
@@ -557,7 +558,7 @@ class CoursesController {
                 await newResource.save();
               }
             }
-  
+
             // Remove resources not in the updated list
             for (const existingResource of existingResources) {
               if (
@@ -583,13 +584,13 @@ class CoursesController {
             course_id: courseId,
           });
           const savedModule = await newModule.save();
-  
+
           // Handle resources for the new module
           for (const resource of module.resources) {
             const resourceFile = req.files?.find(
               (file) => file.originalname === resource.fileName
             );
-  
+
             let uploadedFile;
             if (resourceFile) {
               try {
@@ -605,31 +606,32 @@ class CoursesController {
                 continue; // Skip to next resource on upload error
               }
             }
-  
+
             const { _id, ...filId } = resource;
             const newResource = new Resource({
               ...filId,
               module_id: savedModule._id,
               url: uploadedFile ? uploadedFile.secure_url : resource.url,
             });
-  
+
             await newResource.save();
           }
         }
       }
-  
+
       // Remove modules not present in the updated list
       for (const existingModule of existingModules) {
         if (
           !modules.some(
             (module) =>
-              module._id && module._id.toString() === existingModule._id.toString()
+              module._id &&
+              module._id.toString() === existingModule._id.toString()
           )
         ) {
           await Module.findByIdAndDelete(existingModule._id);
         }
       }
-  
+
       return res.status(200).json({
         success: true,
         data: updatedCourse,

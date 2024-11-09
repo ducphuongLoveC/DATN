@@ -5,7 +5,6 @@ import { IconDashboard } from '@tabler/icons-react';
 const icons = { IconDashboard };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
-import path from '@/constants/routes';
 const posts = {
   id: 'posts',
   title: 'Posts',

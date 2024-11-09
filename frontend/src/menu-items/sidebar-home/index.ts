@@ -3,7 +3,6 @@ import {
   BiNews,
   BiLogoTelegram,
   BiSolidObjectsHorizontalLeft,
-  BiLaptop
 } from 'react-icons/bi';
 
 import path from '@/constants/routes';
@@ -38,12 +37,6 @@ const menus: Props[] = [
     icon: BiLogoTelegram,
     title: 'Liên hệ',
     url: '/contact',
-    target: false,
-  },
-  {
-    icon: BiLaptop,
-    title: 'test learning',
-    url: '/learning',
     target: false,
   },
 ];

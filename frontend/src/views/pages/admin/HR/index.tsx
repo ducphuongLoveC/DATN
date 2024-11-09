@@ -183,7 +183,7 @@ const HR = () => {
     setSnackbarOpen(true);
   };
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
   };
 

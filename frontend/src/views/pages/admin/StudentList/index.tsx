@@ -110,7 +110,7 @@ const StudentList = () => {
     };
 
     const totalPages = Math.ceil(rows.length / rowsPerPage);
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
         setCurrentPage(value);
     };
 

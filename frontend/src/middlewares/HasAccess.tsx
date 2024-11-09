@@ -14,12 +14,11 @@ const HasAccess: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     enabled: !!user && !!course_id,
   });
 
-  if (!user) return <Navigate to="/auth/login" replace />;
-
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching access data. Please try again.</div>;
 
-  if (data && !data.hasAccess) {
+  
+  if (!user || data && !data.hasAccess) {
     return <Navigate to={`/courses/${course_id}`} replace />;
   }
   return <div>{children}</div>;

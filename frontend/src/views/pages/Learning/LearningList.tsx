@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Typography, Box, useTheme } from '@mui/material';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Module from '@/components/Module';
@@ -12,7 +11,7 @@ interface LearningListProps {
   onClose: () => void;
   idCourse?: string;
 }
-const LearningList: React.FC<LearningListProps> = memo(({ onClose, modules, idCourse }) => {
+const LearningList: React.FC<LearningListProps> = memo(({ onClose, modules }) => {
   const [expandedIndexs, setExpandedIndexs] = useState<number[]>([0]);
 
   const handleToggleExpanded = (index: number) => {

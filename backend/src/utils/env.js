@@ -10,6 +10,7 @@ const {
   BASE_URL,
   BASE_URL_CLIENT,
   URL_REDIRECT_LEARNING,
+  URL_NGROK,
 } = process.env;
 
 export {
@@ -20,4 +21,5 @@ export {
   BASE_URL,
   BASE_URL_CLIENT,
   URL_REDIRECT_LEARNING,
+  URL_NGROK,
 };

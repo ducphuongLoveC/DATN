@@ -16,8 +16,8 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poste
     if (artPlayerRef.current) {
       const hls = new Hls();
       hls.loadSource(videoUrl);
-       console.log(hls);
-       
+      console.log(hls);
+
       art.current = new ArtPlayer({
         poster: poster || '',
         container: artPlayerRef.current,
@@ -30,7 +30,7 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poste
         controls: [
           {
             position: 'right',
-            html: 'Fullscreen',
+            html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: white;transform: ;msFilter:;"><path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"></path></svg>',
             click: function () {
               if (art.current) {
                 art.current.fullscreen = !art.current.fullscreen;

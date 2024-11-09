@@ -1,6 +1,6 @@
 import axios from "axios";
 import crypto from "crypto";
-import { URL_REDIRECT_LEARNING, BASE_URL } from "../utils/env.js";
+import { URL_REDIRECT_LEARNING, BASE_URL, URL_NGROK } from "../utils/env.js";
 
 class PaymentContronller {
   async createPayment(req, res, next) {
@@ -18,8 +18,7 @@ class PaymentContronller {
     const requestId = partnerCode + new Date().getTime();
     const orderInfo = "pay with MoMo";
     const redirectUrl = `${URL_REDIRECT_LEARNING}/${course_id}`;
-    const ipnUrl =
-      "https://cb1a-171-236-113-162.ngrok-free.app/api/payment/callback";
+    const ipnUrl = `${URL_NGROK}/api/payment/callback`;
 
     const requestType = "payWithMethod";
     const extraData = JSON.stringify({

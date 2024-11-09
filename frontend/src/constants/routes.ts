@@ -27,6 +27,8 @@ const path = {
       register: '/auth/register',
     },
     learning: '/learning/:id/',
+    learningId: (id: string) => `/learning/${id}`,
+
     learningPath: '/learning-path',
     learningPathDetail: '/learning-path-detail',
     courses: '/courses/:id',
