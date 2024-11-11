@@ -8,6 +8,9 @@ const TOGGLE_THEME = '@customization/TOGGLE_THEME';
 
 // action - client
 const TOGGLE_THEME_HOME = '@home/TOGGLE_THEME';
+const SET_EXPANDED_INDEXS = '@/home/SET_EXPANDED_INDEXS';
+
+// auth
 const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN';
 const SET_USER = 'SET_USER';
 
@@ -21,4 +24,5 @@ export {
   TOGGLE_THEME_HOME,
   SET_USER,
   SET_ACCESS_TOKEN,
+  SET_EXPANDED_INDEXS
 };

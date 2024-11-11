@@ -62,8 +62,8 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poste
       sx={{
         width: '100%',
         height: {
-          xs: '270px',
-          sm: '400px',
+          xs: '210px',
+          sm: '300px',
           md: '520px',
         },
       }}

@@ -28,7 +28,8 @@ import { findModuleByCourseId } from '@/api/moduleApi';
 import useQueryParams from '@/hooks/useQueryParams';
 import { getAdjacentResourceId, getResource } from '@/api/Resource';
 import formatLastUpdated from '@/utils/formatLastUpdated';
-
+// import LearningSkeleton from '@/ui-component/cards/Skeleton/LearningSkeleton';
+import { ModulesSkeleton, ResourceSkeleton } from '@/ui-component/cards/Skeleton/LearningSkeleton';
 const BoxHeaderAndNote = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
@@ -95,8 +96,15 @@ const Learning: React.FC = () => {
     queryFn: () => findModuleByCourseId(id || ''),
   });
 
+  console.log(moduleQuery.data);
+
   const resourceQuery = useQuery({
     queryKey: ['resource', idResource],
+    queryFn: () => getResource(idResource || ''),
+  });
+
+  const findNameModulesById = useQuery({
+    queryKey: ['name_module', idResource],
     queryFn: () => getResource(idResource || ''),
   });
 
@@ -106,7 +114,6 @@ const Learning: React.FC = () => {
   const toggleLearningList = () => {
     setIsLearningPlayList((prev) => !prev);
   };
-
   const handleToggleNote = () => {
     setIsVisibleNote(!isVisibleNote);
   };
@@ -121,11 +128,7 @@ const Learning: React.FC = () => {
     }
   };
 
-  if (moduleQuery.isLoading || resourceQuery.isLoading) return <div>Loading...</div>;
-  if (moduleQuery.isError) return <div>Error</div>;
-
-  console.log(moduleQuery.data);
-  console.log(resourceQuery.data);
+  if (moduleQuery.isError || resourceQuery.isError) return <div>Error</div>;
 
   return (
     <Box position={'relative'}>
@@ -134,7 +137,6 @@ const Learning: React.FC = () => {
           display: 'flex',
         }}
       >
-        {/* box content bên trái gồm video nội dung */}
         <PerfectScrollbar
           style={{
             width: '100%',
@@ -143,75 +145,86 @@ const Learning: React.FC = () => {
             background: theme.palette.background.paper,
           }}
         >
-          <ArtPlayerComponent videoUrl={resourceQuery.data.url} />
-          <Box
-            sx={{
-              marginTop: '10px',
-              padding: {
-                sm: '0',
-                md: '20px',
-              },
-              background: theme.palette.background.paper,
-            }}
-          >
-            <BoxHeaderAndNote>
-              <Box>
-                <Typography variant="h1" fontWeight={500}>
-                  {resourceQuery.data.title}
-                </Typography>
-                <Typography variant="caption">{formatLastUpdated(resourceQuery.data.updatedAt)}</Typography>
-              </Box>
-              <Box>
-                <HeadlessTippy
-                  zIndex={999}
-                  visible={isVisibleNote}
-                  placement="bottom-end"
-                  allowHTML
-                  interactive
-                  render={(attrs) => (
-                    <Wrapper {...attrs} style={{ width: '500px' }}>
-                      <TextEditor
-                        key={isVisibleNote ? 'visible' : 'hidden'}
-                        initialHeight="150px"
-                        initialValue=""
-                        onChange={(content) => {
-                          console.log(content);
+          {resourceQuery.isLoading ? (
+            <ResourceSkeleton />
+          ) : (
+            <>
+              <ArtPlayerComponent videoUrl={resourceQuery.data.url} />
+              <Box
+                sx={{
+                  marginTop: '10px',
+                  padding: {
+                    sm: '0',
+                    md: '20px',
+                  },
+                  background: theme.palette.background.paper,
+                }}
+              >
+                <BoxHeaderAndNote>
+                  <Box>
+                    <Typography variant="h1" fontWeight={500}>
+                      {resourceQuery.data.title}
+                    </Typography>
+                    <Typography variant="caption">{formatLastUpdated(resourceQuery.data.updatedAt)}</Typography>
+                  </Box>
+                  <Box>
+                    <HeadlessTippy
+                      zIndex={999}
+                      visible={isVisibleNote}
+                      placement="bottom-end"
+                      allowHTML
+                      interactive
+                      render={(attrs) => (
+                        <Wrapper {...attrs} style={{ width: '500px' }}>
+                          <TextEditor
+                            key={isVisibleNote ? 'visible' : 'hidden'}
+                            initialHeight="150px"
+                            initialValue=""
+                            onChange={(content) => {
+                              console.log(content);
+                            }}
+                          />
+                          <Button onClick={handleToggleNote}>Lưu ghi chú</Button>
+                        </Wrapper>
+                      )}
+                    >
+                      <Button
+                        onClick={handleToggleNote}
+                        sx={{
+                          color: theme.palette.text.primary,
+                          backgroundColor: theme.palette.background.paper2,
+                          padding: '10px 30px',
+                          borderRadius: '10px',
                         }}
-                      />
-                      <Button onClick={handleToggleNote}>Lưu ghi chú</Button>
-                    </Wrapper>
-                  )}
+                      >
+                        Thêm ghi chú tại 0:00
+                      </Button>
+                    </HeadlessTippy>
+                  </Box>
+                </BoxHeaderAndNote>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    marginTop: '20px',
+                    borderRadius: '10px',
+                    padding: '20px',
+                  }}
                 >
-                  <Button
-                    onClick={handleToggleNote}
-                    sx={{
-                      color: theme.palette.text.primary,
-                      backgroundColor: theme.palette.background.paper2,
-                      padding: '10px 30px',
-                      borderRadius: '10px',
-                    }}
-                  >
-                    Thêm ghi chú tại 0:00
-                  </Button>
-                </HeadlessTippy>
+                  <Typography dangerouslySetInnerHTML={{ __html: resourceQuery.data.description }} />
+                </Typography>
               </Box>
-            </BoxHeaderAndNote>
-            <Typography
-              variant="body1"
-              sx={{
-                marginTop: '20px',
-                borderRadius: '10px',
-                padding: '20px',
-              }}
-            >
-              <Typography dangerouslySetInnerHTML={{ __html: resourceQuery.data.description }} />
-            </Typography>
-          </Box>
+            </>
+          )}
         </PerfectScrollbar>
-        {isLearningPlayList && (
-          <BoxLearningList>
-            <LearningList modules={moduleQuery.data} idCourse={id} onClose={toggleLearningList} />
-          </BoxLearningList>
+
+        {moduleQuery.isLoading || moduleQuery.isFetching ? (
+          <ModulesSkeleton />
+        ) : (
+          isLearningPlayList && (
+            <BoxLearningList>
+              <LearningList modules={moduleQuery.data} idCourse={id} onClose={toggleLearningList} />
+            </BoxLearningList>
+          )
         )}
       </Box>
       <LessonNavigation>

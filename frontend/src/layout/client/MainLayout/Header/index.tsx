@@ -8,8 +8,6 @@ import { BiAdjust, BiX } from 'react-icons/bi';
 import Tippy from '@tippyjs/react';
 import HeadlessTippy from '@tippyjs/react/headless';
 
-import axios from 'axios';
-
 // import my project
 import Logo from '@/ui-component/Logo';
 import Wrapper from '@/components/Wrapper';
@@ -20,7 +18,7 @@ import { useTheme, styled } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
 
 import useDebounce from '@/hooks/useDebounce';
-import sleep from '../../../../utils/sleep';
+
 
 import { BeatLoader } from 'react-spinners';
 
@@ -73,9 +71,6 @@ const Header: React.FC = () => {
       fetch();
     }
   }, [debounced]);
-
-  console.log(homeState);
-  console.log(dataSearch);
 
   const handleToggleThemeMode = () => {
     const newTheme = homeState.theme === 'light' ? 'dark' : 'light';
@@ -174,7 +169,7 @@ const Header: React.FC = () => {
                       {dataSearch.length > 0 && (
                         <>
                           <span>Kết quả cho '{searchValue}'</span>
-                          <h6>Khóa học</h6>
+                          <h6 >Khóa học</h6>
                           {dataSearch.map((c: any, i: number) => (
                             <Link to={path.client.learningId(c._id)}>
                               <ContentSearch key={i}>

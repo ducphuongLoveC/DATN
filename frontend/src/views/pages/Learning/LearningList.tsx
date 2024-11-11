@@ -1,10 +1,16 @@
-import React, { memo } from 'react';
-import { useState } from 'react';
+import React, { memo, useEffect } from 'react';
 import { Typography, Box, useTheme } from '@mui/material';
+
+// redux
+import { useSelector, useDispatch } from 'react-redux';
+
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Module from '@/components/Module';
 import CloseIcon from '@mui/icons-material/Close';
+
 import { Resource } from '../admin/Courses/CourseForm';
+import { RootState } from '@/store/reducer';
+import { SET_EXPANDED_INDEXS } from '@/store/actions';
 
 interface LearningListProps {
   modules: { title: string; resources: Resource }[];
@@ -12,21 +18,29 @@ interface LearningListProps {
   idCourse?: string;
 }
 const LearningList: React.FC<LearningListProps> = memo(({ onClose, modules }) => {
-  const [expandedIndexs, setExpandedIndexs] = useState<number[]>([0]);
+  const dispatch = useDispatch();
+
+  const storedExpandedIndexs = useSelector((state: RootState) => state.homeReducer.expandedIndexs);
 
   const handleToggleExpanded = (index: number) => {
-    setExpandedIndexs((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]));
+    dispatch({
+      type: SET_EXPANDED_INDEXS,
+      payload: storedExpandedIndexs.includes(index)
+        ? storedExpandedIndexs.filter((i: number) => i !== index)
+        : [...storedExpandedIndexs, index],
+    });
   };
-
   const theme = useTheme();
+  useEffect(() => {
+    return () => {
+      dispatch({ type: SET_EXPANDED_INDEXS, payload: [0] });
+    };
+  }, []);
   return (
     <PerfectScrollbar
       style={{
         overflow: 'auto',
         height: '87vh',
-        //   sm: '93vh',
-        //   md: '87vh',
-        // },
         backgroundColor: theme.palette.background.paper,
       }}
     >
@@ -59,7 +73,7 @@ const LearningList: React.FC<LearningListProps> = memo(({ onClose, modules }) =>
           <Module
             isRedirect
             onClick={() => handleToggleExpanded(index)}
-            expanded={expandedIndexs.includes(index)}
+            expanded={storedExpandedIndexs.includes(index)}
             key={index}
             title={module.title}
             items={module.resources}

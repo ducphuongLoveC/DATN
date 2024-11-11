@@ -1,36 +1,27 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const progressSchema = new mongoose.Schema(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: [true, "UserId is required"],
+      required: true,
     },
-
-    course_id: {
+    resource_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
-      required: [true, "CourseId is required"],
+      ref: "Resource",
+      required: true,
     },
-
-    completed: {
+    isCompleted: {
       type: Boolean,
       default: false,
     },
-
-    completedPercentage: {
+    completion_date: {
       type: Date,
-      required: function () {
-        return this.completed;
-      },
     },
-
-    progressPercentage: {
+    time_spent: {
       type: Number,
-      required: true,
-      min: 0,
-      max: 100,
+      default: 0,
     },
   },
   {
@@ -39,4 +30,7 @@ const progressSchema = new mongoose.Schema(
   }
 );
 
+progressSchema.index({ user_id: 1, resource_id: 1 }, { unique: true });
+
 export default mongoose.model("Progress", progressSchema);
+

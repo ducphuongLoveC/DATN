@@ -2,6 +2,7 @@ import * as actionTypes from './actions';
 //light, dark
 export const initialState = {
   theme: 'light',
+  expandedIndexs: [0],
 };
 
 const homeReducer = (state = initialState, action: any) => {
@@ -10,6 +11,12 @@ const homeReducer = (state = initialState, action: any) => {
       return {
         ...state,
         theme: action.theme,
+      };
+
+    case actionTypes.SET_EXPANDED_INDEXS:
+      return {
+        ...state,
+        expandedIndexs: action.payload,
       };
     default:
       return state;

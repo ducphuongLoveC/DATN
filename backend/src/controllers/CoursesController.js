@@ -29,7 +29,6 @@ class CoursesController {
       next(error);
     }
   }
-
   async getCoursesWithModulesAndResources(req, res, next) {
     try {
       const courses = await Course.aggregate([
@@ -131,7 +130,7 @@ class CoursesController {
         return res.status(404).json({ message: "Course not found" });
       }
 
-      res.status(200).json(course[0]); // Trả về khóa học đầu tiên vì chỉ có một kết quả
+      res.status(200).json(course[0]);
     } catch (error) {
       next(error);
     }
@@ -178,9 +177,9 @@ class CoursesController {
         },
         {
           $lookup: {
-            from: "users", // Collection to join
-            localField: "user_id", // Field from Course
-            foreignField: "_id", // Field from User
+            from: "users",
+            localField: "user_id",
+            foreignField: "_id",
             as: "user",
           },
         },
@@ -377,6 +376,8 @@ class CoursesController {
           const savedModule = await newModule.save();
 
           for (const resource of module.resources) {
+
+            
             const resourceFile = req.files?.find(
               (file) => file.originalname === resource.fileName
             );
@@ -439,9 +440,8 @@ class CoursesController {
         modules,
       } = req.body;
 
-      modules.forEach((m) => {
-        console.log("hêhhe", m);
-      });
+      console.log("445", req.files);
+
       // Find and update the course
       const updatedCourse = await Course.findByIdAndUpdate(
         courseId,
@@ -474,9 +474,10 @@ class CoursesController {
 
       // Process modules from the client
       for (let module of modules) {
-        module.resources = module.resources || []; // Ensure module.resources is an array
 
-        console.log(module);
+        console.log('here', module);
+        
+        module.resources = module.resources || []; // Ensure module.resources is an array
 
         // Check if the module has an ID
         if (module._id && module._id.trim() !== "") {
@@ -499,15 +500,19 @@ class CoursesController {
               if (resource._id[0] && resource._id[0].trim() !== "") {
                 // Update existing resource
                 let updateData = {};
+                const resourceFile = req.files?.find(
+                  (file) => file.originalname === resource.fileName
+                );
 
-                if (resource.file) {
+                if (resourceFile) {
                   // Upload the new file to Cloudinary
                   const uploadedFile = await cloudinary.v2.uploader.upload(
-                    resource.file.path,
+                    resourceFile.path,
                     { resource_type: resource.type || "auto" }
                   );
                   updateData = {
                     title: resource.title,
+                    duration: resource.duration,
                     url: uploadedFile.secure_url,
                   };
                 } else {
@@ -639,6 +644,69 @@ class CoursesController {
       });
     } catch (error) {
       console.error("Error updating course:", error);
+      next(error);
+    }
+  }
+  async getResourcesIdByCourseId(req, res, next) {
+    try {
+      const { id } = req.params; // Lấy course_id từ tham số URL
+
+      const course = await Course.aggregate([
+        {
+          $match: { _id: new mongoose.Types.ObjectId(id) }, // Lọc khóa học theo course_id
+        },
+        {
+          $lookup: {
+            from: "modules",
+            localField: "_id",
+            foreignField: "course_id",
+            as: "modules",
+          },
+        },
+        {
+          $unwind: {
+            path: "$modules",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "resources",
+            localField: "modules._id",
+            foreignField: "module_id",
+            as: "modules.resources",
+          },
+        },
+        {
+          $project: {
+            resources: {
+              $map: {
+                input: "$modules.resources",
+                as: "resource",
+                in: "$$resource._id",
+              },
+            },
+          },
+        },
+        {
+          $unwind: "$resources",
+        },
+        {
+          $group: {
+            _id: null,
+            resource_ids: { $push: "$resources" },
+          },
+        },
+      ]);
+
+      if (!course || course.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "Course not found or no resources available." });
+      }
+
+      res.status(200).json({ resource_ids: course[0].resource_ids });
+    } catch (error) {
       next(error);
     }
   }

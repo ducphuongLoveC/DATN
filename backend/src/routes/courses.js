@@ -34,5 +34,6 @@ routerCourse.patch(
   CoursesController.updateCourseDetail
 );
 
+routerCourse.get("/:id/resource-ids", CoursesController.getResourcesIdByCourseId);
 
 export default routerCourse;

@@ -5,6 +5,11 @@ export const getResource = async (id: string) => {
   return res.data;
 };
 
+export const getNameModuleById = async (id: string) => {
+  const res = await axiosInstance.get(`api/resource/${id}/find-module-name`);
+  return res.data;
+};
+
 export const getAdjacentResourceId = async (id: string, direction: string) => {
   const res = await axiosInstance.get(`api/resource/${id}/adjacent-id?direction=${direction}`);
   return res.data;

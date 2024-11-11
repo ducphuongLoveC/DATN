@@ -54,8 +54,6 @@ export const newCourse = async (data: Course) => {
     formData.append(`modules[${moduleIndex}][title]`, module.title);
 
     module.resources.forEach((resource: any, resourceIndex) => {
-      console.log(resource);
-
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][resource_type]`, resource.resource_type);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][title]`, resource.title);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][fileName]`, resource.fileName);

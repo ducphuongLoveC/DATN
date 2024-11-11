@@ -93,7 +93,7 @@ class PaymentContronller {
         return res.status(400).send("Invalid extraData format");
       }
     }
-
+    // cập nhật odder, khởi tạo progess với access khi thanh toán thành công
     if (resultCode === 0) {
       try {
         const expiration_date = new Date();

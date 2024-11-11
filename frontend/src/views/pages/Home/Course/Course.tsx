@@ -5,7 +5,8 @@ import { Tabs, Tab, Box, Grid } from '@mui/material';
 // pj
 import CourseItem from './CourseItem';
 import { getCourseFullList } from '@/api/courseApi';
-
+// skeleton
+import CourseSkeleton from '@/ui-component/cards/Skeleton/CourseSkeleton';
 interface TabPanelProps {
   children: React.ReactNode;
   index: number;
@@ -24,13 +25,12 @@ const Course: React.FC = () => {
     setValue(newValue);
   };
 
-
   const { data, isLoading, isError } = useQuery({
     queryKey: ['courses'],
     queryFn: getCourseFullList,
   });
 
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading) return <CourseSkeleton />;
   if (isError) return <div>error...</div>;
 
   return (

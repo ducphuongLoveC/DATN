@@ -34,7 +34,6 @@ import CardCourse from './CardCourse';
 import TextEditor from '@/components/TextEditor';
 
 // my pj
-
 import Dialog from '@/components/Dialog';
 import documentChoose from './Resource/DocumentChoose';
 import OptionOther from './OptionOther';
@@ -116,7 +115,6 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
       useImperativeHandle(ref, () => ({
         getData,
       }));
-
       return (
         <TextEditor
           value={description} // Sử dụng value thay vì chỉ initialValue
@@ -163,8 +161,6 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
 
       if (idResourceEdit !== null) {
         let cloneModules: Module[] = [...modules];
-
-        console.log('check');
 
         cloneModules[currentModuleIndex].resources[idResourceEdit] = resource;
 

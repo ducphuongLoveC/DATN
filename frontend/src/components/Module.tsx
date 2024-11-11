@@ -1,4 +1,4 @@
-import { Accordion, AccordionSummary, Box, Typography, AccordionDetails, Checkbox } from '@mui/material';
+import { Accordion, AccordionSummary, Box, Typography, AccordionDetails } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -7,8 +7,12 @@ import { memo } from 'react';
 import moment from 'moment';
 
 import useQueryParams from '@/hooks/useQueryParams';
-
+// icon
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import ArticleIcon from '@mui/icons-material/Article';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 interface ModuleProps {
+  isCompleted?: boolean;
   isRedirect?: boolean;
   styleM?: 'one' | 'two';
   title: string;
@@ -18,6 +22,7 @@ interface ModuleProps {
 }
 
 const Module: React.FC<ModuleProps> = ({
+  isCompleted = true,
   isRedirect = false,
   styleM = 'one',
   title,
@@ -56,21 +61,28 @@ const Module: React.FC<ModuleProps> = ({
         sx={{ cursor: isRedirect ? 'pointer' : '' }}
         {...(isRedirect ? { onClick: () => query.set('id', item._id) } : {})}
         key={idx}
-        style={{ display: 'flex', alignItems: 'center' }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
       >
-        <Checkbox
-          sx={{
-            padding: 0,
-            '& .MuiSvgIcon-root': {
-              fontSize: '1rem',
-            },
-            marginRight: '10px',
-          }}
-        />
-        <Box>
-          <Typography>{item.title}</Typography>
-          <Typography variant="caption">{moment.utc(item.duration * 1000).format('mm:ss')}</Typography>
+        <Box mr={2} pt={1}>
+          <Typography color={query.get('id') == item._id ? '#007bff' : ''}>{item.title}</Typography>
+          <Box display={'flex'} alignItems={'center'}>
+            {(() => {
+              switch (item.resource_type) {
+                case 'Video':
+                  return <OndemandVideoIcon sx={{ fontSize: '14px' }} />;
+                case 'Document':
+                  return <ArticleIcon sx={{ fontSize: '14px' }} />;
+
+                default:
+                  return <OndemandVideoIcon sx={{ fontSize: '14px' }} />;
+              }
+            })()}
+            <Typography variant="caption" ml={1}>
+              {moment.utc(item.duration * 1000).format('mm:ss')}
+            </Typography>
+          </Box>
         </Box>
+        <Box>{isCompleted && <CheckCircleIcon sx={{ color: '#5db85c' }} />}</Box>
       </Box>
     ));
 
@@ -97,7 +109,6 @@ const Module: React.FC<ModuleProps> = ({
         onClick={(event) => event.stopPropagation()}
         sx={{
           backgroundColor: styleM === 'two' ? theme.palette.background.paper : theme.palette.background.paper2,
-          
         }}
       >
         {renderItems()}

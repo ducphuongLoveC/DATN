@@ -30,6 +30,7 @@ import { createOrder } from '@/api/OrderApi';
 import { RootState } from '@/store/reducer';
 import sleep from '@/utils/sleep';
 import path from '@/constants/routes';
+import CourseDetailSkeleton from '../../../ui-component/cards/Skeleton/CourseDetailSkeleton';
 
 const BoxCenter = styled(Box)(() => ({
   display: 'flex',
@@ -77,7 +78,7 @@ const CourseDetail: React.FC = () => {
       toast.error('Đặt hàng thất bại. Vui lòng thử lại!');
     },
   });
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ['course'],
     queryFn: () => getCourseFull(id || ''),
   });
@@ -137,7 +138,8 @@ const CourseDetail: React.FC = () => {
     }
   }, [data]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || isFetching) return <CourseDetailSkeleton />;
+
   if (isError) return <div>Error...</div>;
 
   return (
