@@ -306,6 +306,125 @@ class CoursesController {
       next(error);
     }
   }
+  // addCourseDetail = async (req, res, next) => {
+  //   try {
+  //     const {
+  //       learning_path_id,
+  //       user_id,
+  //       title,
+  //       level,
+  //       description,
+  //       original_price,
+  //       sale_price,
+  //       learning_outcomes,
+  //       modules,
+  //     } = req.body;
+
+  //     console.log("Received body:", req.body);
+  //     console.log("Received files:", req.files);
+
+  //     if (!req.files) {
+  //       return res
+  //         .status(400)
+  //         .json({ success: false, message: "No files uploaded" });
+  //     }
+
+  //     const thumbnailFile = req.files.find(
+  //       (file) => file.fieldname === "thumbnail"
+  //     );
+  //     console.log("-----------------", thumbnailFile);
+
+  //     let uploadedThumbnail;
+  //     if (thumbnailFile) {
+  //       uploadedThumbnail = await cloudinary.v2.uploader.upload(
+  //         thumbnailFile.path
+  //       );
+  //     }
+
+  //     // Tạo khóa học mới
+  //     const newCourse = new Course({
+  //       learning_path_id,
+  //       user_id,
+  //       title,
+  //       level,
+  //       thumbnail: uploadedThumbnail
+  //         ? uploadedThumbnail.secure_url
+  //         : "default-thumbnail.jpg",
+  //       description,
+  //       original_price,
+  //       sale_price,
+  //       learning_outcomes: Array.isArray(learning_outcomes)
+  //         ? learning_outcomes
+  //         : [learning_outcomes],
+  //     });
+
+  //     fs.unlink(thumbnailFile.path, (err) => {
+  //       if (err) console.error("Error deleting temp file:", err);
+  //       else console.log("Temp file deleted");
+  //     });
+
+  //     const savedCourse = await newCourse.save();
+
+  //     // Xử lý các module và resource
+  //     if (modules && Array.isArray(modules)) {
+  //       for (const module of modules) {
+  //         const newModule = new Module({
+  //           ...module,
+  //           course_id: savedCourse._id,
+  //         });
+
+  //         const savedModule = await newModule.save();
+
+  //         for (const resource of module.resources) {
+  //           const resourceFile = req.files?.find(
+  //             (file) => file.originalname === resource.fileName
+  //           );
+
+  //           let uploadedFile;
+  //           if (resourceFile) {
+  //             try {
+  //               uploadedFile = await cloudinary.v2.uploader.upload(
+  //                 resourceFile.path,
+  //                 {
+  //                   resource_type: "video",
+  //                   timeout: 240000,
+  //                 }
+  //               );
+  //               console.log("Uploaded file URL:", uploadedFile.secure_url); // Log the uploaded file URL
+  //             } catch (error) {
+  //               console.error("Error uploading file:", error);
+  //               continue;
+  //             }
+  //           }
+
+  //           const newResource = new Resource({
+  //             ...resource,
+  //             module_id: savedModule._id,
+  //             url: uploadedFile ? uploadedFile.secure_url : resource.url,
+  //           });
+
+  //           if (resourceFile && uploadedFile) {
+  //             fs.unlink(resourceFile.path, (err) => {
+  //               if (err) console.error("Error deleting temp file:", err);
+  //               else console.log("Temp file deleted");
+  //             });
+  //           }
+  //           await newResource.save();
+  //         }
+  //       }
+  //     }
+
+  //     res.status(201).json({
+  //       success: true,
+  //       data: savedCourse,
+  //       message: "Course created successfully",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error adding course:", error);
+  //     next(error);
+  //   }
+  // };
+
   addCourseDetail = async (req, res, next) => {
     try {
       const {
@@ -376,34 +495,66 @@ class CoursesController {
           const savedModule = await newModule.save();
 
           for (const resource of module.resources) {
-
-            
             const resourceFile = req.files?.find(
               (file) => file.originalname === resource.fileName
             );
 
             let uploadedFile;
-            if (resourceFile) {
-              try {
-                uploadedFile = await cloudinary.v2.uploader.upload(
-                  resourceFile.path,
-                  {
-                    resource_type: "video",
-                    timeout: 240000,
-                  }
-                );
-                console.log("Uploaded file URL:", uploadedFile.secure_url); // Log the uploaded file URL
-              } catch (error) {
-                console.error("Error uploading file:", error);
-                continue;
-              }
-            }
 
-            const newResource = new Resource({
-              ...resource,
-              module_id: savedModule._id,
-              url: uploadedFile ? uploadedFile.secure_url : resource.url,
-            });
+            switch (resource.resource_type) {
+              case "Video":
+                if (resourceFile) {
+                  try {
+                    uploadedFile = await cloudinary.v2.uploader.upload(
+                      resourceFile.path,
+                      {
+                        resource_type: "video",
+                        timeout: 240000,
+                      }
+                    );
+                    console.log("Uploaded video URL:", uploadedFile.secure_url);
+                  } catch (error) {
+                    console.error("Error uploading video file:", error);
+                    continue;
+                  }
+                }
+
+                const newVideoResource = new Resource({
+                  module_id: savedModule._id,
+                  resource_type: "Video",
+                  title: resource.title,
+                  url: uploadedFile?.secure_url || "",
+                  duration: resource.duration || 0,
+                  poster: resource.poster || "",
+                });
+
+                await newVideoResource.save();
+                break;
+
+              case "Question":
+                const questions = resource.questions.map((question) => ({
+                  question: question.question,
+
+                  options: new Map(Object.entries(question.options)),
+                  correctAnswer: question.correctAnswer,
+                }));
+
+                const newQuestionResource = new Resource({
+                  module_id: savedModule._id,
+                  resource_type: "Question",
+                  title: resource.title,
+                  questions: questions,
+                  duration: resource.duration,
+                  description: resource.description,
+                });
+
+                await newQuestionResource.save();
+                break;
+
+              default:
+                console.warn("Unknown resource type:", resource.resource_type);
+                continue;
+            }
 
             if (resourceFile && uploadedFile) {
               fs.unlink(resourceFile.path, (err) => {
@@ -411,7 +562,6 @@ class CoursesController {
                 else console.log("Temp file deleted");
               });
             }
-            await newResource.save();
           }
         }
       }
@@ -426,6 +576,238 @@ class CoursesController {
       next(error);
     }
   };
+  // ---------------------------------------------------------------------
+  // async updateCourseDetail(req, res, next) {
+  //   try {
+  //     const courseId = req.params.id;
+  //     const {
+  //       title,
+  //       level,
+  //       learning_outcomes,
+  //       thumbnail,
+  //       description,
+  //       original_price,
+  //       sale_price,
+  //       modules,
+  //     } = req.body;
+
+  //     console.log("445", req.files);
+
+  //     const updatedCourse = await Course.findByIdAndUpdate(
+  //       courseId,
+  //       {
+  //         title,
+  //         level,
+  //         learning_outcomes: Array.isArray(learning_outcomes)
+  //           ? learning_outcomes
+  //           : [learning_outcomes],
+  //         thumbnail: thumbnail || "default-thumbnail.jpg",
+  //         description,
+  //         original_price,
+  //         sale_price,
+  //       },
+  //       { new: true, runValidators: true }
+  //     );
+
+  //     if (!updatedCourse) {
+  //       return res.status(404).json({
+  //         success: false,
+  //         message: "Course not found",
+  //       });
+  //     }
+
+  //     // Get existing modules for the course
+  //     const existingModules = await Module.find({ course_id: courseId });
+  //     const existingModuleIds = new Set(
+  //       existingModules.map((module) => module._id.toString())
+  //     );
+
+  //     for (let module of modules) {
+  //       console.log("here", module);
+
+  //       module.resources = module.resources || [];
+
+  //       // Check if the module has an ID
+  //       if (module._id && module._id.trim() !== "") {
+  //         // Check if the module exists
+  //         if (existingModuleIds.has(module._id.toString())) {
+  //           // Update existing module
+  //           await Module.findByIdAndUpdate(
+  //             module._id,
+  //             { title: module.title },
+  //             { new: true, runValidators: true }
+  //           );
+
+  //           // Handle resources for the existing module
+  //           const existingResources = await Resource.find({
+  //             module_id: module._id,
+  //           });
+
+  //           // Process each resource
+  //           for (const resource of module.resources) {
+  //             if (resource._id && resource._id.trim() !== "") {
+  //               // Update existing resource
+  //               let updateData = {};
+  //               const resourceFile = req.files?.find(
+  //                 (file) => file.originalname === resource.fileName
+  //               );
+
+  //               if (resourceFile) {
+  //                 // Upload the new file to Cloudinary
+  //                 const uploadedFile = await cloudinary.v2.uploader.upload(
+  //                   resourceFile.path,
+  //                   { resource_type: resource.type || "auto" }
+  //                 );
+  //                 updateData = {
+  //                   title: resource.title,
+  //                   description: resource.description,
+  //                   duration: resource.duration,
+  //                   url: uploadedFile.secure_url,
+  //                 };
+
+  //                 // clear video
+  //                 fs.unlink(resourceFile.path, (err) => {
+  //                   if (err) console.error("Error deleting temp file:", err);
+  //                   else console.log("Temp file deleted");
+  //                 });
+  //               } else {
+  //                 // Use existing resource's URL if no new file is provided
+  //                 const existingResource = await Resource.findById(
+  //                   resource._id
+  //                 );
+  //                 updateData = {
+  //                   title: resource.title,
+  //                   description: resource.description,
+  //                   url: existingResource?.url || "",
+  //                 };
+  //               }
+
+  //               // Update the resource
+  //               await Resource.findByIdAndUpdate(
+  //                 resource._id,
+  //                 { ...updateData },
+  //                 { new: true, runValidators: true }
+  //               );
+  //             } else {
+  //               // Create new resource (ignore _id)
+  //               const { _id, ...restOfResource } = resource;
+  //               const resourceFile = req.files?.find(
+  //                 (file) => file.originalname === restOfResource.fileName
+  //               );
+
+  //               let uploadedFile;
+  //               if (resourceFile) {
+  //                 try {
+  //                   uploadedFile = await cloudinary.v2.uploader.upload(
+  //                     resourceFile.path,
+  //                     {
+  //                       resource_type: resource.type || "auto",
+  //                       timeout: 240000,
+  //                     }
+  //                   );
+  //                   fs.unlink(resourceFile.path, (err) => {
+  //                     if (err) console.error("Error deleting temp file:", err);
+  //                     else console.log("Temp file deleted");
+  //                   });
+  //                 } catch (error) {
+  //                   console.error("Error uploading file:", error);
+  //                   continue; // Skip to next resource on upload error
+  //                 }
+  //               }
+
+  //               const newResource = new Resource({
+  //                 ...restOfResource,
+  //                 module_id: module._id,
+  //                 url: uploadedFile ? uploadedFile.secure_url : resource.url,
+  //               });
+  //               await newResource.save();
+  //             }
+  //           }
+
+  //           // Remove resources not in the updated list
+  //           for (const existingResource of existingResources) {
+  //             if (
+  //               !module.resources.some(
+  //                 (res) =>
+  //                   res._id &&
+  //                   res._id.toString() === existingResource._id.toString()
+  //               )
+  //             ) {
+  //               await Resource.findByIdAndDelete(existingResource._id);
+  //             }
+  //           }
+  //         } else {
+  //           return res.status(404).json({
+  //             success: false,
+  //             message: `Module ${module._id} not found`,
+  //           });
+  //         }
+  //       } else {
+  //         // Create a new module if no ID is provided
+  //         const newModule = new Module({
+  //           title: module.title,
+  //           course_id: courseId,
+  //         });
+  //         const savedModule = await newModule.save();
+
+  //         // Handle resources for the new module
+  //         for (const resource of module.resources) {
+  //           const resourceFile = req.files?.find(
+  //             (file) => file.originalname === resource.fileName
+  //           );
+
+  //           let uploadedFile;
+  //           if (resourceFile) {
+  //             try {
+  //               uploadedFile = await cloudinary.v2.uploader.upload(
+  //                 resourceFile.path,
+  //                 {
+  //                   resource_type: resource.type || "auto",
+  //                   timeout: 240000,
+  //                 }
+  //               );
+  //             } catch (error) {
+  //               console.error("Error uploading file:", error);
+  //               continue; // Skip to next resource on upload error
+  //             }
+  //           }
+
+  //           const { _id, ...filId } = resource;
+  //           const newResource = new Resource({
+  //             ...filId,
+  //             module_id: savedModule._id,
+  //             url: uploadedFile ? uploadedFile.secure_url : resource.url,
+  //           });
+
+  //           await newResource.save();
+  //         }
+  //       }
+  //     }
+
+  //     // Remove modules not present in the updated list
+  //     for (const existingModule of existingModules) {
+  //       if (
+  //         !modules.some(
+  //           (module) =>
+  //             module._id &&
+  //             module._id.toString() === existingModule._id.toString()
+  //         )
+  //       ) {
+  //         await Module.findByIdAndDelete(existingModule._id);
+  //       }
+  //     }
+
+  //     return res.status(200).json({
+  //       success: true,
+  //       data: updatedCourse,
+  //       message: "Course updated successfully",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error updating course:", error);
+  //     next(error);
+  //   }
+  // }
+
   async updateCourseDetail(req, res, next) {
     try {
       const courseId = req.params.id;
@@ -442,7 +824,6 @@ class CoursesController {
 
       console.log("445", req.files);
 
-      // Find and update the course
       const updatedCourse = await Course.findByIdAndUpdate(
         courseId,
         {
@@ -472,12 +853,10 @@ class CoursesController {
         existingModules.map((module) => module._id.toString())
       );
 
-      // Process modules from the client
       for (let module of modules) {
+        console.log("here", module);
 
-        console.log('here', module);
-        
-        module.resources = module.resources || []; // Ensure module.resources is an array
+        module.resources = module.resources || [];
 
         // Check if the module has an ID
         if (module._id && module._id.trim() !== "") {
@@ -497,7 +876,9 @@ class CoursesController {
 
             // Process each resource
             for (const resource of module.resources) {
-              if (resource._id[0] && resource._id[0].trim() !== "") {
+              console.log("hereee", resource);
+
+              if (resource._id && resource._id.trim() !== "") {
                 // Update existing resource
                 let updateData = {};
                 const resourceFile = req.files?.find(
@@ -512,29 +893,55 @@ class CoursesController {
                   );
                   updateData = {
                     title: resource.title,
+                    description: resource.description,
                     duration: resource.duration,
                     url: uploadedFile.secure_url,
                   };
+
+                  // clear video
+                  fs.unlink(resourceFile.path, (err) => {
+                    if (err) console.error("Error deleting temp file:", err);
+                    else console.log("Temp file deleted");
+                  });
                 } else {
-                  // Use existing resource's URL if no new file is provided
-                  const existingResource = await Resource.findById(
-                    resource._id[0]
-                  );
-                  updateData = {
-                    title: resource.title,
-                    url: existingResource?.url || "",
-                  };
+                  if (resource.resource_type == "Video") {
+                    const existingResource = await Resource.findById(
+                      resource._id
+                    );
+
+                    updateData = {
+                      title: resource.title,
+                      description: resource.description,
+                      url: existingResource?.url || "",
+                    };
+                  } else if (resource.resource_type == "Question") {
+                    const questions = resource.questions.map((question) => ({
+                      _id: question._id,
+                      question: question.question,
+                      options: new Map(Object.entries(question.options)),
+                      correctAnswer: question.correctAnswer,
+                    }));
+
+                    updateData = {
+                      title: resource.title,
+                      questions: questions,
+                      duration: resource.duration,
+                      description: resource.description,
+                    };
+                  }
                 }
 
                 // Update the resource
                 await Resource.findByIdAndUpdate(
-                  resource._id[0],
+                  resource._id,
                   { ...updateData },
                   { new: true, runValidators: true }
                 );
               } else {
                 // Create new resource (ignore _id)
                 const { _id, ...restOfResource } = resource;
+
+                let newData = {};
                 const resourceFile = req.files?.find(
                   (file) => file.originalname === restOfResource.fileName
                 );
@@ -549,17 +956,41 @@ class CoursesController {
                         timeout: 240000,
                       }
                     );
+                    fs.unlink(resourceFile.path, (err) => {
+                      if (err) console.error("Error deleting temp file:", err);
+                      else console.log("Temp file deleted");
+                    });
                   } catch (error) {
                     console.error("Error uploading file:", error);
                     continue; // Skip to next resource on upload error
                   }
                 }
 
-                const newResource = new Resource({
-                  ...restOfResource,
-                  module_id: module._id,
-                  url: uploadedFile ? uploadedFile.secure_url : resource.url,
-                });
+                if (restOfResource.resource_type == "Video") {
+                  newData = {
+                    ...restOfResource,
+                    module_id: module._id,
+                    url: uploadedFile ? uploadedFile.secure_url : resource.url,
+                  };
+                } else if (resource.resource_type == "Question") {
+                  const questions = resource.questions.map((question) => ({
+                    question: question.question,
+
+                    options: new Map(Object.entries(question.options)),
+                    correctAnswer: question.correctAnswer,
+                  }));
+
+                  newData = {
+                    module_id: module._id,
+                    resource_type: "Question",
+                    title: resource.title,
+                    questions: questions,
+                    duration: resource.duration,
+                    description: resource.description,
+                  };
+                }
+
+                const newResource = new Resource(newData);
                 await newResource.save();
               }
             }
@@ -569,8 +1000,8 @@ class CoursesController {
               if (
                 !module.resources.some(
                   (res) =>
-                    res._id[0] &&
-                    res._id[0].toString() === existingResource._id.toString()
+                    res._id &&
+                    res._id.toString() === existingResource._id.toString()
                 )
               ) {
                 await Resource.findByIdAndDelete(existingResource._id);
@@ -596,6 +1027,7 @@ class CoursesController {
               (file) => file.originalname === resource.fileName
             );
 
+            let newData = {};
             let uploadedFile;
             if (resourceFile) {
               try {
@@ -612,12 +1044,33 @@ class CoursesController {
               }
             }
 
-            const { _id, ...filId } = resource;
-            const newResource = new Resource({
-              ...filId,
-              module_id: savedModule._id,
-              url: uploadedFile ? uploadedFile.secure_url : resource.url,
-            });
+            const { _id, ...restOfResource } = resource;
+
+            if (restOfResource.resource_type == "Video") {
+              newData = {
+                ...restOfResource,
+                module_id: savedModule._id,
+                url: uploadedFile ? uploadedFile.secure_url : resource.url,
+              };
+            } else if (resource.resource_type == "Question") {
+              const questions = resource.questions.map((question) => ({
+                question: question.question,
+
+                options: new Map(Object.entries(question.options)),
+                correctAnswer: question.correctAnswer,
+              }));
+
+              newData = {
+                module_id: savedModule._id,
+                resource_type: "Question",
+                title: resource.title,
+                questions: questions,
+                duration: resource.duration,
+                description: resource.description,
+              };
+            }
+
+            const newResource = new Resource(newData);
 
             await newResource.save();
           }
@@ -647,6 +1100,7 @@ class CoursesController {
       next(error);
     }
   }
+
   async getResourcesIdByCourseId(req, res, next) {
     try {
       const { id } = req.params; // Lấy course_id từ tham số URL

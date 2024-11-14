@@ -42,6 +42,8 @@ const UpdateCourse: React.FC = () => {
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching course data</div>;
 
+  console.log(data);
+
   return (
     <>
       <HeaderTitle

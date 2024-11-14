@@ -33,24 +33,15 @@ const TextEditor: React.FC<TextEditorProps> = ({
 
   const handleSave = (value: string) => {
     const styledContent = value
-      .replace(
-        /<ul>/g,
-        '<ul style="list-style-type: disc !important; margin-left: 20px !important;">'
-      )
+      .replace(/<ul>/g, '<ul style="list-style-type: disc !important; margin-left: 20px !important;">')
       .replace(/<\/ul>/g, '</ul>')
-      .replace(
-        /<ol>/g,
-        '<ol style="list-style-type: decimal !important; margin-left: 20px !important;">'
-      )
+      .replace(/<ol>/g, '<ol style="list-style-type: decimal !important; margin-left: 20px !important;">')
       .replace(/<\/ol>/g, '</ol>')
-      .replace(
-        /<a /g,
-        '<a style="color: blue !important; text-decoration: underline !important;" '
-      )
+      .replace(/<a /g, '<a style="color: blue !important; text-decoration: underline !important;" ')
       .replace(/<\/a>/g, '</a>');
 
     setContent(styledContent);
-    onChange(styledContent); // Gửi nội dung đã chỉnh sửa ra ngoài
+    onChange(styledContent);
   };
 
   const editorConfig = {
@@ -60,7 +51,16 @@ const TextEditor: React.FC<TextEditorProps> = ({
     menubar: mode === 'advanced',
     plugins:
       mode === 'basic'
-        ? ['link', 'lists', 'autolink', 'codesample']
+        ? [
+            'link',
+            'lists',
+            'autolink',
+            'codesample',
+            'textcolor',
+            'wordcount',
+            'fullscreen',
+            'align', // Thêm align plugin
+          ]
         : [
             'anchor',
             'autolink',
@@ -77,7 +77,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
           ],
     toolbar:
       mode === 'basic'
-        ? 'undo redo | bold italic | bullist numlist | link | codesample'
+        ? 'undo redo | bold italic | bullist numlist | link | codesample | forecolor backcolor | alignleft aligncenter alignright | fullscreen' // Thêm các nút căn trái, giữa, phải
         : 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
     tinycomments_mode: 'embedded',
     tinycomments_author: 'ducphuongdepzai',
@@ -88,7 +88,7 @@ const TextEditor: React.FC<TextEditorProps> = ({
       <Editor
         value={content} // Sử dụng state content để điều khiển giá trị của editor
         disabled={disabled}
-        apiKey="6uvtfylm3hff7y4ws5s2mcci2epzmixosm7y149r6kiw604n"
+        apiKey={import.meta.env.VITE_TINY_MCE_API_KEY}
         init={editorConfig}
         onEditorChange={(content) => {
           handleSave(content); // Xử lý khi nội dung thay đổi

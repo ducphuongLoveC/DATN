@@ -26,6 +26,55 @@ export const getCourseFullList = async () => {
   return res.data;
 };
 
+// export const newCourse = async (data: Course) => {
+//   const formData = new FormData();
+
+//   // Append the main course data
+//   formData.append('learning_path_id', data?.learning_path_id || '');
+//   formData.append('user_id', data.user_id || '');
+//   formData.append('title', data.title);
+//   formData.append('level', data.level);
+
+//   // Kiểm tra xem thumbnail có tệp không, nếu có thì append vào formData
+//   if (data.thumbnail) {
+//     formData.append('thumbnail', data.thumbnail);
+//   }
+
+//   formData.append('description', data.description);
+//   formData.append('original_price', data.original_price.toString());
+//   formData.append('sale_price', data.sale_price.toString());
+
+//   // Append learning outcomes
+//   data.learning_outcomes.forEach((outcome, index) => {
+//     formData.append(`learning_outcomes[${index}]`, outcome);
+//   });
+
+//   // Append modules and their resources
+//   data.modules.forEach((module, moduleIndex) => {
+//     formData.append(`modules[${moduleIndex}][title]`, module.title);
+
+//     module.resources.forEach((resource: any, resourceIndex) => {
+//       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][resource_type]`, resource.resource_type);
+//       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][title]`, resource.title);
+//       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][fileName]`, resource.fileName);
+//       if (resource.file) {
+//         formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][file]`, resource.file);
+//       }
+//       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][description]`, resource.description);
+//       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][duration]`, resource.duration.toString());
+//     });
+//   });
+
+//   // Make the POST request
+//   const res = await axiosInstance.post('api/courses/add-course', formData, {
+//     headers: {
+//       'Content-Type': 'multipart/form-data',
+//     },
+//   });
+
+//   return res.data;
+// };
+
 export const newCourse = async (data: Course) => {
   const formData = new FormData();
 
@@ -35,7 +84,7 @@ export const newCourse = async (data: Course) => {
   formData.append('title', data.title);
   formData.append('level', data.level);
 
-  // Kiểm tra xem thumbnail có tệp không, nếu có thì append vào formData
+  // Append thumbnail if exists
   if (data.thumbnail) {
     formData.append('thumbnail', data.thumbnail);
   }
@@ -56,12 +105,46 @@ export const newCourse = async (data: Course) => {
     module.resources.forEach((resource: any, resourceIndex) => {
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][resource_type]`, resource.resource_type);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][title]`, resource.title);
-      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][fileName]`, resource.fileName);
-      if (resource.file) {
-        formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][file]`, resource.file);
-      }
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][description]`, resource.description);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][duration]`, resource.duration.toString());
+
+      // Use switch to handle resource type
+      switch (resource.resource_type) {
+        case 'Video':
+          formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][fileName]`, resource.fileName);
+          if (resource.file) {
+            formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][file]`, resource.file);
+          }
+          break;
+
+        case 'Question':
+          resource.questions.forEach((question: any, questionIndex: number) => {
+            // Append question text
+            formData.append(
+              `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][question]`,
+              question.question
+            );
+
+            // Append options
+            Object.keys(question.options).forEach((optionKey) => {
+              formData.append(
+                `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][options][${optionKey}]`,
+                question.options[optionKey]
+              );
+            });
+
+            // Append the correct answer
+            formData.append(
+              `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][correctAnswer]`,
+              question.correctAnswer // You need to ensure that this field is correctly mapped in your schema
+            );
+          });
+          break;
+
+        // Add other resource types here if needed
+        default:
+          break;
+      }
     });
   });
 
@@ -78,11 +161,13 @@ export const newCourse = async (data: Course) => {
 export const updateCourse = async (id: string, data: Course) => {
   const formData = new FormData();
 
+  // Append the main course data
   formData.append('learning_path_id', data?.learning_path_id || '');
   formData.append('user_id', data.user_id || '');
   formData.append('title', data.title);
   formData.append('level', data.level);
 
+  // Append thumbnail if exists
   if (data.thumbnail) {
     formData.append('thumbnail', data.thumbnail);
   }
@@ -91,35 +176,81 @@ export const updateCourse = async (id: string, data: Course) => {
   formData.append('original_price', data.original_price.toString());
   formData.append('sale_price', data.sale_price.toString());
 
+  // Append learning outcomes
   data.learning_outcomes.forEach((outcome, index) => {
     formData.append(`learning_outcomes[${index}]`, outcome);
   });
 
+  // Append modules and their resources with specific _id naming convention
   data.modules.forEach((module, moduleIndex) => {
+    console.log(module._id);
+
+    // formData.append(`modules_${moduleIndex}_id`, module?._id || '');
     formData.append(`modules[${moduleIndex}][_id]`, module?._id || '');
     formData.append(`modules[${moduleIndex}][title]`, module.title);
 
     module.resources.forEach((resource: any, resourceIndex) => {
-      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][_id]`, resource?._id || '');
+      // formData.append(`modules_${moduleIndex}_resources_${resourceIndex}_id`, resource?._id || '');
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][_id]`, resource._id || '');
 
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][resource_type]`, resource.resource_type);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][title]`, resource.title);
-      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][fileName]`, resource.fileName);
-
-      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][_id]`, resource._id);
-
-      if (resource.file) {
-        formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][file]`, resource.file);
-      }
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][description]`, resource.description);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][duration]`, resource.duration.toString());
+
+      // Handle resource type-specific fields
+      switch (resource.resource_type) {
+        case 'Video':
+          formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][fileName]`, resource.fileName);
+          formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][url]`, resource.url);
+          if (resource.file) {
+            formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][file]`, resource.file);
+          }
+          break;
+
+        case 'Question':
+          resource.questions.forEach((question: any, questionIndex: number) => {
+            
+            formData.append(
+              `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][_id]`,
+              question._id || ''
+            );
+            // Append question text
+            formData.append(
+              `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][question]`,
+              question.question
+            );
+
+            // Append options
+            Object.keys(question.options).forEach((optionKey) => {
+              formData.append(
+                `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][options][${optionKey}]`,
+                question.options[optionKey]
+              );
+            });
+
+            // Append the correct answer
+            formData.append(
+              `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][correctAnswer]`,
+              question.correctAnswer // You need to ensure that this field is correctly mapped in your schema
+            );
+          });
+
+          break;
+
+        // Add other resource types here if needed
+        default:
+          break;
+      }
     });
   });
 
+  // Make the PATCH request
   const res = await axiosInstance.patch(`api/courses/update-course/${id}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
+
   return res.data;
 };

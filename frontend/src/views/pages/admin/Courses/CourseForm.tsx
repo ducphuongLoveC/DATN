@@ -38,7 +38,7 @@ import Dialog from '@/components/Dialog';
 import documentChoose from './Resource/DocumentChoose';
 import OptionOther from './OptionOther';
 import CreateCodePractice from './Resource/CreateCodePractice';
-
+import DescriptionResource from './Resource/DescriptionResource';
 export interface Resource {
   _id?: string;
   title: string;
@@ -74,25 +74,6 @@ interface CourseFormProps {
 
 const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
   const [modules, setModules] = useState<Module[]>(datas?.modules || []);
-
-  console.log(modules);
-
-  const DescriptionResource = memo(
-    forwardRef((_, ref) => {
-      const [description, setDescription] = useState('');
-      const handleSetDes = (content: string) => {
-        setDescription(content);
-      };
-
-      const getData = () => {
-        return { description };
-      };
-      useImperativeHandle(ref, () => ({
-        getData,
-      }));
-      return <TextEditor initialValue={datas?.description || ''} onChange={handleSetDes} />;
-    })
-  );
 
   const Description = memo(
     forwardRef(({ defaultValue }: any, ref) => {
@@ -298,18 +279,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
           }}
         >
           <CardCourse
-            defaultValue={
-              dataEdit
-                ? {
-                    _id: dataEdit._id,
-                    title: dataEdit.title,
-                    resource_type: dataEdit.resource_type,
-                    url: dataEdit.url,
-                    duration: dataEdit.duration,
-                    description: dataEdit.description,
-                  }
-                : {}
-            }
+            defaultValue={dataEdit ? dataEdit : {}}
             onSubmit={(datas: {
               title: string;
               type: string;

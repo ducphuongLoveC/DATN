@@ -23,7 +23,7 @@ import PlacementToggle from '@/components/PlacementToggle';
 import Comment from './Comment';
 import Wrapper from '@/components/Wrapper';
 import TextEditor from '@/components/TextEditor';
-
+import Question from './Question';
 import { findModuleByCourseId } from '@/api/moduleApi';
 import useQueryParams from '@/hooks/useQueryParams';
 import { getAdjacentResourceId, getResource } from '@/api/Resource';
@@ -103,11 +103,6 @@ const Learning: React.FC = () => {
     queryFn: () => getResource(idResource || ''),
   });
 
-  const findNameModulesById = useQuery({
-    queryKey: ['name_module', idResource],
-    queryFn: () => getResource(idResource || ''),
-  });
-
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -149,7 +144,15 @@ const Learning: React.FC = () => {
             <ResourceSkeleton />
           ) : (
             <>
-              <ArtPlayerComponent videoUrl={resourceQuery.data.url} />
+              {(() => {
+                switch (resourceQuery.data.resource_type) {
+                  case 'Video':
+                    return <ArtPlayerComponent videoUrl={resourceQuery.data.url} />;
+
+                  case 'Question':
+                    return <Question questions={resourceQuery.data.questions} />;
+                }
+              })()}
               <Box
                 sx={{
                   marginTop: '10px',

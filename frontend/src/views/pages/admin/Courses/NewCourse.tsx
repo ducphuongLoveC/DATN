@@ -22,7 +22,7 @@ const NewCourse: React.FC = () => {
       toast.dismiss();
       toast.success('Tạo khóa học thành công');
       await sleep(2000);
-      navigate(path.admin.courses);
+      // navigate(path.admin.courses);
     },
     onError: () => {
       toast.dismiss();
