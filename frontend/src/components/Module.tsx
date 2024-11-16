@@ -8,9 +8,10 @@ import moment from 'moment';
 
 import useQueryParams from '@/hooks/useQueryParams';
 // icon
-import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import ArticleIcon from '@mui/icons-material/Article';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import QuizIcon from '@mui/icons-material/Quiz';
 interface ModuleProps {
   isCompleted?: boolean;
   isRedirect?: boolean;
@@ -69,12 +70,14 @@ const Module: React.FC<ModuleProps> = ({
             {(() => {
               switch (item.resource_type) {
                 case 'Video':
-                  return <OndemandVideoIcon sx={{ fontSize: '14px' }} />;
+                  return <PlayCircleIcon sx={{ fontSize: '15px' }} />;
+                case 'Question':
+                  return <QuizIcon sx={{ fontSize: '15px' }} />;
                 case 'Document':
-                  return <ArticleIcon sx={{ fontSize: '14px' }} />;
+                  return <ArticleIcon sx={{ fontSize: '15px' }} />;
 
                 default:
-                  return <OndemandVideoIcon sx={{ fontSize: '14px' }} />;
+                  return null;
               }
             })()}
             <Typography variant="caption" ml={1}>
@@ -82,7 +85,7 @@ const Module: React.FC<ModuleProps> = ({
             </Typography>
           </Box>
         </Box>
-        <Box>{isCompleted && <CheckCircleIcon sx={{ color: '#5db85c' }} />}</Box>
+        <Box>{isCompleted && <CheckCircleIcon sx={{ color: '#5db85c', fontSize: '18px' }} />}</Box>
       </Box>
     ));
 

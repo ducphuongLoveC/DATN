@@ -8,7 +8,10 @@ class ModuleController {
 
       const modules = await Module.aggregate([
         {
-          $match: { course_id: new mongoose.Types.ObjectId(courseId) },
+          $match: {
+            course_id: new mongoose.Types.ObjectId(courseId),
+            isActive: true, // Filter active modules
+          },
         },
         {
           $lookup: {
@@ -16,6 +19,18 @@ class ModuleController {
             localField: "_id",
             foreignField: "module_id",
             as: "resources",
+          },
+        },
+        // Filter resources that are active
+        {
+          $addFields: {
+            resources: {
+              $filter: {
+                input: "$resources",
+                as: "resource",
+                cond: { $eq: ["$$resource.isActive", true] }, // Filter resources by isActive field
+              },
+            },
           },
         },
       ]);
@@ -29,7 +44,6 @@ class ModuleController {
       next(error);
     }
   }
-
   async getAllModules(req, res) {
     try {
       const modules = await Module.find().populate("course_id");

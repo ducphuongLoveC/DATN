@@ -1,25 +1,29 @@
 import { useState, forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
-import { Box, Typography, Grid, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Box, Typography, Grid, Paper, FormControl, Select, MenuItem } from '@mui/material';
 import VideoUpload from './VideoUpload';
 import QuizCreation from './Questions';
 
+import QuizIcon from '@mui/icons-material/Quiz';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 const contentTypes = [
-  { name: 'Upload tài liệu video', resource_type: 'Video', Component: VideoUpload },
-  { name: 'Upload tài liệu question', resource_type: 'Question', Component: QuizCreation },
+  { name: 'Upload tài liệu video', resource_type: 'Video', Component: VideoUpload, icon: PlayCircleIcon },
+  { name: 'Upload tài liệu question', resource_type: 'Question', Component: QuizCreation, icon: QuizIcon },
 ];
 
 const ChooseDocument = forwardRef(({ defaultValue }: any, ref) => {
   const [selectedContent, setSelectedContent] = useState<any>(null);
+
   const videoRef = useRef<any>(null);
+
   const quizRef = useRef<any>(null);
 
   useImperativeHandle(ref, () => ({
     getData: () => {
       if (selectedContent?.resource_type === 'Video' && videoRef.current) {
-        return videoRef.current.getData();
+        return { ...videoRef.current.getData(), isActive: defaultValue?.isActive };
       }
       if (selectedContent?.resource_type === 'Question' && quizRef.current) {
-        return quizRef.current.getData();
+        return { ...quizRef.current.getData(), isActive: defaultValue?.isActive };
       }
       return null;
     },
@@ -42,12 +46,14 @@ const ChooseDocument = forwardRef(({ defaultValue }: any, ref) => {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
-            <Typography variant="h6">Chọn loại nội dung</Typography>
+            <Typography variant="h5" mb={2}>
+              Chọn loại nội dung
+            </Typography>
             <FormControl fullWidth>
-              <InputLabel>Loại nội dung</InputLabel>
               <Select value={selectedContent?.resource_type || ''} onChange={handleContentChange}>
                 {contentTypes.map((item) => (
                   <MenuItem key={item.name} value={item.resource_type}>
+                    <item.icon sx={{ mr: 1 }} />
                     {item.name}
                   </MenuItem>
                 ))}

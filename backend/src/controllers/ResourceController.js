@@ -3,21 +3,75 @@ import Course from "../models/Course.js";
 import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
 class ResourceController {
+  // async getResource(req, res, next) {
+  //   try {
+  //     const { id } = req.params;
+  //     let resource;
+
+  //     if (!id) {
+  //       resource = await Resource.findOne().sort({ _id: 1 });
+  //     } else {
+  //       resource = await Resource.findOne({ _id: id });
+  //     }
+  //     if (!resource) {
+  //       resource = await Resource.findOne().sort({ _id: 1 });
+  //     }
+
+  //     res.status(200).json(resource);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
+
   async getResource(req, res, next) {
     try {
       const { id } = req.params;
       let resource;
 
       if (!id) {
-        resource = await Resource.findOne().sort({ _id: 1 });
+        resource = await Resource.aggregate([
+          { $sort: { _id: 1 } },
+          {
+            $lookup: {
+              from: "modules",
+              localField: "module_id",
+              foreignField: "_id",
+              as: "module",
+            },
+          },
+          { $unwind: "$module" },
+        ]);
       } else {
-        resource = await Resource.findOne({ _id: id });
-      }
-      if (!resource) {
-        resource = await Resource.findOne().sort({ _id: 1 });
+        resource = await Resource.aggregate([
+          { $match: { _id: new mongoose.Types.ObjectId(id) } },
+          {
+            $lookup: {
+              from: "modules",
+              localField: "module_id",
+              foreignField: "_id",
+              as: "module",
+            },
+          },
+          { $unwind: "$module" },
+        ]);
       }
 
-      res.status(200).json(resource);
+      if (!resource || resource.length === 0) {
+        resource = await Resource.aggregate([
+          { $sort: { _id: 1 } },
+          {
+            $lookup: {
+              from: "modules",
+              localField: "module_id",
+              foreignField: "_id",
+              as: "module",
+            },
+          },
+          { $unwind: "$module" },
+        ]);
+      }
+
+      res.status(200).json(resource[0] || null);
     } catch (error) {
       next(error);
     }
@@ -112,9 +166,7 @@ class ResourceController {
     }
   }
 
-  async getNameModuleById(req, res, next) {
-    
-  }
+  async getNameModuleById(req, res, next) {}
 }
 
 export default new ResourceController();

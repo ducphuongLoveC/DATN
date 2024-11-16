@@ -39,6 +39,7 @@ const LearningList: React.FC<LearningListProps> = memo(({ onClose, modules }) =>
   return (
     <PerfectScrollbar
       style={{
+        borderLeft: `1px solid ${theme.palette.background.paper2}`,
         overflow: 'auto',
         height: '87vh',
         backgroundColor: theme.palette.background.paper,

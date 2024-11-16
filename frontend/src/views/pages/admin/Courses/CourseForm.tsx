@@ -1,4 +1,4 @@
-import { useState, forwardRef, useImperativeHandle, memo, useEffect } from 'react';
+import { useState, forwardRef, useImperativeHandle, memo, useEffect, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 
 import {
@@ -15,21 +15,22 @@ import {
   Typography,
   Button,
   TextField,
+  Switch,
 } from '@mui/material';
 
 import Tippy from '@tippyjs/react';
+import moment from 'moment';
 
 // Icons
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import DescriptionIcon from '@mui/icons-material/Description';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import TuneIcon from '@mui/icons-material/Tune';
-
 import EditIcon from '@mui/icons-material/Edit';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import moment from 'moment';
+import PublicIcon from '@mui/icons-material/Public';
+
 import CardCourse from './CardCourse';
 import TextEditor from '@/components/TextEditor';
 
@@ -39,6 +40,7 @@ import documentChoose from './Resource/DocumentChoose';
 import OptionOther from './OptionOther';
 import CreateCodePractice from './Resource/CreateCodePractice';
 import DescriptionResource from './Resource/DescriptionResource';
+
 export interface Resource {
   _id?: string;
   title: string;
@@ -47,11 +49,13 @@ export interface Resource {
   duration: number;
   description: string;
   resource_type: string;
+  isActive: boolean;
 }
 export interface Module {
   _id?: string;
   title: string;
   resources: Resource[];
+  isActive: boolean;
 }
 export interface Course {
   _id: string;
@@ -65,6 +69,8 @@ export interface Course {
   original_price: string;
   sale_price: string;
   thumbnail: File | null;
+  isActive: boolean;
+  isFree: boolean;
 }
 
 interface CourseFormProps {
@@ -73,8 +79,6 @@ interface CourseFormProps {
 }
 
 const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
-  const [modules, setModules] = useState<Module[]>(datas?.modules || []);
-
   const Description = memo(
     forwardRef(({ defaultValue }: any, ref) => {
       const [description, setDescription] = useState(datas ? datas.description : defaultValue?.description || '');
@@ -105,243 +109,216 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
     })
   );
 
-  const Row = memo(({ row, currentModuleIndex }: any) => {
-    const [open, setOpen] = useState(false);
-    const [idEdit, setIdEdit] = useState<string | null>(null);
+  const TableResource = memo(
+    forwardRef(({ Resources, resourceOpenIndexes, index }: any, ref) => {
+      const [resources, setResources] = useState<Resource[]>(Resources || []);
+      const [idResourceEdit, setIdResourceEdit] = useState<number | null>(null);
+      const [isOpenModalDocument, setIsOpenModalDocument] = useState(false);
+      const [dataEdit, setDataEdit] = useState<any>({});
 
-    const [idResourceEdit, setIdResourceEdit] = useState<number | null>(null);
-
-    const [isOpenModalDocument, setIsOpenModalDocument] = useState(false);
-
-    const [dataEdit, setDataEdit] = useState<any>({});
-
-    const {
-      control,
-      handleSubmit,
-      formState: { errors },
-      reset,
-    } = useForm<{ title: string }>({
-      defaultValues: {
-        title: '',
-      },
-    });
-
-    const toggleModalAddDocuments = () => {
-      setIsOpenModalDocument(!isOpenModalDocument);
-    };
-
-    const hanldeAddResource = (resouce: Resource) => {
-      let cloneModules: Module[] = [...modules];
-
-      cloneModules[currentModuleIndex].resources.push(resouce);
-      setModules(cloneModules);
-    };
-
-    const handleEditResource = (resource: Resource) => {
-      console.log(idResourceEdit);
-
-      if (idResourceEdit !== null) {
-        let cloneModules: Module[] = [...modules];
-
-        cloneModules[currentModuleIndex].resources[idResourceEdit] = resource;
-
-        setModules(cloneModules);
-        setIdResourceEdit(null);
-        setDataEdit(null);
-      }
-    };
-
-    const handleDeleteResource = (indexResource: number) => {
-      if (confirm(`Xác nhận xóa tài liệu "${modules[currentModuleIndex].resources[indexResource].title}" ?`)) {
-        let cloneModules: Module[] = [...modules];
-
-        cloneModules[currentModuleIndex].resources = cloneModules[currentModuleIndex].resources.filter(
-          (_, i: number) => i != indexResource
-        );
-
-        setModules(cloneModules);
-      }
-    };
-
-    const handleDeleteModules = (index: string | number) => {
-      if (confirm('Bạn có muốn xóa chương này không?')) {
-        let cloneModules: Module[] = [...modules];
-        const removedModule = cloneModules.filter((_, indexModule) => indexModule != index);
-        setModules(removedModule);
-      }
-    };
-
-    const handleEditTitleModule = (title: string) => {
-      let cloneModules: Module[] = [...modules];
-      cloneModules[currentModuleIndex].title = title;
-      setModules(cloneModules);
-    };
-
-    const onSubmit = (data: { title: string }) => {
-      handleEditTitleModule(data.title);
-    };
-    return (
-      <>
-        <TableRow sx={{ boxShadow: 'var(--main-box-shadow)' }}>
-          <TableCell>
-            <IconButton size="small" onClick={() => setOpen(!open)}>
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
-          </TableCell>
-          <TableCell>{row.title}</TableCell>
-          <TableCell align="right">{row.resources.length}</TableCell>
-          <TableCell align="right">
-            {moment.utc(row.resources.reduce((acc: number, c: any) => acc + c.duration, 0) * 1000).format('HH:mm:ss')}
-          </TableCell>
-          <TableCell align="right">
-            <Tippy arrow content="Sửa">
-              <Button
-                onClick={() => {
-                  setIdEdit(currentModuleIndex);
-                  reset({
-                    title: row.title,
-                  });
-                }}
-              >
-                <EditIcon />
-              </Button>
-            </Tippy>
-          </TableCell>
-          <TableCell align="right">
-            <Button onClick={() => handleDeleteModules(currentModuleIndex)}>
-              <DeleteOutlineIcon sx={{ color: 'red' }} />
-            </Button>
-          </TableCell>
-        </TableRow>
-
-        <TableRow>
-          <TableCell colSpan={7} style={{ paddingBottom: 0, paddingTop: 0 }}>
-            <Collapse in={open} timeout={0} unmountOnExit>
-              <Box sx={{ margin: 1 }}>
-                <Typography variant="h6" gutterBottom component="div">
-                  Các tài liệu con
-                </Typography>
-                <Table size="small" aria-label="resource">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Tên nội dung</TableCell>
-                      <TableCell>Loại</TableCell>
-                      <TableCell>Mô tả</TableCell>
-                      <TableCell align="right">Thời gian</TableCell>
-                      <TableCell align="right" colSpan={2}>
-                        Hành động
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {row.resources.map((resource: Resource, index: number) => (
-                      <TableRow key={index}>
-                        <TableCell>{resource.title}</TableCell>
-                        <TableCell>{resource.resource_type}</TableCell>
-                        <TableCell>{resource.description}</TableCell>
-                        <TableCell align="right">{moment.utc(resource.duration * 1000).format('mm:ss')}</TableCell>
-
-                        <TableCell align="right">
-                          <Tippy arrow content="Sửa">
-                            <Button
-                              onClick={() => {
-                                toggleModalAddDocuments();
-                                setDataEdit(resource);
-                                setIdResourceEdit(index);
-                              }}
-                            >
-                              <EditIcon />
-                            </Button>
-                          </Tippy>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Button onClick={() => handleDeleteResource(index)}>
-                            <DeleteOutlineIcon sx={{ color: 'red' }} />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <Button onClick={toggleModalAddDocuments}>Thêm tài liệu</Button>
-              </Box>
-            </Collapse>
-          </TableCell>
-        </TableRow>
-
-        <Dialog
-          title={`Thêm tài liệu thứ ${row.resources.length + 1} cho chương '${row.title}'`}
-          open={isOpenModalDocument}
-          onClose={() => {
-            toggleModalAddDocuments();
-            setIdResourceEdit(null);
-            setDataEdit(null);
-          }}
-        >
-          <CardCourse
-            defaultValue={dataEdit ? dataEdit : {}}
-            onSubmit={(datas: {
-              title: string;
-              type: string;
-              url: string;
-              duration: number;
-              description: string;
-              resource_type: string;
-            }) => (dataEdit && Object.keys(dataEdit).length > 0 ? handleEditResource(datas) : hanldeAddResource(datas))}
-            widthIconImage="50px"
-            labels={['Tài liệu', 'Mô tả', 'Bài thực hành']}
-            contents={[documentChoose, DescriptionResource, CreateCodePractice]}
-          />
-        </Dialog>
-        <Dialog open={Boolean(idEdit !== null)} onClose={() => setIdEdit(null)} title={`Edit chương ${row.title}`}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Controller
-              name="title"
-              control={control}
-              rules={{ required: 'name is required' }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  placeholder="Nhập tên chương mới"
-                  fullWidth
-                  error={!!errors.title}
-                  helperText={errors.title ? errors.title.message : ''}
-                />
-              )}
-            />
-
-            <Button type="submit" variant="outlined" sx={{ mt: 2 }}>
-              Sửa chương
-            </Button>
-          </form>
-        </Dialog>
-      </>
-    );
-  });
-
-  const TableModule = memo(
-    forwardRef((_, ref) => {
-      const [openModalTitle, setOpenModalTitle] = useState(false);
-      const [newModuleTitle, setNewModuleTitle] = useState('');
-
-      const getData = () => {
-        return { modules };
+      // Handle resource actions
+      const handleAddResource = (resource: Resource) => {
+        setResources((prev) => [...prev, { ...resource, isActive: true }]);
+        setIsOpenModalDocument(false);
       };
 
-      useImperativeHandle(ref, () => ({
-        getData,
-      }));
+      const handleEditResource = (resource: Resource) => {
+        console.log(resource);
 
+        if (idResourceEdit !== null) {
+          const updatedResources = [...resources];
+          updatedResources[idResourceEdit] = resource;
+          setResources(updatedResources);
+          resetEditState();
+        }
+      };
+
+      const handleDeleteResource = (index: number) => {
+        if (confirm('Xác nhận xóa tài liệu')) {
+          const updatedResources = resources.filter((_, idx) => idx !== index);
+          setResources(updatedResources);
+        }
+      };
+
+      const handleToggleActiveResource = (index: number, checked: boolean) => {
+        const updatedResources = [...resources];
+        updatedResources[index].isActive = checked;
+        setResources(updatedResources);
+      };
+
+      const toggleModalAddDocuments = () => {
+        setIsOpenModalDocument((prev) => !prev);
+      };
+
+      const resetEditState = () => {
+        setIdResourceEdit(null);
+        setDataEdit({});
+        setIsOpenModalDocument(false);
+      };
+
+      // Expose getData to parent via ref
+      const getData = () => {
+        return resources;
+      };
+
+      useImperativeHandle(ref, () => ({ getData }));
+
+      return (
+        <>
+          <TableRow>
+            <TableCell colSpan={7} style={{ paddingBottom: 0, paddingTop: 0 }}>
+              <Collapse in={resourceOpenIndexes.includes(index)} timeout={300} unmountOnExit>
+                <Box sx={{ margin: 1 }}>
+                  <Typography variant="h6" gutterBottom component="div">
+                    Các tài liệu con
+                  </Typography>
+                  <Table size="small" aria-label="resource">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Tên nội dung</TableCell>
+                        <TableCell>Loại</TableCell>
+                        <TableCell>Mô tả</TableCell>
+                        <TableCell align="right">Thời gian</TableCell>
+                        <TableCell align="right">Công khai</TableCell>
+                        <TableCell align="right" colSpan={2}>
+                          Hành động
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {resources.map((resource, idx) => (
+                        <TableRow key={resource.title}>
+                          <TableCell>{resource.title}</TableCell>
+                          <TableCell>{resource.resource_type}</TableCell>
+                          <TableCell>{resource.description}</TableCell>
+                          <TableCell align="right">{moment.utc(resource.duration * 1000).format('mm:ss')}</TableCell>
+                          <TableCell align="right">
+                            <Switch
+                              onChange={(e) => handleToggleActiveResource(idx, e.target.checked)}
+                              checked={resource.isActive}
+                            />
+                          </TableCell>
+                          <TableCell align="right">
+                            <Tippy arrow content="Sửa">
+                              <Button
+                                onClick={() => {
+                                  toggleModalAddDocuments();
+                                  setDataEdit(resource);
+                                  setIdResourceEdit(idx);
+                                }}
+                              >
+                                <EditIcon />
+                              </Button>
+                            </Tippy>
+                            <Button onClick={() => handleDeleteResource(idx)}>
+                              <DeleteOutlineIcon sx={{ color: 'red' }} />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  <Button onClick={toggleModalAddDocuments}>Thêm tài liệu</Button>
+                </Box>
+              </Collapse>
+            </TableCell>
+          </TableRow>
+
+          {/* Modal for adding/editing resource */}
+          <Dialog
+            title={`Thêm tài liệu thứ ${resources.length + 1}`}
+            open={isOpenModalDocument}
+            onClose={() => {
+              toggleModalAddDocuments();
+              resetEditState();
+            }}
+          >
+            <CardCourse
+              isImage={false}
+              defaultValue={dataEdit || {}}
+              onSubmit={(data: any) =>
+                dataEdit && Object.keys(dataEdit).length > 0 ? handleEditResource(data) : handleAddResource(data)
+              }
+              widthIconImage="50px"
+              labels={['Tài liệu', 'Mô tả', 'Bài thực hành']}
+              contents={[documentChoose, DescriptionResource, CreateCodePractice]}
+            />
+          </Dialog>
+        </>
+      );
+    })
+  );
+
+  const TableModule = memo(
+    forwardRef(({ defaultValue }: any, ref) => {
+      const [resourceOpenIndexes, setResourceOpenIndexes] = useState<number[]>([]);
+      const [modules, setModules] = useState<Module[]>(defaultValue?.modules || []);
+      const [saveOrUpdateModule, setSaveOrUpdateModule] = useState<any>({});
+      console.log(defaultValue);
+      console.log(modules);
+
+      // Create a ref array to handle multiple TableResource refs
+      const refResources = useRef<any[]>([]); // Initialize as an array
+
+      const {
+        control,
+        handleSubmit,
+        formState: { errors },
+        reset,
+      } = useForm<{ title: string }>({
+        defaultValues: { title: '' },
+      });
+
+      const getData = () => {
+        const resources = refResources.current.map((r: any) => r?.getData());
+        const updatedModules = modules.map((module, index) => ({
+          ...module,
+          resources: resources[index] || [],
+        }));
+        return { modules: updatedModules };
+      };
+
+      useImperativeHandle(ref, () => ({ getData }));
+
+      // Handle module actions
       const handleAddModule = (title: string) => {
-        setModules((prevModules) => [
-          ...prevModules,
-          {
-            title: title,
-            resources: [],
-          },
-        ]);
-        setNewModuleTitle('');
-        setOpenModalTitle(false);
+        setModules((prev) => [...prev, { title, resources: [], isActive: true }]);
+      };
+
+      const handleEditTitleModule = (index: number, title: string) => {
+        const updatedModules = [...modules];
+        updatedModules[index].title = title;
+        setModules(updatedModules);
+      };
+
+      const handleToggleActiveModule = (index: number, checked: boolean) => {
+        const updatedModules = [...modules];
+        updatedModules[index].isActive = checked;
+        setModules(updatedModules);
+      };
+
+      const handleDeleteModules = (index: number) => {
+        if (confirm('Bạn có muốn xóa chương này không?')) {
+          const updatedModules = modules.filter((_, idx) => idx !== index);
+          setModules(updatedModules);
+        }
+      };
+
+      const handleTogglerResouceOpenIndex = (index: number) => {
+        const updatedIndexes = resourceOpenIndexes.includes(index)
+          ? resourceOpenIndexes.filter((idx) => idx !== index)
+          : [...resourceOpenIndexes, index];
+        setResourceOpenIndexes(updatedIndexes);
+      };
+
+      const onSubmit = (data: { title: string }) => {
+        if (saveOrUpdateModule.type === 'update') {
+          handleEditTitleModule(saveOrUpdateModule.index, data.title);
+        }
+        if (saveOrUpdateModule.type === 'add') {
+          handleAddModule(data.title);
+        }
+        setSaveOrUpdateModule({});
       };
 
       return (
@@ -351,54 +328,107 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
               <TableRow>
                 <TableCell />
                 <TableCell>
-                  Tiêu đề
-                  <ListAltIcon />{' '}
+                  Tiêu đề <ListAltIcon />
                 </TableCell>
                 <TableCell align="right">
-                  bài học con <DescriptionIcon />
+                  Bài học con <></>
                 </TableCell>
                 <TableCell align="right">
-                  Tổng thời lượng <AccessTimeIcon />
+                  Tổng thời gian <AccessTimeIcon />{' '}
+                </TableCell>
+                <TableCell align="right">
+                  Công khai <PublicIcon />
                 </TableCell>
                 <TableCell align="right" colSpan={2}>
-                  Hành động
-                  <TuneIcon />
+                  Hành động <TuneIcon />
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {modules.map((module: Module, index: number) => (
-                <Row key={index} row={module} currentModuleIndex={index} />
+              {modules.map((module, index) => (
+                <>
+                  <TableRow sx={{ boxShadow: 'var(--main-box-shadow)' }}>
+                    <TableCell>
+                      <IconButton size="small" onClick={() => handleTogglerResouceOpenIndex(index)}>
+                        {resourceOpenIndexes.includes(index) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>{module.title}</TableCell>
+                    <TableCell align="right">{module.resources.length}</TableCell>
+                    <TableCell align="right">
+                      {moment
+                        .utc(module.resources.reduce((acc: number, resource: any) => acc + resource.duration, 0) * 1000)
+                        .format('mm:ss')}
+                    </TableCell>
+                    <TableCell align="right">
+                      <Switch
+                        checked={module.isActive}
+                        onChange={(e) => handleToggleActiveModule(index, e.target.checked)}
+                      />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Tippy content="Sửa tiêu đề">
+                        <Button
+                          onClick={() => {
+                            setSaveOrUpdateModule({ index, type: 'update' });
+                            reset({ title: module.title });
+                          }}
+                        >
+                          <EditIcon />
+                        </Button>
+                      </Tippy>
+                      <Button onClick={() => handleDeleteModules(index)}>
+                        <DeleteOutlineIcon sx={{ color: 'red' }} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableResource
+                    Resources={module.resources}
+                    index={index}
+                    resourceOpenIndexes={resourceOpenIndexes}
+                    ref={(el: any) => (refResources.current[index] = el)}
+                  />
+                </>
               ))}
             </TableBody>
           </Table>
-          <Button onClick={() => setOpenModalTitle(true)} sx={{ mt: 2 }}>
-            Thêm chương
-          </Button>
-          <Dialog open={openModalTitle} onClose={() => setOpenModalTitle(false)} title="Thêm chương">
-            <Box sx={{ p: 3 }}>
-              <TextField
-                value={newModuleTitle}
-                onChange={(e) => setNewModuleTitle(e.target.value)}
-                placeholder="Nhập tiêu đề chương"
-                variant="outlined"
-                fullWidth
-                margin="normal"
+
+          <Dialog
+            open={Object.keys(saveOrUpdateModule).length > 0}
+            onClose={() => {
+              setSaveOrUpdateModule({});
+              reset({ title: '' });
+            }}
+            title={saveOrUpdateModule?.type === 'update' ? 'Sửa chương' : 'Thêm chương'}
+          >
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Controller
+                name="title"
+                control={control}
+                rules={{ required: 'Nhập tên chương' }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    placeholder="Nhập tên chương"
+                    fullWidth
+                    error={!!errors.title}
+                    helperText={errors.title ? errors.title.message : ''}
+                  />
+                )}
               />
-              <Button
-                onClick={() => handleAddModule(newModuleTitle)}
-                disabled={!newModuleTitle}
-                variant="outlined"
-                fullWidth
-              >
-                Thêm
+
+              <Button type="submit" variant="outlined" sx={{ mt: 2 }}>
+                {saveOrUpdateModule?.type === 'update' ? 'Sửa chương' : 'Thêm chương'}
               </Button>
-            </Box>
+            </form>
           </Dialog>
+
+          <Button onClick={() => setSaveOrUpdateModule({ type: 'add' })}>Thêm chương</Button>
         </TableContainer>
       );
     })
   );
+
   const Options = memo(
     forwardRef(({ defaultValue }: any, ref) => {
       const [optionData, setOptionData] = useState({});
@@ -419,6 +449,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
             sale_price: parseInt(datas?.sale_price || defaultValue?.sale_price || '0'),
             learning_outcomes: datas?.learning_outcomes || defaultValue?.learning_outcomes || [],
             level: datas?.level || defaultValue?.level || 'easy',
+            isFree: datas?.isFree || defaultValue?.isFree || true,
           }}
         />
       );
@@ -428,20 +459,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
   return (
     <Box>
       <CardCourse
-        defaultValue={
-          datas
-            ? {
-                title: datas?.title,
-                thumbnail: datas?.thumbnail,
-                description: datas?.description,
-                modules: datas?.modules,
-                level: datas?.level,
-                original_price: datas?.original_price,
-                sale_price: datas?.sale_price,
-                learning_outcomes: datas?.learning_outcomes,
-              }
-            : {}
-        }
+        defaultValue={datas ? datas : {}}
         onSubmit={onSubmit}
         labels={['Chương học', 'Mô tả', 'Tùy chỉnh']}
         contents={[TableModule, Description, Options]}

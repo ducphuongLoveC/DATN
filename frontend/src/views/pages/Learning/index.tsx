@@ -72,6 +72,9 @@ const LessonNavigation = styled(Box)(({ theme }) => ({
 }));
 
 const ButtonStyle = styled(Button)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   color: theme.palette.text.primary,
   padding: '4px 30px',
   borderRadius: '20px',
@@ -147,7 +150,7 @@ const Learning: React.FC = () => {
               {(() => {
                 switch (resourceQuery.data.resource_type) {
                   case 'Video':
-                    return <ArtPlayerComponent videoUrl={resourceQuery.data.url} />;
+                    return <ArtPlayerComponent videoUrl={resourceQuery.data.url}  />;
 
                   case 'Question':
                     return <Question questions={resourceQuery.data.questions} />;
@@ -253,7 +256,7 @@ const Learning: React.FC = () => {
           <Box>
             <ButtonStyle onClick={() => handleAdjacentResourceId('previous')}>
               <Typography mr={1} variant="h4">
-                <ArrowBackIosNewIcon sx={{ fontSize: '25px' }} />
+                <ArrowBackIosNewIcon sx={{ fontSize: '20px' }} />
                 BÀI TRƯỚC
               </Typography>
             </ButtonStyle>
@@ -262,16 +265,16 @@ const Learning: React.FC = () => {
             <ButtonStyle onClick={() => handleAdjacentResourceId('next')} sx={{ background: 'var(--color-primary)' }}>
               <Typography mr={1} variant="h4" color="white">
                 BÀI TIẾP THEO
-                <ArrowForwardIosIcon />
+                <ArrowForwardIosIcon sx={{ fontSize: '20px' }} />
               </Typography>
             </ButtonStyle>
           </Box>
         </Box>
 
-        <Button sx={{ color: theme.palette.text.primary }} onClick={toggleLearningList}>
+        <Button sx={{ color: theme.palette.text.primary, height: '50px' }} onClick={toggleLearningList}>
           <Hidden mdDown>
             <Typography mr={1} variant="h4">
-              Biến và kiểu dữ liệu
+              {!resourceQuery.isLoading && resourceQuery.data.module.title}
             </Typography>
           </Hidden>
           {isLearningPlayList ? (

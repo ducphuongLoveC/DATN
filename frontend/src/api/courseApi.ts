@@ -1,5 +1,5 @@
 import axiosInstance from './axiosInstance';
-import { Course } from '@/views/pages/admin/Courses/CourseForm';
+import { Course } from '../views/pages/admin/Courses/CourseForm';
 
 export const getCourseList = async () => {
   const res = await axiosInstance.get('api/courses/modules-resources');
@@ -99,14 +99,16 @@ export const newCourse = async (data: Course) => {
   });
 
   // Append modules and their resources
-  data.modules.forEach((module, moduleIndex) => {
+  data.modules.forEach((module: any, moduleIndex) => {
     formData.append(`modules[${moduleIndex}][title]`, module.title);
+    formData.append(`modules[${moduleIndex}][isActive]`, module.isActive);
 
-    module.resources.forEach((resource: any, resourceIndex) => {
+    module.resources.forEach((resource: any, resourceIndex: number) => {
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][resource_type]`, resource.resource_type);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][title]`, resource.title);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][description]`, resource.description);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][duration]`, resource.duration.toString());
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][isActive]`, resource.isActive);
 
       // Use switch to handle resource type
       switch (resource.resource_type) {
@@ -138,6 +140,10 @@ export const newCourse = async (data: Course) => {
               `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][correctAnswer]`,
               question.correctAnswer // You need to ensure that this field is correctly mapped in your schema
             );
+            formData.append(
+              `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][hint]`,
+              question.hint
+            );
           });
           break;
 
@@ -157,7 +163,6 @@ export const newCourse = async (data: Course) => {
 
   return res.data;
 };
-
 export const updateCourse = async (id: string, data: Course) => {
   const formData = new FormData();
 
@@ -175,6 +180,7 @@ export const updateCourse = async (id: string, data: Course) => {
   formData.append('description', data.description);
   formData.append('original_price', data.original_price.toString());
   formData.append('sale_price', data.sale_price.toString());
+  formData.append('isFree', data.isFree ? 'true' : 'false');
 
   // Append learning outcomes
   data.learning_outcomes.forEach((outcome, index) => {
@@ -182,14 +188,15 @@ export const updateCourse = async (id: string, data: Course) => {
   });
 
   // Append modules and their resources with specific _id naming convention
-  data.modules.forEach((module, moduleIndex) => {
+  data.modules.forEach((module: any, moduleIndex) => {
     console.log(module._id);
 
     // formData.append(`modules_${moduleIndex}_id`, module?._id || '');
     formData.append(`modules[${moduleIndex}][_id]`, module?._id || '');
     formData.append(`modules[${moduleIndex}][title]`, module.title);
+    formData.append(`modules[${moduleIndex}][isActive]`, module.isActive);
 
-    module.resources.forEach((resource: any, resourceIndex) => {
+    module.resources.forEach((resource: any, resourceIndex: number) => {
       // formData.append(`modules_${moduleIndex}_resources_${resourceIndex}_id`, resource?._id || '');
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][_id]`, resource._id || '');
 
@@ -197,6 +204,7 @@ export const updateCourse = async (id: string, data: Course) => {
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][title]`, resource.title);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][description]`, resource.description);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][duration]`, resource.duration.toString());
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][isActive]`, resource.isActive);
 
       // Handle resource type-specific fields
       switch (resource.resource_type) {
@@ -210,7 +218,6 @@ export const updateCourse = async (id: string, data: Course) => {
 
         case 'Question':
           resource.questions.forEach((question: any, questionIndex: number) => {
-            
             formData.append(
               `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][_id]`,
               question._id || ''
@@ -233,6 +240,10 @@ export const updateCourse = async (id: string, data: Course) => {
             formData.append(
               `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][correctAnswer]`,
               question.correctAnswer // You need to ensure that this field is correctly mapped in your schema
+            );
+            formData.append(
+              `modules[${moduleIndex}][resources][${resourceIndex}][questions][${questionIndex}][hint]`,
+              question.hint
             );
           });
 

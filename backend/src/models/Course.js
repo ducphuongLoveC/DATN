@@ -42,13 +42,20 @@ const courseSchema = new mongoose.Schema(
 
     original_price: {
       type: Number,
-      required: [true, "original_price is required"],
-      min: 1,
+      // required: [true, "original_price is required"],
+      // min: 1,
     },
     sale_price: {
       type: Number,
-      required: [true, "sale_price is required"],
-      min: 1,
+      // required: [true, "sale_price is required"],
+      // min: 1,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    isFree: {
+      type: Boolean,
     },
   },
   {

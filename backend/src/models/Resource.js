@@ -117,6 +117,9 @@ const resourceSchema = new mongoose.Schema(
           of: String,
           required: [true, "Options are required"],
         },
+        hint: {
+          type: String,
+        },
       },
     ],
 
@@ -124,7 +127,6 @@ const resourceSchema = new mongoose.Schema(
       type: String,
       maxlength: 25000,
     },
-
     isActive: {
       type: Boolean,
       default: true,

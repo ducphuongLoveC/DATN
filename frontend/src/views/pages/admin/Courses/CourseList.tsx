@@ -53,7 +53,7 @@ const CourseList: React.FC = () => {
                       <Typography
                         variant="body1"
                         dangerouslySetInnerHTML={{
-                          __html: _.truncate(course.description || '   ', { length: 100, omission: '...' }),
+                          __html: _.truncate(course?.description || '   ', { length: 100, omission: '...' }),
                         }}
                       />
                     </Grid>

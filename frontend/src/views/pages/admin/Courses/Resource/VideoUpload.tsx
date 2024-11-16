@@ -27,7 +27,7 @@ const VideoUpload = forwardRef(({ defaultValue }: any, ref) => {
         const videoElement = document.createElement('video');
         videoElement.src = reader.result as string;
         videoElement.onloadedmetadata = () => {
-            setVideoSrc(videoElement.src)
+          setVideoSrc(videoElement.src);
           setFormData((prev: any) => ({
             ...prev,
             file: file,

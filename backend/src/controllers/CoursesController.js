@@ -534,9 +534,9 @@ class CoursesController {
               case "Question":
                 const questions = resource.questions.map((question) => ({
                   question: question.question,
-
                   options: new Map(Object.entries(question.options)),
                   correctAnswer: question.correctAnswer,
+                  hint: question.hint,
                 }));
 
                 const newQuestionResource = new Resource({
@@ -546,6 +546,7 @@ class CoursesController {
                   questions: questions,
                   duration: resource.duration,
                   description: resource.description,
+                  isActive: resource.isActive,
                 });
 
                 await newQuestionResource.save();
@@ -824,6 +825,18 @@ class CoursesController {
 
       console.log("445", req.files);
 
+      const thumbnailFile = req.files.find(
+        (file) => file.fieldname === "thumbnail"
+      );
+      console.log("-----------------", thumbnailFile);
+
+      let uploadedThumbnail;
+      if (thumbnailFile) {
+        uploadedThumbnail = await cloudinary.v2.uploader.upload(
+          thumbnailFile.path
+        );
+      }
+
       const updatedCourse = await Course.findByIdAndUpdate(
         courseId,
         {
@@ -832,13 +845,22 @@ class CoursesController {
           learning_outcomes: Array.isArray(learning_outcomes)
             ? learning_outcomes
             : [learning_outcomes],
-          thumbnail: thumbnail || "default-thumbnail.jpg",
+          thumbnail: uploadedThumbnail
+            ? uploadedThumbnail.secure_url
+            : thumbnail,
           description,
           original_price,
           sale_price,
         },
         { new: true, runValidators: true }
       );
+
+      if (thumbnailFile) {
+        fs.unlink(thumbnailFile.path, (err) => {
+          if (err) console.error("Error deleting temp file:", err);
+          else console.log("Temp file deleted");
+        });
+      }
 
       if (!updatedCourse) {
         return res.status(404).json({
@@ -865,7 +887,7 @@ class CoursesController {
             // Update existing module
             await Module.findByIdAndUpdate(
               module._id,
-              { title: module.title },
+              { title: module.title, isActive: module.isActive },
               { new: true, runValidators: true }
             );
 
@@ -876,8 +898,6 @@ class CoursesController {
 
             // Process each resource
             for (const resource of module.resources) {
-              console.log("hereee", resource);
-
               if (resource._id && resource._id.trim() !== "") {
                 // Update existing resource
                 let updateData = {};
@@ -896,6 +916,7 @@ class CoursesController {
                     description: resource.description,
                     duration: resource.duration,
                     url: uploadedFile.secure_url,
+                    isActive: resource.isActive,
                   };
 
                   // clear video
@@ -920,6 +941,7 @@ class CoursesController {
                       question: question.question,
                       options: new Map(Object.entries(question.options)),
                       correctAnswer: question.correctAnswer,
+                      hint: question.hint,
                     }));
 
                     updateData = {
@@ -934,7 +956,7 @@ class CoursesController {
                 // Update the resource
                 await Resource.findByIdAndUpdate(
                   resource._id,
-                  { ...updateData },
+                  { ...updateData, isActive: resource.isActive },
                   { new: true, runValidators: true }
                 );
               } else {
@@ -970,14 +992,17 @@ class CoursesController {
                   newData = {
                     ...restOfResource,
                     module_id: module._id,
-                    url: uploadedFile ? uploadedFile.secure_url : resource.url,
+                    url: uploadedFile
+                      ? uploadedFile.secure_url
+                      : restOfResource.url,
+                    isActive: restOfResource.isActive,
                   };
                 } else if (resource.resource_type == "Question") {
                   const questions = resource.questions.map((question) => ({
                     question: question.question,
-
                     options: new Map(Object.entries(question.options)),
                     correctAnswer: question.correctAnswer,
+                    hint: question.hint,
                   }));
 
                   newData = {
@@ -987,6 +1012,7 @@ class CoursesController {
                     questions: questions,
                     duration: resource.duration,
                     description: resource.description,
+                    isActive: resource.isActive,
                   };
                 }
 
@@ -1018,6 +1044,7 @@ class CoursesController {
           const newModule = new Module({
             title: module.title,
             course_id: courseId,
+            isActive: module.isActive,
           });
           const savedModule = await newModule.save();
 
@@ -1051,13 +1078,14 @@ class CoursesController {
                 ...restOfResource,
                 module_id: savedModule._id,
                 url: uploadedFile ? uploadedFile.secure_url : resource.url,
+                isActive: resource.isActive,
               };
             } else if (resource.resource_type == "Question") {
               const questions = resource.questions.map((question) => ({
                 question: question.question,
-
                 options: new Map(Object.entries(question.options)),
                 correctAnswer: question.correctAnswer,
+                hint: question.hint,
               }));
 
               newData = {
@@ -1067,6 +1095,7 @@ class CoursesController {
                 questions: questions,
                 duration: resource.duration,
                 description: resource.description,
+                isActive: resource.isActive,
               };
             }
 

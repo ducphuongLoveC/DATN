@@ -10,16 +10,19 @@ interface Quiz {
   question: string;
   options: { A: string; B: string; C: string; D: string };
   correctAnswer: string;
+  hint: string;
 }
 
 const QuizCreation: React.FC = forwardRef(({ defaultValue }: any, ref) => {
-
   console.log(defaultValue);
-  
+
   const [quizzes, setQuizzes] = useState<Quiz[]>(defaultValue?.questions || []);
+
   const [currentQuizIndex, setCurrentQuizIndex] = useState<number>(0);
 
-  const { control, reset, getValues, setValue } = useForm<Quiz>({});
+  const { control, reset, getValues, setValue } = useForm<Quiz>({
+    defaultValues: {},
+  });
 
   const handleQuestion = () => {
     const cloneQuizzes = [...quizzes];
@@ -148,6 +151,14 @@ const QuizCreation: React.FC = forwardRef(({ defaultValue }: any, ref) => {
               <MenuItem value="D">D</MenuItem>
             </Select>
           </FormControl>
+        )}
+      />
+      <Controller
+        name="hint"
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <TextField {...field} fullWidth label="Gợi í khi người dùng trả lời sai" variant="outlined" margin="normal" />
         )}
       />
       <Box>

@@ -8,16 +8,15 @@ import { useNavigate } from 'react-router-dom';
 import path from '@/constants/routes';
 import HeaderTitle from '../Title';
 import sleep from '@/utils/sleep';
+import Loading from '@/ui-component/Loading';
 
 const NewCourse: React.FC = () => {
   const navigate = useNavigate();
 
-  const mutationCourse = useMutation({
+  const mutation = useMutation({
     mutationKey: ['courses'],
     mutationFn: newCourse,
-    onMutate: () => {
-      toast.loading('Đang tạo khóa học...');
-    },
+
     onSuccess: async () => {
       toast.dismiss();
       toast.success('Tạo khóa học thành công');
@@ -32,7 +31,7 @@ const NewCourse: React.FC = () => {
 
   const handleNewCourse = async (course: Course) => {
     console.log(course);
-    mutationCourse.mutate(course);
+    mutation.mutate(course);
   };
 
   return (
@@ -44,6 +43,7 @@ const NewCourse: React.FC = () => {
         link={path.admin.courses}
       />
       <CourseForm onSubmit={handleNewCourse} />
+      {mutation.isPending && <Loading />}
       <ToastContainer />
     </>
   );
