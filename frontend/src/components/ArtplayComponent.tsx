@@ -112,7 +112,7 @@ left: '50%',
             Cảnh báo
           </Typography>
           <Typography sx={{ mt: 2 }}>
-            Bạn đang học nhanh hơn bình thường, vui lòng không tua quá nhiều khi học!
+            Bạn đang học nhanh hơn bình thường, vui lòng không tua quá nhiều khi học!!
           </Typography>
           <Button
             variant="contained"
