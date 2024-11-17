@@ -1,7 +1,12 @@
 import clsx from 'clsx';
 import s from './Profile.module.scss';
-
+import 'js-cookie';
+import { Cookie } from '@mui/icons-material';
+import Cookies from 'js-cookie';
 const Profile: React.FC = () => {
+
+  const user = JSON.parse(Cookies.get('user') || "");
+
   return (
     <div className="container">
       <div className="main-body">
@@ -26,13 +31,13 @@ const Profile: React.FC = () => {
               <div className={clsx(s['card-body-user'])}>
                 <div className="d-flex flex-column align-items-center text-center">
                   <img
-                    src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474014bom/anh-gai-xinh-cute-de-thuong-hot-girl-2.jpg"
+                    src={user.profile_picture}
                     alt="Admin"
                     className={clsx(s['rounded-circle'])}
                     width={150}
                   />
                   <div className="mt-3">
-                    <h4>Làm mờ con mắt</h4>
+                    <h4>{user.role}</h4>
                     <p className="mb-1">Quản trị viên</p>
                   </div>
                 </div>
@@ -154,7 +159,7 @@ const Profile: React.FC = () => {
                   <div className="col-sm-3">
                     <h6 className="mb-10">Họ và tên:</h6>
                   </div>
-                  <div className="col-sm-9">Saitama</div>
+                  <div className="col-sm-9">{user.name}</div>
                 </div>
 
                 <hr />
@@ -163,7 +168,7 @@ const Profile: React.FC = () => {
                     <h6 className="mb-10">Email:</h6>
                   </div>
                   <div className="col-sm-9">
-                    adminFecth@gmail.com
+                    {user.email}
                   </div>
                 </div>
                 <hr />
