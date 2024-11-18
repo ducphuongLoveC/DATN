@@ -38,7 +38,7 @@ import TextEditor from '@/components/TextEditor';
 import Dialog from '@/components/Dialog';
 import documentChoose from './Resource/DocumentChoose';
 import OptionOther from './OptionOther';
-import CreateCodePractice from './Resource/CreateCodePractice';
+
 import DescriptionResource from './Resource/DescriptionResource';
 
 export interface Resource {
@@ -240,8 +240,8 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
                 dataEdit && Object.keys(dataEdit).length > 0 ? handleEditResource(data) : handleAddResource(data)
               }
               widthIconImage="50px"
-              labels={['Tài liệu', 'Mô tả', 'Bài thực hành']}
-              contents={[documentChoose, DescriptionResource, CreateCodePractice]}
+              labels={['Tài liệu', 'Mô tả']}
+              contents={[documentChoose, DescriptionResource]}
             />
           </Dialog>
         </>
@@ -254,8 +254,6 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
       const [resourceOpenIndexes, setResourceOpenIndexes] = useState<number[]>([]);
       const [modules, setModules] = useState<Module[]>(defaultValue?.modules || []);
       const [saveOrUpdateModule, setSaveOrUpdateModule] = useState<any>({});
-      console.log(defaultValue);
-      console.log(modules);
 
       // Create a ref array to handle multiple TableResource refs
       const refResources = useRef<any[]>([]); // Initialize as an array
@@ -275,6 +273,8 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
           ...module,
           resources: resources[index] || [],
         }));
+        console.log(modules);
+
         return { modules: updatedModules };
       };
 
@@ -429,40 +429,13 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
     })
   );
 
-  const Options = memo(
-    forwardRef(({ defaultValue }: any, ref) => {
-      const [optionData, setOptionData] = useState({});
-
-      const getData = () => ({ ...optionData });
-
-      useImperativeHandle(ref, () => ({
-        getData,
-      }));
-
-      return (
-        <OptionOther
-          onChange={(datasFromOther) => setOptionData(datasFromOther)}
-          defaultValues={{
-            learning_path_id: '6521438fd3f1e2a1a1a0b1c1',
-            user_id: '6521438fd3f1e2a1a1a0b1d1',
-            original_price: parseInt(datas?.original_price || defaultValue?.original_price || '0'),
-            sale_price: parseInt(datas?.sale_price || defaultValue?.sale_price || '0'),
-            learning_outcomes: datas?.learning_outcomes || defaultValue?.learning_outcomes || [],
-            level: datas?.level || defaultValue?.level || 'easy',
-            isFree: datas?.isFree || defaultValue?.isFree || true,
-          }}
-        />
-      );
-    })
-  );
-
   return (
     <Box>
       <CardCourse
         defaultValue={datas ? datas : {}}
         onSubmit={onSubmit}
         labels={['Chương học', 'Mô tả', 'Tùy chỉnh']}
-        contents={[TableModule, Description, Options]}
+        contents={[TableModule, Description, OptionOther]}
       />
     </Box>
   );

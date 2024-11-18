@@ -23,33 +23,31 @@ import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 
+// cookies
+
+import Cookies from 'js-cookie';
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // project imports
 import MainCard from '@/ui-component/cards/MainCard';
 import Transitions from '@/ui-component/extended/Transitions';
-import UpgradePlanCard from './UpgradePlanCard';
-import User1 from '@/assets/images/users/user-round.svg';
 
 // assets
-import {
-  IconLogout,
-  IconSearch,
-  IconSettings,
-  IconUser,
-} from '@tabler/icons-react';
-
+import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store/reducer';
+import { SET_USER } from '@/store/actions';
 
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection: React.FC = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.authReducer.user);
   const theme = useTheme();
- 
 
   const navigate = useNavigate();
 
-  const [sdm, setSdm] = useState<boolean>(true);
   const [value, setValue] = useState<string>('');
   const [notification, setNotification] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
@@ -57,8 +55,12 @@ const ProfileSection: React.FC = () => {
   const anchorRef = useRef<HTMLButtonElement | null>(null);
 
   const handleLogout = async () => {
-    console.log('Logout');
-    // Add logout logic here
+    console.log('check');
+
+    dispatch({ type: SET_USER, payload: null });
+    Cookies.remove('user', { domain: 'admin.localhost', path: '/' });
+    Cookies.remove('accessToken', { domain: 'admin.localhost', path: '/' });
+    window.location.reload();
   };
   const handleClose = (event: any) => {
     if (anchorRef.current && anchorRef.current.contains(event.target as Node)) {
@@ -67,11 +69,7 @@ const ProfileSection: React.FC = () => {
     setOpen(false);
   };
 
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLLIElement>,
-    index: number,
-    route: string = ''
-  ) => {
+  const handleListItemClick = (event: React.MouseEvent<HTMLLIElement>, index: number, route: string = '') => {
     setSelectedIndex(index);
     handleClose(event);
 
@@ -116,7 +114,7 @@ const ProfileSection: React.FC = () => {
         }}
         icon={
           <Avatar
-            src={User1}
+            src={user.thumbnail}
             sx={{
               margin: '8px 0 8px 8px !important',
               cursor: 'pointer',
@@ -127,13 +125,7 @@ const ProfileSection: React.FC = () => {
             color="inherit"
           />
         }
-        label={
-          <IconSettings
-            stroke={1.5}
-            size="1.5rem"
-            color={theme.palette.primary.main}
-          />
-        }
+        label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
         variant="outlined"
         ref={anchorRef as any} // Cast ref as any if needed
         aria-controls={open ? 'menu-list-grow' : undefined}
@@ -163,12 +155,7 @@ const ProfileSection: React.FC = () => {
           <Transitions in={open} {...TransitionProps}>
             <Paper elevation={16}>
               <ClickAwayListener onClickAway={handleClose}>
-                <MainCard
-                  border={false}
-                  content={false}
-                  boxShadow
-                  shadow={theme.shadows[16]}
-                >
+                <MainCard border={false} content={false} boxShadow shadow={theme.shadows[16]}>
                   <Box
                     sx={{
                       p: 2,
@@ -177,7 +164,7 @@ const ProfileSection: React.FC = () => {
                   >
                     <Stack>
                       <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">Good Morning,</Typography>
+                        <Typography variant="h4">Xin chào,</Typography>
                         <Typography
                           component="span"
                           variant="h4"
@@ -185,10 +172,10 @@ const ProfileSection: React.FC = () => {
                             fontWeight: 400,
                           }}
                         >
-                          Johne Doe
+                          {user.name}
                         </Typography>
                       </Stack>
-                      <Typography variant="subtitle2">Project Admin</Typography>
+                      <Typography variant="subtitle2">{user.role}</Typography>
                     </Stack>
                     <OutlinedInput
                       sx={{
@@ -200,14 +187,10 @@ const ProfileSection: React.FC = () => {
                       id="input-search-profile"
                       value={value}
                       onChange={(e) => setValue(e.target.value)}
-                      placeholder="Search profile options"
+                      placeholder="Tìm kiếm"
                       startAdornment={
                         <InputAdornment position="start">
-                          <IconSearch
-                            stroke={1.5}
-                            size="1rem"
-                            color={theme.palette.grey[500]}
-                          />
+                          <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
                         </InputAdornment>
                       }
                       aria-describedby="search-helper-text"
@@ -230,7 +213,6 @@ const ProfileSection: React.FC = () => {
                         pt: 0,
                       }}
                     >
-                      <UpgradePlanCard />
                       <Divider />
                       <Card
                         sx={{
@@ -241,46 +223,14 @@ const ProfileSection: React.FC = () => {
                         <CardContent>
                           <Grid container spacing={3} direction="column">
                             <Grid item>
-                              <Grid
-                                item
-                                container
-                                alignItems="center"
-                                justifyContent="space-between"
-                              >
+                              <Grid item container alignItems="center" justifyContent="space-between">
                                 <Grid item>
-                                  <Typography variant="subtitle1">
-                                    Start DND Mode
-                                  </Typography>
-                                </Grid>
-                                <Grid item>
-                                  <Switch
-                                    color="primary"
-                                    checked={sdm}
-                                    onChange={(e) => setSdm(e.target.checked)}
-                                    name="sdm"
-                                    size="small"
-                                  />
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                            <Grid item>
-                              <Grid
-                                item
-                                container
-                                alignItems="center"
-                                justifyContent="space-between"
-                              >
-                                <Grid item>
-                                  <Typography variant="subtitle1">
-                                    Allow Notifications
-                                  </Typography>
+                                  <Typography variant="subtitle1">Bật thông báo</Typography>
                                 </Grid>
                                 <Grid item>
                                   <Switch
                                     checked={notification}
-                                    onChange={(e) =>
-                                      setNotification(e.target.checked)
-                                    }
+                                    onChange={(e) => setNotification(e.target.checked)}
                                     name="notification"
                                     size="small"
                                   />
@@ -301,31 +251,27 @@ const ProfileSection: React.FC = () => {
                       >
                         <ListItemButton
                           selected={selectedIndex === 0}
-                          onClick={(event: any) =>
-                            handleListItemClick(event, 0, '/profile')
-                          }
+                          onClick={(event: any) => handleListItemClick(event, 0, '/profile')}
                         >
                           <ListItemIcon>
                             <IconUser stroke={1.5} size="1.25rem" />
                           </ListItemIcon>
-                          <ListItemText primary="Profile" />
+                          <ListItemText primary="Trang cá nhân" />
                         </ListItemButton>
                         <ListItemButton
                           selected={selectedIndex === 1}
-                          onClick={(event: any) =>
-                            handleListItemClick(event, 1, '/settings')
-                          }
+                          onClick={(event: any) => handleListItemClick(event, 1, '/settings')}
                         >
                           <ListItemIcon>
                             <IconSettings stroke={1.5} size="1.25rem" />
                           </ListItemIcon>
-                          <ListItemText primary="Settings" />
+                          <ListItemText primary="Cài đặt" />
                         </ListItemButton>
                         <ListItemButton onClick={handleLogout}>
                           <ListItemIcon>
                             <IconLogout stroke={1.5} size="1.25rem" />
                           </ListItemIcon>
-                          <ListItemText primary="Logout" />
+                          <ListItemText primary="Đăng xuất" />
                         </ListItemButton>
                       </List>
                     </Box>

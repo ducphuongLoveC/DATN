@@ -90,9 +90,8 @@ const resourceSchema = new mongoose.Schema(
 
     duration: {
       type: Number,
-
       min: 0,
-      max: 255,
+      max: 6000,
     },
 
     poster: {

@@ -29,6 +29,53 @@ class CoursesController {
       next(error);
     }
   }
+  async getCoursesWithUser(req, res, next) {
+    try {
+      const courses = await Course.aggregate([
+        {
+          $match: { isActive: true },   
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "user_id",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        {
+          $unwind: {
+            path: "$user",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $sort: { _id: -1 },
+        },
+        {
+          $project: {
+            _id: 1,
+            learning_path_id: 1,
+            user_id: 1,
+            title: 1,
+            level: 1,
+            learning_outcomes: 1,
+            thumbnail: 1,
+            description: 1,
+            original_price: 1,
+            sale_price: 1,
+            isFree: 1,
+            isActive: 1,
+            user: 1,
+          },
+        },
+      ]);
+
+      res.status(200).json(courses);
+    } catch (error) {
+      next(error);
+    }
+  }
   async getCoursesWithModulesAndResources(req, res, next) {
     try {
       const courses = await Course.aggregate([
@@ -66,6 +113,8 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            isFree: { $first: "$isFree" },
+            isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
           },
         },
@@ -121,6 +170,8 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            isFree: { $first: "$isFree" },
+            isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
           },
         },
@@ -172,6 +223,8 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            isFree: { $first: "$isFree" },
+            isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
           },
         },
@@ -204,6 +257,7 @@ class CoursesController {
             description: 1,
             original_price: 1,
             sale_price: 1,
+            isFree: 1,
             modules: 1,
             user: 1, // Lấy tất cả trường từ tài liệu người dùng
           },
@@ -259,6 +313,8 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            isFree: { $first: "$isFree" },
+            isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
           },
         },
@@ -291,6 +347,7 @@ class CoursesController {
             description: 1,
             original_price: 1,
             sale_price: 1,
+            isFree: 1,
             modules: 1,
             user: 1,
           },
@@ -435,6 +492,8 @@ class CoursesController {
         description,
         original_price,
         sale_price,
+        isFree,
+        isActive,
         learning_outcomes,
         modules,
       } = req.body;
@@ -472,6 +531,8 @@ class CoursesController {
         description,
         original_price,
         sale_price,
+        isFree,
+        isActive,
         learning_outcomes: Array.isArray(learning_outcomes)
           ? learning_outcomes
           : [learning_outcomes],
@@ -820,6 +881,8 @@ class CoursesController {
         description,
         original_price,
         sale_price,
+        isFree,
+        isActive,
         modules,
       } = req.body;
 
@@ -850,6 +913,8 @@ class CoursesController {
             : thumbnail,
           description,
           original_price,
+          isFree,
+          isActive,
           sale_price,
         },
         { new: true, runValidators: true }

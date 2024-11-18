@@ -20,14 +20,14 @@ const courses = {
       children: [
         {
           id: 'LearningPathList',
-          title: 'Dach sách lộ trình',
+          title: 'Dach mục khóa học',
           type: 'item',
           url: path.admin.LearningPathList,
           target: false,
         },
         {
           id: 'newLearningPath',
-          title: 'Tạo lộ trình',
+          title: 'Tạo danh mục khóa học',
           type: 'item',
           url: path.admin.newLearningPath,
           target: false,

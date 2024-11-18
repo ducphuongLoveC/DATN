@@ -54,6 +54,7 @@ const Course: React.FC = () => {
                 totalRatings={50}
                 totalUserRate={10}
                 totalStars={5}
+                isFree={c.isFree}
               />
             </Grid>
           ))}

@@ -1,7 +1,10 @@
 import clsx from 'clsx';
 import s from './Profile.module.scss';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/reducer';
 
 const Profile: React.FC = () => {
+  const user = useSelector((state: RootState) => state.authReducer.user);
   return (
     <div className="container">
       <div className="main-body">
@@ -25,15 +28,10 @@ const Profile: React.FC = () => {
             <div className="card">
               <div className={clsx(s['card-body-user'])}>
                 <div className="d-flex flex-column align-items-center text-center">
-                  <img
-                    src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474014bom/anh-gai-xinh-cute-de-thuong-hot-girl-2.jpg"
-                    alt="Admin"
-                    className={clsx(s['rounded-circle'])}
-                    width={150}
-                  />
+                  <img src={user.thumbnail} alt="Admin" className={clsx(s['rounded-circle'])} width={150} />
                   <div className="mt-3">
-                    <h4>Làm mờ con mắt</h4>
-                    <p className="mb-1">Quản trị viên</p>
+                    <h4>{user.name}</h4>
+                    <p className="mb-1">{user.role}</p>
                   </div>
                 </div>
               </div>
@@ -154,7 +152,7 @@ const Profile: React.FC = () => {
                   <div className="col-sm-3">
                     <h6 className="mb-10">Họ và tên:</h6>
                   </div>
-                  <div className="col-sm-9">Saitama</div>
+                  <div className="col-sm-9">{user.name}</div>
                 </div>
 
                 <hr />
@@ -162,36 +160,21 @@ const Profile: React.FC = () => {
                   <div className="col-sm-3">
                     <h6 className="mb-10">Email:</h6>
                   </div>
-                  <div className="col-sm-9">
-                    adminFecth@gmail.com
-                  </div>
+                  <div className="col-sm-9">{user.email}</div>
                 </div>
                 <hr />
                 <div className="row align-items-center">
                   <div className="col-sm-3">
                     <h6 className="mb-10">Số điện thoại:</h6>
                   </div>
-                  <div className="col-sm-9">(+84) 816-9029</div>
-                </div>
-                <hr />
-
-                <hr />
-                <div className="row align-items-center">
-                  <div className="col-sm-3">
-                    <h6 className="mb-10">Địa chỉ:</h6>
-                  </div>
-                  <div className="col-sm-9">
-                    Số 1 Trịnh Văn Bô, Nam Từ Liêm, Hà Nội.
-                  </div>
+                  <div className="col-sm-9">{user.phone}</div>
                 </div>
                 <hr />
                 <div className="row align-items-center">
                   <div className="col-sm-3">
                     <h6 className="mb-10">Quyền quản trị:</h6>
                   </div>
-                  <div className="col-sm-9">
-                    Toàn quyền quản trị
-                  </div>
+                  <div className="col-sm-9">{user.role}</div>
                 </div>
                 <hr />
                 <button className={clsx(s['button-edit-profile'])}>Edit</button>

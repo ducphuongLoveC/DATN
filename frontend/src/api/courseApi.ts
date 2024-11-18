@@ -1,5 +1,4 @@
 import axiosInstance from './axiosInstance';
-import { Course } from '../views/pages/admin/Courses/CourseForm';
 
 export const getCourseList = async () => {
   const res = await axiosInstance.get('api/courses/modules-resources');
@@ -22,7 +21,7 @@ export const getCourseFull = async (id: string) => {
 };
 
 export const getCourseFullList = async () => {
-  const res = await axiosInstance.get('api/courses/modules-resources-user');
+  const res = await axiosInstance.get('api/courses/with-user');
   return res.data;
 };
 
@@ -75,7 +74,7 @@ export const getCourseFullList = async () => {
 //   return res.data;
 // };
 
-export const newCourse = async (data: Course) => {
+export const newCourse = async (data: any) => {
   const formData = new FormData();
 
   // Append the main course data
@@ -92,14 +91,16 @@ export const newCourse = async (data: Course) => {
   formData.append('description', data.description);
   formData.append('original_price', data.original_price.toString());
   formData.append('sale_price', data.sale_price.toString());
+  formData.append('isFree', data.isFree);
+  formData.append('isActive', data.isActive);
 
   // Append learning outcomes
-  data.learning_outcomes.forEach((outcome, index) => {
+  data.learning_outcomes.forEach((outcome: any, index: number) => {
     formData.append(`learning_outcomes[${index}]`, outcome);
   });
 
   // Append modules and their resources
-  data.modules.forEach((module: any, moduleIndex) => {
+  data.modules.forEach((module: any, moduleIndex: number) => {
     formData.append(`modules[${moduleIndex}][title]`, module.title);
     formData.append(`modules[${moduleIndex}][isActive]`, module.isActive);
 
@@ -163,7 +164,7 @@ export const newCourse = async (data: Course) => {
 
   return res.data;
 };
-export const updateCourse = async (id: string, data: Course) => {
+export const updateCourse = async (id: string, data: any) => {
   const formData = new FormData();
 
   // Append the main course data
@@ -181,16 +182,15 @@ export const updateCourse = async (id: string, data: Course) => {
   formData.append('original_price', data.original_price.toString());
   formData.append('sale_price', data.sale_price.toString());
   formData.append('isFree', data.isFree ? 'true' : 'false');
+  formData.append('isActive', data.isActive);
 
   // Append learning outcomes
-  data.learning_outcomes.forEach((outcome, index) => {
+  data.learning_outcomes.forEach((outcome: any, index: number) => {
     formData.append(`learning_outcomes[${index}]`, outcome);
   });
 
   // Append modules and their resources with specific _id naming convention
-  data.modules.forEach((module: any, moduleIndex) => {
-    console.log(module._id);
-
+  data.modules.forEach((module: any, moduleIndex: number) => {
     // formData.append(`modules_${moduleIndex}_id`, module?._id || '');
     formData.append(`modules[${moduleIndex}][_id]`, module?._id || '');
     formData.append(`modules[${moduleIndex}][title]`, module.title);

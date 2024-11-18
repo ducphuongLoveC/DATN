@@ -11,8 +11,8 @@ import Loading from '@/ui-component/Loading';
 const UpdateCourse: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['course'],
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['course', id],
     queryFn: () => getCourse(id || ''),
     enabled: !!id,
   });
@@ -22,9 +22,7 @@ const UpdateCourse: React.FC = () => {
     mutationFn: (course: Course) => updateCourse(id || '', course),
     onSuccess: async () => {
       toast.dismiss();
-
       toast.success('Cập nhật khóa học thành công...');
-      // await refetch();
     },
     onError: (error) => {
       toast.dismiss();
@@ -39,8 +37,6 @@ const UpdateCourse: React.FC = () => {
   };
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error fetching course data</div>;
-
-  console.log('check');
 
   return (
     <>

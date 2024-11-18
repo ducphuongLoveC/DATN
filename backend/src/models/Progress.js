@@ -1,4 +1,38 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
+// const progressSchema = new mongoose.Schema(
+//   {
+//     user_id: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "User",
+//       required: true,
+//     },
+//     resource_id: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "Resource",
+//       required: true,
+//     },
+//     isCompleted: {
+//       type: Boolean,
+//       default: false,
+//     },
+//     completion_date: {
+//       type: Date,
+//     },
+//     time_spent: {
+//       type: Number,
+//       default: 0,
+//     },
+//   },
+//   {
+//     timestamps: true,
+//     versionKey: false,
+//   }
+// );
+
+// progressSchema.index({ user_id: 1, resource_id: 1 }, { unique: true });
+
+// export default mongoose.model("Progress", progressSchema);
 
 const progressSchema = new mongoose.Schema(
   {
@@ -12,7 +46,7 @@ const progressSchema = new mongoose.Schema(
       ref: "Resource",
       required: true,
     },
-    isCompleted: {
+    is_completed: {
       type: Boolean,
       default: false,
     },
@@ -22,6 +56,10 @@ const progressSchema = new mongoose.Schema(
     time_spent: {
       type: Number,
       default: 0,
+    },
+    is_locked: {
+      type: Boolean,
+      default: true,
     },
   },
   {
@@ -33,4 +71,3 @@ const progressSchema = new mongoose.Schema(
 progressSchema.index({ user_id: 1, resource_id: 1 }, { unique: true });
 
 export default mongoose.model("Progress", progressSchema);
-

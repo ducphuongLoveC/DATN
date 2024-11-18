@@ -11,6 +11,7 @@ import routerResource from "./resource.js";
 import routerCaptcha from "./captcha.js";
 import routerPayment from "./payment.js";
 import routerOrder from "./order.js";
+import routerProgess from "./progess.js";
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use("/resource", routerResource);
 router.use("/captcha", routerCaptcha);
 router.use("/payment", routerPayment);
 router.use("/order", routerOrder);
+router.use("/progress", routerProgess);
 
 export default router;

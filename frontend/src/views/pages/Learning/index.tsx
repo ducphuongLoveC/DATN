@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { Box, Typography, styled, useMediaQuery, Button, Hidden } from '@mui/material';
 import { useTheme } from '@mui/material';
@@ -30,6 +30,7 @@ import { getAdjacentResourceId, getResource } from '@/api/Resource';
 import formatLastUpdated from '@/utils/formatLastUpdated';
 // import LearningSkeleton from '@/ui-component/cards/Skeleton/LearningSkeleton';
 import { ModulesSkeleton, ResourceSkeleton } from '@/ui-component/cards/Skeleton/LearningSkeleton';
+
 const BoxHeaderAndNote = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
@@ -94,6 +95,7 @@ const Learning: React.FC = () => {
   const [isLearningPlayList, setIsLearningPlayList] = useState<boolean>(true);
   const [isVisibleNote, setIsVisibleNote] = useState<boolean>(false);
 
+  const queryClient = useQueryClient();
   const moduleQuery = useQuery({
     queryKey: ['module'],
     queryFn: () => findModuleByCourseId(id || ''),
@@ -103,7 +105,7 @@ const Learning: React.FC = () => {
 
   const resourceQuery = useQuery({
     queryKey: ['resource', idResource],
-    queryFn: () => getResource(idResource || ''),
+    queryFn: () => getResource(id || '', idResource ? idResource : ''),
   });
 
   const theme = useTheme();
@@ -126,7 +128,17 @@ const Learning: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: ['resource'] });
+    };
+  }, [queryClient]);
+
   if (moduleQuery.isError || resourceQuery.isError) return <div>Error</div>;
+
+  if (!resourceQuery.isLoading && !idResource) {
+    query.set('id', resourceQuery.data._id);
+  }
 
   return (
     <Box position={'relative'}>
@@ -150,7 +162,7 @@ const Learning: React.FC = () => {
               {(() => {
                 switch (resourceQuery.data.resource_type) {
                   case 'Video':
-                    return <ArtPlayerComponent videoUrl={resourceQuery.data.url}  />;
+                    return <ArtPlayerComponent videoUrl={resourceQuery.data.url} />;
 
                   case 'Question':
                     return <Question questions={resourceQuery.data.questions} />;

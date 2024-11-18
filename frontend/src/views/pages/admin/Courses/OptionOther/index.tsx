@@ -1,260 +1,4 @@
-// import { useState, useEffect } from 'react';
-// import { useForm, Controller } from 'react-hook-form';
-// import {
-//   Box,
-//   TextField,
-//   Select,
-//   MenuItem,
-//   FormControl,
-//   InputLabel,
-//   Typography,
-//   Paper,
-//   InputAdornment,
-//   Chip,
-//   Grid,
-//   Tooltip,
-//   IconButton,
-//   FormLabel,
-//   RadioGroup,
-//   FormControlLabel,
-//   Radio,
-// } from '@mui/material';
-// import { AttachMoney, School, TrendingUp, Add } from '@mui/icons-material';
-
-// type level = 'easy' | 'medium' | 'high';
-
-// interface CourseData {
-//   _id?: string;
-//   learning_path_id: string;
-//   user_id: string;
-//   original_price: number;
-//   sale_price: number;
-//   learning_outcomes: string[];
-//   level: level;
-//   isFree?: boolean;
-// }
-
-// interface OptionOtherProps {
-//   defaultValues: CourseData;
-//   onChange: (datas: CourseData) => void;
-// }
-
-// const OptionOther: React.FC<OptionOtherProps> = ({ defaultValues, onChange }) => {
-//   const {
-//     control,
-//     handleSubmit,
-//     formState: { errors },
-//     setValue,
-//     watch,
-//     getValues,
-//   } = useForm<CourseData>({
-//     defaultValues: defaultValues ?? {
-//       original_price: 0,
-//       sale_price: 0,
-//       learning_outcomes: [],
-//       level: 'medium',
-//     },
-//   });
-
-//   // Watch all necessary fields for changes
-//   const originalPrice = watch('original_price');
-//   const salePrice = watch('sale_price');
-//   const learning_outcomes = watch('learning_outcomes');
-//   const level = watch('level');
-
-//   useEffect(() => {
-//     onChange(getValues());
-//   }, [originalPrice, salePrice, learning_outcomes, level]);
-
-//   const [newOutcome, setNewOutcome] = useState<string>('');
-
-//   const handleAddOutcome = () => {
-//     if (newOutcome.trim() !== '') {
-//       setValue('learning_outcomes', [...learning_outcomes, newOutcome.trim()]);
-//       setNewOutcome('');
-//     }
-//   };
-
-//   const handleRemoveOutcome = (index: number) => {
-//     setValue(
-//       'learning_outcomes',
-//       learning_outcomes.filter((_, i) => i !== index)
-//     );
-//   };
-
-//   const getDifficultyColor = (level: level) => {
-//     switch (level) {
-//       case 'easy':
-//         return '#4caf50';
-//       case 'medium':
-//         return '#ff9800';
-//       case 'high':
-//         return '#f44336';
-//       default:
-//         return '#2196f3';
-//     }
-//   };
-
-//   const onSubmit = (data: CourseData) => {
-//     console.log(data);
-//     alert('Dữ liệu đã được in ra console');
-//   };
-
-//   return (
-//     <Paper sx={{ mt: 2 }}>
-//       <form onSubmit={handleSubmit(onSubmit)}>
-//         <Grid container spacing={2}>
-//           <Grid item xs={12} md={6}>
-//             <FormControl>
-//               <FormLabel id="radio-group-label">Chọn loại khóa học</FormLabel>
-//               <RadioGroup aria-label="radio-group-label">
-//                 <FormControlLabel value={true} control={<Radio />} label={'Khóa học miễn phí'} />
-//                 <FormControlLabel value={false} control={<Radio />} label={'Khóa học tính phí'} />
-//               </RadioGroup>
-//             </FormControl>
-//             <Controller
-//               name="original_price"
-//               control={control}
-//               render={({ field }) => (
-//                 <TextField
-//                   fullWidth
-//                   label="Giá bình thường"
-//                   type="number"
-//                   InputProps={{
-//                     startAdornment: (
-//                       <InputAdornment position="start">
-//                         <AttachMoney />
-//                       </InputAdornment>
-//                     ),
-//                   }}
-//                   {...field}
-//                 />
-//               )}
-//             />
-//           </Grid>
-//           <Grid item xs={12} md={6}>
-//             <Controller
-//               name="sale_price"
-//               control={control}
-//               render={({ field }) => (
-//                 <TextField
-//                   fullWidth
-//                   label="Giá sale"
-//                   type="number"
-//                   error={!!errors.sale_price}
-//                   helperText={
-//                     getValues('sale_price') > getValues('original_price')
-//                       ? 'Giá sale không thể cao hơn giá bình thường'
-//                       : ''
-//                   }
-//                   InputProps={{
-//                     startAdornment: (
-//                       <InputAdornment position="start">
-//                         <AttachMoney />
-//                       </InputAdornment>
-//                     ),
-//                   }}
-//                   {...field}
-//                 />
-//               )}
-//             />
-//           </Grid>
-
-//           <Grid item xs={12}>
-//             <FormControl fullWidth>
-//               <InputLabel id="difficulty-level-label">Cấp độ</InputLabel>
-//               <Controller
-//                 name="level"
-//                 control={control}
-//                 render={({ field }) => (
-//                   <Select
-//                     labelId="difficulty-level-label"
-//                     value={field.value}
-//                     onChange={field.onChange}
-//                     startAdornment={
-//                       <TrendingUp
-//                         sx={{
-//                           mr: 1,
-//                           color: getDifficultyColor(field.value),
-//                         }}
-//                       />
-//                     }
-//                   >
-//                     <MenuItem value="easy">Dễ</MenuItem>
-//                     <MenuItem value="medium">Trung bình</MenuItem>
-//                     <MenuItem value="high">Nâng cao</MenuItem>
-//                   </Select>
-//                 )}
-//               />
-//             </FormControl>
-//           </Grid>
-
-//           <Grid item xs={12}>
-//             <Typography variant="h6" gutterBottom color="primary" sx={{ display: 'flex', alignItems: 'center' }}>
-//               <School sx={{ mr: 1 }} /> Kết quả học tập
-//             </Typography>
-//             <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
-//               <TextField
-//                 fullWidth
-//                 label="Thêm kết quả học tập"
-//                 value={newOutcome}
-//                 onChange={(e) => setNewOutcome(e.target.value)}
-//                 onKeyDown={(e) => e.key === 'Enter' && handleAddOutcome()}
-//                 sx={{ mr: 1 }}
-//               />
-//               <Tooltip title="Thêm kết quả học tập">
-//                 <IconButton onClick={handleAddOutcome} color="primary" sx={{ mt: 1 }}>
-//                   <Add />
-//                 </IconButton>
-//               </Tooltip>
-//             </Box>
-//             <Paper
-//               elevation={1}
-//               sx={{
-//                 p: 2,
-//                 bgcolor: 'background.default',
-//                 minHeight: '150px',
-//                 maxHeight: '300px',
-//                 overflowY: 'auto',
-//               }}
-//             >
-//               {learning_outcomes.length === 0 ? (
-//                 <Typography color="text.secondary" textAlign="center">
-//                   Chưa có kết quả học tập nào được thêm
-//                 </Typography>
-//               ) : (
-//                 learning_outcomes.map((outcome, index) => (
-//                   <Chip
-//                     key={index}
-//                     label={outcome}
-//                     onDelete={() => handleRemoveOutcome(index)}
-//                     color="primary"
-//                     variant="outlined"
-//                     sx={{ m: 0.5, maxWidth: '100%' }}
-//                   />
-//                 ))
-//               )}
-//             </Paper>
-//           </Grid>
-//           <Grid item xs={12}>
-//             {/* <Button
-//               type="submit"
-//               fullWidth
-//               size="large"
-//               sx={{ mt: 2 }}
-//             >
-//               Lấy dữ liệu
-//             </Button> */}
-//           </Grid>
-//         </Grid>
-//       </form>
-//     </Paper>
-//   );
-// };
-
-// export default OptionOther;
-
-import { useState, useEffect } from 'react';
+import { useState, forwardRef, useImperativeHandle } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import {
   Box,
@@ -265,7 +9,6 @@ import {
   InputLabel,
   Typography,
   Paper,
-  InputAdornment,
   Chip,
   Grid,
   Tooltip,
@@ -274,10 +17,17 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  useTheme,
 } from '@mui/material';
-import { AttachMoney, School, TrendingUp, Add } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
+import { TrendingUp, Add } from '@mui/icons-material';
 
-type level = 'easy' | 'medium' | 'high';
+// icon
+import PublicIcon from '@mui/icons-material/Public';
+import LockIcon from '@mui/icons-material/Lock';
+import { RootState } from '@/store/reducer';
+
+type Level = 'easy' | 'medium' | 'high';
 
 interface CourseData {
   _id?: string;
@@ -286,65 +36,61 @@ interface CourseData {
   original_price: number;
   sale_price: number;
   learning_outcomes: string[];
-  level: level;
+  level: Level;
   isFree?: boolean;
+  isActive: boolean;
 }
 
-interface OptionOtherProps {
-  defaultValues: CourseData;
-  onChange: (datas: CourseData) => void;
-}
-
-const OptionOther: React.FC<OptionOtherProps> = ({ defaultValues, onChange }) => {
-  console.log(defaultValues);
+const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
+  const user = useSelector((state: RootState) => state.authReducer.user);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
     getValues,
+    watch,
   } = useForm<CourseData>({
-    defaultValues:
-      Object.keys(defaultValues).length > 0
-        ? defaultValues
-        : {
-            original_price: 0,
-            sale_price: 0,
-            learning_outcomes: [],
-            level: 'medium',
-            isFree: true,
-          },
+    defaultValues: {
+      learning_path_id: '6521438fd3f1e2a1a1a0b1c1',
+      user_id: user._id,
+      original_price: parseInt(defaultValue?.original_price || '0'),
+      sale_price: parseInt(defaultValue?.sale_price || '0'),
+      learning_outcomes: defaultValue?.learning_outcomes || [],
+      level: defaultValue?.level || 'easy',
+      isFree: defaultValue?.isFree !== undefined ? defaultValue.isFree : true,
+      isActive: defaultValue?.isActive !== undefined ? defaultValue.isActive : true,
+    },
   });
 
+  const getData = () => ({ ...getValues() });
+
+  useImperativeHandle(ref, () => ({
+    getData,
+  }));
+
   const isFree = watch('isFree');
-  const originalPrice = watch('original_price');
-  const salePrice = watch('sale_price');
-  const learning_outcomes = watch('learning_outcomes');
-  const level = watch('level');
 
-  useEffect(() => {
-    onChange(getValues());
-  }, [originalPrice, salePrice, learning_outcomes, level, isFree]);
-
+  const theme = useTheme();
   const [newOutcome, setNewOutcome] = useState<string>('');
 
   const handleAddOutcome = () => {
     if (newOutcome.trim() !== '') {
-      setValue('learning_outcomes', [...learning_outcomes, newOutcome.trim()]);
+      setValue('learning_outcomes', [...watch('learning_outcomes'), newOutcome.trim()]);
       setNewOutcome('');
     }
   };
 
   const handleRemoveOutcome = (index: number) => {
+    const outcomes = watch('learning_outcomes');
     setValue(
       'learning_outcomes',
-      learning_outcomes.filter((_, i) => i !== index)
+      outcomes.filter((_, i) => i !== index)
     );
   };
 
-  const getDifficultyColor = (level: level) => {
+  const getDifficultyColor = (level: Level) => {
     switch (level) {
       case 'easy':
         return '#4caf50';
@@ -361,8 +107,6 @@ const OptionOther: React.FC<OptionOtherProps> = ({ defaultValues, onChange }) =>
     console.log(data);
     alert('Dữ liệu đã được in ra console');
   };
-
-  console.log(isFree);
 
   return (
     <Paper sx={{ mt: 2 }}>
@@ -391,21 +135,7 @@ const OptionOther: React.FC<OptionOtherProps> = ({ defaultValues, onChange }) =>
                 <Controller
                   name="original_price"
                   control={control}
-                  render={({ field }) => (
-                    <TextField
-                      fullWidth
-                      label="Giá bình thường"
-                      type="number"
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <AttachMoney />
-                          </InputAdornment>
-                        ),
-                      }}
-                      {...field}
-                    />
-                  )}
+                  render={({ field }) => <TextField fullWidth label="Giá bình thường" type="number" {...field} />}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -419,17 +149,10 @@ const OptionOther: React.FC<OptionOtherProps> = ({ defaultValues, onChange }) =>
                       type="number"
                       error={!!errors.sale_price}
                       helperText={
-                        getValues('sale_price') > getValues('original_price')
+                        +watch('sale_price') > +watch('original_price')
                           ? 'Giá sale không thể cao hơn giá bình thường'
                           : ''
                       }
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <AttachMoney />
-                          </InputAdornment>
-                        ),
-                      }}
                       {...field}
                     />
                   )}
@@ -437,6 +160,39 @@ const OptionOther: React.FC<OptionOtherProps> = ({ defaultValues, onChange }) =>
               </Grid>
             </>
           )}
+
+          <Grid item xs={12} ml={2} mt={2} sx={{ backgroundColor: theme.palette.background.paper2 }}>
+            <FormControl>
+              <FormLabel id="radio-group-label">Cài đặt công khai</FormLabel>
+              <Controller
+                name="isActive"
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup {...field} onChange={(e) => setValue('isActive', e.target.value === 'true')}>
+                    <FormControlLabel
+                      value={true}
+                      control={<Radio />}
+                      label={
+                        <>
+                          <PublicIcon sx={{ mr: 1 }} />
+                          Công khai khóa học
+                        </>
+                      }
+                    />
+                    <FormControlLabel
+                      value={false}
+                      control={<Radio />}
+                      label={
+                        <>
+                          <LockIcon sx={{ mr: 1 }} /> Riêng tư khóa học
+                        </>
+                      }
+                    />
+                  </RadioGroup>
+                )}
+              />
+            </FormControl>
+          </Grid>
 
           <Grid item xs={12}>
             <FormControl fullWidth>
@@ -468,8 +224,8 @@ const OptionOther: React.FC<OptionOtherProps> = ({ defaultValues, onChange }) =>
           </Grid>
 
           <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom color="primary" sx={{ display: 'flex', alignItems: 'center' }}>
-              <School sx={{ mr: 1 }} /> Kết quả học tập
+            <Typography gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+              Kết quả học tập
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
               <TextField
@@ -496,12 +252,12 @@ const OptionOther: React.FC<OptionOtherProps> = ({ defaultValues, onChange }) =>
                 overflowY: 'auto',
               }}
             >
-              {learning_outcomes.length === 0 ? (
+              {watch('learning_outcomes').length === 0 ? (
                 <Typography color="text.secondary" textAlign="center">
                   Chưa có kết quả học tập nào được thêm
                 </Typography>
               ) : (
-                learning_outcomes.map((outcome, index) => (
+                watch('learning_outcomes').map((outcome, index) => (
                   <Chip
                     key={index}
                     label={outcome}
@@ -518,6 +274,6 @@ const OptionOther: React.FC<OptionOtherProps> = ({ defaultValues, onChange }) =>
       </form>
     </Paper>
   );
-};
+});
 
 export default OptionOther;

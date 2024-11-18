@@ -8,6 +8,8 @@ const routerCourse = Router();
 
 routerCourse.get("/", CoursesController.get);
 
+routerCourse.get("/with-user", CoursesController.getCoursesWithUser);
+
 routerCourse.get(
   "/modules-resources",
   CoursesController.getCoursesWithModulesAndResources
@@ -34,6 +36,9 @@ routerCourse.patch(
   CoursesController.updateCourseDetail
 );
 
-routerCourse.get("/:id/resource-ids", CoursesController.getResourcesIdByCourseId);
+routerCourse.get(
+  "/:id/resource-ids",
+  CoursesController.getResourcesIdByCourseId
+);
 
 export default routerCourse;

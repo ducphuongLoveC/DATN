@@ -66,6 +66,7 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poste
           sm: '300px',
           md: '520px',
         },
+        // aspectRatio: 16/9
       }}
       ref={artPlayerRef}
     />

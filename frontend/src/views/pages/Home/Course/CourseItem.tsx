@@ -19,6 +19,7 @@ interface CourseItemProp {
   totalUserRate: number;
   totalStars: number;
   to: string;
+  isFree: boolean;
 }
 
 const CourseItem: React.FC<CourseItemProp> = ({
@@ -31,44 +32,44 @@ const CourseItem: React.FC<CourseItemProp> = ({
   totalUserRate,
   totalStars,
   to,
+  isFree,
 }) => {
   const theme = useTheme();
 
   return (
     <Link to={to}>
-    <WrapperCard>
-      <CustomCardMedia image={thumbnail} />
-      <Box
-        sx={{
-          padding: 1,
-          backgroundColor: theme.palette.background.paper2,
-          height: '140px',
-        }}
-      >
-        <Typography variant="h4" mb={1}>
-          {title}
-        </Typography>
-        <Typography variant="body1">Đăng bởi {postUser}</Typography>
-
-        <AverageRating
-          totalRatings={totalRatings}
-          totalUserRate={totalUserRate}
-          totalStars={totalStars}
-        />
-
-        <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 1 }}>
-          <Typography variant="h3" color="#980000">
-            {salePrice.toLocaleString('vi-VN')} VND
+      <WrapperCard>
+        <CustomCardMedia image={thumbnail} />
+        <Box
+          sx={{
+            padding: 1,
+            backgroundColor: theme.palette.background.paper2,
+            height: '140px',
+          }}
+        >
+          <Typography variant="h4" mb={1}>
+            {title}
           </Typography>
-          <Typography
-            variant="caption"
-            sx={{ textDecoration: 'line-through', marginLeft: 1 }}
-          >
-            {price.toLocaleString('vi-VN')} VND
-          </Typography>
+          <Typography variant="body1">Đăng bởi {postUser}</Typography>
+
+          <AverageRating totalRatings={totalRatings} totalUserRate={totalUserRate} totalStars={totalStars} />
+
+          {isFree ? (
+            <Typography variant="h3" color="#980000">
+              Miễn phí
+            </Typography>
+          ) : (
+            <Box sx={{ display: 'flex', alignItems: 'center', marginTop: 1 }}>
+              <Typography variant="h3" color="#980000">
+                {salePrice.toLocaleString('vi-VN')} VND
+              </Typography>
+              <Typography variant="caption" sx={{ textDecoration: 'line-through', marginLeft: 1 }}>
+                {price.toLocaleString('vi-VN')} VND
+              </Typography>
+            </Box>
+          )}
         </Box>
-      </Box>
-    </WrapperCard>
+      </WrapperCard>
     </Link>
   );
 };

@@ -23,14 +23,80 @@ class ResourceController {
   //   }
   // }
 
+  // async getResource(req, res, next) {
+  //   try {
+  //     const { id } = req.params;
+  //     let resource;
+
+  //     if (!id) {
+  //       resource = await Resource.aggregate([
+  //         { $sort: { _id: 1 } },
+  //         {
+  //           $lookup: {
+  //             from: "modules",
+  //             localField: "module_id",
+  //             foreignField: "_id",
+  //             as: "module",
+  //           },
+  //         },
+  //         { $unwind: "$module" },
+  //       ]);
+  //     } else {
+  //       resource = await Resource.aggregate([
+  //         { $match: { _id: new mongoose.Types.ObjectId(id) } },
+  //         {
+  //           $lookup: {
+  //             from: "modules",
+  //             localField: "module_id",
+  //             foreignField: "_id",
+  //             as: "module",
+  //           },
+  //         },
+  //         { $unwind: "$module" },
+  //       ]);
+  //     }
+
+  //     if (!resource || resource.length === 0) {
+  //       resource = await Resource.aggregate([
+  //         { $sort: { _id: 1 } },
+  //         {
+  //           $lookup: {
+  //             from: "modules",
+  //             localField: "module_id",
+  //             foreignField: "_id",
+  //             as: "module",
+  //           },
+  //         },
+  //         { $unwind: "$module" },
+  //       ]);
+  //     }
+
+  //     res.status(200).json(resource[0] || null);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
+
   async getResource(req, res, next) {
+    console.log("vkl");
+
     try {
-      const { id } = req.params;
+      const { id, course_id } = req.params;
+
+      // Ensure valid ObjectId formatting for mongoose
+      const courseObjectId = course_id
+        ? new mongoose.Types.ObjectId(course_id)
+        : null;
+      const resourceObjectId = id ? new mongoose.Types.ObjectId(id) : null;
+
+      console.log("Course ID:", courseObjectId);
+      console.log("Resource ID:", resourceObjectId);
+
       let resource;
 
-      if (!id) {
+      if (resourceObjectId) {
         resource = await Resource.aggregate([
-          { $sort: { _id: 1 } },
+          { $match: { _id: resourceObjectId } },
           {
             $lookup: {
               from: "modules",
@@ -41,9 +107,8 @@ class ResourceController {
           },
           { $unwind: "$module" },
         ]);
-      } else {
+      } else if (courseObjectId) {
         resource = await Resource.aggregate([
-          { $match: { _id: new mongoose.Types.ObjectId(id) } },
           {
             $lookup: {
               from: "modules",
@@ -53,22 +118,18 @@ class ResourceController {
             },
           },
           { $unwind: "$module" },
+          {
+            $match: {
+              "module.course_id": courseObjectId, // Match by course_id
+            },
+          },
+          { $sort: { createdAt: 1 } },
+          { $limit: 1 },
         ]);
       }
 
       if (!resource || resource.length === 0) {
-        resource = await Resource.aggregate([
-          { $sort: { _id: 1 } },
-          {
-            $lookup: {
-              from: "modules",
-              localField: "module_id",
-              foreignField: "_id",
-              as: "module",
-            },
-          },
-          { $unwind: "$module" },
-        ]);
+        return res.status(404).json({ message: "Resource not found" });
       }
 
       res.status(200).json(resource[0] || null);
@@ -76,10 +137,17 @@ class ResourceController {
       next(error);
     }
   }
+
   async getAdjacentResourceId(req, res, next) {
     try {
       const { id } = req.params;
       const { direction } = req.query;
+
+      if (direction && direction !== "previous" && direction !== "next") {
+        return res.status(400).json({
+          message: 'Invalid direction parameter. Use "previous" or "next".',
+        });
+      }
 
       const currentResource = await Resource.findById(id);
       if (!currentResource) {

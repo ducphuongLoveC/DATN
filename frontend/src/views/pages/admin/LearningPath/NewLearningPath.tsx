@@ -44,11 +44,7 @@ export default function LearningPath() {
       toast.error('Thêm thất bại');
     },
   });
-  const onSubmit = (data: {
-    title: string;
-    thumbnail: string;
-    description: string;
-  }) => {
+  const onSubmit = (data: { title: string; thumbnail: string; description: string }) => {
     mutation.mutate(data);
   };
 
@@ -61,7 +57,7 @@ export default function LearningPath() {
       />
       <StyledPaper>
         <StyledForm onSubmit={handleSubmit(onSubmit)} noValidate>
-          <Grid container spacing={3} mb={2} >
+          <Grid container spacing={3} mb={2}>
             <Grid item xs={12}>
               <Controller
                 name="title"
@@ -107,12 +103,7 @@ export default function LearningPath() {
             </Grid>
           </Grid>
 
-          <Button
-            variant="outlined"
-            type="submit"
-            fullWidth
-            disabled={mutation.isPending}
-          >
+          <Button variant="outlined" type="submit" disabled={mutation.isPending}>
             {mutation.isPending ? 'Đang tạo...' : 'Tạo lộ trình'}
           </Button>
         </StyledForm>
