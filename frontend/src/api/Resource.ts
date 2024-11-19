@@ -1,7 +1,7 @@
 import axiosInstance from './axiosInstance';
 
-export const getResource = async (course_id: string, id: string) => {
-  const res = await axiosInstance.get(`api/resource/${course_id}/${id}`);
+export const getResource = async (course_id: string, user_id: string, id: string) => {
+  const res = await axiosInstance.get(`api/resource/progress/${course_id}/${user_id}/${id}`);
   return res.data;
 };
 

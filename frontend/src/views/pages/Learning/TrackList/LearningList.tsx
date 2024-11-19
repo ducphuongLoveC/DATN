@@ -8,14 +8,13 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Module from '@/components/Module';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { Resource } from '../admin/Courses/CourseForm';
+import { Resource } from '../../admin/Courses/CourseForm';
 import { RootState } from '@/store/reducer';
 import { SET_EXPANDED_INDEXS } from '@/store/actions';
 
 interface LearningListProps {
   modules: { title: string; resources: Resource }[];
   onClose: () => void;
-  idCourse?: string;
 }
 const LearningList: React.FC<LearningListProps> = memo(({ onClose, modules }) => {
   const dispatch = useDispatch();

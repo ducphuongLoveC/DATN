@@ -77,35 +77,186 @@ class ResourceController {
   //   }
   // }
 
+  // async getResource(req, res, next) {
+
+  //   try {
+  //     const { id, course_id } = req.params;
+
+  //     // Ensure valid ObjectId formatting for mongoose
+  //     const courseObjectId = course_id
+  //       ? new mongoose.Types.ObjectId(course_id)
+  //       : null;
+  //     const resourceObjectId = id ? new mongoose.Types.ObjectId(id) : null;
+
+  //     console.log("Course ID:", courseObjectId);
+  //     console.log("Resource ID:", resourceObjectId);
+
+  //     let resource;
+
+  //     if (resourceObjectId) {
+  //       resource = await Resource.aggregate([
+  //         { $match: { _id: resourceObjectId } },
+  //         {
+  //           $lookup: {
+  //             from: "modules",
+  //             localField: "module_id",
+  //             foreignField: "_id",
+  //             as: "module",
+  //           },
+  //         },
+  //         { $unwind: "$module" },
+  //       ]);
+  //     } else if (courseObjectId) {
+  //       resource = await Resource.aggregate([
+  //         {
+  //           $lookup: {
+  //             from: "modules",
+  //             localField: "module_id",
+  //             foreignField: "_id",
+  //             as: "module",
+  //           },
+  //         },
+  //         { $unwind: "$module" },
+  //         {
+  //           $match: {
+  //             "module.course_id": courseObjectId, // Match by course_id
+  //           },
+  //         },
+  //         { $sort: { createdAt: 1 } },
+  //         { $limit: 1 },
+  //       ]);
+  //     }
+
+  //     if (!resource || resource.length === 0) {
+  //       return res.status(404).json({ message: "Resource not found" });
+  //     }
+
+  //     res.status(200).json(resource[0] || null);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
+
+  // async getResource(req, res, next) {
+  //   try {
+  //     const { id, course_id } = req.params;
+
+  //     // Ensure valid ObjectId formatting for mongoose
+  //     const courseObjectId = course_id
+  //       ? new mongoose.Types.ObjectId(course_id)
+  //       : null;
+  //     const resourceObjectId = id ? new mongoose.Types.ObjectId(id) : null;
+
+  //     console.log("Course ID:", courseObjectId);
+  //     console.log("Resource ID:", resourceObjectId);
+
+  //     let resource;
+
+  //     if (resourceObjectId) {
+  //       resource = await Resource.aggregate([
+  //         { $match: { _id: resourceObjectId } },
+  //         {
+  //           $lookup: {
+  //             from: "modules", // Join with "modules" collection
+  //             localField: "module_id",
+  //             foreignField: "_id",
+  //             as: "module",
+  //           },
+  //         },
+  //         { $unwind: "$module" },
+  //         {
+  //           $lookup: {
+  //             from: "progresses", // Join with "progresses" collection to get progress
+  //             localField: "_id", // Assuming "progresses" has a field "resource_id" referencing "Resource"
+  //             foreignField: "resource_id",
+  //             as: "progress",
+  //           },
+  //         },
+  //         { $unwind: { path: "$progress", preserveNullAndEmptyArrays: true } }, // Ensure progress exists or is null
+  //       ]);
+  //     } else if (courseObjectId) {
+  //       resource = await Resource.aggregate([
+  //         {
+  //           $lookup: {
+  //             from: "modules",
+  //             localField: "module_id",
+  //             foreignField: "_id",
+  //             as: "module",
+  //           },
+  //         },
+  //         { $unwind: "$module" },
+  //         {
+  //           $match: {
+  //             "module.course_id": courseObjectId, // Match by course_id
+  //           },
+  //         },
+  //         { $sort: { createdAt: 1 } },
+  //         { $limit: 1 },
+  //         {
+  //           $lookup: {
+  //             from: "progresses", // Join with "progresses" collection to get progress
+  //             localField: "_id",
+  //             foreignField: "resource_id",
+  //             as: "progress",
+  //           },
+  //         },
+  //         { $unwind: { path: "$progress", preserveNullAndEmptyArrays: true } }, // Ensure progress exists or is null
+  //       ]);
+  //     }
+
+  //     if (!resource || resource.length === 0) {
+  //       return res.status(404).json({ message: "Resource not found" });
+  //     }
+
+  //     res.status(200).json(resource[0] || null);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
+
   async getResource(req, res, next) {
-    console.log("vkl");
-
     try {
-      const { id, course_id } = req.params;
-
+      const { id, course_id, user_id } = req.params;
+      
       // Ensure valid ObjectId formatting for mongoose
       const courseObjectId = course_id
         ? new mongoose.Types.ObjectId(course_id)
         : null;
       const resourceObjectId = id ? new mongoose.Types.ObjectId(id) : null;
-
+      const userObjectId = user_id ? new mongoose.Types.ObjectId(user_id) : null;
+  
       console.log("Course ID:", courseObjectId);
       console.log("Resource ID:", resourceObjectId);
-
+      console.log("User ID:", userObjectId);
+  
       let resource;
-
+  
       if (resourceObjectId) {
         resource = await Resource.aggregate([
           { $match: { _id: resourceObjectId } },
           {
             $lookup: {
-              from: "modules",
+              from: "modules", // Join with "modules" collection
               localField: "module_id",
               foreignField: "_id",
               as: "module",
             },
           },
           { $unwind: "$module" },
+          {
+            $lookup: {
+              from: "progresses", // Join with "progresses" collection
+              let: { resourceId: "$_id" }, // Define local variables for lookup
+              pipeline: [
+                { $match: { $expr: { $eq: ["$resource_id", "$$resourceId"] } } },
+                ...(userObjectId
+                  ? [{ $match: { user_id: userObjectId } }] // Filter by user_id
+                  : []),
+              ],
+              as: "progress",
+            },
+          },
+          { $unwind: { path: "$progress", preserveNullAndEmptyArrays: true } }, // Ensure progress exists or is null
         ]);
       } else if (courseObjectId) {
         resource = await Resource.aggregate([
@@ -125,18 +276,33 @@ class ResourceController {
           },
           { $sort: { createdAt: 1 } },
           { $limit: 1 },
+          {
+            $lookup: {
+              from: "progresses",
+              let: { resourceId: "$_id" }, // Define local variables for lookup
+              pipeline: [
+                { $match: { $expr: { $eq: ["$resource_id", "$$resourceId"] } } },
+                ...(userObjectId
+                  ? [{ $match: { user_id: userObjectId } }] // Filter by user_id
+                  : []),
+              ],
+              as: "progress",
+            },
+          },
+          { $unwind: { path: "$progress", preserveNullAndEmptyArrays: true } }, // Ensure progress exists or is null
         ]);
       }
-
+  
       if (!resource || resource.length === 0) {
         return res.status(404).json({ message: "Resource not found" });
       }
-
+  
       res.status(200).json(resource[0] || null);
     } catch (error) {
       next(error);
     }
   }
+  
 
   async getAdjacentResourceId(req, res, next) {
     try {
@@ -228,13 +394,11 @@ class ResourceController {
           message: 'Invalid direction parameter. Use "previous" or "next".',
         });
       }
-      res.status(200).json({ id: adjacentResource._id });
+      res.status(200).json({ ...adjacentResource });
     } catch (error) {
       next(error);
     }
   }
-
-  async getNameModuleById(req, res, next) {}
 }
 
 export default new ResourceController();

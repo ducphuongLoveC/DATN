@@ -80,7 +80,7 @@ class PaymentContronller {
     console.log("Callback received");
     console.log(req.body);
 
-    const { resultCode, orderId, amount, signature, extraData } = req.body;
+    const { resultCode, orderId, extraData } = req.body;
 
     let userId, courseId;
     if (extraData) {

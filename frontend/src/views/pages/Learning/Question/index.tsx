@@ -34,10 +34,11 @@ interface Question {
 }
 
 interface QuestionProps {
+  onCompleted: () => void;
   questions: Question[];
 }
 
-const Question: React.FC<QuestionProps> = ({ questions }) => {
+const Question: React.FC<QuestionProps> = ({ questions, onCompleted }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [key: number]: string }>({});
   const [showHint, setShowHint] = useState(false);
@@ -69,6 +70,7 @@ const Question: React.FC<QuestionProps> = ({ questions }) => {
   const nextQuestion = () => {
     if (currentQuestionIndex === questions.length - 1) {
       setQuizCompleted(true);
+      onCompleted();
     } else {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setShowHint(false); // Reset hint for the next question

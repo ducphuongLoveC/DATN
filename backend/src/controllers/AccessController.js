@@ -1,4 +1,6 @@
+import axios from "axios";
 import Access from "../models/Access.js";
+import { BASE_URL } from "../utils/env.js";
 
 class AccessController {
   async createAccess(req, res) {
@@ -13,9 +15,19 @@ class AccessController {
       });
 
       const savedAccess = await newAccess.save();
+
+      //  đồng thời tạo progress cho user luôn :))
+      const apiUrl = `${BASE_URL}/api/progress/start`;
+      const apiResponse = await axios.post(apiUrl, {
+        user_id,
+        course_id,
+      });
       res.status(201).json({
-        message: "Access record created successfully",
-        data: savedAccess,
+        message: "Access record created successfully and course started",
+        data: {
+          access: savedAccess,
+          progress: apiResponse.data,
+        },
       });
     } catch (error) {
       res.status(500).json({
