@@ -374,6 +374,13 @@
       "description": "Chuyển khoản tiền hàng",
       "amount": 5000000
     }
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000
+    }
    
   ]
 }
