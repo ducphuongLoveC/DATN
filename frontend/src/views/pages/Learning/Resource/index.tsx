@@ -9,11 +9,16 @@ import { useTheme, styled } from '@mui/material';
 
 // api
 import { completeResource } from '@/api/progess';
-const BoxHeaderAndNote = styled(Box)(() => ({
+const BoxHeaderAndNote = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
-  padding: '0 20px',
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+  },
 }));
+
+//  icon
+
 import formatLastUpdated from '@/utils/formatLastUpdated';
 import Wrapper from '@/components/Wrapper';
 import TextEditor from '@/components/TextEditor';
@@ -21,10 +26,6 @@ import { RootState } from '@/store/reducer';
 const Resource: React.FC<any> = ({ resource, refetchResource }) => {
   const user = useSelector((state: RootState) => state.authReducer.user);
   const [isVisibleNote, setIsVisibleNote] = useState<boolean>(false);
-
-  console.log(resource);
-
-  console.log(refetchResource);
 
   const theme = useTheme();
 
@@ -38,11 +39,22 @@ const Resource: React.FC<any> = ({ resource, refetchResource }) => {
     if (!resource.progress.is_completed) {
       console.log(resource._id);
 
-      const res = await completeResource(user._id, resource._id);
-      console.log(res);
-      refetchResource();
+      try {
+        const res = await completeResource(user._id, resource._id);
+
+        if (res && res.status === 200) {
+          console.log('Resource completed successfully');
+        } else {
+          console.error('Failed to complete resource:');
+        }
+      } catch (error) {
+        console.error('Error completing resource:');
+      } finally {
+        refetchResource();
+      }
     }
   };
+
   return (
     <>
       {(() => {
@@ -56,20 +68,20 @@ const Resource: React.FC<any> = ({ resource, refetchResource }) => {
       })()}
       <Box
         sx={{
-          marginTop: '10px',
-          padding: {
-            sm: '0',
-            md: '20px',
-          },
+          marginTop: '20px',
+
+          padding: '0 20px',
           background: theme.palette.background.paper,
         }}
       >
         <BoxHeaderAndNote>
           <Box>
-            <Typography variant="h1" fontWeight={500}>
+            <Typography variant="h2" fontWeight={500}>
               {resource.title}
             </Typography>
-            <Typography variant="caption">{formatLastUpdated(resource.updatedAt)}</Typography>
+            <Box my={2}>
+              <Typography variant="caption">{formatLastUpdated(resource.updatedAt)}</Typography>
+            </Box>
           </Box>
           <Box>
             <HeadlessTippy
@@ -106,16 +118,8 @@ const Resource: React.FC<any> = ({ resource, refetchResource }) => {
             </HeadlessTippy>
           </Box>
         </BoxHeaderAndNote>
-        <Typography
-          variant="body1"
-          sx={{
-            marginTop: '20px',
-            borderRadius: '10px',
-            padding: '20px',
-          }}
-        >
-          <Typography dangerouslySetInnerHTML={{ __html: resource.description }} />
-        </Typography>
+
+        <Typography mt={1} dangerouslySetInnerHTML={{ __html: resource.description }} />
       </Box>
     </>
   );

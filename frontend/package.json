@@ -60,6 +60,7 @@
     "redux-thunk": "^3.1.0",
     "sass": "^1.77.8",
     "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.8.1",
     "store": "^2.0.12",
     "yup": "^1.4.0",
     "zod": "^3.23.8"

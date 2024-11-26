@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import HeadlessTippy from '@tippyjs/react/headless';
@@ -16,24 +18,29 @@ import Wrapper from '@/components/Wrapper';
 import GradientIcon from '@/components/GradientIcon';
 import path from '@/constants/routes';
 import Cookies from 'js-cookie';
-//
-const notifications = [
-  {
-    bodyHead: 'Dương Đức Phương',
-    bodyContent: 'Đã like ảnh của bạn!',
-    time: '1 phút trước',
-  },
-  {
-    bodyHead: 'Nguyễn Văn A',
-    bodyContent: 'Đã bình luận về bài viết của bạn!',
-    time: '1 phút trước',
-  },
-  {
-    bodyHead: 'Trần Thị B',
-    bodyContent: 'Đã theo dõi bạn!',
-    time: '1 phút trước',
-  },
-];
+// socket
+import { io } from 'socket.io-client';
+
+// api
+import { getNofificationById } from '@/api/nofification';
+
+// const notifications = [
+//   {
+//     bodyHead: 'Dương Đức Phương',
+//     bodyContent: 'Đã like ảnh của bạn!',
+//     time: '1 phút trước',
+//   },
+//   {
+//     bodyHead: 'Nguyễn Văn A',
+//     bodyContent: 'Đã bình luận về bài viết của bạn!',
+//     time: '1 phút trước',
+//   },
+//   {
+//     bodyHead: 'Trần Thị B',
+//     bodyContent: 'Đã theo dõi bạn!',
+//     time: '1 phút trước',
+//   },
+// ];
 
 const courses = [
   {
@@ -51,6 +58,7 @@ const courses = [
 ];
 interface UserProp {
   user: {
+    _id: string;
     name: string;
     email: string;
     nickname: string;
@@ -58,11 +66,21 @@ interface UserProp {
     role?: string;
   };
 }
+const socket = io(import.meta.env.VITE_URL_SERVER);
 
 const LoggedIn: React.FC<UserProp> = ({ user }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const downSM = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const {
+    data: notifications,
+    isLoading: isLoadingNoti,
+    refetch,
+  } = useQuery({
+    queryKey: ['notification'],
+    queryFn: () => getNofificationById(user._id),
+  });
 
   const handleLogout = () => {
     Cookies.remove('accessToken');
@@ -70,12 +88,30 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
     dispatch({ type: actionTypes.SET_ACCESS_TOKEN, payload: '' });
     dispatch({ type: actionTypes.SET_USER, payload: '' });
   };
+
+  // socket notification
+  useEffect(() => {
+    console.log(user._id);
+
+    socket.emit('joinNotificationRoom', user._id);
+
+    socket.on('newNotification', (data) => {
+      refetch();
+      console.log(data);
+    });
+    return () => {
+      socket.emit('leaveNotificationRoom', user._id);
+      socket.off('newNotification');
+    };
+  }, []);
+
+  if (isLoadingNoti) return <div>Loading...</div>;
   return (
     <>
       <li className={`tw-relative ${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
         <div className={`tw-text-xl`}>
           <span className="tw-absolute -tw-top-2 tw-bg-red-500 -tw-right-3.5 tw-text-white tw-pl-1.5 tw-text-sm tw-rounded-full tw-h-5 tw-w-5">
-            2
+            {notifications.length}
           </span>
           {/* thông báo */}
           <HeadlessTippy
@@ -103,12 +139,12 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
                       </div>
                     }
                   />
-                  {notifications.map((n, index) => (
+                  {notifications.map((n: any, index: number) => (
                     <Dropdown.ImageDescription
                       key={index}
                       hover
                       thumbnail="images/ktnt.png"
-                      bodyHead={n.bodyHead}
+                      bodyHead={'Dương Đức Phương'}
                       bodyContent={n.bodyContent}
                       bExtend={
                         <p

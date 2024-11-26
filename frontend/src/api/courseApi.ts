@@ -78,7 +78,11 @@ export const newCourse = async (data: any) => {
   const formData = new FormData();
 
   // Append the main course data
-  formData.append('learning_path_id', data?.learning_path_id || '');
+  // formData.append('learning_path_id', data?.learning_path_id || '');
+  if (Array.isArray(data.learning_path_ids)) {
+    console.log('check');
+    data.learning_path_ids.forEach((id: string) => formData.append('learning_path_ids[]', id));
+  }
   formData.append('user_id', data.user_id || '');
   formData.append('title', data.title);
   formData.append('level', data.level);
@@ -168,7 +172,13 @@ export const updateCourse = async (id: string, data: any) => {
   const formData = new FormData();
 
   // Append the main course data
-  formData.append('learning_path_id', data?.learning_path_id || '');
+  // formData.append('learning_path_id', data?.learning_path_id || '');
+
+  if (Array.isArray(data.learning_path_ids)) {
+    console.log('check');
+    data.learning_path_ids.forEach((id: string) => formData.append('learning_path_ids[]', id));
+  }
+
   formData.append('user_id', data.user_id || '');
   formData.append('title', data.title);
   formData.append('level', data.level);

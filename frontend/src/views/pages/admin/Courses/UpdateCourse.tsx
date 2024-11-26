@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import CourseForm, { Course } from './CourseForm';
+import CourseForm from './CourseForm';
+import { Course } from '@/interfaces/course';
 import HeaderTitle from '../Title';
 import path from '@/constants/routes';
 import { getCourse, updateCourse } from '@/api/courseApi';

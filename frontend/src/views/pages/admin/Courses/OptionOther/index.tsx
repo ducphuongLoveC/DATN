@@ -1,12 +1,12 @@
-import { useState, forwardRef, useImperativeHandle } from 'react';
+import { useState, forwardRef, useImperativeHandle, useMemo, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useQuery } from '@tanstack/react-query';
 import {
   Box,
   TextField,
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
   Typography,
   Paper,
   Chip,
@@ -18,6 +18,7 @@ import {
   FormControlLabel,
   Radio,
   useTheme,
+  Autocomplete,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { TrendingUp, Add } from '@mui/icons-material';
@@ -25,13 +26,18 @@ import { TrendingUp, Add } from '@mui/icons-material';
 // icon
 import PublicIcon from '@mui/icons-material/Public';
 import LockIcon from '@mui/icons-material/Lock';
+
+// api
+import { fetchLearningPaths } from '@/api/learningPathApi';
+
+// my pj
 import { RootState } from '@/store/reducer';
 
 type Level = 'easy' | 'medium' | 'high';
 
 interface CourseData {
   _id?: string;
-  learning_path_id: string;
+  learning_path_ids: string[];
   user_id: string;
   original_price: number;
   sale_price: number;
@@ -53,7 +59,7 @@ const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
     watch,
   } = useForm<CourseData>({
     defaultValues: {
-      learning_path_id: '6521438fd3f1e2a1a1a0b1c1',
+      learning_path_ids: defaultValue?.learning_path_ids || [],
       user_id: user._id,
       original_price: parseInt(defaultValue?.original_price || '0'),
       sale_price: parseInt(defaultValue?.sale_price || '0'),
@@ -74,6 +80,11 @@ const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
 
   const theme = useTheme();
   const [newOutcome, setNewOutcome] = useState<string>('');
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['learning_path'],
+    queryFn: fetchLearningPaths,
+  });
 
   const handleAddOutcome = () => {
     if (newOutcome.trim() !== '') {
@@ -107,6 +118,13 @@ const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
     console.log(data);
     alert('Dữ liệu đã được in ra console');
   };
+
+  const options = useMemo(() => {
+    return data?.map(({ title, _id }: { title: string; _id: string }) => ({ label: title, value: _id }));
+  }, [data]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>error</div>;
 
   return (
     <Paper sx={{ mt: 2 }}>
@@ -196,7 +214,37 @@ const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
 
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel id="difficulty-level-label">Cấp độ</InputLabel>
+              <FormLabel id="radio-group-label">Chọn các danh mục</FormLabel>
+              <Controller
+                name="learning_path_ids"
+                control={control}
+                defaultValue={[]}
+                render={({ field }) => (
+                  <Autocomplete
+                    {...field}
+                    multiple // Kích hoạt chế độ chọn nhiều
+                    options={options} // Danh sách các lựa chọn
+                    getOptionLabel={(option) => option.label} // Hiển thị nhãn
+                    isOptionEqualToValue={(option, value) => option.value === value.value} // So sánh giá trị
+                    onChange={(_, value) => field.onChange(value.map((item) => item.value))} // Cập nhật giá trị
+                    value={
+                      // Kiểm tra và thiết lập giá trị
+                      field.value?.map((id) => ({
+                        label: options.find((opt: any) => opt.value === id)?.label || '',
+                        value: id,
+                      })) || [] // Nếu không có giá trị, trả về mảng rỗng
+                    }
+                    renderInput={(params) => <TextField {...params} placeholder="Chọn danh mục" />}
+                  />
+                )}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <FormLabel id="difficulty-level-label">Chọn cấp độ</FormLabel>
+
               <Controller
                 name="level"
                 control={control}

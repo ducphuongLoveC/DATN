@@ -98,7 +98,7 @@ const Question: React.FC<QuestionProps> = ({ questions, onCompleted }) => {
 
       <Card sx={{ marginBottom: 3 }}>
         <CardContent>
-          <Typography variant="h6" dangerouslySetInnerHTML={{ __html: questions[currentQuestionIndex].question }} />
+          <Typography variant="h4" dangerouslySetInnerHTML={{ __html: questions[currentQuestionIndex].question }} />
         </CardContent>
 
         <FormControl component="fieldset" sx={{ paddingLeft: 2 }}>

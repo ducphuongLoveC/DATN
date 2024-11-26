@@ -28,6 +28,7 @@ import Comment from './Comment';
 import Resource from './Resource';
 import TrackList from './TrackList';
 import { RootState } from '@/store/reducer';
+import Header from './Header/Header';
 
 const LessonNavigation = styled(Box)(({ theme }) => ({
   position: 'fixed',
@@ -53,7 +54,7 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
   background: theme.palette.background.paper,
   marginRight: '10px',
   [theme.breakpoints.down('sm')]: {
-    padding: '2px 8px',
+    padding: '5px 8px',
   },
 }));
 
@@ -86,9 +87,12 @@ const Learning: React.FC = () => {
 
   const handleAdjacentResourceId = async (direction: string) => {
     try {
-      const res = await getAdjacentResourceId(idResource, direction);
+      const res = await getAdjacentResourceId(idResource, direction, user._id);
 
-      query.set('id', res._id);
+      console.log(res);
+      if (res?.progress?.is_unlocked) {
+        query.set('id', res._id);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -108,6 +112,7 @@ const Learning: React.FC = () => {
 
   return (
     <Box position={'relative'}>
+      {!moduleQuery.isLoading && <Header data={moduleQuery.data} />}
       <Box
         sx={{
           display: 'flex',
@@ -155,19 +160,54 @@ const Learning: React.FC = () => {
 
         <Box display={'flex'} alignItems={'center'}>
           <Box>
-            <ButtonStyle onClick={() => handleAdjacentResourceId('previous')}>
-              <Typography mr={1} variant="h4">
-                <ArrowBackIosNewIcon sx={{ fontSize: '20px' }} />
+            <ButtonStyle
+              sx={{
+                px: {
+                  xs: '50px',
+                },
+              }}
+              onClick={() => handleAdjacentResourceId('previous')}
+            >
+              <ArrowBackIosNewIcon sx={{ fontSize: '20px' }} />
+
+              <Typography
+                mr={1}
+                variant="h4"
+                sx={{
+                  display: {
+                    xs: 'none',
+                    sm: 'inline',
+                  },
+                }}
+              >
                 BÀI TRƯỚC
               </Typography>
             </ButtonStyle>
           </Box>
           <Box>
-            <ButtonStyle onClick={() => handleAdjacentResourceId('next')} sx={{ background: 'var(--color-primary)' }}>
-              <Typography mr={1} variant="h4" color="white">
+            <ButtonStyle
+              sx={{
+                background: 'var(--color-primary)',
+                px: {
+                  xs: '50px',
+                },
+              }}
+              onClick={() => handleAdjacentResourceId('next')}
+            >
+              <Typography
+                mr={1}
+                variant="h4"
+                color="white"
+                sx={{
+                  display: {
+                    xs: 'none',
+                    sm: 'inline',
+                  },
+                }}
+              >
                 BÀI TIẾP THEO
-                <ArrowForwardIosIcon sx={{ fontSize: '20px' }} />
               </Typography>
+              <ArrowForwardIosIcon sx={{ fontSize: '20px', color: 'white' }} />
             </ButtonStyle>
           </Box>
         </Box>

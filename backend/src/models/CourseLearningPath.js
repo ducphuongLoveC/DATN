@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 const courseLearningPathSchema = new mongoose.Schema({
   course_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -11,4 +12,4 @@ const courseLearningPathSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("CourseLearningPath", courseLearningPathSchema);
+  export default mongoose.model("CourseLearningPath", courseLearningPathSchema);

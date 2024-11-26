@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema(
   {
-    learning_path_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "LearningPath",
-      required: [true, "LearningPathId is required"],
-    },
+    // learning_path_id: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "LearningPath",
+    //   required: [true, "LearningPathId is required"],
+    // },
 
     user_id: {
       type: mongoose.Schema.Types.ObjectId,

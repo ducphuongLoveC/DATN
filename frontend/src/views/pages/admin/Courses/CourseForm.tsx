@@ -41,38 +41,7 @@ import OptionOther from './OptionOther';
 
 import DescriptionResource from './Resource/DescriptionResource';
 
-export interface Resource {
-  _id?: string;
-  title: string;
-  type: string;
-  url: string;
-  duration: number;
-  description: string;
-  resource_type: string;
-  isActive: boolean;
-}
-export interface Module {
-  _id?: string;
-  title: string;
-  resources: Resource[];
-  isActive: boolean;
-}
-export interface Course {
-  _id: string;
-  title: string;
-  user_id?: string;
-  learning_path_id?: string;
-  description: string;
-  learning_outcomes: string[];
-  level: 'easy' | 'medium' | 'high';
-  modules: Module[];
-  original_price: string;
-  sale_price: string;
-  thumbnail: File | null;
-  isActive: boolean;
-  isFree: boolean;
-}
-
+import { Course, Module, Resource } from '@/interfaces/course';
 interface CourseFormProps {
   datas?: Course;
   onSubmit: (courses: Course) => void;
@@ -434,7 +403,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
       <CardCourse
         defaultValue={datas ? datas : {}}
         onSubmit={onSubmit}
-        labels={['Chương học', 'Mô tả', 'Tùy chỉnh']}
+        labels={['Chương học', 'Mô tả', 'Cài đặt']}
         contents={[TableModule, Description, OptionOther]}
       />
     </Box>

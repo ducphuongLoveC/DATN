@@ -71,11 +71,14 @@ class ProgressController {
       await progress.save();
 
       // Gọi API để lấy resource tiếp theo
+      
       const response = await axios.get(
         `http://localhost:8000/api/resource/${resource_id}/adjacent/id?direction=next`
       );
       const nextResource = response.data; // Giả sử API trả về thông tin về resource tiếp theo
 
+      console.log(nextResource);
+      
       if (nextResource) {
         // Tạo tiến độ cho resource tiếp theo và mở khóa nó
         const nextProgress = new Progress({

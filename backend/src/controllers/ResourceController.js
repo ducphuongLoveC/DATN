@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Course from "../models/Course.js";
 import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
+import Progress from "../models/Progress.js";
 class ResourceController {
   // async getResource(req, res, next) {
   //   try {
@@ -217,20 +218,18 @@ class ResourceController {
   async getResource(req, res, next) {
     try {
       const { id, course_id, user_id } = req.params;
-      
+
       // Ensure valid ObjectId formatting for mongoose
       const courseObjectId = course_id
         ? new mongoose.Types.ObjectId(course_id)
         : null;
       const resourceObjectId = id ? new mongoose.Types.ObjectId(id) : null;
-      const userObjectId = user_id ? new mongoose.Types.ObjectId(user_id) : null;
-  
-      console.log("Course ID:", courseObjectId);
-      console.log("Resource ID:", resourceObjectId);
-      console.log("User ID:", userObjectId);
-  
+      const userObjectId = user_id
+        ? new mongoose.Types.ObjectId(user_id)
+        : null;
+
       let resource;
-  
+
       if (resourceObjectId) {
         resource = await Resource.aggregate([
           { $match: { _id: resourceObjectId } },
@@ -248,7 +247,9 @@ class ResourceController {
               from: "progresses", // Join with "progresses" collection
               let: { resourceId: "$_id" }, // Define local variables for lookup
               pipeline: [
-                { $match: { $expr: { $eq: ["$resource_id", "$$resourceId"] } } },
+                {
+                  $match: { $expr: { $eq: ["$resource_id", "$$resourceId"] } },
+                },
                 ...(userObjectId
                   ? [{ $match: { user_id: userObjectId } }] // Filter by user_id
                   : []),
@@ -281,7 +282,9 @@ class ResourceController {
               from: "progresses",
               let: { resourceId: "$_id" }, // Define local variables for lookup
               pipeline: [
-                { $match: { $expr: { $eq: ["$resource_id", "$$resourceId"] } } },
+                {
+                  $match: { $expr: { $eq: ["$resource_id", "$$resourceId"] } },
+                },
                 ...(userObjectId
                   ? [{ $match: { user_id: userObjectId } }] // Filter by user_id
                   : []),
@@ -292,22 +295,25 @@ class ResourceController {
           { $unwind: { path: "$progress", preserveNullAndEmptyArrays: true } }, // Ensure progress exists or is null
         ]);
       }
-  
-      if (!resource || resource.length === 0) {
+
+      if (
+        !resource ||
+        resource.length === 0 ||
+        !resource[0]?.progress.is_unlocked
+      ) {
         return res.status(404).json({ message: "Resource not found" });
       }
-  
+
       res.status(200).json(resource[0] || null);
     } catch (error) {
       next(error);
     }
   }
-  
 
   async getAdjacentResourceId(req, res, next) {
     try {
       const { id } = req.params;
-      const { direction } = req.query;
+      const { direction, user_id } = req.query;
 
       if (direction && direction !== "previous" && direction !== "next") {
         return res.status(400).json({
@@ -394,7 +400,13 @@ class ResourceController {
           message: 'Invalid direction parameter. Use "previous" or "next".',
         });
       }
-      res.status(200).json({ ...adjacentResource });
+
+      const progress = await Progress.findOne({
+        user_id: new mongoose.Types.ObjectId(user_id),
+        resource_id: adjacentResource._id,
+      });
+
+      res.status(200).json({ ...adjacentResource, progress });
     } catch (error) {
       next(error);
     }

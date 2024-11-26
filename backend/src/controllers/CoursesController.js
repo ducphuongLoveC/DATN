@@ -5,6 +5,7 @@ import Course from "../models/Course.js";
 import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
 
+import CourseLearningPath from "../models/CourseLearningPath.js";
 import cloudinary from "cloudinary";
 
 cloudinary.config({
@@ -33,7 +34,7 @@ class CoursesController {
     try {
       const courses = await Course.aggregate([
         {
-          $match: { isActive: true },   
+          $match: { isActive: true },
         },
         {
           $lookup: {
@@ -55,7 +56,6 @@ class CoursesController {
         {
           $project: {
             _id: 1,
-            learning_path_id: 1,
             user_id: 1,
             title: 1,
             level: 1,
@@ -104,7 +104,6 @@ class CoursesController {
         {
           $group: {
             _id: "$_id",
-            learning_path_id: { $first: "$learning_path_id" },
             user_id: { $first: "$user_id" },
             title: { $first: "$title" },
             level: { $first: "$level" },
@@ -128,6 +127,7 @@ class CoursesController {
       next(error);
     }
   }
+
   async getCourseWithModulesAndResources(req, res, next) {
     try {
       const courseId = req.params.id;
@@ -161,7 +161,6 @@ class CoursesController {
         {
           $group: {
             _id: "$_id",
-            learning_path_id: { $first: "$learning_path_id" },
             user_id: { $first: "$user_id" },
             title: { $first: "$title" },
             level: { $first: "$level" },
@@ -175,6 +174,29 @@ class CoursesController {
             modules: { $push: "$modules" },
           },
         },
+        // Lookup từ CourseLearningPath để lấy các learningPath_id
+        {
+          $lookup: {
+            from: "courselearningpaths", // Tên collection của bảng trung gian
+            localField: "_id",
+            foreignField: "course_id",
+            as: "courseLearningPaths",
+          },
+        },
+        {
+          $addFields: {
+            learning_path_ids: {
+              $map: {
+                input: "$courseLearningPaths",
+                as: "clp",
+                in: "$$clp.learningPath_id",
+              },
+            },
+          },
+        },
+        {
+          $unset: "courseLearningPaths",
+        },
       ]);
 
       if (!course || course.length === 0) {
@@ -186,6 +208,7 @@ class CoursesController {
       next(error);
     }
   }
+
   async getCoursesWithModulesAndResourcesUser(req, res, next) {
     try {
       const courses = await Course.aggregate([
@@ -214,7 +237,6 @@ class CoursesController {
         {
           $group: {
             _id: "$_id",
-            learning_path_id: { $first: "$learning_path_id" },
             user_id: { $first: "$user_id" },
             title: { $first: "$title" },
             level: { $first: "$level" },
@@ -304,7 +326,6 @@ class CoursesController {
         {
           $group: {
             _id: "$_id",
-            learning_path_id: { $first: "$learning_path_id" },
             user_id: { $first: "$user_id" },
             title: { $first: "$title" },
             level: { $first: "$level" },
@@ -338,7 +359,6 @@ class CoursesController {
         {
           $project: {
             _id: 1,
-            learning_path_id: 1,
             user_id: 1,
             title: 1,
             level: 1,
@@ -485,7 +505,7 @@ class CoursesController {
   addCourseDetail = async (req, res, next) => {
     try {
       const {
-        learning_path_id,
+        learning_path_ids,
         user_id,
         title,
         level,
@@ -521,7 +541,6 @@ class CoursesController {
 
       // Tạo khóa học mới
       const newCourse = new Course({
-        learning_path_id,
         user_id,
         title,
         level,
@@ -544,6 +563,14 @@ class CoursesController {
       });
 
       const savedCourse = await newCourse.save();
+
+      if (Array.isArray(learning_path_ids) && learning_path_ids.length > 0) {
+        const newLearningPaths = learning_path_ids.map((learningPathId) => ({
+          course_id: savedCourse._id,
+          learningPath_id: learningPathId,
+        }));
+        await CourseLearningPath.insertMany(newLearningPaths);
+      }
 
       // Xử lý các module và resource
       if (modules && Array.isArray(modules)) {
@@ -874,6 +901,7 @@ class CoursesController {
     try {
       const courseId = req.params.id;
       const {
+        learning_path_ids,
         title,
         level,
         learning_outcomes,
@@ -919,6 +947,15 @@ class CoursesController {
         },
         { new: true, runValidators: true }
       );
+      // cập nhật learningPath id vào bảng trung gian
+      await CourseLearningPath.deleteMany({ course_id: courseId });
+      if (Array.isArray(learning_path_ids) && learning_path_ids.length > 0) {
+        const newLearningPaths = learning_path_ids.map((learningPathId) => ({
+          course_id: courseId,
+          learningPath_id: learningPathId,
+        }));
+        await CourseLearningPath.insertMany(newLearningPaths);
+      }
 
       if (thumbnailFile) {
         fs.unlink(thumbnailFile.path, (err) => {
@@ -934,6 +971,7 @@ class CoursesController {
         });
       }
 
+      // update module
       // Get existing modules for the course
       const existingModules = await Module.find({ course_id: courseId });
       const existingModuleIds = new Set(

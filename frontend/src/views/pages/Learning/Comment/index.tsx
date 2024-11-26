@@ -1,141 +1,160 @@
-import { useState } from 'react';
-import {
-  Avatar,
-  Box,
-  Button,
-  Typography,
-  IconButton,
-  Stack,
-  useTheme,
-} from '@mui/material';
-import {
-  ThumbUp as ThumbUpIcon,
-  ThumbDown as ThumbDownIcon,
-  Reply as ReplyIcon,
-} from '@mui/icons-material';
+import { useState, useEffect } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import moment from 'moment';
+import { Link as MUILink } from '@mui/material';
+import { Link } from 'react-router-dom';
 
-// import './Comment.css';
+import { io } from 'socket.io-client';
 
-// my project
+// redux
+import { useSelector } from 'react-redux';
+// mui
+import { Avatar, Box, Button, Typography, IconButton, Stack, useTheme } from '@mui/material';
+// healessTippy
+import HeadlessTippy from '@tippyjs/react/headless';
+// icon
+import { ThumbUp as ThumbUpIcon, ThumbDown as ThumbDownIcon, Reply as ReplyIcon } from '@mui/icons-material';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+//custom hook
+import useQueryParams from '@/hooks/useQueryParams';
+import { getCommentByResourceId, createComment, deleteComment } from '@/api/CommentApi';
+
+// text
 import TextEditor from '@/components/TextEditor';
+import { RootState } from '@/store/reducer';
+
+// my pj
+import Wrapper from '@/components/Wrapper';
+interface User {
+  _id?: string;
+  name: string;
+  profile_picture: string;
+  nickname: string;
+}
 
 interface CommentData {
-  username: string;
-  avatar: string;
-  comment: string;
+  resource_id: string;
+  user: User;
+  content: string;
   likes: number;
-  timestamp: string;
+  createdAt: string;
+  parent_id?: string | null;
+  replies: CommentData[];
+  _id: string;
 }
 
 interface CommentInputProps {
+  user: User;
   onSubmit?: (comment: string) => void;
   placeholder?: string;
   buttonText?: string;
   init?: string;
 }
 
-interface CommentItemProps extends CommentData {
+interface CommentItemProps {
+  user: User;
+  fatherCommentUser?: CommentData['user'] | null;
+  comment: CommentData;
   deep?: number;
-}
 
-const initialComments: CommentData[] = [
-  {
-    username: 'John Doe',
-    avatar: '/placeholder.svg?height=40&width=40',
-    comment:
-      'This is an amazing video! I learned so much from it. Keep up the great work!',
-    likes: 42,
-    timestamp: '2 ngày trước',
-  },
-  {
-    username: 'Jane Smith',
-    avatar: '/placeholder.svg?height=40&width=40',
-    comment:
-      'I have a question about the topic at 3:24. Could you please elaborate on that part?',
-    likes: 15,
-    timestamp: '1 ngày trước',
-  },
-  {
-    username: 'Alex Johnson',
-    avatar: '/placeholder.svg?height=40&width=40',
-    comment:
-      'Your explanations are always so clear and easy to follow. Thanks for sharing your knowledge!',
-    likes: 78,
-    timestamp: '3 giờ trước',
-  },
-  {
-    username: 'Emily Brown',
-    avatar: '/placeholder.svg?height=40&width=40',
-    comment: 'This is exactly what I was looking for. Thanks a lot!',
-    likes: 10,
-    timestamp: '5 giờ trước',
-  },
-  {
-    username: 'Michael Green',
-    avatar: '/placeholder.svg?height=40&width=40',
-    comment:
-      "I disagree with some points made in the video, but overall, it's very informative.",
-    likes: 5,
-    timestamp: '8 giờ trước',
-  },
-];
+  parent_id: string | null;
+}
+import { CommentPayloadData } from '@/interfaces/Comment';
+
+const socket = io(import.meta.env.VITE_URL_SERVER);
 
 export default function Comment() {
-  const [comments, setComments] = useState<CommentData[]>(initialComments);
+  const { get } = useQueryParams();
+  const resource_id = get('id');
 
-  const handleComment = (comment: string) => {
-    setComments([
-      {
-        username: 'Duong Duc Phuong',
-        avatar: '/placeholder.svg?height=40&width=40',
-        comment: comment,
-        likes: 0,
-        timestamp: 'Vài giây trước',
-      },
-      ...comments,
-    ]);
+  const user = useSelector((state: RootState) => state.authReducer.user);
+
+  const {
+    data: comments = [],
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ['comment', resource_id],
+    queryFn: ({ queryKey }) => {
+      const [, id] = queryKey as [string, string];
+      return getCommentByResourceId(id);
+    },
+  });
+
+  const mutation = useMutation({
+    mutationKey: ['comment'],
+    mutationFn: createComment,
+  });
+  // socket
+  useEffect(() => {
+    if (resource_id) {
+      // Tham gia vào phòng dựa trên `resource_id`
+      socket.emit('joinCommentRoom', resource_id);
+    }
+    socket.on('newComment', (data) => {
+      console.log(data);
+      refetch();
+    });
+    socket.on('deleteComment', (data) => {
+      console.log(data);
+      refetch();
+    });
+
+    return () => {
+      if (resource_id) {
+        socket.emit('leaveCommentRoom', resource_id); // Thoát phòng khi rời
+      }
+      socket.off('newComment'); // Hủy lắng nghe sự kiện
+      socket.off('deleteComment'); // Hủy lắng nghe sự kiện
+    };
+  }, [resource_id]);
+
+  const handleComment = (content: string) => {
+    if (resource_id && user?._id) {
+      const payloadData: CommentPayloadData = {
+        resource_id: resource_id,
+        user_id: user._id,
+        content,
+      };
+      mutation.mutate(payloadData);
+    }
   };
+
+  if (isLoading) return <div>Loading comments...</div>;
   return (
     <Box maxWidth="md" margin="auto" padding={2}>
       <Typography variant="h4" gutterBottom fontWeight="bold">
         Bình luận
       </Typography>
-      <CommentInput onSubmit={handleComment} buttonText="Bình luận" />
-      <Stack spacing={3} mt={4}>
-        {comments.map((c: any, index: number) => (
-          <CommentItem
-            key={index}
-            username={c.username}
-            avatar={c.avatar}
-            comment={c.comment}
-            likes={c.likes}
-            timestamp={c.timestamp}
-            deep={c.deep}
-          />
-        ))}
+      <CommentInput user={user} onSubmit={handleComment} buttonText="Bình luận" />
+      <Stack spacing={3}>
+        {comments.length ? (
+          comments.map((c: CommentData) => (
+            <CommentItem user={user} key={c._id} comment={c} parent_id={c._id} deep={1} />
+          ))
+        ) : (
+          <Box textAlign={'center'}>Không có nội dung comment</Box>
+        )}
       </Stack>
     </Box>
   );
 }
 
-function CommentInput({
-  onSubmit,
-  buttonText = 'Bình luận',
-  init = '',
-}: CommentInputProps) {
-  const [comment, setComment] = useState<string>('');
+function CommentInput({ user, onSubmit, buttonText = 'Bình luận', init = '' }: CommentInputProps) {
+  const [comment, setComment] = useState<string>(init);
   const theme = useTheme();
 
   const handleSubmit = () => {
     if (comment.trim()) {
       onSubmit && onSubmit(comment);
-      setComment('');
+      setComment(''); // Clear comment input after submit
     }
   };
 
   return (
     <Box display="flex" alignItems="flex-start">
       <Avatar
+        src={user?.profile_picture}
         sx={{
           marginRight: 2,
           width: 40,
@@ -143,19 +162,9 @@ function CommentInput({
           backgroundColor: theme.palette.background.paper2,
           color: theme.palette.text.primary,
         }}
-      >
-        U
-      </Avatar>
+      ></Avatar>
       <Box flexGrow={1}>
-        <TextEditor
-          mode="basic"
-          initialValue={init}
-          onChange={(data) => {
-            console.log(data);
-            
-            setComment(data);
-          }}
-        />
+        <TextEditor mode="basic" value={comment} onChange={(data) => setComment(data)} />
         <Box display="flex" justifyContent="flex-end" marginTop={1}>
           <Button
             sx={{
@@ -173,38 +182,41 @@ function CommentInput({
   );
 }
 
-function CommentItem({
-  username,
-  avatar,
-  comment,
-  likes,
-  timestamp,
-  deep = 1,
-}: CommentItemProps) {
+function CommentItem({ user, fatherCommentUser = null, comment, deep = 1 }: CommentItemProps) {
   const [isReplying, setIsReplying] = useState<boolean>(false);
-  const [replies, setReplies] = useState<CommentData[]>([]);
   const theme = useTheme();
 
-  const handleReply = (replyText: string) => {
-    setReplies([
-      ...replies,
-      {
-        username: 'You',
-        avatar: '/placeholder.svg?height=32&width=32',
-        comment: replyText,
-        timestamp: 'Just now',
-        likes: 0,
-      },
-    ]);
+  const mutation = useMutation({
+    mutationKey: ['comment'],
+    mutationFn: createComment,
+  });
+
+  const handleReply = (content: string) => {
+    console.log(`Reply to ${comment.user.name}:`, content);
+    if (comment.resource_id && user?._id && comment._id && content) {
+      const payloadData: CommentPayloadData = {
+        resource_id: comment.resource_id,
+        user_id: user._id,
+        parent_id: comment._id,
+        content,
+      };
+      mutation.mutate(payloadData);
+    }
     setIsReplying(false);
+  };
+
+  const handleDeleteComment = async (id: string) => {
+    if (confirm('Bạn có muốn xóa comment này không?')) {
+      await deleteComment(id);
+    }
   };
 
   return (
     <Box>
       <Box display="flex">
         <Avatar
-          src={avatar}
-          alt={username}
+          src={comment.user.profile_picture}
+          alt={comment.user.name}
           sx={{
             marginRight: 2,
             width: 40,
@@ -212,54 +224,53 @@ function CommentItem({
             background: theme.palette.background.paper2,
             color: theme.palette.text.primary,
           }}
-        >
-          {username.charAt(0)}
-        </Avatar>
+        />
         <Box flexGrow={1}>
           <Box display="flex" alignItems="center">
-            <Typography
-              variant="subtitle2"
-              component="span"
-              fontWeight="bold"
-              color="text.primary"
-            >
-              {username}
+            <Typography variant="subtitle2" component="span" fontWeight="bold" color="text.primary">
+              {comment.user.name}
             </Typography>
-            <Typography
-              variant="caption"
-              component="span"
-              color="text.secondary"
-              sx={{ marginLeft: 1 }}
-            >
-              {timestamp}
+            <Typography variant="caption" component="span" color="text.secondary" sx={{ marginLeft: 1 }}>
+              {moment(comment.createdAt).fromNow()}
             </Typography>
+            {user._id === comment.user._id && (
+              <HeadlessTippy
+                trigger="click"
+                placement="bottom-start"
+                interactive
+                allowHTML
+                render={(attrs) => (
+                  <Wrapper {...attrs} style={{ padding: 0 }}>
+                    <Button onClick={() => handleDeleteComment(comment._id)}>Xóa bình luận</Button>
+                  </Wrapper>
+                )}
+              >
+                <Button>
+                  <MoreHorizIcon sx={{ fontSize: '20px' }} />
+                </Button>
+              </HeadlessTippy>
+            )}
           </Box>
-          <Typography
-            variant="body2"
-            paragraph
-            sx={{ mt: 0.5, color: 'text.primary' }}
-            dangerouslySetInnerHTML={{ __html: comment }} 
-          />
-          
-      
+          <Typography variant="body2" paragraph sx={{ mt: 0.5, color: 'text.primary' }}>
+            <Box display={'flex'}>
+              {fatherCommentUser && (
+                <MUILink mr={1} target="_blank" to={`/@${fatherCommentUser.nickname}`} component={Link}>
+                  @{fatherCommentUser.name}
+                </MUILink>
+              )}
+              {/* Nội dung comment */}
+              <span dangerouslySetInnerHTML={{ __html: comment.content }} />
+            </Box>
+          </Typography>
           <Box display="flex" alignItems="center">
             <IconButton size="small" aria-label="like">
-              <ThumbUpIcon
-                sx={{ color: theme.palette.text.primary }}
-                fontSize="small"
-              />
+              <ThumbUpIcon sx={{ color: theme.palette.text.primary }} fontSize="small" />
             </IconButton>
-            <Typography
-              variant="caption"
-              sx={{ marginRight: 1, color: 'text.secondary' }}
-            >
-              {likes}
+            <Typography variant="caption" sx={{ marginRight: 1, color: 'text.secondary' }}>
+              {comment.likes}
             </Typography>
             <IconButton size="small" aria-label="dislike">
-              <ThumbDownIcon
-                sx={{ color: theme.palette.text.primary }}
-                fontSize="small"
-              />
+              <ThumbDownIcon sx={{ color: theme.palette.text.primary }} fontSize="small" />
             </IconButton>
             <Button
               startIcon={<ReplyIcon />}
@@ -279,27 +290,21 @@ function CommentItem({
 
       {isReplying && (
         <Box ml={7} mt={2}>
-          <CommentInput
-            onSubmit={handleReply}
-            placeholder="Add a reply..."
-            buttonText="Trả lời"
-            init={`@${username}`}
-          />
+          <CommentInput user={user} onSubmit={handleReply} placeholder="Add a reply..." buttonText="Trả lời" />
         </Box>
       )}
 
-      {replies.length > 0 && (
+      {comment.replies.length > 0 && (
         <Box ml={deep === 1 ? 7 : 0} mt={2}>
           <Stack spacing={2}>
-            {replies.map((reply, index) => (
+            {comment.replies.map((reply, index) => (
               <CommentItem
-                deep={deep + 1}
+                parent_id={comment._id}
+                user={user}
+                fatherCommentUser={comment.user}
                 key={index}
-                username={reply.username}
-                avatar={reply.avatar}
-                comment={reply.comment}
-                likes={reply.likes}
-                timestamp={reply.timestamp}
+                comment={reply}
+                deep={deep + 1}
               />
             ))}
           </Stack>

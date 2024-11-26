@@ -10,8 +10,13 @@ export const getNameModuleById = async (id: string) => {
   return res.data;
 };
 
-export const getAdjacentResourceId = async (id: string, direction: string) => {
-  const res = await axiosInstance.get(`api/resource/${id}/adjacent/id?direction=${direction}`);
+// export const getAdjacentResourceId = async (id: string, direction: string) => {
+//   const res = await axiosInstance.get(`api/resource/${id}/adjacent/id?direction=${direction}`);
+//   return res.data;
+// };
+
+export const getAdjacentResourceId = async (id: string, direction: string, user_id: string) => {
+  const res = await axiosInstance.get(`api/resource/${id}/adjacent/id?direction=${direction}&user_id=${user_id}`);
   return res.data;
 };
 export const getFirstResourceId = async (course_id: string) => {
