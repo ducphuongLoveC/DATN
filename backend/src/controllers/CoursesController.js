@@ -9,10 +9,11 @@ import CourseLearningPath from "../models/CourseLearningPath.js";
 import cloudinary from "cloudinary";
 
 cloudinary.config({
-  cloud_name: "dauyavqpr",
-  api_key: "663283623232467",
-  api_secret: "h8EpbOZGM4V5dXUMgrq8rRGhOi4",
+  cloud_name: "dgzwrfdjn",
+  api_key: "884514879143886",
+  api_secret: "L_sdFIOH6Z164w43rJg3p-N_gWw",
 });
+
 class CoursesController {
   async get(req, res, next) {
     try {
@@ -516,6 +517,7 @@ class CoursesController {
         isActive,
         learning_outcomes,
         modules,
+        thumbnail,
       } = req.body;
 
       console.log("Received body:", req.body);
@@ -535,7 +537,8 @@ class CoursesController {
       let uploadedThumbnail;
       if (thumbnailFile) {
         uploadedThumbnail = await cloudinary.v2.uploader.upload(
-          thumbnailFile.path
+          thumbnailFile.path,
+          { folder: "images" }
         );
       }
 
@@ -544,9 +547,7 @@ class CoursesController {
         user_id,
         title,
         level,
-        thumbnail: uploadedThumbnail
-          ? uploadedThumbnail.secure_url
-          : "default-thumbnail.jpg",
+        thumbnail: uploadedThumbnail ? uploadedThumbnail.secure_url : thumbnail,
         description,
         original_price,
         sale_price,
@@ -557,10 +558,12 @@ class CoursesController {
           : [learning_outcomes],
       });
 
-      fs.unlink(thumbnailFile.path, (err) => {
-        if (err) console.error("Error deleting temp file:", err);
-        else console.log("Temp file deleted");
-      });
+      if (thumbnailFile) {
+        fs.unlink(thumbnailFile.path, (err) => {
+          if (err) console.error("Error deleting temp file:", err);
+          else console.log("Temp file deleted");
+        });
+      }
 
       const savedCourse = await newCourse.save();
 
@@ -574,7 +577,8 @@ class CoursesController {
 
       // Xử lý các module và resource
       if (modules && Array.isArray(modules)) {
-        for (const module of modules) {
+        for (const moduleIndex in modules) {
+          const module = modules[moduleIndex];
           const newModule = new Module({
             ...module,
             course_id: savedCourse._id,
@@ -582,10 +586,27 @@ class CoursesController {
 
           const savedModule = await newModule.save();
 
-          for (const resource of module.resources) {
+          for (const resourceIndex in module.resources) {
+            const resource = module.resources[resourceIndex];
+
             const resourceFile = req.files?.find(
               (file) => file.originalname === resource.fileName
             );
+
+            const matchedFile = req.files.find(
+              (file) =>
+                file.fieldname ===
+                `modules[${moduleIndex}][resources][${resourceIndex}][thumbnail]`
+            );
+
+            let uploadedThumbnailResource = null;
+
+            if (matchedFile) {
+              uploadedThumbnailResource = await cloudinary.v2.uploader.upload(
+                matchedFile.path,
+                { folder: "images" }
+              );
+            }
 
             let uploadedFile;
 
@@ -596,7 +617,8 @@ class CoursesController {
                     uploadedFile = await cloudinary.v2.uploader.upload(
                       resourceFile.path,
                       {
-                        resource_type: "video",
+                        folder: "videos",
+                        resource_type: resource.type || "auto",
                         timeout: 240000,
                       }
                     );
@@ -607,11 +629,15 @@ class CoursesController {
                   }
                 }
 
+                console.log("hereeee", resource);
+
                 const newVideoResource = new Resource({
                   module_id: savedModule._id,
                   resource_type: "Video",
                   title: resource.title,
-                  url: uploadedFile?.secure_url || "",
+                  thumbnail:
+                    uploadedThumbnailResource?.secure_url || resource.thumbnail,
+                  url: uploadedFile?.secure_url || resource.url,
                   duration: resource.duration || 0,
                   poster: resource.poster || "",
                 });
@@ -631,6 +657,8 @@ class CoursesController {
                   module_id: savedModule._id,
                   resource_type: "Question",
                   title: resource.title,
+                  thumbnail:
+                    uploadedThumbnailResource?.secure_url || resource.thumbnail,
                   questions: questions,
                   duration: resource.duration,
                   description: resource.description,
@@ -665,6 +693,7 @@ class CoursesController {
       next(error);
     }
   };
+
   // ---------------------------------------------------------------------
   // async updateCourseDetail(req, res, next) {
   //   try {
@@ -924,7 +953,8 @@ class CoursesController {
       let uploadedThumbnail;
       if (thumbnailFile) {
         uploadedThumbnail = await cloudinary.v2.uploader.upload(
-          thumbnailFile.path
+          thumbnailFile.path,
+          { folder: "images" }
         );
       }
 
@@ -978,8 +1008,8 @@ class CoursesController {
         existingModules.map((module) => module._id.toString())
       );
 
-      for (let module of modules) {
-        console.log("here", module);
+      for (let moduleIndex in modules) {
+        const module = modules[moduleIndex];
 
         module.resources = module.resources || [];
 
@@ -1000,7 +1030,27 @@ class CoursesController {
             });
 
             // Process each resource
-            for (const resource of module.resources) {
+            for (const resourceIndex in module.resources) {
+              const resource = module.resources[resourceIndex];
+              // console.log(resource);
+
+              const matchedFile = req.files.find(
+                (file) =>
+                  file.fieldname ===
+                  `modules[${moduleIndex}][resources][${resourceIndex}][thumbnail]`
+              );
+
+              // upload thum cho resource
+              let uploadedThumbnailResource = null;
+              if (matchedFile) {
+                uploadedThumbnailResource = await cloudinary.v2.uploader.upload(
+                  matchedFile.path,
+                  { folder: "images" }
+                );
+              }
+
+              console.log("heree", matchedFile);
+
               if (resource._id && resource._id.trim() !== "") {
                 // Update existing resource
                 let updateData = {};
@@ -1012,6 +1062,7 @@ class CoursesController {
                   // Upload the new file to Cloudinary
                   const uploadedFile = await cloudinary.v2.uploader.upload(
                     resourceFile.path,
+                    { folder: "videos" },
                     { resource_type: resource.type || "auto" }
                   );
                   updateData = {
@@ -1019,6 +1070,7 @@ class CoursesController {
                     description: resource.description,
                     duration: resource.duration,
                     url: uploadedFile.secure_url,
+
                     isActive: resource.isActive,
                   };
 
@@ -1029,14 +1081,15 @@ class CoursesController {
                   });
                 } else {
                   if (resource.resource_type == "Video") {
-                    const existingResource = await Resource.findById(
-                      resource._id
-                    );
+                    // const existingResource = await Resource.findById(
+                    //   resource._id
+                    // );
 
                     updateData = {
                       title: resource.title,
                       description: resource.description,
-                      url: existingResource?.url || "",
+                      url: resource.url,
+                      duration: resource.duration,
                     };
                   } else if (resource.resource_type == "Question") {
                     const questions = resource.questions.map((question) => ({
@@ -1059,7 +1112,13 @@ class CoursesController {
                 // Update the resource
                 await Resource.findByIdAndUpdate(
                   resource._id,
-                  { ...updateData, isActive: resource.isActive },
+                  {
+                    ...updateData,
+                    thumbnail:
+                      uploadedThumbnailResource?.secure_url ||
+                      resource.thumbnail,
+                    isActive: resource.isActive,
+                  },
                   { new: true, runValidators: true }
                 );
               } else {
@@ -1077,6 +1136,7 @@ class CoursesController {
                     uploadedFile = await cloudinary.v2.uploader.upload(
                       resourceFile.path,
                       {
+                        folder: "videos",
                         resource_type: resource.type || "auto",
                         timeout: 240000,
                       }
@@ -1119,8 +1179,19 @@ class CoursesController {
                   };
                 }
 
-                const newResource = new Resource(newData);
+                const newResource = new Resource({
+                  ...newData,
+                  thumbnail:
+                    uploadedThumbnailResource?.secure_url || resource.thumbnail,
+                });
                 await newResource.save();
+              }
+
+              if (matchedFile) {
+                fs.unlink(matchedFile.path, (err) => {
+                  if (err) console.error("Error deleting temp file:", err);
+                  else console.log("Temp file deleted");
+                });
               }
             }
 
@@ -1152,7 +1223,24 @@ class CoursesController {
           const savedModule = await newModule.save();
 
           // Handle resources for the new module
-          for (const resource of module.resources) {
+          for (const resourceIndex in module.resources) {
+            const resource = module.resources[resourceIndex];
+
+            const matchedFile = req.files.find(
+              (file) =>
+                file.fieldname ===
+                `modules[${moduleIndex}][resources][${resourceIndex}][thumbnail]`
+            );
+
+            // upload thum cho resource
+            let uploadedThumbnailResource = null;
+            if (matchedFile) {
+              uploadedThumbnailResource = await cloudinary.v2.uploader.upload(
+                matchedFile.path,
+                { folder: "images" }
+              );
+            }
+
             const resourceFile = req.files?.find(
               (file) => file.originalname === resource.fileName
             );
@@ -1164,6 +1252,7 @@ class CoursesController {
                 uploadedFile = await cloudinary.v2.uploader.upload(
                   resourceFile.path,
                   {
+                    folder: "videos",
                     resource_type: resource.type || "auto",
                     timeout: 240000,
                   }
@@ -1202,9 +1291,20 @@ class CoursesController {
               };
             }
 
-            const newResource = new Resource(newData);
+            const newResource = new Resource({
+              ...newData,
+              thumbnail:
+                uploadedThumbnailResource?.secure_url || resource.thumbnail,
+            });
 
             await newResource.save();
+
+            if (matchedFile) {
+              fs.unlink(matchedFile.path, (err) => {
+                if (err) console.error("Error deleting temp file:", err);
+                else console.log("Temp file deleted");
+              });
+            }
           }
         }
       }

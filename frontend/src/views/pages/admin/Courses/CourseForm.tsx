@@ -87,6 +87,8 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
 
       // Handle resource actions
       const handleAddResource = (resource: Resource) => {
+        console.log(resource);
+
         setResources((prev) => [...prev, { ...resource, isActive: true }]);
         setIsOpenModalDocument(false);
       };
@@ -195,7 +197,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
 
           {/* Modal for adding/editing resource */}
           <Dialog
-            title={`Thêm tài liệu thứ ${resources.length + 1}`}
+            title={`${Object.keys(dataEdit).length ? 'Sửa' : 'Thêm'} tài liệu`}
             open={isOpenModalDocument}
             onClose={() => {
               toggleModalAddDocuments();
@@ -203,7 +205,6 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
             }}
           >
             <CardCourse
-              isImage={false}
               defaultValue={dataEdit || {}}
               onSubmit={(data: any) =>
                 dataEdit && Object.keys(dataEdit).length > 0 ? handleEditResource(data) : handleAddResource(data)

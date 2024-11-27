@@ -2,11 +2,13 @@ import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import { Box, Button } from '@mui/material';
 import { CloudUpload } from '@mui/icons-material';
 
+import Storage from '../Storage';
+
 const VideoUpload = forwardRef(({ defaultValue }: any, ref) => {
   const [formData, setFormData] = useState<any>({
     _id: defaultValue?._id || '',
     fileName: '',
-    file: null,
+    // file: null,
     resource_type: 'Video',
     duration: defaultValue?.duration || '',
     url: defaultValue?.url || '',
@@ -46,6 +48,33 @@ const VideoUpload = forwardRef(({ defaultValue }: any, ref) => {
         Tải lên video
         <input type="file" accept="video/*" hidden onChange={handleFile} />
       </Button>
+      {/* <Storage
+        type="videos"
+        onSelectMedia={(url) => {
+          setFormData((pre: any) => ({
+            ...pre,
+            url,
+          }));
+        }}
+      /> */}
+
+      <Storage
+        type="videos"
+        onSelectMedia={(url) => {
+          const video = document.createElement('video');
+          video.src = url;
+
+          video.onloadedmetadata = () => {
+            const duration = Math.round(video.duration);
+            setFormData((pre: any) => ({
+              ...pre,
+              url,
+              duration,
+            }));
+          };
+        }}
+      />
+
       {videoSrc ? <video controls src={videoSrc} /> : formData.url && <video controls src={formData.url} />}
     </Box>
   );

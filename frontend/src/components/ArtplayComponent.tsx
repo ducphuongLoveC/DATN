@@ -24,6 +24,26 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poste
       hls.loadSource(videoUrl);
 
       art.current = new ArtPlayer({
+        pip: true,
+        setting: true,
+        flip: true,
+        playbackRate: true,
+        aspectRatio: true,
+        fullscreen: true,
+        fullscreenWeb: true,
+        subtitleOffset: true,
+        miniProgressBar: true,
+        mutex: true,
+        backdrop: true,
+        playsInline: true,
+        autoPlayback: true,
+        airplay: true,
+        theme: '#23ade5',
+        lang: navigator.language.toLowerCase(),
+        moreVideoAttr: {
+          crossOrigin: 'anonymous',
+        },
+
         poster: poster || '',
         container: artPlayerRef.current,
         url: videoUrl,

@@ -1,10 +1,11 @@
-import CourseForm, { Course } from './CourseForm';
+import CourseForm from './CourseForm';
 import { useMutation } from '@tanstack/react-query';
 import { newCourse } from '@/api/courseApi';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 // my pj
+import { Course } from '@/interfaces/course';
 import path from '@/constants/routes';
 import HeaderTitle from '../Title';
 import sleep from '@/utils/sleep';
@@ -21,7 +22,7 @@ const NewCourse: React.FC = () => {
       toast.dismiss();
       toast.success('Tạo khóa học thành công');
       await sleep(2000);
-      navigate(path.admin.courses);
+      // navigate(path.admin.courses);
     },
     onError: () => {
       toast.dismiss();

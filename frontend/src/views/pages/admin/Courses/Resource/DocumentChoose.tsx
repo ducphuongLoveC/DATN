@@ -42,7 +42,7 @@ const ChooseDocument = forwardRef(({ defaultValue }: any, ref) => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3 }}>
+    <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Paper elevation={3} sx={{ p: 2, mb: 3 }}>

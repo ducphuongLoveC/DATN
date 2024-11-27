@@ -1,6 +1,7 @@
 import Comment from "../models/Comment.js";
 import mongoose from "mongoose";
 import Notification from "../models/Notification.js";
+import User from "../models/User.js";
 
 class CommentController {
   // Tạo bình luận mới
@@ -74,6 +75,10 @@ class CommentController {
         );
 
         if (parentComment) {
+          const user = await User.findById(user_id);
+
+          console.log(user);
+
           // Tạo thông báo cho người dùng đã viết bình luận cha
           const notification = new Notification({
             user_id: parentComment.user_id, // Người nhận thông báo là chủ của parent comment
@@ -81,7 +86,8 @@ class CommentController {
             data: {
               resource_id,
               commentId: newComment._id,
-              content: `${newComment.content} (bạn được nhắc trong một bình luận)`,
+              title: `${user.name} đã nhắc bạn một trong bình luận`,
+              content: newComment.content,
               parent_id: parent_id,
             },
           });

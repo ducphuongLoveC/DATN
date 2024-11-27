@@ -5,6 +5,10 @@ import { useMediaQuery } from '@mui/material';
 import HeadlessTippy from '@tippyjs/react/headless';
 import { Link } from 'react-router-dom';
 
+// moment
+import moment from 'moment';
+// mui
+import { Typography } from '@mui/material';
 // redux
 import { useDispatch } from 'react-redux';
 import * as actionTypes from '@/store/actions';
@@ -123,7 +127,7 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
               <Wrapper
                 style={{
                   background: theme.palette.background.paper,
-                  width: '350px',
+                  width: '450px',
                   maxHeight: '70vh',
                   overflow: 'auto',
                 }}
@@ -144,15 +148,15 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
                       key={index}
                       hover
                       thumbnail="images/ktnt.png"
-                      bodyHead={'Dương Đức Phương'}
-                      bodyContent={n.bodyContent}
+                      bodyHead={n.data.title}
+                      bodyContent={<Typography dangerouslySetInnerHTML={{ __html: n.data.content }} />}
                       bExtend={
                         <p
                           style={{
                             fontSize: 'var(--mini-font-size)',
                           }}
                         >
-                          {n.time}
+                          {moment(n.createdAt).fromNow()}
                         </p>
                       }
                     />

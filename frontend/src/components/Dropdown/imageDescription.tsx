@@ -9,7 +9,7 @@ const Thumbnail = styled('img')(() => ({
 interface ImageDescriptionProps {
   thumbnail?: string;
   bodyHead?: string;
-  bodyContent?: string;
+  bodyContent?: string | React.ReactNode;
   bExtend?: React.ReactNode;
   hover: boolean;
 }

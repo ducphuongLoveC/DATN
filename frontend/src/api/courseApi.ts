@@ -114,6 +114,7 @@ export const newCourse = async (data: any) => {
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][description]`, resource.description);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][duration]`, resource.duration.toString());
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][isActive]`, resource.isActive);
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][thumbnail]`, resource.thumbnail);
 
       // Use switch to handle resource type
       switch (resource.resource_type) {
@@ -121,6 +122,8 @@ export const newCourse = async (data: any) => {
           formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][fileName]`, resource.fileName);
           if (resource.file) {
             formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][file]`, resource.file);
+          } else {
+            formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][url]`, resource.url);
           }
           break;
 
@@ -214,6 +217,7 @@ export const updateCourse = async (id: string, data: any) => {
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][title]`, resource.title);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][description]`, resource.description);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][duration]`, resource.duration.toString());
+      formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][thumbnail]`, resource.thumbnail);
       formData.append(`modules[${moduleIndex}][resources][${resourceIndex}][isActive]`, resource.isActive);
 
       // Handle resource type-specific fields

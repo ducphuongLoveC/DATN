@@ -1,8 +1,10 @@
 import { useForm, Controller } from 'react-hook-form';
-import { Box, useTheme, Grid, Button } from '@mui/material';
+import { Box, useTheme, Grid, Button, TextField } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import React, { useState, useRef, useEffect } from 'react';
 import TabsCustom from '@/components/TabsCustom';
+
+import Storage from './Storage';
 
 interface CardCourseProps {
   labels: React.ReactNode[];
@@ -10,14 +12,14 @@ interface CardCourseProps {
   widthIconImage?: string;
   onSubmit?: (datas: { title: string; thumbnail: File | null } | any) => void;
   initialTitle?: string;
-  initialThumbnail?: File | null;
+  initialThumbnail?: File | null | string;
   defaultValue?: any;
   isImage?: boolean;
 }
 
 interface CardFormProp {
   title: string;
-  thumbnail: File | null;
+  thumbnail: File | null | string;
 }
 
 const CardCourse: React.FC<CardCourseProps> = ({
@@ -30,7 +32,7 @@ const CardCourse: React.FC<CardCourseProps> = ({
 }) => {
   const theme = useTheme();
 
-  const { control, handleSubmit } = useForm<CardFormProp>({
+  const { control, handleSubmit, setValue } = useForm<CardFormProp>({
     defaultValues: {
       title: defaultValue.title || '',
       thumbnail: defaultValue.thumbnail || null,
@@ -59,6 +61,8 @@ const CardCourse: React.FC<CardCourseProps> = ({
 
   const onSubmitForm = (data: CardFormProp) => {
     if (onSubmit) {
+      console.log({ ...data, ...getDatas() });
+
       onSubmit({ ...data, ...getDatas() });
     }
   };
@@ -89,27 +93,30 @@ const CardCourse: React.FC<CardCourseProps> = ({
           borderRadius: '4px',
         }}
       >
-        <Grid item lg={isImage ? 10 : 12}>
+        <Grid item lg={8}>
           <Controller
             name="title"
             control={control}
             render={({ field }) => (
-              <input
+              <TextField
                 {...field}
+                variant="outlined"
                 placeholder="Nhập tiêu đề nội dung"
-                style={{
-                  border: 'none',
-                  borderBottom: `1px solid ${theme.palette.divider}`,
-                  fontSize: '20px',
-                  width: '100%',
-                  paddingBottom: '10px',
-                  outline: 'none',
+                fullWidth
+                InputProps={{
+                  sx: {
+                    borderBottom: `1px solid ${theme.palette.divider}`,
+                    fontSize: '20px',
+                  },
                 }}
               />
             )}
           />
         </Grid>
 
+        <Grid item>
+          <Storage type="images" onSelectMedia={(url: string) => setValue('thumbnail', url)} />
+        </Grid>
         {isImage && (
           <Grid
             item
@@ -118,45 +125,61 @@ const CardCourse: React.FC<CardCourseProps> = ({
             alignItems={'center'}
             justifyContent={'center'}
             boxShadow="var(--main-box-shadow)"
+            border={`1px dashed ${theme.palette.divider}`}
+            borderRadius={'10px'}
           >
             <Controller
               name="thumbnail"
               control={control}
-              render={({ field }) => (
-                <>
-                  <input
-                    type="file"
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      const file = event.target.files?.[0] || null;
-                      field.onChange(file);
-                    }}
-                    style={{ display: 'none' }}
-                    id="upload-image"
-                  />
-                  <label htmlFor="upload-image">
-                    {field.value ? (
-                      <img
-                        src={typeof field.value === 'string' ? field.value : URL.createObjectURL(field.value)}
-                        alt="Thumbnail"
-                        style={{
-                          width: widthIconImage || '100%',
-                          objectFit: 'cover',
-                        }}
-                      />
-                    ) : (
-                      <AddAPhotoIcon
+              render={({ field }) => {
+                const uniqueId = `upload-thumbnail-${Math.random()}`; // Tạo id duy nhất
+                return (
+                  <>
+                    {/* Input file ẩn */}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        const file = event.target.files?.[0] || null;
+                        field.onChange(file);
+                      }}
+                      style={{ display: 'none' }}
+                      id={uniqueId} // Sử dụng id duy nhất
+                    />
+                    {/* Nhãn tải ảnh */}
+                    <label htmlFor={uniqueId}>
+                      <Box
+                        component="span"
                         sx={{
-                          fontSize: {
-                            sm: '30px',
-                            md: widthIconImage ?? '100px',
-                          },
-                          opacity: 0.4,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
                         }}
-                      />
-                    )}
-                  </label>
-                </>
-              )}
+                      >
+                        {field.value ? (
+                          <img
+                            src={typeof field.value === 'string' ? field.value : URL.createObjectURL(field.value)}
+                            alt="Thumbnail"
+                            style={{
+                              height: 'auto',
+                              objectFit: 'cover',
+                            }}
+                          />
+                        ) : (
+                          <AddAPhotoIcon
+                            sx={{
+                              my: 2,
+                              fontSize: widthIconImage ? `calc(${widthIconImage} / 2)` : '48px',
+                              color: theme.palette.text.secondary,
+                            }}
+                          />
+                        )}
+                      </Box>
+                    </label>
+                  </>
+                );
+              }}
             />
           </Grid>
         )}

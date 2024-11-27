@@ -60,7 +60,7 @@ const Resource: React.FC<any> = ({ resource, refetchResource }) => {
       {(() => {
         switch (resource.resource_type) {
           case 'Video':
-            return <ArtPlayerComponent videoUrl={resource.url} onCompleted={handleCompletedResource} />;
+            return <ArtPlayerComponent poster={resource?.thumbnail} videoUrl={resource.url} onCompleted={handleCompletedResource} />;
 
           case 'Question':
             return <Question questions={resource.questions} onCompleted={handleCompletedResource} />;
