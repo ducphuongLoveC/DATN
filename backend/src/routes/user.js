@@ -5,5 +5,5 @@ import { userSchema } from "../validSchema/userSchema.js";
 
 const routerUser = Router();
 routerUser.get("/", UserController.get);
-
+routerUser.put("/users/:id", UserController.updateUser);
 export default routerUser;
