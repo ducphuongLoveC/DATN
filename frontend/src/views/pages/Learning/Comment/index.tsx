@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Link as MUILink } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+// soket
 import { io } from 'socket.io-client';
 
 // redux
@@ -66,6 +67,7 @@ const socket = io(import.meta.env.VITE_URL_SERVER);
 export default function Comment() {
   const { get } = useQueryParams();
   const resource_id = get('id');
+  const comment_id = get('comment');
 
   const user = useSelector((state: RootState) => state.authReducer.user);
 
@@ -119,6 +121,36 @@ export default function Comment() {
       mutation.mutate(payloadData);
     }
   };
+
+  useEffect(() => {
+    const comments = document.querySelectorAll('.comments');
+  
+    comments.forEach((comment) => {
+      const id = (comment as HTMLElement).getAttribute('data-id'); // Ép kiểu comment thành HTMLElement
+  
+      if (id === comment_id) {
+        // Ép kiểu lại để sử dụng `style`
+        const element = comment as HTMLElement;
+  
+        element.scrollIntoView({
+          behavior: 'instant',
+          block: 'start',
+          inline: 'nearest',
+        });
+  
+        // Thay đổi style của phần tử
+        element.style.border = '2px solid red';
+        element.style.transition = 'border 0.5s ease-in-out';
+  
+        // Xóa border sau 2 giây
+        setTimeout(() => {
+          element.style.border = 'none';
+        }, 2000);
+      }
+    });
+  }, [comment_id]);
+  
+  
 
   if (isLoading) return <div>Loading comments...</div>;
   return (
@@ -212,7 +244,7 @@ function CommentItem({ user, fatherCommentUser = null, comment, deep = 1 }: Comm
   };
 
   return (
-    <Box>
+    <Box className="comments" data-id={comment._id}>
       <Box display="flex">
         <Avatar
           src={comment.user.profile_picture}

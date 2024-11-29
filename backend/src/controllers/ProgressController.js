@@ -47,18 +47,74 @@ class ProgressController {
     }
   }
 
+  // async completeResource(req, res, next) {
+  //   try {
+  //     const { resource_id, user_id } = req.params;
+
+  //     console.log(req.params);
+
+  //     const currentResource = await Resource.findById(resource_id);
+  //     if (!currentResource) {
+  //       return res.status(404).json({ message: "Resource not found" });
+  //     }
+
+  //     // Cập nhật trạng thái tiến độ của resource hiện tại
+  //     const progress = await Progress.findOne({
+  //       user_id: user_id,
+  //       resource_id: resource_id,
+  //     });
+  //     if (!progress) {
+  //       return res.status(404).json({ message: "Progress not found" });
+  //     }
+
+  //     progress.is_completed = true; // Đánh dấu là hoàn thành
+  //     await progress.save();
+
+  //     // Gọi API để lấy resource tiếp theo
+
+  //     const response = await axios.get(
+  //       `http://localhost:8000/api/resource/${resource_id}/adjacent/id?direction=next`
+  //     );
+  //     const nextResource = response.data; // Giả sử API trả về thông tin về resource tiếp theo
+
+  //     console.log(nextResource);
+
+  //     if (nextResource) {
+  //       // Tạo tiến độ cho resource tiếp theo và mở khóa nó
+  //       const nextProgress = new Progress({
+  //         user_id: user_id,
+  //         resource_id: nextResource._id,
+  //         is_unlocked: true,
+  //         is_completed: false,
+  //       });
+
+  //       await nextProgress.save();
+
+  //       res.status(200).json({
+  //         message: "Resource completed, next resource unlocked",
+  //         nextResourceId: nextResource._id,
+  //       });
+  //     } else {
+  //       res.status(200).json({ message: "All resources completed" });
+  //     }
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
+
   async completeResource(req, res, next) {
     try {
       const { resource_id, user_id } = req.params;
 
       console.log(req.params);
 
+      // Tìm resource hiện tại
       const currentResource = await Resource.findById(resource_id);
       if (!currentResource) {
         return res.status(404).json({ message: "Resource not found" });
       }
 
-      // Cập nhật trạng thái tiến độ của resource hiện tại
+      // Kiểm tra tiến độ của user cho resource hiện tại
       const progress = await Progress.findOne({
         user_id: user_id,
         resource_id: resource_id,
@@ -67,28 +123,39 @@ class ProgressController {
         return res.status(404).json({ message: "Progress not found" });
       }
 
-      progress.is_completed = true; // Đánh dấu là hoàn thành
+      // Cập nhật trạng thái hoàn thành cho resource hiện tại
+      progress.is_completed = true;
       await progress.save();
 
-      // Gọi API để lấy resource tiếp theo
-      
+      // Lấy thông tin resource tiếp theo từ API
       const response = await axios.get(
         `http://localhost:8000/api/resource/${resource_id}/adjacent/id?direction=next`
       );
       const nextResource = response.data; // Giả sử API trả về thông tin về resource tiếp theo
 
       console.log(nextResource);
-      
+
       if (nextResource) {
-        // Tạo tiến độ cho resource tiếp theo và mở khóa nó
-        const nextProgress = new Progress({
+        // Kiểm tra nếu tiến độ cho resource tiếp theo đã tồn tại
+        let nextProgress = await Progress.findOne({
           user_id: user_id,
           resource_id: nextResource._id,
-          is_unlocked: true,
-          is_completed: false,
         });
 
-        await nextProgress.save();
+        if (nextProgress) {
+          // Nếu tiến độ đã có, chỉ cần cập nhật
+          nextProgress.is_unlocked = true;
+          await nextProgress.save();
+        } else {
+          // Nếu chưa có, tạo mới tiến độ cho resource tiếp theo
+          nextProgress = new Progress({
+            user_id: user_id,
+            resource_id: nextResource._id,
+            is_unlocked: true,
+            is_completed: false,
+          });
+          await nextProgress.save();
+        }
 
         res.status(200).json({
           message: "Resource completed, next resource unlocked",

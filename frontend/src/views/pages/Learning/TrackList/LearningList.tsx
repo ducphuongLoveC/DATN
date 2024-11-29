@@ -7,8 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Module from '@/components/Module';
 import CloseIcon from '@mui/icons-material/Close';
-
-import { Resource } from '../../admin/Courses/CourseForm';
+import { Resource } from '@/interfaces/course';
 import { RootState } from '@/store/reducer';
 import { SET_EXPANDED_INDEXS } from '@/store/actions';
 
@@ -38,7 +37,7 @@ const LearningList: React.FC<LearningListProps> = memo(({ onClose, modules }) =>
   return (
     <PerfectScrollbar
       style={{
-        borderLeft: `1px solid ${theme.palette.background.paper2}`,
+        borderLeft: `3px solid ${theme.palette.background.paper2}`,
         overflow: 'auto',
         height: '87vh',
         backgroundColor: theme.palette.background.paper,

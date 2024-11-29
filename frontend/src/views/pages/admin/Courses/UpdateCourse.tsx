@@ -6,7 +6,6 @@ import path from '@/constants/routes';
 import { getCourse, updateCourse } from '@/api/courseApi';
 import { useParams } from 'react-router-dom';
 
-import Storage from './Storage';
 // toast
 import { ToastContainer, toast } from 'react-toastify';
 import Loading from '@/ui-component/Loading';

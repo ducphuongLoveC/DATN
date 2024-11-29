@@ -112,7 +112,9 @@ const Learning: React.FC = () => {
 
   return (
     <Box position={'relative'}>
-      {!moduleQuery.isLoading && <Header data={moduleQuery.data} />}
+      {!moduleQuery.isLoading && (
+        <Header resource_id={resourceQuery.data._id} user_id={user._id} data={moduleQuery.data} />
+      )}
       <Box
         sx={{
           display: 'flex',
@@ -142,6 +144,7 @@ const Learning: React.FC = () => {
       <LessonNavigation>
         {/* sử dụng placement để mở 1 popup kéo từ bên placement vào */}
         <PlacementToggle
+          defaultOpen={query.get('comment') ? true : false}
           placement="left"
           Connect={(connect) => (
             <Button onClick={connect} sx={{ color: theme.palette.text.primary, height: '50px' }}>

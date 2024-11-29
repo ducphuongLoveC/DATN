@@ -1,15 +1,25 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import ArtPlayer from 'artplayer';
 import Hls from 'hls.js';
 import { Box } from '@mui/material';
 
 interface ArtPlayerComponentProps {
+  finished: boolean;
   videoUrl: string;
   poster?: string;
+  isPlaying: boolean | null;
   onCompleted?: () => void;
+  onTimeUpdate: (duration: number) => void;
 }
 
-const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poster, onCompleted }) => {
+const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({
+  finished,
+  videoUrl,
+  poster,
+  isPlaying = false,
+  onCompleted,
+  onTimeUpdate,
+}) => {
   const artPlayerRef = useRef<HTMLDivElement>(null);
   const art = useRef<ArtPlayer | null>(null);
 
@@ -80,7 +90,7 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poste
 
         console.log('Tổng thời gian tua hiện tại:', totalSeekTime.current, 'giây');
 
-        if (art.current?.duration && totalSeekTime.current >= art.current.duration / 2) {
+        if (!finished && art.current?.duration && totalSeekTime.current >= art.current.duration / 2) {
           alert('Bạn học quá nhanh');
 
           // Tua lại về thời gian ban đầu (0 giây)
@@ -103,6 +113,7 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poste
           onCompleted();
           isCompleted.current = true;
         }
+        onTimeUpdate(art.current?.currentTime);
       });
 
       return () => {
@@ -119,6 +130,18 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poste
     }
   }, [videoUrl]);
 
+  useEffect(() => {
+    if (art?.current) {
+      if (isPlaying) {
+        art.current.play();
+      } else {
+        art.current.pause();
+      }
+    }
+  }, [isPlaying]);
+
+  console.log('hehe');
+
   return (
     <Box
       sx={{
@@ -134,4 +157,4 @@ const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poste
   );
 };
 
-export default ArtPlayerComponent;
+export default memo(ArtPlayerComponent);

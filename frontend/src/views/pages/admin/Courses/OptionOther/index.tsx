@@ -88,7 +88,7 @@ const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
 
   const handleAddOutcome = () => {
     if (newOutcome.trim() !== '') {
-      setValue('learning_outcomes', [...watch('learning_outcomes'), newOutcome.trim()]);
+      setValue('learning_outcomes', [...watch('learning_outcomes'), ...newOutcome.split('\n')]);
       setNewOutcome('');
     }
   };
@@ -277,11 +277,11 @@ const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
               <TextField
+                multiline
                 fullWidth
                 label="Thêm kết quả học tập"
                 value={newOutcome}
                 onChange={(e) => setNewOutcome(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAddOutcome()}
                 sx={{ mr: 1 }}
               />
               <Tooltip title="Thêm kết quả học tập">

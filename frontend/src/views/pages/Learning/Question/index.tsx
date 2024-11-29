@@ -122,13 +122,13 @@ const Question: React.FC<QuestionProps> = ({ questions, onCompleted }) => {
         )}
       </Card>
 
-      <CardActions sx={{ justifyContent: 'flex-end' }}>
+      <CardActions sx={{ justifyContent: 'flex-end', p: 0 }}>
         {isAnswerCorrect ? (
-          <Button variant="outlined" onClick={nextQuestion}>
+          <Button sx={{ px: 10 }} variant="outlined" onClick={nextQuestion}>
             {currentQuestionIndex === questions.length - 1 ? 'Kết thúc' : 'Câu tiếp theo'}
           </Button>
         ) : (
-          <Button variant="outlined" onClick={submitAnswer} disabled={!answers[currentQuestionIndex]}>
+          <Button sx={{ px: 10 }} variant="outlined" onClick={submitAnswer} disabled={!answers[currentQuestionIndex]}>
             Trả lời
           </Button>
         )}

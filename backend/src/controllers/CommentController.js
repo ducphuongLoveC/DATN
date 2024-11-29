@@ -2,6 +2,9 @@ import Comment from "../models/Comment.js";
 import mongoose from "mongoose";
 import Notification from "../models/Notification.js";
 import User from "../models/User.js";
+import Course from "../models/Course.js";
+import Module from "../models/Module.js";
+import Resource from "../models/Resource.js";
 
 class CommentController {
   // Tạo bình luận mới
@@ -76,8 +79,9 @@ class CommentController {
 
         if (parentComment) {
           const user = await User.findById(user_id);
-
-          console.log(user);
+          const resource = await Resource.findById(resource_id);
+          const module = await Module.findById(resource.module_id);
+          const course = await Course.findById(module.course_id);
 
           // Tạo thông báo cho người dùng đã viết bình luận cha
           const notification = new Notification({
@@ -85,10 +89,12 @@ class CommentController {
             type: "comment",
             data: {
               resource_id,
-              commentId: newComment._id,
-              title: `${user.name} đã nhắc bạn một trong bình luận`,
-              content: newComment.content,
+              course_id: course._id,
               parent_id: parent_id,
+              thumbnail: resource.thumbnail,
+              comment_id: newComment._id,
+              title: `<strong> ${user.name}</strong> đã nhắc bạn trong một bình luận của bài học <strong>${resource.title}</strong>`,
+              content: newComment.content,
             },
           });
 

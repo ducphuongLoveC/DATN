@@ -3,8 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import HeadlessTippy from '@tippyjs/react/headless';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
+import lodash from 'lodash';
 // moment
 import moment from 'moment';
 // mui
@@ -26,25 +27,7 @@ import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
 
 // api
-import { getNofificationById } from '@/api/nofification';
-
-// const notifications = [
-//   {
-//     bodyHead: 'Dương Đức Phương',
-//     bodyContent: 'Đã like ảnh của bạn!',
-//     time: '1 phút trước',
-//   },
-//   {
-//     bodyHead: 'Nguyễn Văn A',
-//     bodyContent: 'Đã bình luận về bài viết của bạn!',
-//     time: '1 phút trước',
-//   },
-//   {
-//     bodyHead: 'Trần Thị B',
-//     bodyContent: 'Đã theo dõi bạn!',
-//     time: '1 phút trước',
-//   },
-// ];
+import { getNotificationById } from '../../../../api/notification';
 
 const courses = [
   {
@@ -76,14 +59,14 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const downSM = useMediaQuery(theme.breakpoints.down('sm'));
-
+  const navigate = useNavigate();
   const {
     data: notifications,
     isLoading: isLoadingNoti,
     refetch,
   } = useQuery({
     queryKey: ['notification'],
-    queryFn: () => getNofificationById(user._id),
+    queryFn: () => getNotificationById(user._id),
   });
 
   const handleLogout = () => {
@@ -91,6 +74,15 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
     Cookies.remove('user');
     dispatch({ type: actionTypes.SET_ACCESS_TOKEN, payload: '' });
     dispatch({ type: actionTypes.SET_USER, payload: '' });
+  };
+
+  const handleNotificationClick = (notification: any) => {
+    switch (notification.type) {
+      case 'comment':
+        const { course_id, resource_id, comment_id } = notification.data;
+        navigate(`/learning/${course_id}?id=${resource_id}&comment=${comment_id}`);
+        break;
+    }
   };
 
   // socket notification
@@ -145,11 +137,18 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
                   />
                   {notifications.map((n: any, index: number) => (
                     <Dropdown.ImageDescription
+                      onClick={() => handleNotificationClick(n)}
                       key={index}
                       hover
-                      thumbnail="images/ktnt.png"
-                      bodyHead={n.data.title}
-                      bodyContent={<Typography dangerouslySetInnerHTML={{ __html: n.data.content }} />}
+                      thumbnail={n.data.thumbnail}
+                      bodyHead={<Typography dangerouslySetInnerHTML={{ __html: n.data.title }} />}
+                      bodyContent={
+                        <Typography
+                          dangerouslySetInnerHTML={{
+                            __html: lodash.truncate(n.data.content, { length: 40, omission: '...' }),
+                          }}
+                        />
+                      }
                       bExtend={
                         <p
                           style={{

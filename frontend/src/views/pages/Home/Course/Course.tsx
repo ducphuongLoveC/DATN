@@ -50,7 +50,7 @@ const Course: React.FC = () => {
         const selectedPath = learningPaths[value - 1];
         const response = await getCourseLearningPath(selectedPath._id);
 
-        return response.courses || [];
+        return response || [];
       }
       return [];
     },

@@ -68,7 +68,7 @@ const resourceSchema = new mongoose.Schema(
 
     description: {
       type: String,
-      maxlength: 25000,
+      // maxlength: 25000,
     },
     isActive: {
       type: Boolean,

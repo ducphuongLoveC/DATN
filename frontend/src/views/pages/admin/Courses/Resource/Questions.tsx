@@ -84,8 +84,11 @@ const QuizCreation: React.FC = forwardRef(({ defaultValue }: any, ref) => {
     }
   }, [currentQuizIndex]);
 
+  console.log(defaultValue);
+  
+
   const getData = () => {
-    return { questions: quizzes, duration: 0, resource_type: 'Question' };
+    return { _id: defaultValue._id, questions: quizzes, duration: 0, resource_type: 'Question' };
   };
 
   useImperativeHandle(ref, () => ({

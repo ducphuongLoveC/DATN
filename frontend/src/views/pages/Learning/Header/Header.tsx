@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
-
+import { useState, useMemo } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Box, styled, useTheme, Button, Typography, useMediaQuery } from '@mui/material';
 import { BiChevronLeft } from 'react-icons/bi';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -8,12 +8,14 @@ import ContrastIcon from '@mui/icons-material/Contrast';
 import { useDispatch, useSelector } from 'react-redux';
 import { TOGGLE_THEME_HOME } from '@/store/actions';
 
+import StarsIcon from '@mui/icons-material/Stars';
 // pj
+import Dialog from '@/components/Dialog';
 import { RootState } from '@/store/reducer';
 import Progress from '@/components/Progress';
 import Note from './Note';
 import PlacementToggle from '@/components/PlacementToggle';
-
+import { getSingleCourseById } from '@/api/courseApi';
 const BoxHeader = styled('header')<{ isMobile: boolean }>(({ theme, isMobile }) => ({
   display: 'flex',
   justifyContent: 'space-between',
@@ -38,16 +40,32 @@ const StyledDescriptionBox = styled(BoxCenter)({
 });
 
 import { Module } from '@/interfaces/course';
+import RatingPreview from '@/components/RatingPreview';
+import { getNotes } from '@/api/noteApi';
 
 interface HeaderProps {
+  resource_id: string;
+  user_id: string;
   data: Module[];
 }
 
-const Header: React.FC<HeaderProps> = ({ data }) => {
+const Header: React.FC<HeaderProps> = ({ resource_id, user_id, data }) => {
+  const { id } = useParams();
   const theme = useTheme();
   const dispatch = useDispatch();
   const homeState = useSelector((state: RootState) => state.homeReducer);
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [openRate, setOpenRate] = useState(false);
+
+  const { data: course, isLoading: isLoadingCourse } = useQuery({
+    queryKey: ['singleCourseById'],
+    queryFn: () => getSingleCourseById(id || ''),
+  });
+  const { data: notes, isLoading: isLoadingNote } = useQuery({
+    queryKey: ['note'],
+    queryFn: () => getNotes(resource_id, user_id),
+  });
 
   const handleToggleTheme = () => {
     const newTheme = homeState.theme === 'light' ? 'dark' : 'light';
@@ -76,7 +94,7 @@ const Header: React.FC<HeaderProps> = ({ data }) => {
           </StyledButton>
         </Link>
         <Typography variant={isMobile ? 'h6' : 'h5'} color="white">
-          HTML CSS từ Zero đến Hero
+          {isLoadingCourse ? 'loading...' : course.title}
         </Typography>
       </Box>
       <BoxCenter>
@@ -102,7 +120,7 @@ const Header: React.FC<HeaderProps> = ({ data }) => {
             </StyledDescriptionBox>
           )}
         >
-          <Note />
+          {isLoadingNote ? 'loading...' : <Note notes={notes} />}
         </PlacementToggle>
 
         <BoxCenter sx={{ cursor: 'pointer' }} onClick={handleToggleTheme}>
@@ -113,7 +131,26 @@ const Header: React.FC<HeaderProps> = ({ data }) => {
             </Typography>
           )}
         </BoxCenter>
+
+        <BoxCenter sx={{ cursor: 'pointer' }} onClick={() => setOpenRate(true)}>
+          <StarsIcon sx={{ fontSize: '20px', color: 'white', mr: 1 }} />
+          {!isMobile && (
+            <Typography color="white" variant="body2">
+              Đánh giá
+            </Typography>
+          )}
+        </BoxCenter>
       </BoxCenter>
+
+      <Dialog open={openRate} title="Đánh giá" onClose={() => setOpenRate(false)}>
+        <RatingPreview
+          onChange={(rate) => {
+            console.log(rate);
+          }}
+          mode="edit"
+          ratingCounts={[5, 5, 1, 6, 200]}
+        />
+      </Dialog>
     </BoxHeader>
   );
 };

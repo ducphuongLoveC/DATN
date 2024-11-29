@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, styled, Button } from '@mui/material';
 // Icon
 import CloseIcon from '@mui/icons-material/Close';
@@ -90,23 +90,27 @@ interface PlacementToggleProps {
   placement: 'left' | 'right' | 'top' | 'bottom';
   Connect: (connect: () => void) => React.ReactNode;
   children: React.ReactNode;
+  defaultOpen?: boolean
 }
 
-const PlacementToggle: React.FC<PlacementToggleProps> = React.memo(({ placement, Connect, children }) => {
-  const [isOpenWrapper, setIsOpenWrapper] = useState<boolean>(false);
+const PlacementToggle: React.FC<PlacementToggleProps> = React.memo(({ placement, Connect, children, defaultOpen=false }) => {
+  const [isOpenWrapper, setIsOpenWrapper] = useState<boolean>(defaultOpen);
   const handleToggleWrapper = () => {
     window.requestAnimationFrame(() => {
       setIsOpenWrapper(!isOpenWrapper);
     });
   };
 
+  useEffect(()=> {
+    setIsOpenWrapper(defaultOpen);
+  },[defaultOpen])
+
   return (
     <Box position="relative">
       {Connect(handleToggleWrapper)}
       <BackgroundOverlay onClick={handleToggleWrapper} open={isOpenWrapper} />
-      <Wrapper open={isOpenWrapper} placement={placement}>
+      <Wrapper open={isOpenWrapper} placement={placement}  >
         {children}
-
         <Button onClick={handleToggleWrapper} sx={{ position: 'absolute', top: '0', right: '0' }}>
           <CloseIcon />
         </Button>
