@@ -1,10 +1,86 @@
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
-import s from './Profile.module.scss';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/reducer';
+import s from './Profile.module.scss';
+import axiosInstance from '@/api/axiosInstance';
+import { SET_USER } from '@/store/actions';
+import Cookies from 'js-cookie';
 
 const Profile: React.FC = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.authReducer.user);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    name: user?.name || '',
+    phone: user?.phone || '',  // Thêm phone vào formData
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Kiểm tra nếu user chưa được tải, không render giao diện
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
+  // Lấy thông tin người dùng từ cookies và cập nhật Redux khi trang tải lại
+  useEffect(() => {
+    const userFromCookies = Cookies.get('user');
+    if (userFromCookies) {
+      const userObj = JSON.parse(userFromCookies);
+      dispatch({ type: SET_USER, payload: userObj });
+    }
+  }, [dispatch]);
+
+  // Xử lý thay đổi trong input
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // Xử lý lưu thông tin
+  const handleSave = async () => {
+    if (!user?.id && !user?._id) {  // Kiểm tra cả id và _id
+      setError('Không tìm thấy thông tin người dùng!');
+      return;
+    }
+
+    setLoading(true);
+    setError(null); // Reset lỗi trước khi gửi yêu cầu
+
+    try {
+      const response = await axiosInstance.put(`api/user/users/${user._id || user.id}`, formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.data.success) {
+        alert('Cập nhật thông tin thành công!');
+
+        // Cập nhật lại thông tin người dùng trong Redux
+        const updatedUser = { ...user, ...formData };
+        dispatch({ type: SET_USER, payload: updatedUser });
+
+        // Cập nhật lại thông tin người dùng trong Cookies
+        Cookies.set('user', JSON.stringify(updatedUser), { domain: 'admin.localhost', expires: 7 });
+
+        setIsEditing(false);
+      } else {
+        setError(response.data.message || 'Có lỗi xảy ra!');
+      }
+    } catch (error) {
+      console.error(error);
+      setError('Có lỗi xảy ra, vui lòng thử lại!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="container">
       <div className="main-body">
@@ -36,148 +112,83 @@ const Profile: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="mt-3">
-              <ul className="list-group list-group-flush">
-                <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                  <h6 className="mb-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={24}
-                      height={24}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="feather feather-globe mr-2 icon-inline"
-                    >
-                      <circle cx={12} cy={12} r={10} />
-                      <line x1={2} y1={12} x2={22} y2={12} />
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                    </svg>
-                    Website
-                  </h6>
-                  <span className="text-secondary">https://bootdey.com</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                  <h6 className="mb-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={24}
-                      height={24}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="feather feather-github mr-2 icon-inline"
-                    >
-                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                    </svg>
-                    Github
-                  </h6>
-                  <span className="text-secondary">bootdey</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                  <h6 className="mb-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={24}
-                      height={24}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="feather feather-twitter mr-2 icon-inline text-info"
-                    >
-                      <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
-                    </svg>
-                    Twitter
-                  </h6>
-                  <span className="text-secondary">@bootdey</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                  <h6 className="mb-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={24}
-                      height={24}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="feather feather-instagram mr-2 icon-inline text-danger"
-                    >
-                      <rect x={2} y={2} width={20} height={20} rx={5} ry={5} />
-                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                    </svg>
-                    Instagram
-                  </h6>
-                  <span className="text-secondary">bootdey</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                  <h6 className="mb-0">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={24}
-                      height={24}
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="feather feather-facebook mr-2 icon-inline text-primary"
-                    >
-                      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                    </svg>
-                    Facebook
-                  </h6>
-                  <span className="text-secondary">bootdey</span>
-                </li>
-              </ul>
-            </div>
           </div>
           <div className="col-md-8">
             <div className="card mb-3">
               <div className={clsx(s['card-body'])}>
+                {/* Họ và tên */}
                 <div className="row align-items-center">
                   <div className="col-sm-3">
                     <h6 className="mb-10">Họ và tên:</h6>
                   </div>
-                  <div className="col-sm-9">{user.name}</div>
+                  <div className="col-sm-9">
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="form-control"
+                      />
+                    ) : (
+                      <span>{user.name}</span>
+                    )}
+                  </div>
                 </div>
-
                 <hr />
+
+                {/* Phone */}
+                <div className="row align-items-center">
+                  <div className="col-sm-3">
+                    <h6 className="mb-10">Phone:</h6>
+                  </div>
+                  <div className="col-sm-9">
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="form-control"
+                      />
+                    ) : (
+                      <span>{user.phone}</span>
+                    )}
+                  </div>
+                </div>
+                <hr />
+
+                {/* Email (Hiển thị nhưng không chỉnh sửa) */}
                 <div className="row align-items-center">
                   <div className="col-sm-3">
                     <h6 className="mb-10">Email:</h6>
                   </div>
-                  <div className="col-sm-9">{user.email}</div>
-                </div>
-                <hr />
-                <div className="row align-items-center">
-                  <div className="col-sm-3">
-                    <h6 className="mb-10">Số điện thoại:</h6>
+                  <div className="col-sm-9">
+                    <span>{user.email}</span>
                   </div>
-                  <div className="col-sm-9">{user.phone}</div>
                 </div>
                 <hr />
-                <div className="row align-items-center">
-                  <div className="col-sm-3">
-                    <h6 className="mb-10">Quyền quản trị:</h6>
-                  </div>
-                  <div className="col-sm-9">{user.role}</div>
-                </div>
-                <hr />
-                <button className={clsx(s['button-edit-profile'])}>Edit</button>
+
+                {/* Hiển thị lỗi nếu có */}
+                {error && <div className="alert alert-danger">{error}</div>}
+
+                {/* Nút Edit và Save */}
+                {isEditing ? (
+                  <button
+                    className={clsx(s['button-edit-profile'])}
+                    onClick={handleSave}
+                    disabled={loading}
+                  >
+                    {loading ? 'Saving...' : 'Save'}
+                  </button>
+                ) : (
+                  <button
+                    className={clsx(s['button-edit-profile'])}
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Edit
+                  </button>
+                )}
               </div>
             </div>
           </div>
