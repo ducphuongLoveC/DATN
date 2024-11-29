@@ -95,7 +95,7 @@ const contentTypes = [
       useImperativeHandle(ref, () => ({
         getData,
       }));
-      return <Typography>Bật sang tab để viết comments</Typography>;
+      return <Typography>Bật sang tab mô tả để viết tài liệu</Typography>;
     }),
     icon: DescriptionIcon,
   },

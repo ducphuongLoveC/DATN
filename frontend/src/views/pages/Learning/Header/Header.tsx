@@ -41,15 +41,16 @@ const StyledDescriptionBox = styled(BoxCenter)({
 
 import { Module } from '@/interfaces/course';
 import RatingPreview from '@/components/RatingPreview';
-import { getNotes } from '@/api/noteApi';
+import { NoteProp } from '@/interfaces/Note';
 
 interface HeaderProps {
-  resource_id: string;
-  user_id: string;
+  notes: NoteProp[];
   data: Module[];
 }
 
-const Header: React.FC<HeaderProps> = ({ resource_id, user_id, data }) => {
+const Header: React.FC<HeaderProps> = ({ data, notes }) => {
+  console.log(notes);
+
   const { id } = useParams();
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -61,10 +62,6 @@ const Header: React.FC<HeaderProps> = ({ resource_id, user_id, data }) => {
   const { data: course, isLoading: isLoadingCourse } = useQuery({
     queryKey: ['singleCourseById'],
     queryFn: () => getSingleCourseById(id || ''),
-  });
-  const { data: notes, isLoading: isLoadingNote } = useQuery({
-    queryKey: ['note'],
-    queryFn: () => getNotes(resource_id, user_id),
   });
 
   const handleToggleTheme = () => {
@@ -120,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({ resource_id, user_id, data }) => {
             </StyledDescriptionBox>
           )}
         >
-          {isLoadingNote ? 'loading...' : <Note notes={notes} />}
+          <Note notes={notes} />
         </PlacementToggle>
 
         <BoxCenter sx={{ cursor: 'pointer' }} onClick={handleToggleTheme}>

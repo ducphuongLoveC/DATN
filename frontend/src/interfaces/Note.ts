@@ -1,4 +1,4 @@
-interface Note {
+export interface NoteProp {
   _id: string;
   resource_id: string;
   user_id: string;
@@ -8,5 +8,5 @@ interface Note {
 }
 
 export interface Notes {
-  notes: Note[];
+  notes: NoteProp[];
 }

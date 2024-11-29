@@ -7,6 +7,9 @@ import { useSelector } from 'react-redux';
 import { Box, Typography, styled, useMediaQuery, Button, Hidden } from '@mui/material';
 import { useTheme } from '@mui/material';
 
+// context
+import { SeekContext } from '@/context/SeekContext';
+import { NoteContext } from '@/context/NoteContext';
 //icon mui
 import MessageIcon from '@mui/icons-material/Message';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
@@ -22,6 +25,8 @@ import { findModuleByCourseId } from '@/api/moduleApi';
 import useQueryParams from '@/hooks/useQueryParams';
 import { getAdjacentResourceId, getResource } from '@/api/Resource';
 import { ModulesSkeleton, ResourceSkeleton } from '@/ui-component/cards/Skeleton/LearningSkeleton';
+
+import { deleteNote, getNotes, updateNote } from '@/api/noteApi';
 
 // thành phần con
 import Comment from './Comment';
@@ -59,6 +64,19 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
 }));
 
 const Learning: React.FC = () => {
+  const [seek, setSeek] = useState<any>(0);
+
+  const [queryNote, setQueryNote] = useState<any[]>([
+    {
+      key: 'type',
+      value: 'in_chapter',
+    },
+    {
+      key: 'sort',
+      value: 'ASC',
+    },
+  ]);
+
   const { id } = useParams();
   const query = useQueryParams();
 
@@ -76,6 +94,15 @@ const Learning: React.FC = () => {
   const resourceQuery = useQuery({
     queryKey: ['resource', idResource],
     queryFn: () => getResource(id || '', user._id, idResource ? idResource : ''),
+  });
+
+  const {
+    data: notes,
+    // isLoading: isLoadingNote,
+    refetch: refetchNote,
+  } = useQuery({
+    queryKey: ['note', idResource, queryNote],
+    queryFn: () => getNotes(idResource, user._id, queryNote),
   });
 
   const theme = useTheme();
@@ -98,11 +125,43 @@ const Learning: React.FC = () => {
     }
   };
 
+  // seek
+  const handleSeek = (seek: number, currentIdResource: string) => {
+    setSeek(seek);
+
+    if (currentIdResource !== idResource) {
+      query.set('id', currentIdResource);
+    }
+  };
+  // filter Note
+  const handleNoteFilter = (value: string) => {
+    setQueryNote((pre) => [...pre, { key: 'type', value: value }]);
+  };
+
+  const hanldeNoteDate = (value: string) => {
+    setQueryNote((pre) => [...pre, { key: 'sort', value: value }]);
+  };
+
+  // note action
+
+  const handleUpdateNote = async (id: string, newContent: string) => {
+    await updateNote(id, newContent);
+    refetchNote();
+  };
+  const handleDeleteNote = async (id: string) => {
+    await deleteNote(id);
+    refetchNote();
+  };
+
   useEffect(() => {
     return () => {
       queryClient.removeQueries({ queryKey: ['resource'] });
     };
   }, [queryClient]);
+
+  useEffect(() => {
+    setSeek(undefined);
+  }, [idResource]);
 
   if (moduleQuery.isError || resourceQuery.isError) return <div>Error</div>;
 
@@ -111,121 +170,138 @@ const Learning: React.FC = () => {
   }
 
   return (
-    <Box position={'relative'}>
-      {!resourceQuery.isLoading && !moduleQuery.isLoading && (
-        <Header resource_id={resourceQuery.data._id} user_id={user._id} data={moduleQuery.data} />
-      )}
-      <Box
-        sx={{
-          display: 'flex',
-        }}
-      >
-        <PerfectScrollbar
-          style={{
-            width: '100%',
-            height: '87vh',
-            overflow: 'auto',
-            background: theme.palette.background.paper,
-          }}
-        >
-          {resourceQuery.isLoading ? (
-            <ResourceSkeleton />
-          ) : (
-            <Resource resource={resourceQuery.data} refetchResource={moduleQuery.refetch} />
-          )}
-        </PerfectScrollbar>
+    <NoteContext.Provider
+      value={{
+        onNoteFilter: handleNoteFilter,
+        onNoteDate: hanldeNoteDate,
+        onNoteSave: handleUpdateNote,
+        onNoteDelete: handleDeleteNote,
+      }}
+    >
+      <SeekContext.Provider value={{ value: seek, onSeek: handleSeek }}>
+        <Box position={'relative'}>
+          {!moduleQuery.isLoading && <Header notes={notes || []} data={moduleQuery.data} />}
+          <Box
+            sx={{
+              display: 'flex',
+            }}
+          >
+            <PerfectScrollbar
+              style={{
+                width: '100%',
+                height: '87vh',
+                overflow: 'auto',
+                background: theme.palette.background.paper,
+              }}
+            >
+              {resourceQuery.isLoading ? (
+                <ResourceSkeleton />
+              ) : (
+                <Resource
+                  resource={resourceQuery.data}
+                  refetchResource={moduleQuery.refetch}
+                  refetchNote={refetchNote}
+                />
+              )}
+            </PerfectScrollbar>
 
-        {moduleQuery.isLoading ? (
-          <ModulesSkeleton />
-        ) : (
-          <TrackList modules={moduleQuery.data} open={openTrackList} onClose={toggleLearningList} />
-        )}
-      </Box>
-      <LessonNavigation>
-        {/* sử dụng placement để mở 1 popup kéo từ bên placement vào */}
-        <PlacementToggle
-          defaultOpen={query.get('comment') ? true : false}
-          placement="left"
-          Connect={(connect) => (
-            <Button onClick={connect} sx={{ color: theme.palette.text.primary, height: '50px' }}>
-              <MessageIcon />
-              <Hidden smDown>
-                <Typography ml={1} variant="h4">
-                  Hỏi đáp
+            {moduleQuery.isLoading ? (
+              <ModulesSkeleton />
+            ) : (
+              <TrackList modules={moduleQuery.data} open={openTrackList} onClose={toggleLearningList} />
+            )}
+          </Box>
+          <LessonNavigation>
+            {/* sử dụng placement để mở 1 popup kéo từ bên placement vào */}
+            <PlacementToggle
+              defaultOpen={query.get('comment') ? true : false}
+              placement="left"
+              Connect={(connect) => (
+                <Button onClick={connect} sx={{ color: theme.palette.text.primary, height: '50px' }}>
+                  <MessageIcon />
+                  <Hidden smDown>
+                    <Typography ml={1} variant="h4">
+                      Hỏi đáp
+                    </Typography>
+                  </Hidden>
+                </Button>
+              )}
+            >
+              {/* Nội dung bên trong */}
+              <Comment />
+            </PlacementToggle>
+
+            <Box display={'flex'} alignItems={'center'}>
+              <Box>
+                <ButtonStyle
+                  sx={{
+                    px: {
+                      xs: '50px',
+                    },
+                  }}
+                  onClick={() => handleAdjacentResourceId('previous')}
+                >
+                  <ArrowBackIosNewIcon sx={{ fontSize: '20px' }} />
+
+                  <Typography
+                    mr={1}
+                    variant="h4"
+                    sx={{
+                      display: {
+                        xs: 'none',
+                        sm: 'inline',
+                      },
+                    }}
+                  >
+                    BÀI TRƯỚC
+                  </Typography>
+                </ButtonStyle>
+              </Box>
+              <Box>
+                <ButtonStyle
+                  sx={{
+                    background: 'var(--color-primary)',
+                    px: {
+                      xs: '50px',
+                    },
+                  }}
+                  onClick={() => handleAdjacentResourceId('next')}
+                >
+                  <Typography
+                    mr={1}
+                    variant="h4"
+                    color="white"
+                    sx={{
+                      display: {
+                        xs: 'none',
+                        sm: 'inline',
+                      },
+                    }}
+                  >
+                    BÀI TIẾP THEO
+                  </Typography>
+                  <ArrowForwardIosIcon sx={{ fontSize: '20px', color: 'white' }} />
+                </ButtonStyle>
+              </Box>
+            </Box>
+
+            <Button sx={{ color: theme.palette.text.primary, height: '50px' }} onClick={toggleLearningList}>
+              <Hidden mdDown>
+                <Typography mr={1} variant="h4">
+                  {!resourceQuery.isLoading && resourceQuery.data.module.title}
                 </Typography>
               </Hidden>
+              {openTrackList ? (
+                <ArrowForwardIcon sx={{ fontSize: '25px' }} />
+              ) : (
+                <MenuOpenIcon sx={{ fontSize: '25px' }} />
+              )}
             </Button>
-          )}
-        >
-          {/* Nội dung bên trong */}
-          <Comment />
-        </PlacementToggle>
-
-        <Box display={'flex'} alignItems={'center'}>
-          <Box>
-            <ButtonStyle
-              sx={{
-                px: {
-                  xs: '50px',
-                },
-              }}
-              onClick={() => handleAdjacentResourceId('previous')}
-            >
-              <ArrowBackIosNewIcon sx={{ fontSize: '20px' }} />
-
-              <Typography
-                mr={1}
-                variant="h4"
-                sx={{
-                  display: {
-                    xs: 'none',
-                    sm: 'inline',
-                  },
-                }}
-              >
-                BÀI TRƯỚC
-              </Typography>
-            </ButtonStyle>
-          </Box>
-          <Box>
-            <ButtonStyle
-              sx={{
-                background: 'var(--color-primary)',
-                px: {
-                  xs: '50px',
-                },
-              }}
-              onClick={() => handleAdjacentResourceId('next')}
-            >
-              <Typography
-                mr={1}
-                variant="h4"
-                color="white"
-                sx={{
-                  display: {
-                    xs: 'none',
-                    sm: 'inline',
-                  },
-                }}
-              >
-                BÀI TIẾP THEO
-              </Typography>
-              <ArrowForwardIosIcon sx={{ fontSize: '20px', color: 'white' }} />
-            </ButtonStyle>
-          </Box>
+          </LessonNavigation>
+          <BackgroundOverlay onClick={toggleLearningList} open={downMD && openTrackList} />
         </Box>
-
-        <Button sx={{ color: theme.palette.text.primary, height: '50px' }} onClick={toggleLearningList}>
-          <Hidden mdDown>
-            <Typography mr={1} variant="h4">
-              {!resourceQuery.isLoading && resourceQuery.data.module.title}
-            </Typography>
-          </Hidden>
-          {openTrackList ? <ArrowForwardIcon sx={{ fontSize: '25px' }} /> : <MenuOpenIcon sx={{ fontSize: '25px' }} />}
-        </Button>
-      </LessonNavigation>
-      <BackgroundOverlay onClick={toggleLearningList} open={downMD && openTrackList} />
-    </Box>
+      </SeekContext.Provider>
+    </NoteContext.Provider>
   );
 };
 

@@ -106,9 +106,12 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
     <>
       <li className={`tw-relative ${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
         <div className={`tw-text-xl`}>
-          <span className="tw-absolute -tw-top-2 tw-bg-red-500 -tw-right-3.5 tw-text-white tw-pl-1.5 tw-text-sm tw-rounded-full tw-h-5 tw-w-5">
-            {notifications.length}
-          </span>
+          {!!notifications.length && (
+            <span className="tw-absolute -tw-top-2 tw-bg-red-500 -tw-right-3.5 tw-text-white tw-pl-1.5 tw-text-sm tw-rounded-full tw-h-5 tw-w-5">
+              {notifications.length}
+            </span>
+          )}
+
           {/* thông báo */}
           <HeadlessTippy
             trigger="click"
@@ -135,31 +138,35 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
                       </div>
                     }
                   />
-                  {notifications.map((n: any, index: number) => (
-                    <Dropdown.ImageDescription
-                      onClick={() => handleNotificationClick(n)}
-                      key={index}
-                      hover
-                      thumbnail={n.data.thumbnail}
-                      bodyHead={<Typography dangerouslySetInnerHTML={{ __html: n.data.title }} />}
-                      bodyContent={
-                        <Typography
-                          dangerouslySetInnerHTML={{
-                            __html: lodash.truncate(n.data.content, { length: 40, omission: '...' }),
-                          }}
-                        />
-                      }
-                      bExtend={
-                        <p
-                          style={{
-                            fontSize: 'var(--mini-font-size)',
-                          }}
-                        >
-                          {moment(n.createdAt).fromNow()}
-                        </p>
-                      }
-                    />
-                  ))}
+                  {notifications.length > 0 ? (
+                    notifications.map((n: any, index: number) => (
+                      <Dropdown.ImageDescription
+                        onClick={() => handleNotificationClick(n)}
+                        key={index}
+                        hover
+                        thumbnail={n.data.thumbnail}
+                        bodyHead={<Typography dangerouslySetInnerHTML={{ __html: n.data.title }} />}
+                        bodyContent={
+                          <Typography
+                            dangerouslySetInnerHTML={{
+                              __html: lodash.truncate(n.data.content, { length: 40, omission: '...' }),
+                            }}
+                          />
+                        }
+                        bExtend={
+                          <p
+                            style={{
+                              fontSize: 'var(--mini-font-size)',
+                            }}
+                          >
+                            {moment(n.createdAt).fromNow()}
+                          </p>
+                        }
+                      />
+                    ))
+                  ) : (
+                    <Typography textAlign={'center'}>Không có comment</Typography>
+                  )}
                 </Dropdown.Container>
               </Wrapper>
             )}

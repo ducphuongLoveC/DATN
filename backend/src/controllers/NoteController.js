@@ -1,21 +1,58 @@
 import Note from "../models/Note.js";
 class NoteController {
+  // async getNotes(req, res) {
+  //   const { resource_id, user_id } = req.query;
+
+  //   console.log(resource_id, user_id);
+
+  //   if (!resource_id || !user_id) {
+  //     return res
+  //       .status(400)
+  //       .json({ message: "Resource ID và User ID bắt buộc" });
+  //   }
+  //   try {
+  //     const notes = await Note.find({ resource_id, user_id });
+
+  //     if (notes.length === 0) {
+  //       return res.status(404).json({
+  //         message: "Không tìm thấy note nào ở userid và resourceid này",
+  //       });
+  //     }
+
+  //     return res.status(200).json({ notes });
+  //   } catch (error) {
+  //     console.error("Error fetching notes:", error);
+  //     return res.status(500).json({ message: "Failed to fetch notes" });
+  //   }
+  // }
+
   async getNotes(req, res) {
-    const { resource_id, user_id } = req.query;
+    const { resource_id, user_id, type, sort } = req.query;
 
-    console.log(resource_id, user_id);
-
-    if (!resource_id || !user_id) {
-      return res
-        .status(400)
-        .json({ message: "Resource ID và User ID bắt buộc" });
+    if (!user_id) {
+      return res.status(400).json({ message: "User ID is required" });
     }
+
+    let query = { user_id };
+    if (type === "all_chapters") {
+    } else if (type === "in_chapter" && resource_id) {
+      query.resource_id = resource_id;
+    } else {
+      return res.status(400).json({ message: "Invalid type parameter" });
+    }
+
     try {
-      const notes = await Note.find({ resource_id, user_id });
+      let sortCriteria = {};
+      if (sort === "ASC") {
+        sortCriteria.createdAt = 1;
+      } else if (sort === "DESC") {
+        sortCriteria.createdAt = -1;
+      }
+      const notes = await Note.find(query).sort(sortCriteria);
 
       if (notes.length === 0) {
         return res.status(404).json({
-          message: "Không tìm thấy note nào ở userid và resourceid này",
+          message: "No notes found for the given user ID and resource ID",
         });
       }
 
@@ -55,18 +92,16 @@ class NoteController {
 
   async updateNote(req, res) {
     const { note_id } = req.params;
-    const { title, content } = req.body;
+    const { content } = req.body;
 
-    if (!title || !content) {
-      return res
-        .status(400)
-        .json({ message: "Title and Content are required" });
+    if (!content) {
+      return res.status(400).json({ message: "Content không được để trống" });
     }
 
     try {
       const updatedNote = await Note.findByIdAndUpdate(
         note_id,
-        { title, content },
+        { content },
         { new: true }
       );
 

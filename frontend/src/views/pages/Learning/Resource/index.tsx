@@ -1,10 +1,11 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import HeadlessTippy from '@tippyjs/react/headless';
 import { useSelector } from 'react-redux';
 
 import ArtPlayerComponent from '@/components/ArtplayComponent';
 import Question from '../Question';
+// redux
 
 // ui
 import { toast, ToastContainer } from 'react-toastify';
@@ -32,15 +33,15 @@ import TextEditor from '@/components/TextEditor';
 import { RootState } from '@/store/reducer';
 
 import formatTime from '@/utils/formatTime';
-const Resource: React.FC<any> = ({ resource, refetchResource }) => {
+
+const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => {
   const user = useSelector((state: RootState) => state.authReducer.user);
   const [isVisibleNote, setIsVisibleNote] = useState<boolean>(false);
 
   const [note, setNote] = useState('');
-
-  const [isPlayingVideo, setIsPlayingVideo] = useState<boolean | null>(null);
-
   const [currentTime, setCurrentTime] = useState<number>(0);
+
+  const artPlayer = useRef<any>();
 
   const theme = useTheme();
 
@@ -50,7 +51,7 @@ const Resource: React.FC<any> = ({ resource, refetchResource }) => {
     onSuccess: () => {
       toast.success('Thêm mới ghi chú thành công');
       setIsVisibleNote(false);
-      setIsPlayingVideo(true);
+      refetchNote();
     },
     onError: (error: any) => {
       toast.error(error.response.data.message);
@@ -59,12 +60,13 @@ const Resource: React.FC<any> = ({ resource, refetchResource }) => {
 
   const handleOpenNote = () => {
     setIsVisibleNote(true);
-    setIsPlayingVideo(false);
+
+    artPlayer.current.pause();
   };
 
   const closeNote = () => {
     setIsVisibleNote(false);
-    setIsPlayingVideo(true);
+    artPlayer.current.play();
   };
 
   const saveNote = () => {
@@ -111,7 +113,8 @@ const Resource: React.FC<any> = ({ resource, refetchResource }) => {
           case 'Video':
             return (
               <ArtPlayerComponent
-                isPlaying={isPlayingVideo}
+                key={resource._id}
+                ref={artPlayer}
                 finished={resource.progress.is_completed}
                 poster={resource?.thumbnail}
                 videoUrl={resource.url}
