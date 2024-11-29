@@ -112,7 +112,7 @@ const Learning: React.FC = () => {
 
   return (
     <Box position={'relative'}>
-      {!moduleQuery.isLoading && (
+      {!resourceQuery.isLoading && !moduleQuery.isLoading && (
         <Header resource_id={resourceQuery.data._id} user_id={user._id} data={moduleQuery.data} />
       )}
       <Box

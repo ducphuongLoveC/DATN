@@ -52,8 +52,9 @@ const Note: React.FC<Notes> = ({ notes }) => {
             </Box>
           </Grid>
         </Grid>
+        tessttt
       </Box>
-      {!notes.length && (
+      {!notes?.length && (
         <NotNoteBox>
           <Typography variant="h4">Bạn chưa có ghi chú nào</Typography>
           <Typography variant="body1">Hãy ghi chép để nhớ những gì bạn đã học!</Typography>
