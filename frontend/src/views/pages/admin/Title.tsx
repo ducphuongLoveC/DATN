@@ -2,7 +2,7 @@ import { Box, useTheme, Button, Typography, ButtonProps } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 interface TitleProps extends ButtonProps {
-  titleButton: string;
+  titleButton?: string;
   des: string;
   link?: string;
 }
@@ -28,17 +28,19 @@ const HeaderTitle: React.FC<TitleProps> = ({
     >
       <Typography variant="body2">{des}</Typography>
 
-      <Button
+      {titleButton && <Button
         {...(link
           ? {
-              component: Link,
-              to: link,
-            }
+            component: Link,
+            to: link,
+          }
           : props)}
         variant="outlined"
       >
         {titleButton}
-      </Button>
+      </Button>}
+
+
     </Box>
   );
 };
