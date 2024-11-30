@@ -1,39 +1,4 @@
-// import { Box, Typography, Grid, Paper } from "@mui/material";
 
-// const CoursesInfo = ({ courses }: { courses: any[] }) => (
-//   <Box>
-//     <Typography variant="h6" sx={{ marginBottom: "15px" }}>
-//       <strong>Số khóa học tham gia:</strong> {courses.length}
-//     </Typography>
-//     {courses.length > 0 ? (
-//       <Grid container spacing={2}>
-//         {courses.map((course, index) => (
-//           <Grid item xs={12} sm={6} md={4} key={index}>
-//             <Paper sx={{ padding: "20px", borderRadius: "8px", boxShadow: 2 }}>
-//               <Typography variant="body1" sx={{ fontWeight: "bold", marginBottom: "10px" }}>
-//                 {course.title || "Không có tiêu đề"}
-//               </Typography>
-//               <img
-//                 src={course.thumbnail}
-          
-//                 style={{
-//                   maxWidth: "100%",
-//                   height: "auto",
-//                   borderRadius: "8px",
-//                   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-//                 }}
-//               />
-//             </Paper>
-//           </Grid>
-//         ))}
-//       </Grid>
-//     ) : (
-//       <Typography>Tài khoản này chưa đăng ký khóa học nào.</Typography>
-//     )}
-//   </Box>
-// );
-
-// export default CoursesInfo;
 import { Box, Typography, Grid, Paper } from "@mui/material";
 
 const CoursesInfo = ({ courses }: { courses: any[] }) => (

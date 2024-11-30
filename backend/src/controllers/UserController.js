@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
-import Progress from "../models/Progress.js"; // Đảm bảo bạn import đúng model Progress
-import Course from "../models/Course.js"; // Đảm bảo bạn import đúng model Course
 import User from "../models/User.js";
-
+import Access from "../models/Access.js";
 class UserController {
   // Fetch all users
   async get(req, res, next) {
@@ -82,64 +80,67 @@ class UserController {
   async getUserCourses(req, res, next) {
     try {
       const { id } = req.params;
-      console.log("Received request for userId:", id); // Log userId từ request
-  
-      // Kiểm tra ID người dùng có hợp lệ không
+
+      // Kiểm tra ID người dùng
       if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-        console.error("Invalid user ID:", id); // Log nếu ID không hợp lệ
         return res.status(400).json({
           success: false,
           message: "ID người dùng không hợp lệ.",
         });
       }
-  
-      // Truy vấn bảng Progress để lấy các khóa học người dùng đã tham gia
-      const progressRecords = await Progress.find({ user_id: id })
+
+      // Kiểm tra xem người dùng có tồn tại không
+      const userExists = await User.findById(id).lean();
+      if (!userExists) {
+        return res.status(404).json({
+          success: false,
+          message: "Người dùng không tồn tại.",
+        });
+      }
+
+      // Lấy danh sách khóa học từ bảng Access
+      const accessRecords = await Access.find({ user_id: id })
         .populate(
-          "resource_id", // resource_id là khóa học trong bảng Progress
-          "title level thumbnail description" // Các trường cần lấy từ bảng Course
+          "course_id", // Liên kết tới bảng Course
+          "title level thumbnail description" // Các trường cần lấy từ Course
         )
         .lean();
-  
-      console.log(
-        "Progress records for userId:",
-        id,
-        "Progress:",
-        progressRecords
-      ); // Log các bản ghi tiến độ
-  
-      // Nếu không tìm thấy bất kỳ khóa học nào, trả về mảng trống và tổng khóa học là 0
-      if (progressRecords.length === 0) {
-        console.log("No courses found for userId:", id); // Log khi không tìm thấy khóa học
+
+      // Nếu không tìm thấy bất kỳ khóa học nào
+      if (accessRecords.length === 0) {
         return res.status(200).json({
           success: true,
           totalCourses: 0,
-          courses: [], // Trả về mảng khóa học rỗng
-          message: "Người dùng chưa đăng ký khóa học nào.",
+          courses: [],
+          message: "Người dùng chưa truy cập bất kỳ khóa học nào.",
         });
       }
-  
-      // Lấy danh sách khóa học từ các bản ghi trong bảng Progress
-      const courses = progressRecords.map((progress) => progress.resource_id);
-      console.log("Courses found for userId:", id, courses); // Log danh sách khóa học
-  
-      // Trả về kết quả
+
+      // Lấy danh sách các khóa học
+      const courses = accessRecords.map((access) => ({
+        title: access.course_id.title,
+        level: access.course_id.level,
+        thumbnail: access.course_id.thumbnail,
+        description: access.course_id.description,
+      }));
+
+      // Trả về danh sách khóa học
       return res.status(200).json({
         success: true,
+        userId: id,
         totalCourses: courses.length,
-        courses: courses, // Trả về danh sách khóa học
+        courses: courses,
         message: "Lấy danh sách khóa học người dùng thành công.",
       });
     } catch (error) {
-      console.error("Error fetching user courses:", error); // Log lỗi khi có sự cố
+      console.error("Error fetching user courses:", error);
       return res.status(500).json({
         success: false,
-        message: "Lỗi máy chủ. Vui lòng thử lại sau.",
+        message: "Đã xảy ra lỗi trong quá trình xử lý.",
         error: error.message,
       });
     }
   }
-  
 }
 
 export default new UserController();
