@@ -1,75 +1,182 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo, useImperativeHandle, forwardRef } from 'react';
 import ArtPlayer from 'artplayer';
 import Hls from 'hls.js';
 import { Box } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store/reducer';
+import { SET_IS_FIRST_PLAYING_VIDEO } from '@/store/actions';
 
 interface ArtPlayerComponentProps {
+  finished: boolean;
   videoUrl: string;
   poster?: string;
+  onCompleted?: () => void;
+  onTimeUpdate: (duration: number) => void;
 }
 
-const ArtPlayerComponent: React.FC<ArtPlayerComponentProps> = ({ videoUrl, poster }) => {
-  const artPlayerRef = useRef<HTMLDivElement>(null);
-  const art = useRef<ArtPlayer | null>(null);
+const ArtPlayerComponent = forwardRef(
+  ({ finished, videoUrl, poster, onCompleted, onTimeUpdate }: ArtPlayerComponentProps, ref) => {
+    const seek = useSelector((state: RootState) => state.homeReducer.seek);
+    const isFirstPlaying = useSelector((state: RootState) => state.homeReducer.isFirstPlayingVideo);
 
-  useEffect(() => {
-    if (artPlayerRef.current) {
-      const hls = new Hls();
-      hls.loadSource(videoUrl);
-      console.log(hls);
+    const artPlayerRef = useRef<HTMLDivElement>(null);
+    const art = useRef<ArtPlayer | null>(null);
 
-      art.current = new ArtPlayer({
-        poster: poster || '',
-        container: artPlayerRef.current,
-        url: videoUrl,
-        customType: {
-          m3u8: function (video) {
-            hls.attachMedia(video);
+    const dispatch = useDispatch();
+
+    const lastTimeRef = useRef(0);
+    const totalSeekTime = useRef(0);
+    const isSeekingRef = useRef(false);
+    const isCompleted = useRef(false);
+    const isFirstDispatch = useRef(false);
+
+    console.log('check');
+
+    useEffect(() => {
+      if (artPlayerRef.current) {
+        const hls = new Hls();
+        hls.loadSource(videoUrl);
+
+        art.current = new ArtPlayer({
+          pip: true,
+          setting: true,
+          flip: true,
+          playbackRate: true,
+          aspectRatio: true,
+          fullscreen: true,
+          fullscreenWeb: true,
+          subtitleOffset: true,
+          miniProgressBar: true,
+          mutex: true,
+          backdrop: true,
+          playsInline: true,
+          autoPlayback: true,
+          airplay: true,
+          theme: '#23ade5',
+          lang: navigator.language.toLowerCase(),
+          moreVideoAttr: {
+            crossOrigin: 'anonymous',
           },
-        },
-        controls: [
-          {
-            position: 'right',
-            html: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: white;transform: ;msFilter:;"><path d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"></path></svg>',
-            click: function () {
-              if (art.current) {
-                art.current.fullscreen = !art.current.fullscreen;
-              }
+
+          poster: poster || '',
+          container: artPlayerRef.current,
+          url: videoUrl,
+          customType: {
+            m3u8: function (video) {
+              hls.attachMedia(video);
             },
           },
-          // {
-          //   position: 'right',
-          //   html: 'Thu nhỏ',
-          //   click: function () {
-          //     if (art.current) art.current.pip = !art.current.pip;
-          //   },
-          // },
-        ],
-      });
+        });
 
-      return () => {
-        if (art.current) {
-          art.current.destroy();
-          art.current = null;
+        // Lắng nghe sự kiện "seek"
+        art?.current?.on('seek', (currentSeek) => {
+          const previousTime = lastTimeRef.current; // Thời gian trước khi tua
+
+          if (isSeekingRef.current) {
+            return; // Nếu đang trong quá trình seek, không xử lý sự kiện này
+          }
+
+          isSeekingRef.current = true; // Đánh dấu đang thực hiện seek
+
+          if (currentSeek < previousTime) {
+            // Người dùng tua ngược => Reset tổng thời gian tua
+            if (previousTime - currentSeek < 0) {
+              totalSeekTime.current = 0;
+            }
+            totalSeekTime.current -= previousTime - currentSeek;
+          } else {
+            // Người dùng tua tiến => Tính thời gian tua
+            const seekDiff = currentSeek - previousTime;
+            totalSeekTime.current += seekDiff;
+          }
+
+          if (!finished && art.current?.duration && totalSeekTime.current >= art.current.duration / 2) {
+            alert('Bạn học quá nhanh');
+
+            // Tua lại về thời gian ban đầu (0 giây)
+            art.current.seek = lastTimeRef.current;
+            totalSeekTime.current -= totalSeekTime.current;
+          }
+
+          // Cập nhật lastTimeRef với vị trí mới
+          lastTimeRef.current = currentSeek;
+          isSeekingRef.current = false;
+        });
+
+        // Lắng nghe sự kiện "timeupdate"
+        art?.current?.on('video:timeupdate', () => {
+          lastTimeRef.current = art.current?.currentTime || 0; // Cập nhật lastTimeRef khi video đang chạy
+          if (!art?.current?.currentTime) {
+            return;
+          }
+          if (art?.current?.currentTime >= art.current?.duration / 2 && onCompleted && !isCompleted.current) {
+            onCompleted();
+            isCompleted.current = true;
+          }
+          onTimeUpdate(art.current?.currentTime);
+        });
+
+        art?.current?.on('play', () => {
+          if (!isFirstDispatch.current) {
+            dispatch({ type: SET_IS_FIRST_PLAYING_VIDEO, payload: true });
+            isFirstDispatch.current = true;
+          }
+        });
+
+        return () => {
+          if (art.current) {
+            art.current.destroy();
+            art.current = null;
+            lastTimeRef.current = 0;
+            totalSeekTime.current = 0;
+            isSeekingRef.current = false;
+            isCompleted.current = false;
+          }
+          hls.destroy();
+        };
+      }
+    }, [videoUrl]);
+
+    useEffect(() => {
+      if (art?.current) {
+        if (isFirstPlaying) {
+          art.current.play();
         }
-        hls.destroy();
-      };
-    }
-  }, [videoUrl]);
+      }
+    }, [isFirstPlaying]);
 
-  return (
-    <Box
-      sx={{
-        width: '100%',
-        height: {
-          xs: '210px',
-          sm: '300px',
-          md: '520px',
-        },
-      }}
-      ref={artPlayerRef}
-    />
-  );
-};
+    useEffect(() => {
+      if (art.current && seek !== undefined) {
+        art.current.seek = seek;
+        art.current.play();
+      }
+    }, [seek]);
 
-export default ArtPlayerComponent;
+    useImperativeHandle(ref, () => ({
+      play: () => art.current?.play(),
+      pause: () => art.current?.pause(),
+      seek: (time: number) => {
+        if (art.current) {
+          art.current.seek = time;
+        }
+      },
+      getCurrentTime: () => art.current?.currentTime,
+    }));
+
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          height: {
+            xs: '210px',
+            sm: '300px',
+            md: '520px',
+          },
+        }}
+        ref={artPlayerRef}
+      />
+    );
+  }
+);
+
+export default memo(ArtPlayerComponent);

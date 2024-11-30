@@ -10,8 +10,8 @@ const resourceSchema = new mongoose.Schema(
 
     resource_type: {
       type: String,
-      // enum: ["video", "image", "document"],
-      // default: "document",
+      // enum: ["video", "question"], // Giới hạn các loại tài nguyên
+      required: true,
     },
 
     title: {
@@ -21,31 +21,61 @@ const resourceSchema = new mongoose.Schema(
       maxlength: 255,
     },
 
+    thumbnail: {
+      type: String,
+      maxlength: 1000,
+    },
+
+    // Dành cho video
     url: {
       type: String,
-      // required: [true, "Url is required"],
       maxlength: 255,
     },
-
-    description: {
-      type: String,
-      maxlength: 25000,
-    },
-
-    questions_id: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Question",
-      },
-    ],
 
     duration: {
       type: Number,
-      required: [true, "duration is required"],
-      minlength: 1,
+      min: 0,
+      max: 6000,
+    },
+
+    poster: {
+      type: String,
       maxlength: 255,
     },
+
+    // Dành cho quiz (question)
+    questions: [
+      {
+        question: {
+          type: String,
+          required: [true, "Question is required"],
+          maxlength: 255000,
+        },
+        correctAnswer: {
+          type: String, // Correct answer could be a letter or index
+          required: [true, "Correct answer is required"],
+        },
+        options: {
+          type: Map,
+          of: String,
+          required: [true, "Options are required"],
+        },
+        hint: {
+          type: String,
+        },
+      },
+    ],
+
+    description: {
+      type: String,
+      // maxlength: 25000,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
+
   {
     timestamps: true,
     versionKey: false,

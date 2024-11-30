@@ -1,22 +1,16 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  useMediaQuery,
-  styled,
-  useTheme,
-} from '@mui/material';
+import { AppBar, Box, Toolbar, useMediaQuery, styled, useTheme } from '@mui/material';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Customization from '../Customization';
 
-import { SET_MENU } from '@/store/actions';
+import { SET_MENU, SET_USER } from '@/store/actions';
 import { drawerWidth } from '@/store/constant';
 
 import Breadcrumb from '@/components/Breadcrumb';
-
+import { RootState } from '@/store/reducer';
+import Cookies from 'js-cookie';
 interface MainLayoutProps {
   children: React.ReactNode;
 }
@@ -61,10 +55,16 @@ const Main = styled('main', {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const theme: any = useTheme();
   const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
-  const leftDrawerOpened = useSelector(
-    (state: any) => state.customization.opened
-  );
+
+  const user = useSelector((state: RootState) => state.authReducer.user);
+  const leftDrawerOpened = useSelector((state: RootState) => state.customization.opened);
   const dispatch = useDispatch();
+
+  if (user == null) {
+    const user = JSON.parse(Cookies.get('user') || '');
+    dispatch({ type: SET_USER, payload: user });
+  }
+
   const handleLeftDrawerToggle = () => {
     dispatch({
       type: SET_MENU,
@@ -86,9 +86,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         elevation={0}
         sx={{
           bgcolor: theme.palette.background.paper,
-          transition: leftDrawerOpened
-            ? theme.transitions.create('width')
-            : 'none',
+          transition: leftDrawerOpened ? theme.transitions.create('width') : 'none',
         }}
       >
         <Toolbar>
@@ -96,10 +94,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         </Toolbar>
       </AppBar>
 
-      <Sidebar
-        drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened}
-        drawerToggle={handleLeftDrawerToggle}
-      />
+      <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
 
       <Main theme={theme} open={leftDrawerOpened}>
         {/* Assuming Outlet is imported correctly */}

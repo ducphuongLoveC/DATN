@@ -4,9 +4,11 @@ import { validBodyRequets } from "../middlewares/validbodyRequets.js";
 
 const routerResource = Router();
 
-routerResource.get("/:id?", ResourceController.getResource);
+// routerResource.get("/:course_id/:id?", ResourceController.getResource);
+routerResource.get("/progress/:course_id/:user_id/:id?", ResourceController.getResource);
+
 routerResource.get(
-  "/:id/adjacent-id",
+  "/:id/adjacent/id",
   ResourceController.getAdjacentResourceId
 );
 

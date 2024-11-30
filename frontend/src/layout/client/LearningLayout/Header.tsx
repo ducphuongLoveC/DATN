@@ -1,13 +1,6 @@
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
-import {
-  Box,
-  styled,
-  useTheme,
-  Button,
-  Typography,
-  useMediaQuery,
-} from '@mui/material';
+import { Box, styled, useTheme, Button, Typography, useMediaQuery } from '@mui/material';
 import { BiChevronLeft } from 'react-icons/bi';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ContrastIcon from '@mui/icons-material/Contrast';
@@ -20,19 +13,14 @@ import Progress from '@/components/Progress';
 import Note from './Note';
 import PlacementToggle from '@/components/PlacementToggle';
 
-const BoxHeader = styled('header')<{ isMobile: boolean }>(
-  ({ theme, isMobile }) => ({
-    display: 'flex',
-    justifyContent: 'space-between',
-    background:
-      theme.palette.background.paper === '#ffffff'
-        ? '#29303b'
-        : theme.palette.background.paper,
-    height: isMobile ? '40px' : '50px',
-    alignItems: 'center',
-    paddingRight: '20px',
-  })
-);
+const BoxHeader = styled('header')<{ isMobile: boolean }>(({ theme, isMobile }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  background: theme.palette.background.paper === '#ffffff' ? '#29303b' : theme.palette.background.paper,
+  height: isMobile ? '40px' : '50px',
+  alignItems: 'center',
+  paddingRight: '20px',
+}));
 
 const StyledButton = styled(Button)({
   height: '50px',
@@ -47,8 +35,6 @@ const BoxCenter = styled(Box)({
 const StyledDescriptionBox = styled(BoxCenter)({
   cursor: 'pointer',
 });
-
-
 
 const Header: React.FC = () => {
   const theme = useTheme();
@@ -68,9 +54,9 @@ const Header: React.FC = () => {
     <BoxHeader isMobile={isMobile}>
       <Box color="white" display="flex" alignItems="center">
         <Link to={'/'}>
-        <StyledButton>
-          <BiChevronLeft color="white" />
-        </StyledButton>
+          <StyledButton>
+            <BiChevronLeft color="white" />
+          </StyledButton>
         </Link>
         <Typography variant={isMobile ? 'h5' : 'h4'} color="white">
           HTML CSS từ Zero đến Hero
@@ -87,12 +73,10 @@ const Header: React.FC = () => {
         </BoxCenter>
 
         <PlacementToggle
-          placement='right'
+          placement="right"
           Connect={(connect) => (
             <StyledDescriptionBox onClick={connect}>
-              <DescriptionIcon
-                sx={{ color: 'white', fontSize: '20px', marginRight: '5px' }}
-              />
+              <DescriptionIcon sx={{ color: 'white', fontSize: '20px', marginRight: '5px' }} />
               {!isMobile && (
                 <Typography color="white" variant="body2">
                   Ghi chú

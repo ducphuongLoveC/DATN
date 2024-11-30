@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { useSelector } from 'react-redux';
 
 import { Box, Typography, styled, useMediaQuery, Button, Hidden } from '@mui/material';
 import { useTheme } from '@mui/material';
 
-import HeadlessTippy from '@tippyjs/react/headless';
-
+// context
+import { SeekContext } from '@/context/SeekContext';
+import { NoteContext } from '@/context/NoteContext';
 //icon mui
 import MessageIcon from '@mui/icons-material/Message';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
@@ -16,46 +19,21 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // my pj
-import ArtPlayerComponent from '@/components/ArtplayComponent';
 import BackgroundOverlay from '../../../components/BackgroundOverlay';
-import LearningList from './LearningList';
 import PlacementToggle from '@/components/PlacementToggle';
-import Comment from './Comment';
-import Wrapper from '@/components/Wrapper';
-import TextEditor from '@/components/TextEditor';
-
 import { findModuleByCourseId } from '@/api/moduleApi';
 import useQueryParams from '@/hooks/useQueryParams';
 import { getAdjacentResourceId, getResource } from '@/api/Resource';
-import formatLastUpdated from '@/utils/formatLastUpdated';
-// import LearningSkeleton from '@/ui-component/cards/Skeleton/LearningSkeleton';
 import { ModulesSkeleton, ResourceSkeleton } from '@/ui-component/cards/Skeleton/LearningSkeleton';
-const BoxHeaderAndNote = styled(Box)(() => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  padding: '0 20px',
-}));
 
-const BoxLearningList = styled(Box)(({ theme }) => ({
-  position: 'static',
-  zIndex: 887,
-  width: '450px',
-  [theme.breakpoints.down('md')]: {
-    position: 'absolute',
-    top: '0',
-    right: '0',
-    bottom: '0',
-    zIndex: 1000,
-  },
-  [theme.breakpoints.down('sm')]: {
-    top: '0',
-    bottom: '0',
-    left: '0',
-    right: '0',
-    width: '100% !important',
-    height: '100%',
-  },
-}));
+import { deleteNote, getNotes, updateNote } from '@/api/noteApi';
+
+// thành phần con
+import Comment from './Comment';
+import Resource from './Resource';
+import TrackList from './TrackList';
+import { RootState } from '@/store/reducer';
+import Header from './Header/Header';
 
 const LessonNavigation = styled(Box)(({ theme }) => ({
   position: 'fixed',
@@ -72,214 +50,258 @@ const LessonNavigation = styled(Box)(({ theme }) => ({
 }));
 
 const ButtonStyle = styled(Button)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   color: theme.palette.text.primary,
   padding: '4px 30px',
   borderRadius: '20px',
   background: theme.palette.background.paper,
   marginRight: '10px',
   [theme.breakpoints.down('sm')]: {
-    padding: '2px 8px',
+    padding: '5px 8px',
   },
 }));
 
 const Learning: React.FC = () => {
+  const [seek, setSeek] = useState<any>(0);
+
+  const [queryNote, setQueryNote] = useState<any[]>([
+    {
+      key: 'type',
+      value: 'in_chapter',
+    },
+    {
+      key: 'sort',
+      value: 'ASC',
+    },
+  ]);
+
   const { id } = useParams();
   const query = useQueryParams();
 
+  const user = useSelector((state: RootState) => state.authReducer.user);
+
   const idResource = query.get('id') || '';
+  const [openTrackList, setOpenTrackList] = useState<boolean>(true);
 
-  const [isLearningPlayList, setIsLearningPlayList] = useState<boolean>(true);
-  const [isVisibleNote, setIsVisibleNote] = useState<boolean>(false);
-
+  const queryClient = useQueryClient();
   const moduleQuery = useQuery({
     queryKey: ['module'],
-    queryFn: () => findModuleByCourseId(id || ''),
+    queryFn: () => findModuleByCourseId(id || '', user._id),
   });
-
-  console.log(moduleQuery.data);
 
   const resourceQuery = useQuery({
     queryKey: ['resource', idResource],
-    queryFn: () => getResource(idResource || ''),
+    queryFn: () => getResource(id || '', user._id, idResource ? idResource : ''),
   });
 
-  const findNameModulesById = useQuery({
-    queryKey: ['name_module', idResource],
-    queryFn: () => getResource(idResource || ''),
+  const {
+    data: notes,
+    // isLoading: isLoadingNote,
+    refetch: refetchNote,
+  } = useQuery({
+    queryKey: ['note', idResource, queryNote],
+    queryFn: () => getNotes(idResource, user._id, queryNote),
   });
 
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   const toggleLearningList = () => {
-    setIsLearningPlayList((prev) => !prev);
-  };
-  const handleToggleNote = () => {
-    setIsVisibleNote(!isVisibleNote);
+    setOpenTrackList((prev) => !prev);
   };
 
   const handleAdjacentResourceId = async (direction: string) => {
     try {
-      const res = await getAdjacentResourceId(idResource, direction);
+      const res = await getAdjacentResourceId(idResource, direction, user._id);
 
-      query.set('id', res.id);
+      console.log(res);
+      if (res?.progress?.is_unlocked) {
+        query.set('id', res._id);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
+  // seek
+  const handleSeek = (seek: number, currentIdResource: string) => {
+    setSeek(seek);
+
+    if (currentIdResource !== idResource) {
+      query.set('id', currentIdResource);
+    }
+  };
+  // filter Note
+  const handleNoteFilter = (value: string) => {
+    setQueryNote((pre) => [...pre, { key: 'type', value: value }]);
+  };
+
+  const hanldeNoteDate = (value: string) => {
+    setQueryNote((pre) => [...pre, { key: 'sort', value: value }]);
+  };
+
+  // note action
+
+  const handleUpdateNote = async (id: string, newContent: string) => {
+    await updateNote(id, newContent);
+    refetchNote();
+  };
+  const handleDeleteNote = async (id: string) => {
+    await deleteNote(id);
+    refetchNote();
+  };
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: ['resource'] });
+    };
+  }, [queryClient]);
+
+  useEffect(() => {
+    setSeek(undefined);
+  }, [idResource]);
+
   if (moduleQuery.isError || resourceQuery.isError) return <div>Error</div>;
 
-  return (
-    <Box position={'relative'}>
-      <Box
-        sx={{
-          display: 'flex',
-        }}
-      >
-        <PerfectScrollbar
-          style={{
-            width: '100%',
-            height: '87vh',
-            overflow: 'auto',
-            background: theme.palette.background.paper,
-          }}
-        >
-          {resourceQuery.isLoading ? (
-            <ResourceSkeleton />
-          ) : (
-            <>
-              <ArtPlayerComponent videoUrl={resourceQuery.data.url} />
-              <Box
-                sx={{
-                  marginTop: '10px',
-                  padding: {
-                    sm: '0',
-                    md: '20px',
-                  },
-                  background: theme.palette.background.paper,
-                }}
-              >
-                <BoxHeaderAndNote>
-                  <Box>
-                    <Typography variant="h1" fontWeight={500}>
-                      {resourceQuery.data.title}
-                    </Typography>
-                    <Typography variant="caption">{formatLastUpdated(resourceQuery.data.updatedAt)}</Typography>
-                  </Box>
-                  <Box>
-                    <HeadlessTippy
-                      zIndex={999}
-                      visible={isVisibleNote}
-                      placement="bottom-end"
-                      allowHTML
-                      interactive
-                      render={(attrs) => (
-                        <Wrapper {...attrs} style={{ width: '500px' }}>
-                          <TextEditor
-                            key={isVisibleNote ? 'visible' : 'hidden'}
-                            initialHeight="150px"
-                            initialValue=""
-                            onChange={(content) => {
-                              console.log(content);
-                            }}
-                          />
-                          <Button onClick={handleToggleNote}>Lưu ghi chú</Button>
-                        </Wrapper>
-                      )}
-                    >
-                      <Button
-                        onClick={handleToggleNote}
-                        sx={{
-                          color: theme.palette.text.primary,
-                          backgroundColor: theme.palette.background.paper2,
-                          padding: '10px 30px',
-                          borderRadius: '10px',
-                        }}
-                      >
-                        Thêm ghi chú tại 0:00
-                      </Button>
-                    </HeadlessTippy>
-                  </Box>
-                </BoxHeaderAndNote>
-                <Typography
-                  variant="body1"
-                  sx={{
-                    marginTop: '20px',
-                    borderRadius: '10px',
-                    padding: '20px',
-                  }}
-                >
-                  <Typography dangerouslySetInnerHTML={{ __html: resourceQuery.data.description }} />
-                </Typography>
-              </Box>
-            </>
-          )}
-        </PerfectScrollbar>
+  if (!resourceQuery.isLoading && !idResource) {
+    query.set('id', resourceQuery.data._id);
+  }
 
-        {moduleQuery.isLoading || moduleQuery.isFetching ? (
-          <ModulesSkeleton />
-        ) : (
-          isLearningPlayList && (
-            <BoxLearningList>
-              <LearningList modules={moduleQuery.data} idCourse={id} onClose={toggleLearningList} />
-            </BoxLearningList>
-          )
-        )}
-      </Box>
-      <LessonNavigation>
-        {/* sử dụng placement để mở 1 popup kéo từ bên placement vào */}
-        <PlacementToggle
-          placement="left"
-          Connect={(connect) => (
-            <Button onClick={connect} sx={{ color: theme.palette.text.primary, height: '50px' }}>
-              <MessageIcon />
-              <Hidden smDown>
-                <Typography ml={1} variant="h4">
-                  Hỏi đáp
+  return (
+    <NoteContext.Provider
+      value={{
+        onNoteFilter: handleNoteFilter,
+        onNoteDate: hanldeNoteDate,
+        onNoteSave: handleUpdateNote,
+        onNoteDelete: handleDeleteNote,
+      }}
+    >
+      <SeekContext.Provider value={{ value: seek, onSeek: handleSeek }}>
+        <Box position={'relative'}>
+          {!moduleQuery.isLoading && <Header notes={notes || []} data={moduleQuery.data} />}
+          <Box
+            sx={{
+              display: 'flex',
+            }}
+          >
+            <PerfectScrollbar
+              style={{
+                width: '100%',
+                height: '87vh',
+                overflow: 'auto',
+                background: theme.palette.background.paper,
+              }}
+            >
+              {resourceQuery.isLoading ? (
+                <ResourceSkeleton />
+              ) : (
+                <Resource
+                  resource={resourceQuery.data}
+                  refetchResource={moduleQuery.refetch}
+                  refetchNote={refetchNote}
+                />
+              )}
+            </PerfectScrollbar>
+
+            {moduleQuery.isLoading ? (
+              <ModulesSkeleton />
+            ) : (
+              <TrackList modules={moduleQuery.data} open={openTrackList} onClose={toggleLearningList} />
+            )}
+          </Box>
+          <LessonNavigation>
+            {/* sử dụng placement để mở 1 popup kéo từ bên placement vào */}
+            <PlacementToggle
+              defaultOpen={query.get('comment') ? true : false}
+              placement="left"
+              Connect={(connect) => (
+                <Button onClick={connect} sx={{ color: theme.palette.text.primary, height: '50px' }}>
+                  <MessageIcon />
+                  <Hidden smDown>
+                    <Typography ml={1} variant="h4">
+                      Hỏi đáp
+                    </Typography>
+                  </Hidden>
+                </Button>
+              )}
+            >
+              {/* Nội dung bên trong */}
+              <Comment />
+            </PlacementToggle>
+
+            <Box display={'flex'} alignItems={'center'}>
+              <Box>
+                <ButtonStyle
+                  sx={{
+                    px: {
+                      xs: '50px',
+                    },
+                  }}
+                  onClick={() => handleAdjacentResourceId('previous')}
+                >
+                  <ArrowBackIosNewIcon sx={{ fontSize: '20px' }} />
+
+                  <Typography
+                    mr={1}
+                    variant="h4"
+                    sx={{
+                      display: {
+                        xs: 'none',
+                        sm: 'inline',
+                      },
+                    }}
+                  >
+                    BÀI TRƯỚC
+                  </Typography>
+                </ButtonStyle>
+              </Box>
+              <Box>
+                <ButtonStyle
+                  sx={{
+                    background: 'var(--color-primary)',
+                    px: {
+                      xs: '50px',
+                    },
+                  }}
+                  onClick={() => handleAdjacentResourceId('next')}
+                >
+                  <Typography
+                    mr={1}
+                    variant="h4"
+                    color="white"
+                    sx={{
+                      display: {
+                        xs: 'none',
+                        sm: 'inline',
+                      },
+                    }}
+                  >
+                    BÀI TIẾP THEO
+                  </Typography>
+                  <ArrowForwardIosIcon sx={{ fontSize: '20px', color: 'white' }} />
+                </ButtonStyle>
+              </Box>
+            </Box>
+
+            <Button sx={{ color: theme.palette.text.primary, height: '50px' }} onClick={toggleLearningList}>
+              <Hidden mdDown>
+                <Typography mr={1} variant="h4">
+                  {!resourceQuery.isLoading && resourceQuery.data.module.title}
                 </Typography>
               </Hidden>
+              {openTrackList ? (
+                <ArrowForwardIcon sx={{ fontSize: '25px' }} />
+              ) : (
+                <MenuOpenIcon sx={{ fontSize: '25px' }} />
+              )}
             </Button>
-          )}
-        >
-          {/* Nội dung bên trong */}
-          <Comment />
-        </PlacementToggle>
-
-        <Box display={'flex'} alignItems={'center'}>
-          <Box>
-            <ButtonStyle onClick={() => handleAdjacentResourceId('previous')}>
-              <Typography mr={1} variant="h4">
-                <ArrowBackIosNewIcon sx={{ fontSize: '25px' }} />
-                BÀI TRƯỚC
-              </Typography>
-            </ButtonStyle>
-          </Box>
-          <Box>
-            <ButtonStyle onClick={() => handleAdjacentResourceId('next')} sx={{ background: 'var(--color-primary)' }}>
-              <Typography mr={1} variant="h4" color="white">
-                BÀI TIẾP THEO
-                <ArrowForwardIosIcon />
-              </Typography>
-            </ButtonStyle>
-          </Box>
+          </LessonNavigation>
+          <BackgroundOverlay onClick={toggleLearningList} open={downMD && openTrackList} />
         </Box>
-
-        <Button sx={{ color: theme.palette.text.primary }} onClick={toggleLearningList}>
-          <Hidden mdDown>
-            <Typography mr={1} variant="h4">
-              Biến và kiểu dữ liệu
-            </Typography>
-          </Hidden>
-          {isLearningPlayList ? (
-            <ArrowForwardIcon sx={{ fontSize: '25px' }} />
-          ) : (
-            <MenuOpenIcon sx={{ fontSize: '25px' }} />
-          )}
-        </Button>
-      </LessonNavigation>
-      <BackgroundOverlay onClick={toggleLearningList} open={downMD && isLearningPlayList} />
-    </Box>
+      </SeekContext.Provider>
+    </NoteContext.Provider>
   );
 };
 

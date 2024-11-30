@@ -5,13 +5,15 @@ import Course from "../models/Course.js";
 import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
 
+import CourseLearningPath from "../models/CourseLearningPath.js";
 import cloudinary from "cloudinary";
 
 cloudinary.config({
-  cloud_name: "dauyavqpr",
-  api_key: "663283623232467",
-  api_secret: "h8EpbOZGM4V5dXUMgrq8rRGhOi4",
+  cloud_name: "dgzwrfdjn",
+  api_key: "884514879143886",
+  api_secret: "L_sdFIOH6Z164w43rJg3p-N_gWw",
 });
+
 class CoursesController {
   async get(req, res, next) {
     try {
@@ -25,6 +27,83 @@ class CoursesController {
         data,
         message: "Get Learning Path successfully",
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getById(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          message: "Course ID is required",
+        });
+      }
+
+      // Find the course by ID
+      const course = await Course.findById(id);
+
+      if (!course) {
+        return res.status(404).json({
+          success: false,
+          message: "Course not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: course,
+        message: "Get Course successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getCoursesWithUser(req, res, next) {
+    try {
+      const courses = await Course.aggregate([
+        {
+          $match: { isActive: true },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "user_id",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        {
+          $unwind: {
+            path: "$user",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $sort: { _id: -1 },
+        },
+        {
+          $project: {
+            _id: 1,
+            user_id: 1,
+            title: 1,
+            level: 1,
+            learning_outcomes: 1,
+            thumbnail: 1,
+            description: 1,
+            original_price: 1,
+            sale_price: 1,
+            isFree: 1,
+            isActive: 1,
+            user: 1,
+          },
+        },
+      ]);
+
+      res.status(200).json(courses);
     } catch (error) {
       next(error);
     }
@@ -57,7 +136,6 @@ class CoursesController {
         {
           $group: {
             _id: "$_id",
-            learning_path_id: { $first: "$learning_path_id" },
             user_id: { $first: "$user_id" },
             title: { $first: "$title" },
             level: { $first: "$level" },
@@ -66,6 +144,8 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            isFree: { $first: "$isFree" },
+            isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
           },
         },
@@ -79,6 +159,7 @@ class CoursesController {
       next(error);
     }
   }
+
   async getCourseWithModulesAndResources(req, res, next) {
     try {
       const courseId = req.params.id;
@@ -112,7 +193,6 @@ class CoursesController {
         {
           $group: {
             _id: "$_id",
-            learning_path_id: { $first: "$learning_path_id" },
             user_id: { $first: "$user_id" },
             title: { $first: "$title" },
             level: { $first: "$level" },
@@ -121,8 +201,33 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            isFree: { $first: "$isFree" },
+            isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
           },
+        },
+        // Lookup từ CourseLearningPath để lấy các learningPath_id
+        {
+          $lookup: {
+            from: "courselearningpaths", // Tên collection của bảng trung gian
+            localField: "_id",
+            foreignField: "course_id",
+            as: "courseLearningPaths",
+          },
+        },
+        {
+          $addFields: {
+            learning_path_ids: {
+              $map: {
+                input: "$courseLearningPaths",
+                as: "clp",
+                in: "$$clp.learningPath_id",
+              },
+            },
+          },
+        },
+        {
+          $unset: "courseLearningPaths",
         },
       ]);
 
@@ -135,6 +240,7 @@ class CoursesController {
       next(error);
     }
   }
+
   async getCoursesWithModulesAndResourcesUser(req, res, next) {
     try {
       const courses = await Course.aggregate([
@@ -163,7 +269,6 @@ class CoursesController {
         {
           $group: {
             _id: "$_id",
-            learning_path_id: { $first: "$learning_path_id" },
             user_id: { $first: "$user_id" },
             title: { $first: "$title" },
             level: { $first: "$level" },
@@ -172,6 +277,8 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            isFree: { $first: "$isFree" },
+            isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
           },
         },
@@ -204,6 +311,7 @@ class CoursesController {
             description: 1,
             original_price: 1,
             sale_price: 1,
+            isFree: 1,
             modules: 1,
             user: 1, // Lấy tất cả trường từ tài liệu người dùng
           },
@@ -250,7 +358,6 @@ class CoursesController {
         {
           $group: {
             _id: "$_id",
-            learning_path_id: { $first: "$learning_path_id" },
             user_id: { $first: "$user_id" },
             title: { $first: "$title" },
             level: { $first: "$level" },
@@ -259,6 +366,8 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            isFree: { $first: "$isFree" },
+            isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
           },
         },
@@ -282,7 +391,6 @@ class CoursesController {
         {
           $project: {
             _id: 1,
-            learning_path_id: 1,
             user_id: 1,
             title: 1,
             level: 1,
@@ -291,6 +399,7 @@ class CoursesController {
             description: 1,
             original_price: 1,
             sale_price: 1,
+            isFree: 1,
             modules: 1,
             user: 1,
           },
@@ -309,15 +418,18 @@ class CoursesController {
   addCourseDetail = async (req, res, next) => {
     try {
       const {
-        learning_path_id,
+        learning_path_ids,
         user_id,
         title,
         level,
         description,
         original_price,
         sale_price,
+        isFree,
+        isActive,
         learning_outcomes,
         modules,
+        thumbnail,
       } = req.body;
 
       console.log("Received body:", req.body);
@@ -337,37 +449,48 @@ class CoursesController {
       let uploadedThumbnail;
       if (thumbnailFile) {
         uploadedThumbnail = await cloudinary.v2.uploader.upload(
-          thumbnailFile.path
+          thumbnailFile.path,
+          { folder: "images" }
         );
       }
 
       // Tạo khóa học mới
       const newCourse = new Course({
-        learning_path_id,
         user_id,
         title,
         level,
-        thumbnail: uploadedThumbnail
-          ? uploadedThumbnail.secure_url
-          : "default-thumbnail.jpg",
+        thumbnail: uploadedThumbnail ? uploadedThumbnail.secure_url : thumbnail,
         description,
         original_price,
         sale_price,
+        isFree,
+        isActive,
         learning_outcomes: Array.isArray(learning_outcomes)
           ? learning_outcomes
           : [learning_outcomes],
       });
 
-      fs.unlink(thumbnailFile.path, (err) => {
-        if (err) console.error("Error deleting temp file:", err);
-        else console.log("Temp file deleted");
-      });
+      if (thumbnailFile) {
+        fs.unlink(thumbnailFile.path, (err) => {
+          if (err) console.error("Error deleting temp file:", err);
+          else console.log("Temp file deleted");
+        });
+      }
 
       const savedCourse = await newCourse.save();
 
+      if (Array.isArray(learning_path_ids) && learning_path_ids.length > 0) {
+        const newLearningPaths = learning_path_ids.map((learningPathId) => ({
+          course_id: savedCourse._id,
+          learningPath_id: learningPathId,
+        }));
+        await CourseLearningPath.insertMany(newLearningPaths);
+      }
+
       // Xử lý các module và resource
       if (modules && Array.isArray(modules)) {
-        for (const module of modules) {
+        for (const moduleIndex in modules) {
+          const module = modules[moduleIndex];
           const newModule = new Module({
             ...module,
             course_id: savedCourse._id,
@@ -375,35 +498,105 @@ class CoursesController {
 
           const savedModule = await newModule.save();
 
-          for (const resource of module.resources) {
+          for (const resourceIndex in module.resources) {
+            const resource = module.resources[resourceIndex];
 
-            
             const resourceFile = req.files?.find(
               (file) => file.originalname === resource.fileName
             );
 
-            let uploadedFile;
-            if (resourceFile) {
-              try {
-                uploadedFile = await cloudinary.v2.uploader.upload(
-                  resourceFile.path,
-                  {
-                    resource_type: "video",
-                    timeout: 240000,
-                  }
-                );
-                console.log("Uploaded file URL:", uploadedFile.secure_url); // Log the uploaded file URL
-              } catch (error) {
-                console.error("Error uploading file:", error);
-                continue;
-              }
+            const matchedFile = req.files.find(
+              (file) =>
+                file.fieldname ===
+                `modules[${moduleIndex}][resources][${resourceIndex}][thumbnail]`
+            );
+
+            let uploadedThumbnailResource = null;
+
+            if (matchedFile) {
+              uploadedThumbnailResource = await cloudinary.v2.uploader.upload(
+                matchedFile.path,
+                { folder: "images" }
+              );
             }
 
-            const newResource = new Resource({
-              ...resource,
-              module_id: savedModule._id,
-              url: uploadedFile ? uploadedFile.secure_url : resource.url,
-            });
+            let uploadedFile;
+
+            switch (resource.resource_type) {
+              case "Video":
+                if (resourceFile) {
+                  try {
+                    uploadedFile = await cloudinary.v2.uploader.upload(
+                      resourceFile.path,
+                      {
+                        folder: "videos",
+                        resource_type: resource.type || "auto",
+                        timeout: 240000,
+                      }
+                    );
+                    console.log("Uploaded video URL:", uploadedFile.secure_url);
+                  } catch (error) {
+                    console.error("Error uploading video file:", error);
+                    continue;
+                  }
+                }
+
+                const newVideoResource = new Resource({
+                  module_id: savedModule._id,
+                  resource_type: "Video",
+                  title: resource.title,
+                  thumbnail:
+                    uploadedThumbnailResource?.secure_url || resource.thumbnail,
+                  url: uploadedFile?.secure_url || resource.url,
+                  duration: resource.duration || 0,
+                  poster: resource.poster || "",
+                });
+
+                await newVideoResource.save();
+                break;
+
+              case "Question":
+                const questions = resource.questions.map((question) => ({
+                  question: question.question,
+                  options: new Map(Object.entries(question.options)),
+                  correctAnswer: question.correctAnswer,
+                  hint: question.hint,
+                }));
+
+                const newQuestionResource = new Resource({
+                  module_id: savedModule._id,
+                  resource_type: "Question",
+                  title: resource.title,
+                  thumbnail:
+                    uploadedThumbnailResource?.secure_url || resource.thumbnail,
+                  questions: questions,
+                  duration: resource.duration,
+                  description: resource.description,
+                  isActive: resource.isActive,
+                });
+
+                await newQuestionResource.save();
+                break;
+
+              case "Document":
+                const newDocumentResource = new Resource({
+                  module_id: savedModule._id,
+                  resource_type: "Document",
+                  title: resource.title,
+                  thumbnail:
+                    uploadedThumbnailResource?.secure_url || resource.thumbnail,
+                  duration: resource.duration,
+                  description: resource.description,
+                  isActive: resource.isActive,
+                });
+
+                await newDocumentResource.save();
+                break;
+
+              default:
+                console.warn("Unknown resource type:", resource.resource_type);
+                continue;
+            }
 
             if (resourceFile && uploadedFile) {
               fs.unlink(resourceFile.path, (err) => {
@@ -411,7 +604,6 @@ class CoursesController {
                 else console.log("Temp file deleted");
               });
             }
-            await newResource.save();
           }
         }
       }
@@ -430,6 +622,7 @@ class CoursesController {
     try {
       const courseId = req.params.id;
       const {
+        learning_path_ids,
         title,
         level,
         learning_outcomes,
@@ -437,12 +630,26 @@ class CoursesController {
         description,
         original_price,
         sale_price,
+        isFree,
+        isActive,
         modules,
       } = req.body;
 
       console.log("445", req.files);
 
-      // Find and update the course
+      const thumbnailFile = req.files.find(
+        (file) => file.fieldname === "thumbnail"
+      );
+      console.log("-----------------", thumbnailFile);
+
+      let uploadedThumbnail;
+      if (thumbnailFile) {
+        uploadedThumbnail = await cloudinary.v2.uploader.upload(
+          thumbnailFile.path,
+          { folder: "images" }
+        );
+      }
+
       const updatedCourse = await Course.findByIdAndUpdate(
         courseId,
         {
@@ -451,13 +658,33 @@ class CoursesController {
           learning_outcomes: Array.isArray(learning_outcomes)
             ? learning_outcomes
             : [learning_outcomes],
-          thumbnail: thumbnail || "default-thumbnail.jpg",
+          thumbnail: uploadedThumbnail
+            ? uploadedThumbnail.secure_url
+            : thumbnail,
           description,
           original_price,
+          isFree,
+          isActive,
           sale_price,
         },
         { new: true, runValidators: true }
       );
+      // cập nhật learningPath id vào bảng trung gian
+      await CourseLearningPath.deleteMany({ course_id: courseId });
+      if (Array.isArray(learning_path_ids) && learning_path_ids.length > 0) {
+        const newLearningPaths = learning_path_ids.map((learningPathId) => ({
+          course_id: courseId,
+          learningPath_id: learningPathId,
+        }));
+        await CourseLearningPath.insertMany(newLearningPaths);
+      }
+
+      if (thumbnailFile) {
+        fs.unlink(thumbnailFile.path, (err) => {
+          if (err) console.error("Error deleting temp file:", err);
+          else console.log("Temp file deleted");
+        });
+      }
 
       if (!updatedCourse) {
         return res.status(404).json({
@@ -466,18 +693,17 @@ class CoursesController {
         });
       }
 
+      // update module
       // Get existing modules for the course
       const existingModules = await Module.find({ course_id: courseId });
       const existingModuleIds = new Set(
         existingModules.map((module) => module._id.toString())
       );
 
-      // Process modules from the client
-      for (let module of modules) {
+      for (let moduleIndex in modules) {
+        const module = modules[moduleIndex];
 
-        console.log('here', module);
-        
-        module.resources = module.resources || []; // Ensure module.resources is an array
+        module.resources = module.resources || [];
 
         // Check if the module has an ID
         if (module._id && module._id.trim() !== "") {
@@ -486,7 +712,7 @@ class CoursesController {
             // Update existing module
             await Module.findByIdAndUpdate(
               module._id,
-              { title: module.title },
+              { title: module.title, isActive: module.isActive },
               { new: true, runValidators: true }
             );
 
@@ -496,10 +722,33 @@ class CoursesController {
             });
 
             // Process each resource
-            for (const resource of module.resources) {
-              if (resource._id[0] && resource._id[0].trim() !== "") {
+            for (const resourceIndex in module.resources) {
+              const resource = module.resources[resourceIndex];
+              // console.log(resource);
+
+              const matchedFile = req.files.find(
+                (file) =>
+                  file.fieldname ===
+                  `modules[${moduleIndex}][resources][${resourceIndex}][thumbnail]`
+              );
+
+              // upload thum cho resource
+              let uploadedThumbnailResource = null;
+              if (matchedFile) {
+                uploadedThumbnailResource = await cloudinary.v2.uploader.upload(
+                  matchedFile.path,
+                  { folder: "images" }
+                );
+              }
+
+              console.log("heree", matchedFile);
+
+              if (resource._id && resource._id.trim() !== "") {
+                console.log("check heree");
+
                 // Update existing resource
                 let updateData = {};
+                let unsetData = {};
                 const resourceFile = req.files?.find(
                   (file) => file.originalname === resource.fileName
                 );
@@ -508,33 +757,82 @@ class CoursesController {
                   // Upload the new file to Cloudinary
                   const uploadedFile = await cloudinary.v2.uploader.upload(
                     resourceFile.path,
+                    { folder: "videos" },
                     { resource_type: resource.type || "auto" }
                   );
                   updateData = {
                     title: resource.title,
+                    description: resource.description,
                     duration: resource.duration,
                     url: uploadedFile.secure_url,
+
+                    isActive: resource.isActive,
                   };
+
+                  // clear video
+                  fs.unlink(resourceFile.path, (err) => {
+                    if (err) console.error("Error deleting temp file:", err);
+                    else console.log("Temp file deleted");
+                  });
                 } else {
-                  // Use existing resource's URL if no new file is provided
-                  const existingResource = await Resource.findById(
-                    resource._id[0]
-                  );
-                  updateData = {
-                    title: resource.title,
-                    url: existingResource?.url || "",
-                  };
+                  if (resource.resource_type == "Video") {
+                    updateData = {
+                      title: resource.title,
+                      description: resource.description,
+                      url: resource.url,
+                      duration: resource.duration,
+                      resource_type: "Video",
+                    };
+                    unsetData.questions = 1;
+                  } else if (resource.resource_type == "Question") {
+                    const questions = resource.questions.map((question) => ({
+                      question: question.question,
+                      options: new Map(Object.entries(question.options)),
+                      correctAnswer: question.correctAnswer,
+                      hint: question.hint,
+                    }));
+
+                    updateData = {
+                      title: resource.title,
+                      questions: questions,
+                      duration: resource.duration,
+                      description: resource.description,
+                      resource_type: "Question",
+                    };
+                    unsetData.url = 1;
+                  } else if (resource.resource_type === "Document") {
+                    updateData = {
+                      title: resource.title,
+                      description: resource.description,
+                      duration: resource.duration,
+                      resource_type: "Document",
+                      isActive: resource.isActive,
+                    };
+                    unsetData.url = 1;
+                    unsetData.questions = 1;
+                  }
                 }
 
+                console.log(updateData);
                 // Update the resource
-                await Resource.findByIdAndUpdate(
-                  resource._id[0],
-                  { ...updateData },
+                const res = await Resource.findByIdAndUpdate(
+                  resource._id,
+                  {
+                    ...updateData,
+                    $unset: unsetData,
+                    thumbnail:
+                      uploadedThumbnailResource?.secure_url ||
+                      resource.thumbnail,
+                    isActive: resource.isActive,
+                  },
                   { new: true, runValidators: true }
                 );
+                console.log(res);
               } else {
                 // Create new resource (ignore _id)
                 const { _id, ...restOfResource } = resource;
+
+                let newData = {};
                 const resourceFile = req.files?.find(
                   (file) => file.originalname === restOfResource.fileName
                 );
@@ -545,22 +843,67 @@ class CoursesController {
                     uploadedFile = await cloudinary.v2.uploader.upload(
                       resourceFile.path,
                       {
+                        folder: "videos",
                         resource_type: resource.type || "auto",
                         timeout: 240000,
                       }
                     );
+                    fs.unlink(resourceFile.path, (err) => {
+                      if (err) console.error("Error deleting temp file:", err);
+                      else console.log("Temp file deleted");
+                    });
                   } catch (error) {
                     console.error("Error uploading file:", error);
                     continue; // Skip to next resource on upload error
                   }
                 }
 
+                if (restOfResource.resource_type == "Video") {
+                  newData = {
+                    ...restOfResource,
+                    module_id: module._id,
+                    url: uploadedFile
+                      ? uploadedFile.secure_url
+                      : restOfResource.url,
+                    isActive: restOfResource.isActive,
+                  };
+                } else if (resource.resource_type == "Question") {
+                  const questions = resource.questions.map((question) => ({
+                    question: question.question,
+                    options: new Map(Object.entries(question.options)),
+                    correctAnswer: question.correctAnswer,
+                    hint: question.hint,
+                  }));
+
+                  newData = {
+                    module_id: module._id,
+                    resource_type: "Question",
+                    title: resource.title,
+                    questions: questions,
+                    duration: resource.duration,
+                    description: resource.description,
+                    isActive: resource.isActive,
+                  };
+                } else if (resource.resource_type === "Document") {
+                  newData = {
+                    ...restOfResource,
+                    module_id: module._id,
+                    isActive: restOfResource.isActive,
+                  };
+                }
                 const newResource = new Resource({
-                  ...restOfResource,
-                  module_id: module._id,
-                  url: uploadedFile ? uploadedFile.secure_url : resource.url,
+                  ...newData,
+                  thumbnail:
+                    uploadedThumbnailResource?.secure_url || resource.thumbnail,
                 });
                 await newResource.save();
+              }
+
+              if (matchedFile) {
+                fs.unlink(matchedFile.path, (err) => {
+                  if (err) console.error("Error deleting temp file:", err);
+                  else console.log("Temp file deleted");
+                });
               }
             }
 
@@ -569,8 +912,8 @@ class CoursesController {
               if (
                 !module.resources.some(
                   (res) =>
-                    res._id[0] &&
-                    res._id[0].toString() === existingResource._id.toString()
+                    res._id &&
+                    res._id.toString() === existingResource._id.toString()
                 )
               ) {
                 await Resource.findByIdAndDelete(existingResource._id);
@@ -587,21 +930,41 @@ class CoursesController {
           const newModule = new Module({
             title: module.title,
             course_id: courseId,
+            isActive: module.isActive,
           });
           const savedModule = await newModule.save();
 
           // Handle resources for the new module
-          for (const resource of module.resources) {
+          for (const resourceIndex in module.resources) {
+            const resource = module.resources[resourceIndex];
+
+            const matchedFile = req.files.find(
+              (file) =>
+                file.fieldname ===
+                `modules[${moduleIndex}][resources][${resourceIndex}][thumbnail]`
+            );
+
+            // upload thum cho resource
+            let uploadedThumbnailResource = null;
+            if (matchedFile) {
+              uploadedThumbnailResource = await cloudinary.v2.uploader.upload(
+                matchedFile.path,
+                { folder: "images" }
+              );
+            }
+
             const resourceFile = req.files?.find(
               (file) => file.originalname === resource.fileName
             );
 
+            let newData = {};
             let uploadedFile;
             if (resourceFile) {
               try {
                 uploadedFile = await cloudinary.v2.uploader.upload(
                   resourceFile.path,
                   {
+                    folder: "videos",
                     resource_type: resource.type || "auto",
                     timeout: 240000,
                   }
@@ -612,14 +975,54 @@ class CoursesController {
               }
             }
 
-            const { _id, ...filId } = resource;
+            const { _id, ...restOfResource } = resource;
+
+            if (restOfResource.resource_type == "Video") {
+              newData = {
+                ...restOfResource,
+                module_id: savedModule._id,
+                url: uploadedFile ? uploadedFile.secure_url : resource.url,
+                isActive: resource.isActive,
+              };
+            } else if (resource.resource_type == "Question") {
+              const questions = resource.questions.map((question) => ({
+                question: question.question,
+                options: new Map(Object.entries(question.options)),
+                correctAnswer: question.correctAnswer,
+                hint: question.hint,
+              }));
+
+              newData = {
+                module_id: savedModule._id,
+                resource_type: "Question",
+                title: resource.title,
+                questions: questions,
+                duration: resource.duration,
+                description: resource.description,
+                isActive: resource.isActive,
+              };
+            } else if (resource.resource_type == "Document") {
+              newData = {
+                ...restOfResource,
+                module_id: savedModule._id,
+                isActive: resource.isActive,
+              };
+            }
+
             const newResource = new Resource({
-              ...filId,
-              module_id: savedModule._id,
-              url: uploadedFile ? uploadedFile.secure_url : resource.url,
+              ...newData,
+              thumbnail:
+                uploadedThumbnailResource?.secure_url || resource.thumbnail,
             });
 
             await newResource.save();
+
+            if (matchedFile) {
+              fs.unlink(matchedFile.path, (err) => {
+                if (err) console.error("Error deleting temp file:", err);
+                else console.log("Temp file deleted");
+              });
+            }
           }
         }
       }

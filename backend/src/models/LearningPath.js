@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const learningPathSchema = new Schema(
   {
+    
     title: {
       type: String,
       required: [true, "Learning_path is required"],

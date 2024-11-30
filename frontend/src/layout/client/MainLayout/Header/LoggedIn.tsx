@@ -1,8 +1,15 @@
+import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import HeadlessTippy from '@tippyjs/react/headless';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
+import lodash from 'lodash';
+// moment
+import moment from 'moment';
+// mui
+import { Typography } from '@mui/material';
 // redux
 import { useDispatch } from 'react-redux';
 import * as actionTypes from '@/store/actions';
@@ -16,24 +23,11 @@ import Wrapper from '@/components/Wrapper';
 import GradientIcon from '@/components/GradientIcon';
 import path from '@/constants/routes';
 import Cookies from 'js-cookie';
-//
-const notifications = [
-  {
-    bodyHead: 'Dương Đức Phương',
-    bodyContent: 'Đã like ảnh của bạn!',
-    time: '1 phút trước',
-  },
-  {
-    bodyHead: 'Nguyễn Văn A',
-    bodyContent: 'Đã bình luận về bài viết của bạn!',
-    time: '1 phút trước',
-  },
-  {
-    bodyHead: 'Trần Thị B',
-    bodyContent: 'Đã theo dõi bạn!',
-    time: '1 phút trước',
-  },
-];
+// socket
+import { io } from 'socket.io-client';
+
+// api
+import { getNotificationById } from '../../../../api/notification';
 
 const courses = [
   {
@@ -51,6 +45,7 @@ const courses = [
 ];
 interface UserProp {
   user: {
+    _id: string;
     name: string;
     email: string;
     nickname: string;
@@ -58,11 +53,21 @@ interface UserProp {
     role?: string;
   };
 }
+const socket = io(import.meta.env.VITE_URL_SERVER);
 
 const LoggedIn: React.FC<UserProp> = ({ user }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const downSM = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
+  const {
+    data: notifications,
+    isLoading: isLoadingNoti,
+    refetch,
+  } = useQuery({
+    queryKey: ['notification'],
+    queryFn: () => getNotificationById(user._id),
+  });
 
   const handleLogout = () => {
     Cookies.remove('accessToken');
@@ -70,13 +75,43 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
     dispatch({ type: actionTypes.SET_ACCESS_TOKEN, payload: '' });
     dispatch({ type: actionTypes.SET_USER, payload: '' });
   };
+
+  const handleNotificationClick = (notification: any) => {
+    switch (notification.type) {
+      case 'comment':
+        const { course_id, resource_id, comment_id } = notification.data;
+        navigate(`/learning/${course_id}?id=${resource_id}&comment=${comment_id}`);
+        break;
+    }
+  };
+
+  // socket notification
+  useEffect(() => {
+    console.log(user._id);
+
+    socket.emit('joinNotificationRoom', user._id);
+
+    socket.on('newNotification', (data) => {
+      refetch();
+      console.log(data);
+    });
+    return () => {
+      socket.emit('leaveNotificationRoom', user._id);
+      socket.off('newNotification');
+    };
+  }, []);
+
+  if (isLoadingNoti) return <div>Loading...</div>;
   return (
     <>
       <li className={`tw-relative ${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
         <div className={`tw-text-xl`}>
-          <span className="tw-absolute -tw-top-2 tw-bg-red-500 -tw-right-3.5 tw-text-white tw-pl-1.5 tw-text-sm tw-rounded-full tw-h-5 tw-w-5">
-            2
-          </span>
+          {!!notifications.length && (
+            <span className="tw-absolute -tw-top-2 tw-bg-red-500 -tw-right-3.5 tw-text-white tw-pl-1.5 tw-text-sm tw-rounded-full tw-h-5 tw-w-5">
+              {notifications.length}
+            </span>
+          )}
+
           {/* thông báo */}
           <HeadlessTippy
             trigger="click"
@@ -87,7 +122,7 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
               <Wrapper
                 style={{
                   background: theme.palette.background.paper,
-                  width: '350px',
+                  width: '450px',
                   maxHeight: '70vh',
                   overflow: 'auto',
                 }}
@@ -103,24 +138,35 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
                       </div>
                     }
                   />
-                  {notifications.map((n, index) => (
-                    <Dropdown.ImageDescription
-                      key={index}
-                      hover
-                      thumbnail="images/ktnt.png"
-                      bodyHead={n.bodyHead}
-                      bodyContent={n.bodyContent}
-                      bExtend={
-                        <p
-                          style={{
-                            fontSize: 'var(--mini-font-size)',
-                          }}
-                        >
-                          {n.time}
-                        </p>
-                      }
-                    />
-                  ))}
+                  {notifications.length > 0 ? (
+                    notifications.map((n: any, index: number) => (
+                      <Dropdown.ImageDescription
+                        onClick={() => handleNotificationClick(n)}
+                        key={index}
+                        hover
+                        thumbnail={n.data.thumbnail}
+                        bodyHead={<Typography dangerouslySetInnerHTML={{ __html: n.data.title }} />}
+                        bodyContent={
+                          <Typography
+                            dangerouslySetInnerHTML={{
+                              __html: lodash.truncate(n.data.content, { length: 40, omission: '...' }),
+                            }}
+                          />
+                        }
+                        bExtend={
+                          <p
+                            style={{
+                              fontSize: 'var(--mini-font-size)',
+                            }}
+                          >
+                            {moment(n.createdAt).fromNow()}
+                          </p>
+                        }
+                      />
+                    ))
+                  ) : (
+                    <Typography textAlign={'center'}>Không có comment</Typography>
+                  )}
                 </Dropdown.Container>
               </Wrapper>
             )}

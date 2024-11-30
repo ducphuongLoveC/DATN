@@ -45,6 +45,8 @@ const Category = Loadable(lazy(() => import('../views/pages/admin/Category/Categ
 
 const Articlecategory = Loadable(lazy(() => import('../views/pages/admin/Category/Articlecategory')));
 
+const UserDetails = Loadable(lazy(() => import('../views/pages/admin/StudentList/UserDetailTabs')));
+
 const PrivateRoutes: RouteProp[] = [
   {
     path: '/',
@@ -141,6 +143,14 @@ const PrivateRoutes: RouteProp[] = [
     layout: MainLayout,
     page: HR,
   },
+
+  {
+    path: path.admin.useUsersDetail,
+    layout: MainLayout,
+    page: UserDetails,
+  },
+
+
 ];
 
 export default PrivateRoutes;

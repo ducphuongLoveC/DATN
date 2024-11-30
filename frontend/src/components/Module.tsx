@@ -8,9 +8,11 @@ import moment from 'moment';
 
 import useQueryParams from '@/hooks/useQueryParams';
 // icon
-import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
+import LockIcon from '@mui/icons-material/Lock';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import ArticleIcon from '@mui/icons-material/Article';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import QuizIcon from '@mui/icons-material/Quiz';
 interface ModuleProps {
   isCompleted?: boolean;
   isRedirect?: boolean;
@@ -22,7 +24,6 @@ interface ModuleProps {
 }
 
 const Module: React.FC<ModuleProps> = ({
-  isCompleted = true,
   isRedirect = false,
   styleM = 'one',
   title,
@@ -59,9 +60,15 @@ const Module: React.FC<ModuleProps> = ({
     items.map((item: any, idx: number) => (
       <Box
         sx={{ cursor: isRedirect ? 'pointer' : '' }}
-        {...(isRedirect ? { onClick: () => query.set('id', item._id) } : {})}
+        {...(item?.progress?.is_unlocked && isRedirect ? { onClick: () => query.set('id', item._id) } : {})}
         key={idx}
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          cursor: isRedirect && item?.progress?.is_unlocked ? 'pointer' : 'default',
+          opacity: item?.progress?.is_unlocked ? 1 : 0.5,
+        }}
       >
         <Box mr={2} pt={1}>
           <Typography color={query.get('id') == item._id ? '#007bff' : ''}>{item.title}</Typography>
@@ -69,12 +76,14 @@ const Module: React.FC<ModuleProps> = ({
             {(() => {
               switch (item.resource_type) {
                 case 'Video':
-                  return <OndemandVideoIcon sx={{ fontSize: '14px' }} />;
+                  return <PlayCircleIcon sx={{ fontSize: '15px' }} />;
+                case 'Question':
+                  return <QuizIcon sx={{ fontSize: '15px' }} />;
                 case 'Document':
-                  return <ArticleIcon sx={{ fontSize: '14px' }} />;
+                  return <ArticleIcon sx={{ fontSize: '15px' }} />;
 
                 default:
-                  return <OndemandVideoIcon sx={{ fontSize: '14px' }} />;
+                  return null;
               }
             })()}
             <Typography variant="caption" ml={1}>
@@ -82,7 +91,16 @@ const Module: React.FC<ModuleProps> = ({
             </Typography>
           </Box>
         </Box>
-        <Box>{isCompleted && <CheckCircleIcon sx={{ color: '#5db85c' }} />}</Box>
+        {item?.progress?.is_completed && (
+          <Box>
+            <CheckCircleIcon sx={{ color: '#5db85c', fontSize: '18px' }} />
+          </Box>
+        )}
+        {!item?.progress?.is_unlocked && (
+          <Box>
+            <LockIcon sx={{ fontSize: '18px' }} />
+          </Box>
+        )}
       </Box>
     ));
 

@@ -1,8 +1,6 @@
 import Order from "../models/Order.js";
 import axios from "axios";
 
-
-
 class OrderController {
 
   async createOrder(req, res, next) {

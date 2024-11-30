@@ -20,6 +20,7 @@ const path = {
     studentList: '/student-list',
     categorys: '/categorys',
     Articlecategorys: '/categorys/article',
+    useUsersDetail: '/user-detail/:id',
   },
   client: {
     auth: {

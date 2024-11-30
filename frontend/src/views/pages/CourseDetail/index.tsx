@@ -27,6 +27,7 @@ import RatingPreview from '@/components/RatingPreview';
 //my pj
 import { getCourseFull } from '@/api/courseApi';
 import { createOrder } from '@/api/OrderApi';
+import { createAccess } from '@/api/accessApi';
 import { RootState } from '@/store/reducer';
 import sleep from '@/utils/sleep';
 import path from '@/constants/routes';
@@ -78,6 +79,24 @@ const CourseDetail: React.FC = () => {
       toast.error('Đặt hàng thất bại. Vui lòng thử lại!');
     },
   });
+
+  const mutationAccess = useMutation({
+    mutationKey: ['access'],
+    mutationFn: createAccess,
+    onMutate: () => {
+      toast.loading('Đang tạo quyền truy cập!');
+    },
+    onSuccess: (data) => {
+      if (data) {
+        navigate(`/learning/${id}`);
+      }
+      toast.dismiss();
+    },
+    onError: () => {
+      toast.dismiss();
+      toast.error('Tạo quyền truy cập khóa học thất bại. Vui lòng thử lại!');
+    },
+  });
   const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ['course'],
     queryFn: () => getCourseFull(id || ''),
@@ -111,6 +130,18 @@ const CourseDetail: React.FC = () => {
       course_id: data?._id,
       amount: data?.sale_price,
       payment_method: 'MOMO',
+    });
+  };
+
+  const handleCreateAccess = async () => {
+    if (!authState.user || !authState.accessToken || !data?._id) {
+      navigate(path.client.auth.login);
+      return;
+    }
+
+    mutationAccess.mutate({
+      user_id: authState.user?._id,
+      course_id: data?._id,
     });
   };
 
@@ -300,43 +331,56 @@ const CourseDetail: React.FC = () => {
                 },
               }}
             >
-              {/* giá */}
-              <Grid item xs={12} mt={'var(--medium-space)'}>
-                <Grid container spacing={2} alignItems="center">
-                  <Grid item>
-                    <Typography variant="h2">{Number(data.sale_price).toLocaleString('vi-VN')} VND</Typography>
+              {!data.isFree && (
+                <>
+                  {/* giá */}
+                  <Grid item xs={12} mt={'var(--medium-space)'}>
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item>
+                        <Typography variant="h2">{Number(data.sale_price).toLocaleString('vi-VN')} VND</Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="h5" sx={{ textDecoration: 'line-through' }}>
+                          {Number(data.original_price).toLocaleString('vi-VN')} VND
+                        </Typography>
+                      </Grid>
+                    </Grid>
                   </Grid>
-                  <Grid item>
-                    <Typography variant="h5" sx={{ textDecoration: 'line-through' }}>
-                      {Number(data.original_price).toLocaleString('vi-VN')} VND
-                    </Typography>
+                  {/* mã giảm giá */}
+                  <Grid item xs={12}>
+                    <Grid container spacing={1} alignItems="center">
+                      <Grid item xs={6}>
+                        <TextField
+                          placeholder="nhập mã"
+                          variant="outlined"
+                          fullWidth
+                          inputProps={{ style: { padding: '14px' } }}
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <ButtonPrimary customVariant="outlined" fullWidth>
+                          Áp dụng
+                        </ButtonPrimary>
+                      </Grid>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Grid>
-
-              {/* mã giảm giá */}
+                </>
+              )}
               <Grid item xs={12}>
-                <Grid container spacing={1} alignItems="center">
-                  <Grid item xs={6}>
-                    <TextField
-                      placeholder="nhập mã"
-                      variant="outlined"
-                      fullWidth
-                      inputProps={{ style: { padding: '14px' } }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <ButtonPrimary customVariant="outlined" fullWidth>
-                      Áp dụng
-                    </ButtonPrimary>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid item xs={12}>
-                <ButtonPrimary onClick={handleOrder} fullWidth>
-                  Thanh toán ngay <PaymentIcon />
-                </ButtonPrimary>
+                {data.isFree ? (
+                  <ButtonPrimary
+                    disabled={mutationAccess.isPending}
+                    onClick={handleCreateAccess}
+                    sx={{ mt: 2 }}
+                    fullWidth
+                  >
+                    Đăng ký học ngay
+                  </ButtonPrimary>
+                ) : (
+                  <ButtonPrimary disabled={mutation.isPending} onClick={handleOrder} fullWidth>
+                    Thanh toán ngay <PaymentIcon />
+                  </ButtonPrimary>
+                )}
               </Grid>
 
               {/* nhận lại sau khóa học */}

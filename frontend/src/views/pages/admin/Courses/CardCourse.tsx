@@ -1,7 +1,10 @@
-import { Box, useTheme, Grid, Button } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { Box, useTheme, Grid, Button, TextField } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import React, { useState, useRef, useEffect } from 'react';
 import TabsCustom from '@/components/TabsCustom';
+
+import Storage from './Storage';
 
 interface CardCourseProps {
   labels: React.ReactNode[];
@@ -9,29 +12,39 @@ interface CardCourseProps {
   widthIconImage?: string;
   onSubmit?: (datas: { title: string; thumbnail: File | null } | any) => void;
   initialTitle?: string;
-  initialThumbnail?: File | null;
+  initialThumbnail?: File | null | string;
   defaultValue?: any;
+  isImage?: boolean;
 }
 
-const CardCourse: React.FC<CardCourseProps> = ({ labels, contents, widthIconImage, onSubmit, defaultValue = {} }) => {
+interface CardFormProp {
+  title: string;
+  thumbnail: File | null | string;
+}
+
+const CardCourse: React.FC<CardCourseProps> = ({
+  labels,
+  contents,
+  widthIconImage,
+  onSubmit,
+  defaultValue = {},
+  isImage = true,
+}) => {
   const theme = useTheme();
+
+  const { control, handleSubmit, setValue } = useForm<CardFormProp>({
+    defaultValues: {
+      title: defaultValue.title || '',
+      thumbnail: defaultValue.thumbnail || null,
+    },
+  });
+
   const [datas, setDatas] = useState(defaultValue);
-  const [title, setTitle] = useState<string>(datas.title);
-  const [thumbnail, setThumbnail] = useState<File | null>(datas.thumbnail);
   const contentRefs = useRef<(React.RefObject<any> | null)[]>(
     Array(contents.length)
       .fill(null)
       .map(() => React.createRef())
   );
-
-  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
-  };
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setThumbnail(file);
-  };
 
   const getDatas = () => {
     const contentsData = contentRefs.current.reduce((acc, ref) => {
@@ -46,9 +59,11 @@ const CardCourse: React.FC<CardCourseProps> = ({ labels, contents, widthIconImag
     return contentsData;
   };
 
-  const handleSubmit = () => {
+  const onSubmitForm = (data: CardFormProp) => {
     if (onSubmit) {
-      onSubmit({ title, thumbnail, ...getDatas() });
+      console.log({ ...data, ...getDatas() });
+
+      onSubmit({ ...data, ...getDatas() });
     }
   };
 
@@ -78,53 +93,96 @@ const CardCourse: React.FC<CardCourseProps> = ({ labels, contents, widthIconImag
           borderRadius: '4px',
         }}
       >
-        <Grid item lg={10}>
-          <input
-            placeholder="Nhập tiêu đề nội dung"
-            value={title}
-            onChange={handleTitleChange}
-            style={{
-              border: 'none',
-              borderBottom: `1px solid ${theme.palette.divider}`,
-              fontSize: '20px',
-              width: '100%',
-              paddingBottom: '10px',
-              outline: 'none',
-            }}
-          />
-        </Grid>
-        <Grid
-          item
-          lg={1.5}
-          display={'flex'}
-          alignItems={'center'}
-          justifyContent={'center'}
-          boxShadow="var(--main-box-shadow)"
-        >
-          <input type="file" onChange={handleImageChange} style={{ display: 'none' }} id="upload-image" />
-          <label htmlFor="upload-image">
-            {thumbnail ? (
-              <img
-                src={typeof thumbnail == 'string' ? thumbnail : URL.createObjectURL(thumbnail)}
-                alt="Thumbnail"
-                style={{
-                  width: widthIconImage || '100%',
-                  objectFit: 'cover',
-                }}
-              />
-            ) : (
-              <AddAPhotoIcon
-                sx={{
-                  fontSize: {
-                    sm: '30px',
-                    md: widthIconImage ?? '100px',
+        <Grid item lg={8}>
+          <Controller
+            name="title"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                variant="outlined"
+                placeholder="Nhập tiêu đề nội dung"
+                fullWidth
+                InputProps={{
+                  sx: {
+                    borderBottom: `1px solid ${theme.palette.divider}`,
+                    fontSize: '20px',
                   },
-                  opacity: 0.4,
                 }}
               />
             )}
-          </label>
+          />
         </Grid>
+
+        <Grid item>
+          <Storage type="images" onSelectMedia={(url: string) => setValue('thumbnail', url)} />
+        </Grid>
+        {isImage && (
+          <Grid
+            item
+            lg={1.5}
+            display={'flex'}
+            alignItems={'center'}
+            justifyContent={'center'}
+            boxShadow="var(--main-box-shadow)"
+            border={`1px dashed ${theme.palette.divider}`}
+            borderRadius={'10px'}
+          >
+            <Controller
+              name="thumbnail"
+              control={control}
+              render={({ field }) => {
+                const uniqueId = `upload-thumbnail-${Math.random()}`; // Tạo id duy nhất
+                return (
+                  <>
+                    {/* Input file ẩn */}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        const file = event.target.files?.[0] || null;
+                        field.onChange(file);
+                      }}
+                      style={{ display: 'none' }}
+                      id={uniqueId} // Sử dụng id duy nhất
+                    />
+                    {/* Nhãn tải ảnh */}
+                    <label htmlFor={uniqueId}>
+                      <Box
+                        component="span"
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {field.value ? (
+                          <img
+                            src={typeof field.value === 'string' ? field.value : URL.createObjectURL(field.value)}
+                            alt="Thumbnail"
+                            style={{
+                              height: 'auto',
+                              objectFit: 'cover',
+                            }}
+                          />
+                        ) : (
+                          <AddAPhotoIcon
+                            sx={{
+                              my: 2,
+                              fontSize: widthIconImage ? `calc(${widthIconImage} / 2)` : '48px',
+                              color: theme.palette.text.secondary,
+                            }}
+                          />
+                        )}
+                      </Box>
+                    </label>
+                  </>
+                );
+              }}
+            />
+          </Grid>
+        )}
       </Grid>
 
       {/* content */}
@@ -132,11 +190,15 @@ const CardCourse: React.FC<CardCourseProps> = ({ labels, contents, widthIconImag
         onChange={handleCreateData}
         labels={labels}
         contents={contents.map((Content, index) => (
-          <Content key={index} ref={contentRefs.current[index]} defaultValue={datas} />
+          <Content
+            key={index}
+            ref={contentRefs.current[index]}
+            defaultValue={Object.keys(getDatas()).length > 0 ? getDatas() : datas}
+          />
         ))}
       />
 
-      <Button variant="outlined" sx={{ mt: 2 }} onClick={handleSubmit}>
+      <Button variant="outlined" sx={{ mt: 2 }} onClick={handleSubmit(onSubmitForm)}>
         Lưu
       </Button>
     </Box>

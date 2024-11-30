@@ -18,6 +18,10 @@ const moduleSchema = new mongoose.Schema(
       enum: ["not started", "in progress", "completed"],
       default: "not started",
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
@@ -26,4 +30,3 @@ const moduleSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("Module", moduleSchema);
-  

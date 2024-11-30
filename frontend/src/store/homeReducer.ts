@@ -1,6 +1,8 @@
 import * as actionTypes from './actions';
 //light, dark
 export const initialState = {
+  seek: undefined,
+  isFirstPlayingVideo: false,
   theme: 'light',
   expandedIndexs: [0],
 };
@@ -17,6 +19,16 @@ const homeReducer = (state = initialState, action: any) => {
       return {
         ...state,
         expandedIndexs: action.payload,
+      };
+    case actionTypes.SET_IS_FIRST_PLAYING_VIDEO:
+      return {
+        ...state,
+        isFirstPlayingVideo: action.payload,
+      };
+    case actionTypes.SET_SEEK:
+      return {
+        ...state,
+        seek: action.payload,
       };
     default:
       return state;

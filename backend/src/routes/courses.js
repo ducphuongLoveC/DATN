@@ -7,6 +7,8 @@ import upload from "../middlewares/multer.js";
 const routerCourse = Router();
 
 routerCourse.get("/", CoursesController.get);
+routerCourse.get("/with-user", CoursesController.getCoursesWithUser);
+routerCourse.get("/single/:id", CoursesController.getById);
 
 routerCourse.get(
   "/modules-resources",
@@ -34,6 +36,9 @@ routerCourse.patch(
   CoursesController.updateCourseDetail
 );
 
-routerCourse.get("/:id/resource-ids", CoursesController.getResourcesIdByCourseId);
+routerCourse.get(
+  "/:id/resource-ids",
+  CoursesController.getResourcesIdByCourseId
+);
 
 export default routerCourse;

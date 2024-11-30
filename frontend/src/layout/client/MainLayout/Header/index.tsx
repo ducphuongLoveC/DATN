@@ -19,7 +19,6 @@ import { useMediaQuery } from '@mui/material';
 
 import useDebounce from '@/hooks/useDebounce';
 
-
 import { BeatLoader } from 'react-spinners';
 
 import LoggedIn from './LoggedIn';
@@ -27,6 +26,7 @@ import NotLoggedIn from './NotLoggedIn';
 import { RootState } from '@/store/reducer';
 import { getCourseSearch } from '@/api/courseApi';
 import path from '@/constants/routes';
+
 
 // ==============================|| NAVBAR ||============================== //
 
@@ -41,6 +41,7 @@ const ImageContentSearch = styled('img')(() => ({
   borderRadius: '50%',
   marginRight: '10px',
 }));
+
 
 const Header: React.FC = () => {
   const theme = useTheme();
@@ -72,6 +73,8 @@ const Header: React.FC = () => {
     }
   }, [debounced]);
 
+ 
+
   const handleToggleThemeMode = () => {
     const newTheme = homeState.theme === 'light' ? 'dark' : 'light';
     dispatch({
@@ -82,7 +85,7 @@ const Header: React.FC = () => {
 
   const handleSearchValue = (value: string) => {
     console.log(value);
-    if (!value.startsWith(' ')) {
+    if (!value.startsWith('')) {
       setSearchValue(value);
     }
   };
@@ -169,7 +172,7 @@ const Header: React.FC = () => {
                       {dataSearch.length > 0 && (
                         <>
                           <span>Kết quả cho '{searchValue}'</span>
-                          <h6 >Khóa học</h6>
+                          <h6>Khóa học</h6>
                           {dataSearch.map((c: any, i: number) => (
                             <Link to={path.client.learningId(c._id)}>
                               <ContentSearch key={i}>

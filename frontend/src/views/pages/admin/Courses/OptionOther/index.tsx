@@ -1,86 +1,107 @@
-import { useState, useEffect } from 'react';
+import { useState, forwardRef, useImperativeHandle, useMemo, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useQuery } from '@tanstack/react-query';
 import {
   Box,
   TextField,
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
   Typography,
   Paper,
-  InputAdornment,
   Chip,
   Grid,
   Tooltip,
   IconButton,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  useTheme,
+  Autocomplete,
 } from '@mui/material';
-import { AttachMoney, School, TrendingUp, Add } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
+import { TrendingUp, Add } from '@mui/icons-material';
 
-type level = 'easy' | 'medium' | 'high';
+// icon
+import PublicIcon from '@mui/icons-material/Public';
+import LockIcon from '@mui/icons-material/Lock';
+
+// api
+import { fetchLearningPaths } from '@/api/learningPathApi';
+
+// my pj
+import { RootState } from '@/store/reducer';
+
+type Level = 'easy' | 'medium' | 'high';
 
 interface CourseData {
   _id?: string;
-  learning_path_id: string;
+  learning_path_ids: string[];
   user_id: string;
   original_price: number;
   sale_price: number;
   learning_outcomes: string[];
-  level: level;
+  level: Level;
+  isFree?: boolean;
+  isActive: boolean;
 }
 
-interface OptionOtherProps {
-  defaultValues: CourseData;
-  onChange: (datas: CourseData) => void;
-}
+const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
+  const user = useSelector((state: RootState) => state.authReducer.user);
 
-const OptionOther: React.FC<OptionOtherProps> = ({
-  defaultValues,
-  onChange,
-}) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
     setValue,
+    getValues,
     watch,
-    getValues
   } = useForm<CourseData>({
-    defaultValues: defaultValues ?? {
-      original_price: 0,
-      sale_price: 0,
-      learning_outcomes: [],
-      level: 'medium',
+    defaultValues: {
+      learning_path_ids: defaultValue?.learning_path_ids || [],
+      user_id: user._id,
+      original_price: parseInt(defaultValue?.original_price || '0'),
+      sale_price: parseInt(defaultValue?.sale_price || '0'),
+      learning_outcomes: defaultValue?.learning_outcomes || [],
+      level: defaultValue?.level || 'easy',
+      isFree: defaultValue?.isFree !== undefined ? defaultValue.isFree : true,
+      isActive: defaultValue?.isActive !== undefined ? defaultValue.isActive : true,
     },
   });
 
-  // Watch all necessary fields for changes
-  const originalPrice = watch('original_price');
-  const salePrice = watch('sale_price');
-  const learning_outcomes = watch('learning_outcomes');
-  const level = watch('level');
+  const getData = () => ({ ...getValues() });
 
-  useEffect(() => {
-    onChange(getValues());
-  }, [originalPrice, salePrice, learning_outcomes, level]);
+  useImperativeHandle(ref, () => ({
+    getData,
+  }));
 
+  const isFree = watch('isFree');
+
+  const theme = useTheme();
   const [newOutcome, setNewOutcome] = useState<string>('');
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['learning_path'],
+    queryFn: fetchLearningPaths,
+  });
 
   const handleAddOutcome = () => {
     if (newOutcome.trim() !== '') {
-      setValue('learning_outcomes', [...learning_outcomes, newOutcome.trim()]);
+      setValue('learning_outcomes', [...watch('learning_outcomes'), ...newOutcome.split('\n')]);
       setNewOutcome('');
     }
   };
 
   const handleRemoveOutcome = (index: number) => {
+    const outcomes = watch('learning_outcomes');
     setValue(
       'learning_outcomes',
-      learning_outcomes.filter((_, i) => i !== index)
+      outcomes.filter((_, i) => i !== index)
     );
   };
 
-  const getDifficultyColor = (level: level) => {
+  const getDifficultyColor = (level: Level) => {
     switch (level) {
       case 'easy':
         return '#4caf50';
@@ -98,62 +119,132 @@ const OptionOther: React.FC<OptionOtherProps> = ({
     alert('Dữ liệu đã được in ra console');
   };
 
+  const options = useMemo(() => {
+    return data?.map(({ title, _id }: { title: string; _id: string }) => ({ label: title, value: _id }));
+  }, [data]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>error</div>;
+
   return (
     <Paper sx={{ mt: 2 }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <Controller
-              name="original_price"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="Giá bình thường"
-                  type="number"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <AttachMoney />
-                      </InputAdornment>
-                    ),
-                  }}
-                  {...field}
-                />
-              )}
-            />
+          <Grid item xs={12}>
+            <FormControl>
+              <FormLabel id="radio-group-label">Chọn loại khóa học</FormLabel>
+              <Controller
+                name="isFree"
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup {...field} row onChange={(e) => setValue('isFree', e.target.value === 'true')}>
+                    <FormControlLabel value={true} control={<Radio />} label="Khóa học miễn phí" />
+                    <FormControlLabel value={false} control={<Radio />} label="Khóa học tính phí" />
+                  </RadioGroup>
+                )}
+              />
+            </FormControl>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Controller
-              name="sale_price"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="Giá sale"
-                  type="number"
-                  error={!!errors.sale_price}
-                  helperText={
-                    getValues('sale_price') > getValues('original_price')
-                      ? 'Giá sale không thể cao hơn giá bình thường'
-                      : ''
-                  }
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <AttachMoney />
-                      </InputAdornment>
-                    ),
-                  }}
-                  {...field}
+
+          {/* Hiển thị các trường nhập giá chỉ khi isFree = false */}
+          {!isFree && (
+            <>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="original_price"
+                  control={control}
+                  render={({ field }) => <TextField fullWidth label="Giá bình thường" type="number" {...field} />}
                 />
-              )}
-            />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name="sale_price"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      fullWidth
+                      label="Giá sale"
+                      type="number"
+                      error={!!errors.sale_price}
+                      helperText={
+                        +watch('sale_price') > +watch('original_price')
+                          ? 'Giá sale không thể cao hơn giá bình thường'
+                          : ''
+                      }
+                      {...field}
+                    />
+                  )}
+                />
+              </Grid>
+            </>
+          )}
+
+          <Grid item xs={12} ml={2} mt={2} sx={{ backgroundColor: theme.palette.background.paper2 }}>
+            <FormControl>
+              <FormLabel id="radio-group-label">Cài đặt công khai</FormLabel>
+              <Controller
+                name="isActive"
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup {...field} onChange={(e) => setValue('isActive', e.target.value === 'true')}>
+                    <FormControlLabel
+                      value={true}
+                      control={<Radio />}
+                      label={
+                        <>
+                          <PublicIcon sx={{ mr: 1 }} />
+                          Công khai khóa học
+                        </>
+                      }
+                    />
+                    <FormControlLabel
+                      value={false}
+                      control={<Radio />}
+                      label={
+                        <>
+                          <LockIcon sx={{ mr: 1 }} /> Riêng tư khóa học
+                        </>
+                      }
+                    />
+                  </RadioGroup>
+                )}
+              />
+            </FormControl>
           </Grid>
 
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel id="difficulty-level-label">Cấp độ</InputLabel>
+              <FormLabel id="radio-group-label">Chọn các danh mục</FormLabel>
+              <Controller
+                name="learning_path_ids"
+                control={control}
+                defaultValue={[]}
+                render={({ field }) => (
+                  <Autocomplete
+                    {...field}
+                    multiple // Kích hoạt chế độ chọn nhiều
+                    options={options} // Danh sách các lựa chọn
+                    getOptionLabel={(option) => option.label} // Hiển thị nhãn
+                    isOptionEqualToValue={(option, value) => option.value === value.value} // So sánh giá trị
+                    onChange={(_, value) => field.onChange(value.map((item) => item.value))} // Cập nhật giá trị
+                    value={
+                      // Kiểm tra và thiết lập giá trị
+                      field.value?.map((id) => ({
+                        label: options.find((opt: any) => opt.value === id)?.label || '',
+                        value: id,
+                      })) || [] // Nếu không có giá trị, trả về mảng rỗng
+                    }
+                    renderInput={(params) => <TextField {...params} placeholder="Chọn danh mục" />}
+                  />
+                )}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <FormLabel id="difficulty-level-label">Chọn cấp độ</FormLabel>
+
               <Controller
                 name="level"
                 control={control}
@@ -181,29 +272,20 @@ const OptionOther: React.FC<OptionOtherProps> = ({
           </Grid>
 
           <Grid item xs={12}>
-            <Typography
-              variant="h6"
-              gutterBottom
-              color="primary"
-              sx={{ display: 'flex', alignItems: 'center' }}
-            >
-              <School sx={{ mr: 1 }} /> Kết quả học tập
+            <Typography gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+              Kết quả học tập
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2 }}>
               <TextField
+                multiline
                 fullWidth
                 label="Thêm kết quả học tập"
                 value={newOutcome}
                 onChange={(e) => setNewOutcome(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAddOutcome()}
                 sx={{ mr: 1 }}
               />
               <Tooltip title="Thêm kết quả học tập">
-                <IconButton
-                  onClick={handleAddOutcome}
-                  color="primary"
-                  sx={{ mt: 1 }}
-                >
+                <IconButton onClick={handleAddOutcome} color="primary" sx={{ mt: 1 }}>
                   <Add />
                 </IconButton>
               </Tooltip>
@@ -218,12 +300,12 @@ const OptionOther: React.FC<OptionOtherProps> = ({
                 overflowY: 'auto',
               }}
             >
-              {learning_outcomes.length === 0 ? (
+              {watch('learning_outcomes').length === 0 ? (
                 <Typography color="text.secondary" textAlign="center">
                   Chưa có kết quả học tập nào được thêm
                 </Typography>
               ) : (
-                learning_outcomes.map((outcome, index) => (
+                watch('learning_outcomes').map((outcome, index) => (
                   <Chip
                     key={index}
                     label={outcome}
@@ -236,20 +318,10 @@ const OptionOther: React.FC<OptionOtherProps> = ({
               )}
             </Paper>
           </Grid>
-          <Grid item xs={12}>
-            {/* <Button
-              type="submit"
-              fullWidth
-              size="large"
-              sx={{ mt: 2 }}
-            >
-              Lấy dữ liệu
-            </Button> */}
-          </Grid>
         </Grid>
       </form>
     </Paper>
   );
-};
+});
 
 export default OptionOther;

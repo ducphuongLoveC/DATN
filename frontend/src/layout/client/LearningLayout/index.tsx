@@ -8,7 +8,6 @@ const LearningLayout: React.FC<LearningLayoutProps> = ({ children }) => {
   return (
     <Box>
       <Header />
-
       {children}
     </Box>
   );
