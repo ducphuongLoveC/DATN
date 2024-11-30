@@ -85,9 +85,9 @@ const Course: React.FC = () => {
                 price={course.original_price}
                 salePrice={course.sale_price}
                 thumbnail={course.thumbnail}
-                totalRatings={50}
-                totalUserRate={10}
-                totalStars={5}
+                totalUserRate={course.stats.totalRatings}
+                totalStars={course.stats.totalStars}
+                stars={5}
                 isFree={course.isFree}
               />
             </Grid>
@@ -111,9 +111,9 @@ const Course: React.FC = () => {
                       price={course.original_price}
                       salePrice={course.sale_price}
                       thumbnail={course.thumbnail}
-                      totalRatings={50}
-                      totalUserRate={10}
-                      totalStars={5}
+                      totalUserRate={course.stats.totalRatings}
+                      totalStars={course.stats.totalStars}
+                      stars={5}
                       isFree={course.isFree}
                     />
                   </Grid>

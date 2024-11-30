@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Box, styled, useTheme, Button, Typography, useMediaQuery } from '@mui/material';
 import { BiChevronLeft } from 'react-icons/bi';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -42,6 +42,7 @@ const StyledDescriptionBox = styled(BoxCenter)({
 import { Module } from '@/interfaces/course';
 import RatingPreview from '@/components/RatingPreview';
 import { NoteProp } from '@/interfaces/Note';
+import { createRating, fetchRatingByCourseId } from '@/api/rating';
 
 interface HeaderProps {
   notes: NoteProp[];
@@ -55,6 +56,8 @@ const Header: React.FC<HeaderProps> = ({ data, notes }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const homeState = useSelector((state: RootState) => state.homeReducer);
+  const user = useSelector((state: RootState) => state.authReducer.user);
+
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [openRate, setOpenRate] = useState(false);
@@ -64,6 +67,19 @@ const Header: React.FC<HeaderProps> = ({ data, notes }) => {
     queryFn: () => getSingleCourseById(id || ''),
   });
 
+  const { data: rating, refetch: refetchRating } = useQuery({
+    queryKey: ['rating'],
+    queryFn: () => fetchRatingByCourseId(id || ''),
+  });
+
+  const mutationRating = useMutation({
+    mutationKey: ['rating'],
+    mutationFn: createRating,
+    onSuccess: () => {
+      refetchRating();
+    },
+  });
+
   const handleToggleTheme = () => {
     const newTheme = homeState.theme === 'light' ? 'dark' : 'light';
     dispatch({
@@ -71,6 +87,22 @@ const Header: React.FC<HeaderProps> = ({ data, notes }) => {
       theme: newTheme,
     });
   };
+
+  const handleCreateRating = (stars: number, comment: string) => {
+    if (user?._id && id && stars && comment) {
+      const payload = {
+        course_id: id,
+        user_id: user._id,
+        stars: stars,
+        comment: comment,
+      };
+      mutationRating.mutate(payload);
+    }
+  };
+
+  const isRated = useMemo(() => {
+    return rating?.ratings.some((r: any) => r.user_id === user._id);
+  }, [data, rating]);
 
   const totalResource = useMemo(() => {
     return data.reduce((acc, m) => acc + m.resources.length, 0);
@@ -141,11 +173,21 @@ const Header: React.FC<HeaderProps> = ({ data, notes }) => {
 
       <Dialog open={openRate} title="Đánh giá" onClose={() => setOpenRate(false)}>
         <RatingPreview
-          onChange={(rate) => {
-            console.log(rate);
-          }}
-          mode="edit"
-          ratingCounts={[5, 5, 1, 6, 200]}
+          user_id={user._id}
+          comments={rating ? rating.ratings : []}
+          onChange={handleCreateRating}
+          mode={isRated ? 'view' : 'edit'}
+          ratingCounts={
+            rating
+              ? [
+                  rating.stats.oneStar,
+                  rating.stats.twoStars,
+                  rating.stats.threeStars,
+                  rating.stats.fourStars,
+                  rating.stats.fiveStars,
+                ]
+              : [0, 0, 0, 0, 0]
+          }
         />
       </Dialog>
     </BoxHeader>

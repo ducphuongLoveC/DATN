@@ -32,6 +32,7 @@ import { RootState } from '@/store/reducer';
 import sleep from '@/utils/sleep';
 import path from '@/constants/routes';
 import CourseDetailSkeleton from '../../../ui-component/cards/Skeleton/CourseDetailSkeleton';
+import { fetchRatingByCourseId } from '@/api/rating';
 
 const BoxCenter = styled(Box)(() => ({
   display: 'flex',
@@ -96,6 +97,10 @@ const CourseDetail: React.FC = () => {
       toast.dismiss();
       toast.error('Tạo quyền truy cập khóa học thất bại. Vui lòng thử lại!');
     },
+  });
+  const { data: rating } = useQuery({
+    queryKey: ['rating'],
+    queryFn: () => fetchRatingByCourseId(id || ''),
   });
   const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ['course'],
@@ -198,7 +203,11 @@ const CourseDetail: React.FC = () => {
             dangerouslySetInnerHTML={{ __html: data.description }}
           />
 
-          <AverageRating totalRatings={25} totalUserRate={5} totalStars={5} />
+          <AverageRating
+            totalStars={rating?.ratings.totalStars || 0}
+            totalUserRate={rating?.ratings.totalRatings || 0}
+            stars={5}
+          />
           <Button
             sx={{
               padding: 0,
@@ -272,7 +281,21 @@ const CourseDetail: React.FC = () => {
           <Typography variant="h3" mt={'var(--medium-space)'}>
             Đánh giá
           </Typography>
-          <RatingPreview ratingCounts={[5, 5, 1, 6, 200]} />
+          <RatingPreview
+            comments={rating ? rating.ratings : []}
+            mode={'view'}
+            ratingCounts={
+              rating
+                ? [
+                    rating.stats.oneStar,
+                    rating.stats.twoStars,
+                    rating.stats.threeStars,
+                    rating.stats.fourStars,
+                    rating.stats.fiveStars,
+                  ]
+                : [0, 0, 0, 0, 0]
+            }
+          />
         </Grid>
         {/* box 2 */}
         <Grid item xs={12} md={4} xl={4}>

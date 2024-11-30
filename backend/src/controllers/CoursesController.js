@@ -62,28 +62,81 @@ class CoursesController {
     }
   }
 
+  // async getCoursesWithUser(req, res, next) {
+  //   try {
+  //     const courses = await Course.aggregate([
+  //       {
+  //         $match: { isActive: true },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "users",
+  //           localField: "user_id",
+  //           foreignField: "_id",
+  //           as: "user",
+  //         },
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: "$user",
+  //           preserveNullAndEmptyArrays: true,
+  //         },
+  //       },
+  //       {
+  //         $sort: { _id: -1 },
+  //       },
+  //       {
+  //         $project: {
+  //           _id: 1,
+  //           user_id: 1,
+  //           title: 1,
+  //           level: 1,
+  //           learning_outcomes: 1,
+  //           thumbnail: 1,
+  //           description: 1,
+  //           original_price: 1,
+  //           sale_price: 1,
+  //           isFree: 1,
+  //           isActive: 1,
+  //           user: 1,
+  //         },
+  //       },
+  //     ]);
+
+  //     res.status(200).json(courses);
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
+
+
   async getCoursesWithUser(req, res, next) {
     try {
       const courses = await Course.aggregate([
         {
-          $match: { isActive: true },
+          $match: { isActive: true }, // Lọc các khóa học đang hoạt động
         },
         {
           $lookup: {
-            from: "users",
-            localField: "user_id",
-            foreignField: "_id",
-            as: "user",
+            from: "users", // Nối với bảng users
+            localField: "user_id", 
+            foreignField: "_id", 
+            as: "user", // Kết quả trả về dưới dạng mảng với thông tin người dùng
           },
         },
         {
           $unwind: {
-            path: "$user",
-            preserveNullAndEmptyArrays: true,
+            path: "$user", // Chuyển đổi mảng "user" thành đối tượng
+            preserveNullAndEmptyArrays: true, // Giữ nguyên khóa học không có người dùng
           },
         },
         {
-          $sort: { _id: -1 },
+          $lookup: {
+            from: "ratings", // Nối với bảng ratings để lấy thông tin đánh giá
+            localField: "_id", // Lấy khóa học ID từ bảng courses
+            foreignField: "course_id", // Tìm đánh giá theo khóa học
+            as: "ratings", // Kết quả trả về dưới dạng mảng với tất cả các đánh giá
+          },
         },
         {
           $project: {
@@ -99,15 +152,52 @@ class CoursesController {
             isFree: 1,
             isActive: 1,
             user: 1,
+            ratings: 1, // Lấy thêm mảng ratings (các đánh giá)
           },
         },
+        {
+          $addFields: {
+            stats: {
+              totalRatings: { $size: "$ratings" }, // Số lượng đánh giá
+              totalStars: {
+                $sum: {
+                  $map: {
+                    input: "$ratings", // Duyệt qua mảng ratings
+                    as: "rating",
+                    in: "$$rating.stars", // Tổng sao cho mỗi đánh giá
+                  },
+                },
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            user_id: 1,
+            title: 1,
+            level: 1,
+            learning_outcomes: 1,
+            thumbnail: 1,
+            description: 1,
+            original_price: 1,
+            sale_price: 1,
+            isFree: 1,
+            isActive: 1,
+            user: 1,
+            stats: 1, // Chỉ lấy thông tin thống kê
+          },
+        },
+        {
+          $sort: { _id: -1 }, // Sắp xếp theo ID khóa học giảm dần
+        },
       ]);
-
+  
       res.status(200).json(courses);
     } catch (error) {
       next(error);
     }
   }
+  
   async getCoursesWithModulesAndResources(req, res, next) {
     try {
       const courses = await Course.aggregate([

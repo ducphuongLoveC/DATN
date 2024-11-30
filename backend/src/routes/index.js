@@ -16,6 +16,7 @@ import routerCourseLearningPath from "./courseLearningPath.js";
 import routerNotification from "./notification.js";
 import routerCloudinary from "./cloudinary.js";
 import routerNote from "./note.js";
+import routerRating from "./rating.js";
 const router = Router();
 
 router.use("/courses", routerCourse);
@@ -35,5 +36,6 @@ router.use("/course-learning-path", routerCourseLearningPath);
 router.use("/notification", routerNotification);
 router.use("/media", routerCloudinary);
 router.use("/note", routerNote);
+router.use("/rating", routerRating);
 
 export default router;

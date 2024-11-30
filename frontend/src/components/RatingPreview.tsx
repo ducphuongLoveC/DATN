@@ -1,38 +1,45 @@
-
-import { Box, Typography, LinearProgress, Grid, Button } from '@mui/material';
+import { Box, Typography, LinearProgress, Grid, Button, TextField, Alert } from '@mui/material';
 import StarRatings from 'react-star-ratings';
 import { useState } from 'react';
 
 interface RatingPreviewProps {
+  user_id?: string;
+  comments: any;
   ratingCounts: number[];
-  mode: 'view' | 'edit'; // Thêm mode để xác định chế độ
-  onChange?: (newRating: number) => void; // Callback khi số sao thay đổi
+  mode: 'view' | 'edit';
+  onChange?: (newRating: number, newComment: string) => void;
 }
 
 export const RatingPreview: React.FC<RatingPreviewProps> = ({
-  ratingCounts = [10, 20, 30, 40, 50],
+  user_id,
+  comments,
+  ratingCounts,
   mode = 'view',
   onChange,
 }) => {
   const totalRatings = ratingCounts.reduce((sum, count) => sum + count, 0);
-  const averageRating =
-    ratingCounts.reduce((sum, count, index) => sum + count * (index + 1), 0) /
-    totalRatings;
 
-  const [selectedRating, setSelectedRating] = useState(averageRating); 
+  let averageRating = 0;
+  if (totalRatings > 0) {
+    averageRating = ratingCounts.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRatings;
+  }
+
+  const [comment, setComment] = useState<any>('');
+
+  const [selectedRating, setSelectedRating] = useState(averageRating);
 
   const handleRatingChange = (newRating: number) => {
-    setSelectedRating(newRating); 
+    setSelectedRating(newRating);
   };
 
   const handleSubmit = () => {
     if (onChange) {
-      onChange(selectedRating); 
+      onChange(selectedRating, comment);
     }
   };
 
   return (
-    <Box mt="var(--medium-space)" sx={{ textAlign: 'center' }}>
+    <Box mt="var(--medium-space)">
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
         <Typography variant="h3" component="span" sx={{ fontWeight: 'bold', mr: 2 }}>
           {averageRating.toFixed(1)}
@@ -61,7 +68,7 @@ export const RatingPreview: React.FC<RatingPreviewProps> = ({
             <Grid item xs={8}>
               <LinearProgress
                 variant="determinate"
-                value={(count / totalRatings) * 100}
+                value={count === 0 ? 0 : (count / totalRatings) * 100}
                 sx={{ height: 8, borderRadius: 4 }}
               />
             </Grid>
@@ -72,6 +79,50 @@ export const RatingPreview: React.FC<RatingPreviewProps> = ({
             </Grid>
           </Grid>
         ))}
+      </Box>
+
+      <Box mt={2} py={3} borderRadius={2}>
+        <Typography mb={2} variant="body2" color="text.secondary">
+          Người dùng đánh giá:
+        </Typography>
+        {comments.length > 0 ? (
+          comments.map((c: any) => (
+            <Box
+              key={c._id}
+              display={'flex'}
+              flexDirection={'column'}
+              mb={2}
+              p={2}
+              borderRadius={2}
+              sx={{
+                backgroundColor: (theme) => theme.palette.background.default,
+                boxShadow: 2,
+                '&:hover': { boxShadow: 5 },
+              }}
+            >
+              <Box display={'flex'} justifyContent={'space-between'} mb={1}>
+                <Typography variant="h6" fontWeight="bold">
+                  {c.user.name} {user_id === c.user._id && '( bạn )'}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {new Date(c.createdAt).toLocaleDateString()}
+                </Typography>
+              </Box>
+              <Typography variant="body1" mb={2} sx={{ lineHeight: 1.6 }}>
+                {c.comment}
+              </Typography>
+              <StarRatings
+                rating={c.stars}
+                starRatedColor="#FFA41C"
+                numberOfStars={5}
+                starDimension="24px"
+                starSpacing="2px"
+              />
+            </Box>
+          ))
+        ) : (
+          <Typography>Không có người dùng đánh giá</Typography>
+        )}
       </Box>
 
       {/* Chế độ chỉnh sửa */}
@@ -85,13 +136,26 @@ export const RatingPreview: React.FC<RatingPreviewProps> = ({
               rating={selectedRating}
               starRatedColor="#FFA41C"
               numberOfStars={5}
-              starDimension="40px" 
+              starDimension="40px"
               starSpacing="5px"
-              changeRating={handleRatingChange} 
+              changeRating={handleRatingChange}
             />
           </Box>
           <Box mt={2}>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <TextField
+              label="Nhập suy nghĩ của bạn"
+              onChange={(e) => setComment(e.target.value)}
+              fullWidth
+              multiline
+              rows={4}
+              sx={{
+                minHeight: 120,
+                fontSize: '16px',
+              }}
+              variant="outlined"
+            />
+            <Alert severity="info">Vui lòng thận trọng trước khi đánh giá. Sau khi đánh giá không thể sửa</Alert>
+            <Button sx={{ mt: 2 }} variant="contained" color="primary" onClick={handleSubmit}>
               Gửi đánh giá
             </Button>
           </Box>
@@ -102,4 +166,3 @@ export const RatingPreview: React.FC<RatingPreviewProps> = ({
 };
 
 export default RatingPreview;
-  

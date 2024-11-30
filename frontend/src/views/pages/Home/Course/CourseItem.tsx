@@ -13,11 +13,11 @@ interface CourseItemProp {
   thumbnail: string;
   title: string;
   postUser: string;
-  totalRatings: number;
   price: string | number;
   salePrice: number;
   totalUserRate: number;
   totalStars: number;
+  stars: number;
   to: string;
   isFree: boolean;
 }
@@ -28,9 +28,9 @@ const CourseItem: React.FC<CourseItemProp> = ({
   postUser,
   price,
   salePrice,
-  totalRatings,
   totalUserRate,
   totalStars,
+  stars,
   to,
   isFree,
 }) => {
@@ -52,7 +52,7 @@ const CourseItem: React.FC<CourseItemProp> = ({
           </Typography>
           <Typography variant="body1">Đăng bởi {postUser}</Typography>
 
-          <AverageRating totalRatings={totalRatings} totalUserRate={totalUserRate} totalStars={totalStars} />
+          <AverageRating totalStars={totalStars} totalUserRate={totalUserRate} stars={stars} />
 
           {isFree ? (
             <Typography variant="h3" color="#980000">
