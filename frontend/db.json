@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "name": "TRAN HUU PHU",
+      "referring": "geoahgiepgh",
       "id": "1"
     }
   ],
@@ -98,94 +98,182 @@
   ],
   "transactions": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Trần Hữu Phú",
       "date": "26/09/2024",
       "amount": 1900000
     }
   ],
   "chartData": [
-    { "day": "Thứ 2", "value": 20 },
-    { "day": "Thứ 3", "value": 25 },
-    { "day": "Thứ 4", "value": 30 },
-    { "day": "Thứ 5", "value": 10 },
-    { "day": "Thứ 6", "value": 35 },
-    { "day": "Thứ 7", "value": 15 },
-    { "day": "Chủ nhật", "value": 6 }
+    {
+      "day": "Thứ 2",
+      "value": 20,
+      "id": "4f20"
+    },
+    {
+      "day": "Thứ 3",
+      "value": 25,
+      "id": "781a"
+    },
+    {
+      "day": "Thứ 4",
+      "value": 30,
+      "id": "8811"
+    },
+    {
+      "day": "Thứ 5",
+      "value": 10,
+      "id": "6491"
+    },
+    {
+      "day": "Thứ 6",
+      "value": 35,
+      "id": "586c"
+    },
+    {
+      "day": "Thứ 7",
+      "value": 15,
+      "id": "4709"
+    },
+    {
+      "day": "Chủ nhật",
+      "value": 6,
+      "id": "336f"
+    }
   ],
   "students": [
-    { "id": 1, "name": "Nguyễn Văn Phong", "email": "phong@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" },
-    { "id": 2, "name": "Trần my", "email": "my@gmail.com","top":"234" }
+    {
+      "id": "1",
+      "name": "Nguyễn Văn Phong",
+      "email": "phong@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    },
+    {
+      "id": "2",
+      "name": "Trần my",
+      "email": "my@gmail.com",
+      "top": "234"
+    }
   ],
   "revenue": {
     "thisMonth": 96350000,
@@ -197,41 +285,210 @@
       "accountName": "Nguyen Van A",
       "transactionDate": "2024-10-01",
       "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
+      "amount": 5000000,
+      "id": "d733"
     },
     {
       "transactionId": "TXN002",
       "accountName": "Tran Thi B",
       "transactionDate": "2024-10-05",
       "description": "Thanh toán hóa đơn điện",
-      "amount": 1200000
+      "amount": 1200000,
+      "id": "fac5"
     },
     {
       "transactionId": "TXN003",
       "accountName": "Le Van C",
       "transactionDate": "2024-10-10",
       "description": "Chuyển tiền bạn bè",
-      "amount": 2500000
+      "amount": 2500000,
+      "id": "3afe"
     },
     {
       "transactionId": "TXN004",
       "accountName": "Nguyen Thi D",
       "transactionDate": "2024-10-15",
       "description": "Thanh toán mua sắm online",
-      "amount": 1500000
+      "amount": 1500000,
+      "id": "21fe"
     },
     {
       "transactionId": "TXN005",
       "accountName": "Hoang Van E",
       "transactionDate": "2024-10-20",
       "description": "Chuyển tiền học phí",
-      "amount": 8000000
+      "amount": 8000000,
+      "id": "9ae9"
     },
     {
       "transactionId": "TXN001",
       "accountName": "Nguyen Van A",
       "transactionDate": "2024-10-01",
       "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "3dc8"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "fdfc"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "ecb2"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "dca0"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "c88e"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "07bf"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "9c3c"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "d219"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "6c7e"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "56e6"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "506e"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "8e59"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "40ec"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "4528"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "fe73"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "c799"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "e09d"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "5822"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "57d1"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+      "amount": 5000000,
+      "id": "05b9"
+    },
+    {
+      "transactionId": "TXN001",
+      "accountName": "Nguyen Van A",
+      "transactionDate": "2024-10-01",
+      "description": "Chuyển khoản tiền hàng",
+<<<<<<< HEAD
+      "amount": 5000000,
+      "id": "1d83"
+=======
       "amount": 5000000
     },
     {
@@ -240,146 +497,7 @@
       "transactionDate": "2024-10-01",
       "description": "Chuyển khoản tiền hàng",
       "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
-    },
-    {
-      "transactionId": "TXN001",
-      "accountName": "Nguyen Van A",
-      "transactionDate": "2024-10-01",
-      "description": "Chuyển khoản tiền hàng",
-      "amount": 5000000
+>>>>>>> e243d621ddcf429fac0f3c81ffbbd0b86703abfe
     }
    
   ]
