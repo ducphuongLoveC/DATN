@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 import User from "../models/User.js";
 import Access from "../models/Access.js";
+import Module from "../models/Module.js";
+import Resource from "../models/Resource.js";
+import Progress from "../models/Progress.js";
+
 class UserController {
   // Fetch all users
   async get(req, res, next) {
@@ -116,20 +120,53 @@ class UserController {
         });
       }
 
-      // Lấy danh sách các khóa học
-      const courses = accessRecords.map((access) => ({
-        title: access.course_id.title,
-        level: access.course_id.level,
-        thumbnail: access.course_id.thumbnail,
-        description: access.course_id.description,
-      }));
+      // Tính toán tiến độ cho mỗi khóa học
+      const coursesWithProgress = await Promise.all(
+        accessRecords.map(async (access) => {
+          const courseId = access.course_id._id;
 
-      // Trả về danh sách khóa học
+          // Lấy tất cả các module thuộc khóa học
+          const modules = await Module.find({ course_id: courseId });
+          const moduleIds = modules.map((module) => module._id);
+
+          // Lấy tất cả tài nguyên thuộc các module
+          const resources = await Resource.find({
+            module_id: { $in: moduleIds },
+          });
+          const resourceIds = resources.map((resource) => resource._id);
+
+          // Lấy tiến độ của người dùng trên các tài nguyên
+          const progresses = await Progress.find({
+            user_id: id,
+            resource_id: { $in: resourceIds },
+          });
+
+          // Tính toán số tài nguyên đã hoàn thành
+          const completedResources = progresses.filter(
+            (progress) => progress.is_completed
+          ).length;
+          const totalResources = resourceIds.length;
+          const progressPercentage =
+            totalResources > 0
+              ? ((completedResources / totalResources) * 100).toFixed(2)
+              : 0;
+
+          return {
+            title: access.course_id.title,
+            level: access.course_id.level,
+            thumbnail: access.course_id.thumbnail,
+            description: access.course_id.description,
+            progress: progressPercentage,
+          };
+        })
+      );
+
+      // Trả về danh sách khóa học cùng tiến độ
       return res.status(200).json({
         success: true,
         userId: id,
-        totalCourses: courses.length,
-        courses: courses,
+        totalCourses: coursesWithProgress.length,
+        courses: coursesWithProgress,
         message: "Lấy danh sách khóa học người dùng thành công.",
       });
     } catch (error) {

@@ -1,5 +1,4 @@
-
-import { Box, Typography, Grid, Paper } from "@mui/material";
+import { Box, Typography, Grid, Paper, LinearProgress } from "@mui/material";
 
 const CoursesInfo = ({ courses }: { courses: any[] }) => (
   <Box sx={{ padding: "20px" }}>
@@ -51,6 +50,33 @@ const CoursesInfo = ({ courses }: { courses: any[] }) => (
                   }}
                 />
               </Box>
+
+              {/* Mô tả khóa học */}
+              <Typography variant="body2" sx={{ marginTop: "10px", marginBottom: "10px" }}>
+                {course.description || "Không có mô tả"}
+              </Typography>
+
+              {/* Hiển thị tiến độ */}
+              <Typography variant="body2" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
+                Tiến độ hoàn thành: {`${course.progress || 0}`}
+              </Typography>
+
+              {/* Thanh LinearProgress */}
+              <LinearProgress
+                variant="determinate"
+                value={course.progress || 0}
+                sx={{
+                  height: "10px",
+                  borderRadius: "5px",
+                  backgroundColor: "#e0e0e0", // Màu xám cho phần chưa hoàn thành
+                  "& .MuiLinearProgress-bar": {
+                    backgroundColor:
+                      course.progress === 0
+                        ? "#e0e0e0" // Màu xám khi tiến độ 0%
+                        : "#76c7c0", // Màu xanh khi tiến độ > 0%
+                  },
+                }}
+              />
             </Paper>
           </Grid>
         ))}
