@@ -1,11 +1,12 @@
 import {
   BiSolidHome,
-  BiNews,
-  BiLogoTelegram,
-  BiSolidObjectsHorizontalLeft,
+  // BiNews,
+  BiLogoTelegram
 } from 'react-icons/bi';
 
-import path from '@/constants/routes';
+import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
+
+// import path from '@/constants/routes';
 
 export interface Props {
   icon: React.ReactNode | Function;
@@ -22,17 +23,17 @@ const menus: Props[] = [
     target: false,
   },
   {
-    icon: BiSolidObjectsHorizontalLeft,
-    title: 'Lộ trình',
+    icon: VideoLibraryIcon,
+    title: 'My courses',
     url: '/learning-path',
     target: false,
   },
-  {
-    icon: BiNews,
-    title: 'Bài viết',
-    url: path.client.news,
-    target: false,
-  },
+  // {
+  //   icon: BiNews,
+  //   title: 'Bài viết',
+  //   url: path.client.news,
+  //   target: false,
+  // },
   {
     icon: BiLogoTelegram,
     title: 'Liên hệ',

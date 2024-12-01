@@ -99,7 +99,7 @@ const CourseDetail: React.FC = () => {
     },
   });
   const { data: rating } = useQuery({
-    queryKey: ['rating'],
+    queryKey: ['rating', id],
     queryFn: () => fetchRatingByCourseId(id || ''),
   });
   const { data, isLoading, isError, isFetching } = useQuery({
@@ -169,8 +169,9 @@ const CourseDetail: React.FC = () => {
       const duration = moment.duration(totalSecond, 'seconds');
       const hours = duration.hours();
       const minutes = duration.minutes();
+      const second = duration.seconds();
 
-      return `${hours} giờ ${minutes} phút`;
+      return `${hours} giờ ${minutes} phút ${second} giây`;
     }
   }, [data]);
 
@@ -255,7 +256,7 @@ const CourseDetail: React.FC = () => {
           </Typography>
           <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
             <Typography variant="body1" mt={'var(--medium-space)'}>
-              4 chương • 12 bài học • Thời lượng 03 giờ 26 phút
+              {data.modules.length} chương • {totalResources} bài học • Thời lượng {totalhourse}
             </Typography>
             <Button onClick={handleToggleExpandedAll}>
               {expandedIndexs.length == data.modules.length ? 'Đóng tất cả' : 'Mở tất cả'}

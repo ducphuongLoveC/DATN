@@ -27,7 +27,6 @@ import { RootState } from '@/store/reducer';
 import { getCourseSearch } from '@/api/courseApi';
 import path from '@/constants/routes';
 
-
 // ==============================|| NAVBAR ||============================== //
 
 const ContentSearch = styled(Box)(() => ({
@@ -41,7 +40,6 @@ const ImageContentSearch = styled('img')(() => ({
   borderRadius: '50%',
   marginRight: '10px',
 }));
-
 
 const Header: React.FC = () => {
   const theme = useTheme();
@@ -73,8 +71,6 @@ const Header: React.FC = () => {
     }
   }, [debounced]);
 
- 
-
   const handleToggleThemeMode = () => {
     const newTheme = homeState.theme === 'light' ? 'dark' : 'light';
     dispatch({
@@ -85,7 +81,7 @@ const Header: React.FC = () => {
 
   const handleSearchValue = (value: string) => {
     console.log(value);
-    if (!value.startsWith('')) {
+    if (!value.startsWith(' ')) {
       setSearchValue(value);
     }
   };

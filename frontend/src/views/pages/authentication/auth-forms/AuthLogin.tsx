@@ -40,6 +40,7 @@ export interface FormLoginValues {
 }
 
 interface AuthLoginProps {
+  google?: boolean;
   onSubmit?: (values: FormLoginValues) => void;
 }
 
@@ -55,7 +56,7 @@ const schema = z.object({
   password: z.string().min(6, 'Mật khẩu đăng nhập phải hơn hoặc bằng 6 ký tự').max(255, 'Mật khẩu quá dài'),
 });
 
-const AuthLogin: React.FC<AuthLoginProps> = ({ onSubmit, ...others }) => {
+const AuthLogin: React.FC<AuthLoginProps> = ({ google = false, onSubmit, ...others }) => {
   const theme: any = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
   const customization = useSelector((state: any) => state.customization);
@@ -83,86 +84,88 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ onSubmit, ...others }) => {
     defaultValues: {
       email: '',
       password: '',
-    }
+    },
   });
 
   return (
     <>
-      <Grid container direction="column" justifyContent="center">
-        <Grid item xs={12}>
-          <AnimateButton>
-            <Button disableElevation fullWidth onClick={googleHandler} size="large" variant="outlined">
-              <Box
-                sx={{
-                  mr: {
-                    xs: 1,
-                    sm: 2,
-                    width: 20,
-                  },
-                }}
-              >
-                <img
-                  src={Google}
-                  alt="google"
-                  width={16}
-                  height={16}
-                  style={{
-                    marginRight: matchDownSM ? 8 : 16,
+      {google && (
+        <Grid container direction="column" justifyContent="center">
+          <Grid item xs={12}>
+            <AnimateButton>
+              <Button disableElevation fullWidth onClick={googleHandler} size="large" variant="outlined">
+                <Box
+                  sx={{
+                    mr: {
+                      xs: 1,
+                      sm: 2,
+                      width: 20,
+                    },
                   }}
-                />
-              </Box>
-              Đăng nhập với google
-            </Button>
-          </AnimateButton>
-        </Grid>
-        <Grid item xs={12}>
-          <Box
-            sx={{
-              alignItems: 'center',
-              display: 'flex',
-            }}
-          >
-            <Divider
+                >
+                  <img
+                    src={Google}
+                    alt="google"
+                    width={16}
+                    height={16}
+                    style={{
+                      marginRight: matchDownSM ? 8 : 16,
+                    }}
+                  />
+                </Box>
+                Đăng nhập với google
+              </Button>
+            </AnimateButton>
+          </Grid>
+          <Grid item xs={12}>
+            <Box
               sx={{
-                flexGrow: 1,
+                alignItems: 'center',
+                display: 'flex',
               }}
-              orientation="horizontal"
-            />
-            <Button
-              variant="outlined"
-              sx={{
-                cursor: 'unset',
-                m: 2,
-                py: 0.5,
-                px: 7,
-                borderColor: `${theme.palette.grey[100]} !important`,
-                color: `${theme.palette.grey[900]}!important`,
-                fontWeight: 500,
-                borderRadius: `${customization.borderRadius}px`,
-              }}
-              disableRipple
-              disabled
             >
-              Hoặc
-            </Button>
-            <Divider
+              <Divider
+                sx={{
+                  flexGrow: 1,
+                }}
+                orientation="horizontal"
+              />
+              <Button
+                variant="outlined"
+                sx={{
+                  cursor: 'unset',
+                  m: 2,
+                  py: 0.5,
+                  px: 7,
+                  borderColor: `${theme.palette.grey[100]} !important`,
+                  color: `${theme.palette.grey[900]}!important`,
+                  fontWeight: 500,
+                  borderRadius: `${customization.borderRadius}px`,
+                }}
+                disableRipple
+                disabled
+              >
+                Hoặc
+              </Button>
+              <Divider
+                sx={{
+                  flexGrow: 1,
+                }}
+                orientation="horizontal"
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} container alignItems="center" justifyContent="center">
+            <Box
               sx={{
-                flexGrow: 1,
+                mb: 2,
               }}
-              orientation="horizontal"
-            />
-          </Box>
+            >
+              <Typography variant="subtitle1">Đăng nhập với tài khoản hệ thống</Typography>
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item xs={12} container alignItems="center" justifyContent="center">
-          <Box
-            sx={{
-              mb: 2,
-            }}
-          >
-            <Typography variant="subtitle1">Đăng nhập với tài khoản hệ thống</Typography>
-          </Box>
-        </Grid>
-      </Grid>
+      )}
 
       <form noValidate onSubmit={handleSubmit((data) => onSubmit && onSubmit(data))} {...others}>
         <FormControl
