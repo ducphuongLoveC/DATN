@@ -3,7 +3,7 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Avatar, Paper, Button, Typography, Box, Pagination
 } from '@mui/material';
-import useUsers from '@/api/useUsers';
+import useUsers from '../../../../api/useUsers';
 import { useNavigate } from 'react-router-dom';
 import HeaderTitle from '../Title';
 

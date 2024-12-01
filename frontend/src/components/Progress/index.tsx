@@ -1,19 +1,18 @@
 import React from 'react';
-import LinearProgress, {
-  LinearProgressProps,
-} from '@mui/material/LinearProgress';
+import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 interface ProgressProps extends LinearProgressProps {
-  width: number;
   value: number;
+  sx?: object; // Thêm hỗ trợ custom styles
+  textProgress?: boolean;
 }
 
-const Progress: React.FC<ProgressProps> = ({ value, width, ...rest }) => {
+const Progress: React.FC<ProgressProps> = ({ textProgress = true, value, sx, ...rest }) => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Box sx={{ width: width, mr: 1 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', ...sx }}>
+      <Box sx={{ flexGrow: 1, mr: 1 }}>
         <LinearProgress
           variant="determinate"
           value={value}
@@ -29,9 +28,11 @@ const Progress: React.FC<ProgressProps> = ({ value, width, ...rest }) => {
           }}
         />
       </Box>
-      <Typography variant="caption" color="white" mr={1}>
-        {`${Math.round(value)}%`}
-      </Typography>
+      {textProgress && (
+        <Typography variant="caption" color={'white'} mr={1}>
+          {`${Math.round(value)}%`}
+        </Typography>
+      )}
     </Box>
   );
 };

@@ -1,12 +1,12 @@
 import {
   BiSolidHome,
   // BiNews,
-  BiLogoTelegram
+  BiLogoTelegram,
 } from 'react-icons/bi';
 
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 
-// import path from '@/constants/routes';
+import path from '@/constants/routes';
 
 export interface Props {
   icon: React.ReactNode | Function;
@@ -25,7 +25,7 @@ const menus: Props[] = [
   {
     icon: VideoLibraryIcon,
     title: 'My courses',
-    url: '/learning-path',
+    url: path.client.myCourses,
     target: false,
   },
   // {

@@ -29,7 +29,7 @@ const path = {
     },
     learning: '/learning/:id/',
     learningId: (id: string) => `/learning/${id}`,
-
+    myCourses: '/my-courses',
     learningPath: '/learning-path',
     learningPathDetail: '/learning-path-detail',
     courses: '/courses/:id',

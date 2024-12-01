@@ -30,8 +30,6 @@ const ArtPlayerComponent = forwardRef(
     const isCompleted = useRef(false);
     const isFirstDispatch = useRef(false);
 
-    console.log('check');
-
     useEffect(() => {
       if (artPlayerRef.current) {
         const hls = new Hls();
@@ -132,6 +130,7 @@ const ArtPlayerComponent = forwardRef(
             isSeekingRef.current = false;
             isCompleted.current = false;
           }
+          dispatch({ type: SET_IS_FIRST_PLAYING_VIDEO, payload: false });
           hls.destroy();
         };
       }

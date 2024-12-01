@@ -128,7 +128,7 @@ const Header: React.FC<HeaderProps> = ({ data, notes }) => {
       </Box>
       <BoxCenter>
         <BoxCenter>
-          <Progress width={50} value={(100 / totalResource) * totalResourceCompleted} />
+          <Progress sx={{ width: '70px' }} value={(100 / totalResource) * totalResourceCompleted} />
           {!isMobile && (
             <Typography variant="caption" color="white">
               {totalResourceCompleted}/{totalResource} bài học

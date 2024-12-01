@@ -14,19 +14,11 @@ import HasAccess from '@/middlewares/HasAccess';
 const Home = Loadable(lazy(() => import('@/views/pages/Home')));
 const SettingUser = Loadable(lazy(() => import('@/views/pages/SettingUser')));
 const ProFile = Loadable(lazy(() => import('@/views/pages/ProfileUser')));
-const LearningPath = Loadable(
-  lazy(() => import('@/views/pages/LearningPath/LearningPath'))
-);
-const LearningPathDetail = Loadable(
-  lazy(() => import('@/views/pages/LearningPathDetail/LearningPathDetail'))
-);
-const Login3 = Loadable(
-  lazy(() => import('@/views/pages/authentication3/Login3'))
-);
+const LearningPath = Loadable(lazy(() => import('@/views/pages/LearningPath/LearningPath')));
+const LearningPathDetail = Loadable(lazy(() => import('@/views/pages/LearningPathDetail/LearningPathDetail')));
+const Login3 = Loadable(lazy(() => import('@/views/pages/authentication3/Login3')));
 const LogAuth = Loadable(lazy(() => import('@/views/pages/logAuth')));
-const Register3 = Loadable(
-  lazy(() => import('@/views/pages/authentication3/Register3'))
-);
+const Register3 = Loadable(lazy(() => import('@/views/pages/authentication3/Register3')));
 const Contact = Loadable(lazy(() => import('@/views/pages/Contact')));
 const PostOverview = Loadable(lazy(() => import('@/views/pages/PostOverview')));
 const PostDetail = Loadable(lazy(() => import('@/views/pages/PostDetail')));
@@ -35,9 +27,9 @@ const Learning = Loadable(lazy(() => import('@/views/pages/Learning')));
 const CourseDetail = Loadable(lazy(() => import('@/views/pages/CourseDetail')));
 //posts route
 const NewPost = Loadable(lazy(() => import('@/views/pages/Post/NewPost')));
-const Certificate = Loadable(
-  lazy(() => import('@/views/pages/cetificate/Cetificate'))
-);
+const Certificate = Loadable(lazy(() => import('@/views/pages/cetificate/Cetificate')));
+const MyCourses = Loadable(lazy(() => import('@/views/pages/MyCourses')));
+
 import RouteProp from '@/interfaces/route';
 
 const publicRoutes: RouteProp[] = [
@@ -115,6 +107,11 @@ const publicRoutes: RouteProp[] = [
   {
     path: path.client.certificate,
     page: Certificate,
+  },
+  {
+    layout: MainLayout,
+    path: path.client.myCourses,
+    page: MyCourses,
   },
 ];
 
