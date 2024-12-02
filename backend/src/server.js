@@ -8,7 +8,7 @@ import { errorCommon, errorNotFound } from "./utils/errors.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
-import { BASE_URL_CLIENT } from "./utils/env.js";
+import { BASE_URL_CLIENT, BASE_URL_ADMIN_CLIENT } from "./utils/env.js";
 
 // room sockets
 import CommentRoom from "./sockets/CommentRoom.js";
@@ -24,7 +24,7 @@ app.use(express.json());
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: BASE_URL_CLIENT,
+    origin: [BASE_URL_CLIENT, BASE_URL_ADMIN_CLIENT],
     methods: ["GET", "POST"],
   },
 });

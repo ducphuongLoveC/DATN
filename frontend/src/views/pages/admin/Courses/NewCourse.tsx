@@ -22,11 +22,13 @@ const NewCourse: React.FC = () => {
       toast.dismiss();
       toast.success('Tạo khóa học thành công');
       await sleep(2000);
-      // navigate(path.admin.courses);
+      navigate(path.admin.courses);
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.log(error.response.data.message);
+
       toast.dismiss();
-      toast.error('Tạo khóa học thất bại!');
+      toast.error(error.response.data.message);
     },
   });
 

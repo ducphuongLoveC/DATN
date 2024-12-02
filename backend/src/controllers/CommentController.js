@@ -83,29 +83,35 @@ class CommentController {
           const module = await Module.findById(resource.module_id);
           const course = await Course.findById(module.course_id);
 
-          // Tạo thông báo cho người dùng đã viết bình luận cha
-          const notification = new Notification({
-            user_id: parentComment.user_id, // Người nhận thông báo là chủ của parent comment
-            type: "comment",
-            data: {
-              resource_id,
-              course_id: course._id,
-              parent_id: parent_id,
-              thumbnail: resource.thumbnail,
-              comment_id: newComment._id,
-              title: `<strong> ${user.name}</strong> đã nhắc bạn trong một bình luận của bài học <strong>${resource.title}</strong>`,
-              content: newComment.content,
-            },
-          });
+          console.log(user_id);
+          console.log(parentComment.user_id.toString());
+          // Phát socket thông báo tới người dùng và không tự phát sóng cho chính mình
+          if (user_id !== parentComment.user_id.toString()) {
+            // Tạo thông báo cho người dùng đã viết bình luận cha
+            const notification = new Notification({
+              user_id: parentComment.user_id.toString(), // Người nhận thông báo là chủ của parent comment
+              type: "comment",
+              data: {
+                resource_id,
+                course_id: course._id,
+                parent_id: parent_id,
+                thumbnail: resource.thumbnail,
+                comment_id: newComment._id,
+                title: `<strong> ${user.name}</strong> đã nhắc bạn trong một bình luận của bài học <strong>${resource.title}</strong>`,
+                content: newComment.content,
+              },
+            });
 
-          // Lưu thông báo
-          await notification.save();
+            // Lưu thông báo
+            await notification.save();
 
-          // Phát socket thông báo tới người dùng
-          req.io.to(parentComment.user_id.toString()).emit("newNotification", {
-            user_id: parentComment.user_id,
-            notification,
-          });
+            req.io
+              .to(parentComment.user_id.toString())
+              .emit("newNotification", {
+                user_id: parentComment.user_id,
+                notification,
+              });
+          }
         }
       }
 

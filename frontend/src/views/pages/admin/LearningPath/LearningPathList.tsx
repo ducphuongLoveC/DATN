@@ -18,25 +18,18 @@ import {
   Button,
   TextField,
   Tooltip,
+  Typography,
 } from '@mui/material';
 import { toast, ToastContainer } from 'react-toastify';
 
 //icon
-import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Visibility as VisibilityIcon,
-} from '@mui/icons-material';
+import { Edit as EditIcon, Delete as DeleteIcon, Visibility as VisibilityIcon } from '@mui/icons-material';
 
 // my pj
 import TextEditor from '@/components/TextEditor';
 import LearningPathSkeletonList from '@/ui-component/cards/Skeleton/LearningPathListSkl';
 import Dialog from '@/components/Dialog';
-import {
-  deleteLearningPath,
-  fetchLearningPaths,
-  updateLearningPath,
-} from '@/api/learningPathApi';
+import { deleteLearningPath, fetchLearningPaths, updateLearningPath } from '@/api/learningPathApi';
 
 import path from '@/constants/routes';
 import HeaderTitle from '../Title';
@@ -44,7 +37,7 @@ import HeaderTitle from '../Title';
 export interface LearningPath {
   _id: string;
   title: string;
-  thumbnail: string;
+  // thumbnail: string;
   description: string;
 }
 
@@ -90,22 +83,19 @@ export default function LearningPathList() {
     },
   });
 
-  const { control, handleSubmit, reset, setValue, getValues } =
-    useForm<LearningPath>({
-      defaultValues: {
-        title: '',
-        thumbnail: '',
-        description: '',
-      },
-    });
+  const { control, handleSubmit, reset, setValue, getValues } = useForm<LearningPath>({
+    defaultValues: {
+      title: '',
+      // thumbnail: '',
+      description: '',
+    },
+  });
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -116,7 +106,7 @@ export default function LearningPathList() {
     setOpenDialog(true);
     reset({
       title: path.title,
-      thumbnail: path.thumbnail,
+      // thumbnail: path.thumbnail,
       description: path.description,
     });
   };
@@ -133,7 +123,7 @@ export default function LearningPathList() {
     setOpenDialog(true);
     reset({
       title: path.title,
-      thumbnail: path.thumbnail,
+      // thumbnail: path.thumbnail,
       description: path.description,
     });
   };
@@ -170,65 +160,49 @@ export default function LearningPathList() {
         titleButton="Tạo lộ trình học"
       />
       <Box sx={{ width: '100%' }}>
-        <TableContainer component={Paper}sx={{borderRadius:0}}>
+        <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
           <Table sx={{ minWidth: 650 }} aria-label="learning paths table">
             <TableHead>
               <TableRow>
                 <TableCell>Tên lộ trình</TableCell>
-                <TableCell>Ảnh</TableCell>
                 <TableCell>Mô tả</TableCell>
                 <TableCell align="right">Hành động</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {data
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((path: LearningPath) => (
-                  <TableRow
-                    key={path._id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {path.title}
-                    </TableCell>
-                    <TableCell>
-                      <img
-                        src={path.thumbnail}
-                        alt={path.title}
-                        style={{ width: 50, height: 50, objectFit: 'cover' }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {path.description.substring(0, 100)}...
-                    </TableCell>
-                    <TableCell align="right">
-                      <Tooltip title="Xem chi tiết">
-                        <IconButton
-                          onClick={() => openView(path)}
-                          color="primary"
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Sửa">
-                        <IconButton
-                          onClick={() => openEdit(path)}
-                          color="primary"
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Xóa">
-                        <IconButton
-                          onClick={() => handleDelete(path._id)}
-                          color="secondary"
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((path: LearningPath) => (
+                <TableRow key={path._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell component="th" scope="row">
+                    {path.title}
+                  </TableCell>
+
+                  <TableCell>
+                    <Typography
+                      dangerouslySetInnerHTML={{
+                        __html: path.description.substring(0, 100),
+                      }}
+                    />
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <Tooltip title="Xem chi tiết">
+                      <IconButton onClick={() => openView(path)} color="primary">
+                        <VisibilityIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Sửa">
+                      <IconButton onClick={() => openEdit(path)} color="primary">
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Xóa">
+                      <IconButton onClick={() => handleDelete(path._id)} color="secondary">
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -248,25 +222,15 @@ export default function LearningPathList() {
         title={editMode ? 'Sửa learning path' : 'Xem chi tiết learning path'}
       >
         {currentPath && (
-          <Box
-            sx={{ pt: 2 }}
-            component="form"
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <Box sx={{ pt: 2 }} component="form" onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name="title"
               control={control}
               render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="Title"
-                  {...field}
-                  disabled={!editMode}
-                  margin="normal"
-                />
+                <TextField fullWidth label="Title" {...field} disabled={!editMode} margin="normal" />
               )}
             />
-            <Controller
+            {/* <Controller
               name="thumbnail"
               control={control}
               render={({ field }) => (
@@ -278,9 +242,8 @@ export default function LearningPathList() {
                   margin="normal"
                 />
               )}
-            />
+            /> */}
 
-            {}
             <TextEditor
               initialValue={getValues('description')}
               onChange={(content) => setValue('description', content)}
@@ -288,14 +251,16 @@ export default function LearningPathList() {
               disabled={!editMode}
               initialHeight="300px"
             />
-            <Button onClick={handleCloseDialog} color="primary">
-              {editMode ? 'Cancel' : 'Close'}
-            </Button>
-            {editMode && (
-              <Button type="submit" color="primary" variant="contained">
-                {mutation.isPending ? 'saving...' : 'save'}
+            <Box mt={2}>
+              <Button onClick={handleCloseDialog} color="primary">
+                {editMode ? 'Hủy' : 'Đóng'}
               </Button>
-            )}
+              {editMode && (
+                <Button type="submit" color="primary" variant="contained">
+                  {mutation.isPending ? 'Đang lưu...' : 'Lưu'}
+                </Button>
+              )}
+            </Box>
           </Box>
         )}
       </Dialog>

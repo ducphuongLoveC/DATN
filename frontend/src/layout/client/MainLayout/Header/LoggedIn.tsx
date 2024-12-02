@@ -14,13 +14,13 @@ import { Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import * as actionTypes from '@/store/actions';
 // icon
-import { BiBell, BiChalkboard } from 'react-icons/bi';
+import { BiBell } from 'react-icons/bi';
 
 // my pj
 
 import Dropdown from '@/components/Dropdown';
 import Wrapper from '@/components/Wrapper';
-import GradientIcon from '@/components/GradientIcon';
+
 import path from '@/constants/routes';
 import Cookies from 'js-cookie';
 // socket
@@ -29,20 +29,7 @@ import { io } from 'socket.io-client';
 // api
 import { getNotificationById } from '../../../../api/notification';
 
-const courses = [
-  {
-    title: 'Kiến thức nền tảng javascript',
-    status: 'chưa học khóa này',
-  },
-  {
-    title: 'Kiến thức nền tảng javascript',
-    status: 'chưa học khóa này',
-  },
-  {
-    title: 'Kiến thức nền tảng javascript',
-    status: 'chưa học khóa này',
-  },
-];
+
 interface UserProp {
   user: {
     _id: string;
@@ -177,66 +164,7 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
           </HeadlessTippy>
         </div>
       </li>
-      <li className={`tw-relative ${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
-        <Link to="#" className={`tw-text-xl ${theme.palette.text.primary}`}>
-          {/* khóa học của tôi */}
-          <HeadlessTippy
-            trigger="click"
-            placement="top-start"
-            interactive
-            allowHTML
-            render={(attrs) => (
-              <Wrapper
-                {...attrs}
-                style={{
-                  background: theme.palette.background.paper,
-                  width: '400px',
-                }}
-              >
-                <Dropdown.Container>
-                  <Dropdown.Header
-                    head="Khóa học của tôi"
-                    hExtend={
-                      <div className="tw-flex tw-justify-between">
-                        <button className="tw-py-2">Xem tất cả</button>
-                      </div>
-                    }
-                  />
-                  {courses.map((c, index) => (
-                    <Dropdown.ImageDescription
-                      key={index}
-                      hover
-                      thumbnail="images/ktnt.png"
-                      bodyHead={c.title}
-                      bodyContent={c.status}
-                      bExtend={
-                        <button
-                          style={{
-                            color: 'white',
-                            lineHeight: '20px',
-                            padding: '0 10px',
-                            fontSize: 'var(--mini-font-size)',
-                            borderRadius: 'var(--main-border-radius)',
-                            background: 'var(--color-primary)',
-                          }}
-                        >
-                          Học ngay
-                        </button>
-                      }
-                    />
-                  ))}
-                </Dropdown.Container>
-              </Wrapper>
-            )}
-          >
-            <i>
-              <GradientIcon>
-                <BiChalkboard fontSize={25} />
-              </GradientIcon>
-            </i>
-          </HeadlessTippy>
-        </Link>
-      </li>
+      
       {/* logined */}
       <li className={`${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
         <HeadlessTippy

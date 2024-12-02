@@ -221,7 +221,7 @@ const Learning: React.FC = () => {
                   <MessageIcon />
                   <Hidden smDown>
                     <Typography ml={1} variant="h4">
-                      Hỏi đáp
+                      Bình luận
                     </Typography>
                   </Hidden>
                 </Button>

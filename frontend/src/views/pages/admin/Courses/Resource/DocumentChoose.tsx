@@ -116,6 +116,8 @@ const ChooseDocument = forwardRef(({ defaultValue }: any, ref) => {
     if (defaultValue?.resource_type) {
       const content = contentTypes.find((c) => c.resource_type === defaultValue.resource_type);
       setSelectedContent(content);
+    } else {
+      setSelectedContent(contentTypes[0]);
     }
   }, [defaultValue]);
 
