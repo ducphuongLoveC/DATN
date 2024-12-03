@@ -101,6 +101,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
           updatedResources[idResourceEdit] = resource;
           setResources(updatedResources);
           resetEditState();
+          setIsOpenModalDocument(false);
         }
       };
 

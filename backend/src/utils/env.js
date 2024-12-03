@@ -12,6 +12,8 @@ const {
   URL_REDIRECT_LEARNING,
   URL_NGROK,
   BASE_URL_ADMIN_CLIENT,
+  EMAIL,
+  PASSWORD,
 } = process.env;
 
 export {
@@ -24,4 +26,6 @@ export {
   BASE_URL_ADMIN_CLIENT,
   URL_REDIRECT_LEARNING,
   URL_NGROK,
+  EMAIL,
+  PASSWORD,
 };

@@ -43,6 +43,7 @@ interface CourseData {
   sale_price: number;
   learning_outcomes: string[];
   level: Level;
+  has_certificate: boolean;
   isFree?: boolean;
   isActive: boolean;
 }
@@ -65,8 +66,9 @@ const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
       sale_price: parseInt(defaultValue?.sale_price || '0'),
       learning_outcomes: defaultValue?.learning_outcomes || [],
       level: defaultValue?.level || 'easy',
+      has_certificate: defaultValue?.has_certificate !== undefined ? defaultValue.has_certificate : false,
       isFree: defaultValue?.isFree !== undefined ? defaultValue.isFree : true,
-      isActive: defaultValue?.isActive !== undefined ? defaultValue.isActive : true,
+      isActive: defaultValue?.isActive !== undefined ? defaultValue.isActive : false,
     },
   });
 
@@ -140,6 +142,22 @@ const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
                   <RadioGroup {...field} row onChange={(e) => setValue('isFree', e.target.value === 'true')}>
                     <FormControlLabel value={true} control={<Radio />} label="Khóa học miễn phí" />
                     <FormControlLabel value={false} control={<Radio />} label="Khóa học tính phí" />
+                  </RadioGroup>
+                )}
+              />
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12}>
+            <FormControl>
+              <FormLabel id="radio-group-label">Chứng chỉ</FormLabel>
+              <Controller
+                name="has_certificate"
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup {...field} onChange={(e) => setValue('has_certificate', e.target.value === 'true')}>
+                    <FormControlLabel value={true} control={<Radio />} label="Khóa học này cung cấp chứng chỉ" />
+                    <FormControlLabel value={false} control={<Radio />} label="Khóa học này không cung cấp chứng chỉ" />
                   </RadioGroup>
                 )}
               />

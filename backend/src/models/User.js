@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
     },
     nickname: {
       type: String,
-      required: [true, "Nickname is required"],
+      // required: [true, "Nickname is required"],
       minlength: 3,
       maxlength: 255,
       unique: true,

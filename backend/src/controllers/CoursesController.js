@@ -109,7 +109,6 @@ class CoursesController {
   //   }
   // }
 
-
   async getCoursesWithUser(req, res, next) {
     try {
       const courses = await Course.aggregate([
@@ -119,8 +118,8 @@ class CoursesController {
         {
           $lookup: {
             from: "users", // Nối với bảng users
-            localField: "user_id", 
-            foreignField: "_id", 
+            localField: "user_id",
+            foreignField: "_id",
             as: "user", // Kết quả trả về dưới dạng mảng với thông tin người dùng
           },
         },
@@ -191,13 +190,13 @@ class CoursesController {
           $sort: { _id: -1 }, // Sắp xếp theo ID khóa học giảm dần
         },
       ]);
-  
+
       res.status(200).json(courses);
     } catch (error) {
       next(error);
     }
   }
-  
+
   async getCoursesWithModulesAndResources(req, res, next) {
     try {
       const courses = await Course.aggregate([
@@ -234,6 +233,7 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            has_certificate: { $first: "$has_certificate" },
             isFree: { $first: "$isFree" },
             isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
@@ -291,6 +291,7 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            has_certificate: { $first: "$has_certificate" },
             isFree: { $first: "$isFree" },
             isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
@@ -456,6 +457,7 @@ class CoursesController {
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
+            has_certificate: { $first: "$has_certificate" },
             isFree: { $first: "$isFree" },
             isActive: { $first: "$isActive" },
             modules: { $push: "$modules" },
@@ -489,6 +491,7 @@ class CoursesController {
             description: 1,
             original_price: 1,
             sale_price: 1,
+            has_certificate: 1,
             isFree: 1,
             modules: 1,
             user: 1,
@@ -515,6 +518,7 @@ class CoursesController {
         description,
         original_price,
         sale_price,
+        has_certificate,
         isFree,
         isActive,
         learning_outcomes,
@@ -553,6 +557,7 @@ class CoursesController {
         description,
         original_price,
         sale_price,
+        has_certificate,
         isFree,
         isActive,
         learning_outcomes: Array.isArray(learning_outcomes)
@@ -720,10 +725,13 @@ class CoursesController {
         description,
         original_price,
         sale_price,
+        has_certificate,
         isFree,
         isActive,
         modules,
       } = req.body;
+
+      console.log("has_certificate", has_certificate);
 
       console.log("445", req.files);
 
@@ -753,6 +761,7 @@ class CoursesController {
             : thumbnail,
           description,
           original_price,
+          has_certificate,
           isFree,
           isActive,
           sale_price,

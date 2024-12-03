@@ -176,7 +176,7 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
             <Wrapper
               style={{
                 background: theme.palette.background.paper,
-                width: '250px',
+              
                 borderRadius: '8px',
                 boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                 padding: '1rem',
@@ -191,7 +191,7 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
                 />
                 <div className="tw-ml-3">
                   <p className="tw-font-semibold">{user.name}</p>
-                  <p className="tw-text-white-500 tw-text-sm">@{user.nickname}</p>
+                  <p className="tw-text-white-500 tw-text-sm">{user.email}</p>
                 </div>
               </div>
               <hr className="tw-my-2" />

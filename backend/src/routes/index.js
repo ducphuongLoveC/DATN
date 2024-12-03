@@ -17,6 +17,7 @@ import routerNotification from "./notification.js";
 import routerCloudinary from "./cloudinary.js";
 import routerNote from "./note.js";
 import routerRating from "./rating.js";
+import routerOtp from "./otp.js";
 const router = Router();
 
 router.use("/courses", routerCourse);
@@ -37,5 +38,6 @@ router.use("/notification", routerNotification);
 router.use("/media", routerCloudinary);
 router.use("/note", routerNote);
 router.use("/rating", routerRating);
+router.use("/otp", routerOtp);
 
 export default router;

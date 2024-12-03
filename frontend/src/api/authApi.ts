@@ -16,7 +16,7 @@ export const verifyCaptcha = async (token: string | null) => {
   }
 };
 
-export const registerUser = async (data: { nickname: string; name: string; email: string; password: string }) => {
+export const registerUser = async (data: { name: string; email: string; password: string }) => {
   const res = await axiosInstance.post('api/auth/register', data);
   return res;
 };

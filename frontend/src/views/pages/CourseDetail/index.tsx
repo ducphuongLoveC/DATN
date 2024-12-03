@@ -427,11 +427,12 @@ const CourseDetail: React.FC = () => {
                   <AccessTimeIcon />
                   <Typography ml={2}>Tổng thời lượng {totalhourse}</Typography>
                 </BoxCenter>
-
-                <BoxCenter>
-                  <EmojiEventsIcon />
-                  <Typography ml={2}>Cấp chứng khi sau khi hoàn thành</Typography>
-                </BoxCenter>
+                {data.has_certificate && (
+                  <BoxCenter>
+                    <EmojiEventsIcon />
+                    <Typography ml={2}>Cấp chứng khi sau khi hoàn thành</Typography>
+                  </BoxCenter>
+                )}
               </Grid>
             </Grid>
           </Box>
