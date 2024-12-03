@@ -83,29 +83,35 @@ class CommentController {
           const module = await Module.findById(resource.module_id);
           const course = await Course.findById(module.course_id);
 
-          // Tạo thông báo cho người dùng đã viết bình luận cha
-          const notification = new Notification({
-            user_id: parentComment.user_id, // Người nhận thông báo là chủ của parent comment
-            type: "comment",
-            data: {
-              resource_id,
-              course_id: course._id,
-              parent_id: parent_id,
-              thumbnail: resource.thumbnail,
-              comment_id: newComment._id,
-              title: `<strong> ${user.name}</strong> đã nhắc bạn trong một bình luận của bài học <strong>${resource.title}</strong>`,
-              content: newComment.content,
-            },
-          });
+          console.log(user_id);
+          console.log(parentComment.user_id.toString());
+          // Phát socket thông báo tới người dùng và không tự phát sóng cho chính mình
+          if (user_id !== parentComment.user_id.toString()) {
+            // Tạo thông báo cho người dùng đã viết bình luận cha
+            const notification = new Notification({
+              user_id: parentComment.user_id.toString(), // Người nhận thông báo là chủ của parent comment
+              type: "comment",
+              data: {
+                resource_id,
+                course_id: course._id,
+                parent_id: parent_id,
+                thumbnail: resource.thumbnail,
+                comment_id: newComment._id,
+                title: `<strong> ${user.name}</strong> đã nhắc bạn trong một bình luận của bài học <strong>${resource.title}</strong>`,
+                content: newComment.content,
+              },
+            });
 
-          // Lưu thông báo
-          await notification.save();
+            // Lưu thông báo
+            await notification.save();
 
-          // Phát socket thông báo tới người dùng
-          req.io.to(parentComment.user_id.toString()).emit("newNotification", {
-            user_id: parentComment.user_id,
-            notification,
-          });
+            req.io
+              .to(parentComment.user_id.toString())
+              .emit("newNotification", {
+                user_id: parentComment.user_id,
+                notification,
+              });
+          }
         }
       }
 
@@ -183,6 +189,69 @@ class CommentController {
       }
 
       // Lấy các bình luận trả lời cho mỗi bình luận gốc
+      for (let comment of comments) {
+        comment.replies = await getReplies(comment._id);
+      }
+
+      // Trả kết quả
+      return res.status(200).json(comments);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  async getAllComments(req, res) {
+    try {
+      // Lấy tất cả các bình luận (gồm cả bình luận gốc và trả lời)
+      const comments = await Comment.aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "user_id", // Lấy user_id từ bảng Comment
+            foreignField: "_id", // Tìm kiếm người dùng theo _id trong bảng users
+            as: "user", // Kết quả nối sẽ được lưu trong trường user
+          },
+        },
+        {
+          $addFields: {
+            user: { $arrayElemAt: ["$user", 0] }, // Chỉ lấy thông tin người dùng đầu tiên
+          },
+        },
+        { $sort: { timestamp: -1 } }, // Sắp xếp bình luận theo thời gian giảm dần
+      ]);
+
+      // Hàm đệ quy để lấy bình luận lồng cấp (replies)
+      async function getReplies(commentId) {
+        const replies = await Comment.aggregate([
+          {
+            $match: { parent_id: new mongoose.Types.ObjectId(commentId) },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "user",
+            },
+          },
+          {
+            $addFields: {
+              user: { $arrayElemAt: ["$user", 0] }, // Lấy thông tin người dùng trả lời
+            },
+          },
+          { $sort: { timestamp: -1 } },
+        ]);
+
+        // Duyệt qua các bình luận trả lời để gọi đệ quy cho các trả lời (nếu có)
+        for (let reply of replies) {
+          reply.replies = await getReplies(reply._id); // Gọi đệ quy cho các bình luận trả lời
+        }
+
+        return replies;
+      }
+
+      // Lấy các bình luận trả lời cho mỗi bình luận
       for (let comment of comments) {
         comment.replies = await getReplies(comment._id);
       }

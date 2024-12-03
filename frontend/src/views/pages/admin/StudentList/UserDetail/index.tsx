@@ -6,7 +6,7 @@ import { Box, Typography, Button } from "@mui/material";
 import TabsCustom from "@/components/TabsCustom";
 import UserInfo from "./UserInfo";
 import CoursesInfo from "./CoursesInfo";
-import HeaderTitle from "../Title";
+import HeaderTitle from "../../Title";
 const UserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState<any>(null);

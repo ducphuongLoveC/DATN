@@ -45,7 +45,11 @@ const Category = Loadable(lazy(() => import('../views/pages/admin/Category/Categ
 
 const Articlecategory = Loadable(lazy(() => import('../views/pages/admin/Category/Articlecategory')));
 
-const UserDetails = Loadable(lazy(() => import('../views/pages/admin/StudentList/UserDetailTabs')));
+const UserDetails = Loadable(lazy(() => import('../views/pages/admin/StudentList/UserDetail')));
+
+const ReviewList = Loadable(lazy(() => import('../views/pages/admin/Review/index')));
+
+const Comments = Loadable(lazy(() => import('../views/pages/admin/Comments/index')));
 
 const PrivateRoutes: RouteProp[] = [
   {
@@ -149,7 +153,19 @@ const PrivateRoutes: RouteProp[] = [
     layout: MainLayout,
     page: UserDetails,
   },
+  
+  
+  {
+    path: path.admin.reviewList,
+    layout: MainLayout,
+    page: ReviewList,
+  },
 
+  {
+    path: path.admin.commentList,
+    layout: MainLayout,
+    page: Comments,
+  },
 
 ];
 

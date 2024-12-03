@@ -21,6 +21,8 @@ const path = {
     categorys: '/categorys',
     Articlecategorys: '/categorys/article',
     useUsersDetail: '/user-detail/:id',
+    reviewList: '/reviewList',
+    commentList: '/commentList',
   },
   client: {
     auth: {
