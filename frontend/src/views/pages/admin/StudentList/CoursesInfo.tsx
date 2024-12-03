@@ -2,7 +2,7 @@ import { Box, Typography, Grid, Paper, LinearProgress } from "@mui/material";
 
 const CoursesInfo = ({ courses }: { courses: any[] }) => (
   <Box sx={{ padding: "20px" }}>
-    <Typography variant="h5" sx={{ marginBottom: "20px", fontWeight: "bold" }}>
+    <Typography variant="h4" sx={{ marginBottom: "20px", fontWeight: "bold" }}>
       Số khóa học tham gia: {courses.length}
     </Typography>
 
@@ -23,7 +23,7 @@ const CoursesInfo = ({ courses }: { courses: any[] }) => (
               }}
             >
               {/* Tiêu đề khóa học */}
-              <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: "15px" }}>
+              <Typography variant="h4" sx={{ fontWeight: "bold", marginBottom: "15px" }}>
                 {course.title || "Không có tiêu đề"}
               </Typography>
 
@@ -51,14 +51,16 @@ const CoursesInfo = ({ courses }: { courses: any[] }) => (
                 />
               </Box>
 
-              {/* Mô tả khóa học */}
-              <Typography variant="body2" sx={{ marginTop: "10px", marginBottom: "10px" }}>
-                {course.description || "Không có mô tả"}
+              <Typography variant="h5" sx={{ fontWeight: "bold" }} mt={1}>
+                Hoàn thành chương: {`${course.completedModules} / ${course.totalModules}`}{' '}
+              </Typography>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }} mt={1}>
+                Hoàn thành bài học: {` ${course.completedResources} / ${course.totalResources}`}{' '}
               </Typography>
 
               {/* Hiển thị tiến độ */}
-              <Typography variant="body2" sx={{ marginBottom: "10px", fontWeight: "bold" }}>
-                Tiến độ hoàn thành: {`${course.progress || 0}`}
+              <Typography variant="body2" sx={{ marginBottom: "10px", fontWeight: "bold" }} mt={1}>
+                Tiến độ hoàn thành: {`${course.progress || 0}%`}
               </Typography>
 
               {/* Thanh LinearProgress */}
@@ -77,6 +79,7 @@ const CoursesInfo = ({ courses }: { courses: any[] }) => (
                   },
                 }}
               />
+
             </Paper>
           </Grid>
         ))}
