@@ -197,7 +197,7 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
               <hr className="tw-my-2" />
               <ul>
                 <li className="tw-py-2 tw-cursor-pointer">
-                  <Link to={path.client.profile}>Trang cá nhân</Link>
+                <Link to={`/profile?id=${user._id}`}>Trang cá nhân</Link>
                 </li>
                 <li className="tw-py-2 tw-cursor-pointer">
                   <Link to={path.client.newPost}>Viết blog</Link>
