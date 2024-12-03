@@ -5,8 +5,10 @@ import { comparePassword, hashPassword } from "../utils/password.js";
 class Auth {
   async register(req, res, next) {
     try {
-      const { email, password, name, nickname, phone, profile_picture, role } =
-        req.body;
+
+      console.log('check');
+      
+      const { email, password, name, phone, profile_picture, role } = req.body;
       const useExists = await User.findOne({ email });
       console.log(useExists);
       if (useExists) {
@@ -26,7 +28,6 @@ class Auth {
         email,
         password: hashPass,
         name,
-        nickname,
         phone,
         profile_picture,
         role,
@@ -38,7 +39,7 @@ class Auth {
         message: "dang ky thanh cong",
       });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 

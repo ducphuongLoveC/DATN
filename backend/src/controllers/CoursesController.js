@@ -414,6 +414,7 @@ class CoursesController {
       next(error);
     }
   }
+
   async getCourseWithModulesAndResourcesUser(req, res, next) {
     try {
       const { id } = req.params;
@@ -508,6 +509,7 @@ class CoursesController {
       next(error);
     }
   }
+
   addCourseDetail = async (req, res, next) => {
     try {
       const {
@@ -688,6 +690,21 @@ class CoursesController {
                 await newDocumentResource.save();
                 break;
 
+              case "Document":
+                const newCertificateResource = new Resource({
+                  module_id: savedModule._id,
+                  resource_type: "Certificate",
+                  title: resource.title,
+                  thumbnail:
+                    uploadedThumbnailResource?.secure_url || resource.thumbnail,
+                  duration: resource.duration,
+                  description: resource.description,
+                  isActive: resource.isActive,
+                });
+
+                await newCertificateResource.save();
+                break;
+
               default:
                 console.warn("Unknown resource type:", resource.resource_type);
                 continue;
@@ -713,6 +730,7 @@ class CoursesController {
       next(error);
     }
   };
+
   async updateCourseDetail(req, res, next) {
     try {
       const courseId = req.params.id;
@@ -909,6 +927,17 @@ class CoursesController {
                     };
                     unsetData.url = 1;
                     unsetData.questions = 1;
+                    // viết như này để sau còn mở rộng
+                  } else if (resource.resource_type === "Certificate") {
+                    updateData = {
+                      title: resource.title,
+                      description: resource.description,
+                      duration: resource.duration,
+                      resource_type: "Certificate",
+                      isActive: resource.isActive,
+                    };
+                    unsetData.url = 1;
+                    unsetData.questions = 1;
                   }
                 }
 
@@ -984,6 +1013,12 @@ class CoursesController {
                     isActive: resource.isActive,
                   };
                 } else if (resource.resource_type === "Document") {
+                  newData = {
+                    ...restOfResource,
+                    module_id: module._id,
+                    isActive: restOfResource.isActive,
+                  };
+                } else if (resource.resource_type === "Certificate") {
                   newData = {
                     ...restOfResource,
                     module_id: module._id,
@@ -1106,6 +1141,12 @@ class CoursesController {
                 module_id: savedModule._id,
                 isActive: resource.isActive,
               };
+            } else if (resource.resource_type == "Certificate") {
+              newData = {
+                ...restOfResource,
+                module_id: savedModule._id,
+                isActive: resource.isActive,
+              };
             }
 
             const newResource = new Resource({
@@ -1149,6 +1190,7 @@ class CoursesController {
       next(error);
     }
   }
+
   async getResourcesIdByCourseId(req, res, next) {
     try {
       const { id } = req.params; // Lấy course_id từ tham số URL

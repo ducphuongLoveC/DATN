@@ -24,18 +24,11 @@ const userSchema = new mongoose.Schema(
       minlength: 10,
       maxlength: 10,
     },
-    nickname: {
-      type: String,
-      // required: [true, "Nickname is required"],
-      minlength: 3,
-      maxlength: 255,
-      unique: true,
-    },
-
     profile_picture: {
       type: String,
       maxlength: 255,
-      default: "https://static-00.iconduck.com/assets.00/avatar-default-icon-2048x2048-h6w375ur.png",
+      default:
+        "https://static-00.iconduck.com/assets.00/avatar-default-icon-2048x2048-h6w375ur.png",
     },
 
     role: {
@@ -53,7 +46,7 @@ const userSchema = new mongoose.Schema(
 
     isActive: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   {

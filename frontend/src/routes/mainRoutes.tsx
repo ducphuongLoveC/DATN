@@ -27,7 +27,6 @@ const Learning = Loadable(lazy(() => import('@/views/pages/Learning')));
 const CourseDetail = Loadable(lazy(() => import('@/views/pages/CourseDetail')));
 //posts route
 const NewPost = Loadable(lazy(() => import('@/views/pages/Post/NewPost')));
-const Certificate = Loadable(lazy(() => import('@/views/pages/cetificate/Cetificate')));
 const MyCourses = Loadable(lazy(() => import('@/views/pages/MyCourses')));
 
 import RouteProp from '@/interfaces/route';
@@ -106,11 +105,7 @@ const publicRoutes: RouteProp[] = [
     page: NewPost,
   },
   {
-    path: path.client.certificate,
-    page: Certificate,
-  },
-  {
-    layout: MainLayout, 
+    layout: MainLayout,
     middleware: HasUser,
     path: path.client.myCourses,
     page: MyCourses,

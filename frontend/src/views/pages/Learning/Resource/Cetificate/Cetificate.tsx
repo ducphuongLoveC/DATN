@@ -1,14 +1,25 @@
-import { useRef } from 'react';
-import { Box, Paper, Typography, Button, Modal } from '@mui/material';
+import React, { useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Box, Paper, Typography, Button } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 
 import html2pdf from 'html2pdf.js';
 
-import certificateBackground from '@/assets/images/certificate/certificate.jpg';
-
-const Certificate = () => {
+import certificateBackground from '@/assets/images/certificate/certificate.png';
+import { getCertificateByCertificateId } from '@/api/certificate';
+interface CertificateProp {
+  certificate_code?: string;
+  name: string;
+  description: string;
+}
+const Certificate: React.FC<CertificateProp> = ({ certificate_code, name, description }) => {
   const certificateRef = useRef<HTMLDivElement>(null);
 
+  const { data } = useQuery({
+    queryKey: ['certificate'],
+    queryFn: () => getCertificateByCertificateId(certificate_code || ''),
+    enabled: certificate_code ? true : false,
+  });
   const downloadPDF = () => {
     if (certificateRef.current) {
       const element = certificateRef.current;
@@ -28,7 +39,7 @@ const Certificate = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 2 }}>
       <Box display={'none'}>
         <Paper
           ref={certificateRef}
@@ -68,7 +79,7 @@ const Certificate = () => {
               Special Recognition: Outstanding Performance
             </Typography>
             <Typography variant="body2" fontSize={20} color="textSecondary" sx={{ marginTop: 1 }}>
-              Course Duration: 60 Hours | Completion Date: [Date]
+              Completion Date: [Date]
             </Typography>
           </Box>
         </Paper>
@@ -77,19 +88,13 @@ const Certificate = () => {
       <Box
         sx={{
           backgroundColor: 'white',
-          padding: 4,
-          borderRadius: 2,
+
           textAlign: 'center',
-          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)',
-          width: '80%',
-          maxWidth: '600px',
+          width: '100%',
+          maxWidth: '900px',
         }}
       >
-        <Typography variant="h5" color="primary" gutterBottom>
-          Download or Preview Certificate
-        </Typography>
-
-        <Box sx={{ height: '79vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Box
             sx={{
               width: '80%',
@@ -99,36 +104,35 @@ const Certificate = () => {
               backgroundSize: 'contain',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
-              minHeight: '400px',
+              minHeight: '500px',
               display: 'flex',
-
               justifyContent: 'center',
             }}
           >
-            <Box mt={16.5} textAlign={'center'}>
-              <Typography variant="h5" fontSize={7} color="primary" gutterBottom>
+            <Box mt={17.5} textAlign={'center'}>
+              <Typography variant="h5" fontSize={12} color="primary" gutterBottom>
                 FTECH Academy
               </Typography>
-              <Typography mt={0} variant="h3" fontWeight="bold" fontSize={10} color="primary" gutterBottom>
+              <Typography mt={0} variant="h3" fontWeight="bold" fontSize={15} color="primary" gutterBottom>
                 Certificate of Completion
               </Typography>
-              <Typography variant="h6" fontSize={7} color="textSecondary" gutterBottom>
+              <Typography variant="h6" fontSize={12} color="textSecondary" gutterBottom>
                 This certifies that
               </Typography>
-              <Typography variant="h4" fontSize={7} fontWeight="bold" gutterBottom>
+              <Typography variant="h4" fontSize={12} fontWeight="bold" gutterBottom>
                 [Your Name]
               </Typography>
-              <Typography variant="h6" fontSize={7} color="textSecondary" gutterBottom>
+              <Typography variant="h6" fontSize={12} color="textSecondary" gutterBottom>
                 has successfully completed the course
               </Typography>
-              <Typography variant="h5" fontSize={10} fontWeight="bold" gutterBottom>
+              <Typography variant="h5" fontSize={15} fontWeight="bold" gutterBottom>
                 JAVASCRIPT ADVANCED
               </Typography>
-              <Typography variant="body1" fontSize={7} color="textSecondary" sx={{ marginTop: 1 }}>
+              <Typography variant="body1" fontSize={12} color="textSecondary" sx={{ marginTop: 1 }}>
                 Special Recognition: Outstanding Performance
               </Typography>
-              <Typography variant="body2" fontSize={7} color="textSecondary" sx={{ marginTop: 1 }}>
-                Course Duration: 60 Hours | Completion Date: [Date]
+              <Typography variant="body2" fontSize={12} color="textSecondary" sx={{ marginTop: 1 }}>
+                Completion Date: [Date]
               </Typography>
             </Box>
           </Box>
@@ -148,7 +152,7 @@ const Certificate = () => {
           }}
           startIcon={<DownloadIcon />}
         >
-          Download Certificate
+          Tải xuống chứng chỉ
         </Button>
       </Box>
     </Box>
