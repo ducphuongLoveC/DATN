@@ -61,54 +61,6 @@ class CoursesController {
       next(error);
     }
   }
-
-  // async getCoursesWithUser(req, res, next) {
-  //   try {
-  //     const courses = await Course.aggregate([
-  //       {
-  //         $match: { isActive: true },
-  //       },
-  //       {
-  //         $lookup: {
-  //           from: "users",
-  //           localField: "user_id",
-  //           foreignField: "_id",
-  //           as: "user",
-  //         },
-  //       },
-  //       {
-  //         $unwind: {
-  //           path: "$user",
-  //           preserveNullAndEmptyArrays: true,
-  //         },
-  //       },
-  //       {
-  //         $sort: { _id: -1 },
-  //       },
-  //       {
-  //         $project: {
-  //           _id: 1,
-  //           user_id: 1,
-  //           title: 1,
-  //           level: 1,
-  //           learning_outcomes: 1,
-  //           thumbnail: 1,
-  //           description: 1,
-  //           original_price: 1,
-  //           sale_price: 1,
-  //           isFree: 1,
-  //           isActive: 1,
-  //           user: 1,
-  //         },
-  //       },
-  //     ]);
-
-  //     res.status(200).json(courses);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
-
   async getCoursesWithUser(req, res, next) {
     try {
       const courses = await Course.aggregate([
@@ -196,10 +148,60 @@ class CoursesController {
       next(error);
     }
   }
-
   async getCoursesWithModulesAndResources(req, res, next) {
     try {
+      const { search, learning_paths, types } = req.query;
+
+      const isFreeFilter =
+        types === "true" ? true : types === "false" ? false : null;
+
+      const learningPathsFilter = learning_paths
+        ? learning_paths.split(",").map((id) => new mongoose.Types.ObjectId(id))
+        : null;
+
+      console.log("Learning paths filter:", learningPathsFilter);
+
       const courses = await Course.aggregate([
+        {
+          $match: search ? { title: { $regex: search, $options: "i" } } : {},
+        },
+
+        {
+          $lookup: {
+            from: "courselearningpaths",
+            let: { courseId: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ["$course_id", "$$courseId"],
+                  },
+                },
+              },
+              ...(learningPathsFilter
+                ? [
+                    {
+                      $match: {
+                        learningPath_id: { $in: learningPathsFilter },
+                      },
+                    },
+                  ]
+                : []),
+            ],
+            as: "courseLearningPaths",
+          },
+        },
+
+        ...(learningPathsFilter
+          ? [
+              {
+                $match: {
+                  courseLearningPaths: { $ne: [] },
+                },
+              },
+            ]
+          : []),
+
         {
           $lookup: {
             from: "modules",
@@ -208,12 +210,14 @@ class CoursesController {
             as: "modules",
           },
         },
+
         {
           $unwind: {
             path: "$modules",
             preserveNullAndEmptyArrays: true,
           },
         },
+
         {
           $lookup: {
             from: "resources",
@@ -222,6 +226,7 @@ class CoursesController {
             as: "modules.resources",
           },
         },
+
         {
           $group: {
             _id: "$_id",
@@ -239,6 +244,17 @@ class CoursesController {
             modules: { $push: "$modules" },
           },
         },
+
+        ...(isFreeFilter !== null
+          ? [
+              {
+                $match: {
+                  isFree: isFreeFilter,
+                },
+              },
+            ]
+          : []),
+
         {
           $sort: { _id: -1 },
         },
@@ -573,7 +589,7 @@ class CoursesController {
           else console.log("Temp file deleted");
         });
       }
-
+      
       const savedCourse = await newCourse.save();
 
       if (Array.isArray(learning_path_ids) && learning_path_ids.length > 0) {

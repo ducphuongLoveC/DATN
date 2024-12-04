@@ -130,7 +130,7 @@ const ArtPlayerComponent = forwardRef(
             isSeekingRef.current = false;
             isCompleted.current = false;
           }
-          dispatch({ type: SET_IS_FIRST_PLAYING_VIDEO, payload: false });
+          // dispatch({ type: SET_IS_FIRST_PLAYING_VIDEO, payload: false });
           hls.destroy();
         };
       }

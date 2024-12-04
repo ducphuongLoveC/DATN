@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({ data, notes }) => {
   });
 
   const { data: rating, refetch: refetchRating } = useQuery({
-    queryKey: ['rating'],
+    queryKey: ['rating', id],
     queryFn: () => fetchRatingByCourseId(id || ''),
   });
 
