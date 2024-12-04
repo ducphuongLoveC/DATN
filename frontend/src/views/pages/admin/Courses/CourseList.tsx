@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Box, Button, Grid, styled, Typography, useTheme } from '@mui/material';
 import { More } from '@mui/icons-material';
@@ -12,6 +13,8 @@ import path from '@/constants/routes';
 import { Course } from '@/interfaces/course';
 import FilterComponent from '@/components/Filter';
 import { getCourseList } from '@/api/courseApi';
+import { useState } from 'react';
+import { fetchLearningPaths } from '@/api/learningPathApi';
 const BoxBetween = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
@@ -21,14 +24,54 @@ const BoxBetween = styled(Box)(() => ({
 const CourseList: React.FC = () => {
   const theme = useTheme();
 
-  const courses = useQuery({
-    queryKey: ['courses'],
-    queryFn: getCourseList,
+  const [params, setParams] = useState('');
+
+  const queries = useQueries({
+    queries: [
+      {
+        queryKey: ['courses', params],
+        queryFn: () => getCourseList(params),
+      },
+      {
+        queryKey: ['learning_paths'],
+        queryFn: fetchLearningPaths,
+      },
+    ],
   });
 
-  console.log(courses.data);
+  const courses = queries[0];
+  const learningPaths = queries[1];
+
+  const filterLearningPathList = useMemo(() => {
+    return learningPaths?.data?.map((l: any) => ({ display: l.title, value: l._id }));
+  }, [learningPaths]);
 
   if (courses.isLoading) return <CourseListSkl />;
+
+  const handleSetParams = (params: any) => {
+    const { search, ...rest } = params;
+
+    const transform = Object.entries(rest).map(([key, values]: [string, any]) => ({
+      [key]: values.map(({ value }: { value: string }) => value).join(','),
+    }));
+
+    const newParams = transform.map((item) => {
+      const key = Object.keys(item)[0];
+      const value = item[key];
+      return `${key}=${value}`;
+    });
+
+    let queryString = '';
+    if (search) {
+      queryString = `?search=${search}`;
+    }
+    if (newParams.length > 0) {
+      queryString += (search ? '&' : '?') + newParams.join('&');
+    }
+
+    setParams(queryString);
+  };
+
   return (
     <Box>
       <HeaderTitle
@@ -41,18 +84,19 @@ const CourseList: React.FC = () => {
         filters={[
           {
             displayName: 'Danh mục',
-            name: 'categories',
-            values: ['Khoa học', 'Kinh tế', 'Nghệ thuật'],
+            name: 'learning_paths',
+            values: filterLearningPathList,
           },
           {
-            displayName: 'Loại',
+            displayName: 'Loại khóa học',
             name: 'types',
-            values: ['Miễn phí', 'Tính phí'],
+            values: [
+              { display: 'Tính phí', value: false },
+              { display: 'Miễn phí', value: true },
+            ],
           },
         ]}
-        onFilter={(filters) => {
-          console.log('Kết quả lọc:', filters);
-        }}
+        onFilter={handleSetParams}
       />
 
       <Grid container spacing={2}>

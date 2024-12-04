@@ -82,9 +82,15 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
             backgroundImage: `url(${certificateBackground})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
+            position: 'relative',
           }}
         >
           <Box mt={22} textAlign={'center'}>
+            <Box position={'absolute'} bottom={20} right={15}>
+              <Typography variant="body2" fontSize={20} color="textSecondary" sx={{ marginTop: 1 }}>
+                code: {data?.certificate_code}
+              </Typography>
+            </Box>
             <Typography variant="h5" fontSize={20} color="primary" marginBottom={2.5} gutterBottom>
               FTECH Academy
             </Typography>
@@ -136,8 +142,14 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
               display: 'flex',
               justifyContent: 'center',
             }}
+            position={'relative'}
           >
             <Box mt={17} textAlign={'center'}>
+              <Box position={'absolute'} bottom={15} right={10}>
+                <Typography variant="body2" fontSize={12} color="textSecondary" sx={{ marginTop: 1 }}>
+                  code: {data?.certificate_code}
+                </Typography>
+              </Box>
               <Typography variant="h5" fontSize={12} color="primary" gutterBottom>
                 FTECH Academy
               </Typography>
@@ -160,7 +172,7 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
                 Special Recognition: Outstanding Performance
               </Typography>
               <Typography variant="body2" fontSize={12} color="textSecondary" sx={{ marginTop: 1 }}>
-              Completion Date: {moment(data?.issue_date).format('LLLL')}
+                Completion Date: {moment(data?.issue_date).format('LLLL')}
               </Typography>
             </Box>
           </Box>
