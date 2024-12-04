@@ -16,6 +16,7 @@ import useDebounce from '@/hooks/useDebounce';
 
 // Kiểu dữ liệu cho các bộ lọc
 type FilterOption = {
+  displayName: string;
   name: string; // Tên bộ lọc, ví dụ: "Danh mục", "Loại khóa học"
   values: string[]; // Danh sách giá trị của bộ lọc
 };
@@ -29,7 +30,7 @@ type FilterProps = {
 const FilterComponent: React.FC<FilterProps> = ({ filters, onFilter }) => {
   const [searchText, setSearchText] = useState<string>('');
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
-  const debouncedSearch : any = useDebounce(searchText, 300);
+  const debouncedSearch: any = useDebounce(searchText, 300);
 
   // Gửi kết quả sau khi debounce
   useEffect(() => {
@@ -52,7 +53,6 @@ const FilterComponent: React.FC<FilterProps> = ({ filters, onFilter }) => {
   return (
     <Box component={Paper} p={2} mb={2}>
       <Grid container spacing={3}>
-        {/* Ô tìm kiếm với label bên ngoài */}
         <Grid item xs={12} md={6}>
           <FormControl fullWidth>
             <InputLabel>Tìm kiếm</InputLabel>
@@ -60,11 +60,10 @@ const FilterComponent: React.FC<FilterProps> = ({ filters, onFilter }) => {
           </FormControl>
         </Grid>
 
-        {/* Các bộ lọc */}
         {filters.map((filter) => (
           <Grid item xs={12} md={3} key={filter.name}>
             <FormControl fullWidth>
-              <InputLabel>{filter.name}</InputLabel>
+              <InputLabel>{filter.displayName}</InputLabel>
               <Select
                 multiple
                 value={selectedFilters[filter.name] || []}
@@ -90,7 +89,7 @@ const FilterComponent: React.FC<FilterProps> = ({ filters, onFilter }) => {
         ))}
       </Grid>
     </Box>
-  )
+  );
 };
 
 export default FilterComponent;

@@ -40,11 +40,13 @@ const CourseList: React.FC = () => {
       <FilterComponent
         filters={[
           {
-            name: 'Danh mục',
+            displayName: 'Danh mục',
+            name: 'categories',
             values: ['Khoa học', 'Kinh tế', 'Nghệ thuật'],
           },
           {
-            name: 'Loại khóa học',
+            displayName: 'Loại',
+            name: 'types',
             values: ['Miễn phí', 'Tính phí'],
           },
         ]}
@@ -52,7 +54,7 @@ const CourseList: React.FC = () => {
           console.log('Kết quả lọc:', filters);
         }}
       />
-      
+
       <Grid container spacing={2}>
         {courses.data.map((course: Course) => (
           <Grid key={course._id} item sm={12} md={6}>
@@ -66,15 +68,10 @@ const CourseList: React.FC = () => {
                 <Grid item lg={6}>
                   <Grid container spacing={2}>
                     <Grid item>
-                      <Typography
-                        variant="body1"
-                        dangerouslySetInnerHTML={{
-                          __html: _.truncate(course?.description || '   ', { length: 100, omission: '...' }),
-                        }}
-                      />
+                      {course.thumbnail && <img src={typeof course.thumbnail === 'string' ? course.thumbnail : ''} />}
                     </Grid>
-                    <Grid item>
-                      <Button component={Link} to={`/courses/${course._id}/update`} variant="outlined">
+                    <Grid item xs={12}>
+                      <Button fullWidth component={Link} to={`/courses/${course._id}/update`} variant="outlined">
                         Xem và sửa khóa học
                       </Button>
                     </Grid>
@@ -110,6 +107,10 @@ const CourseList: React.FC = () => {
                         return totalResource;
                       })()}
                     </Box>
+                  </BoxBetween>
+                  <BoxBetween>
+                    <Box>Loại khóa học</Box>
+                    <Box>{course.isFree ? 'Miễn phí' : 'Tính phí'}</Box>
                   </BoxBetween>
                 </Grid>
               </Grid>
