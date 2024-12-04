@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Avatar, Paper, Button, Typography, Box, Pagination
+  Avatar, Paper, Typography, Box, Pagination,
+  Tooltip,
+  IconButton
 } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock'; // Fixed import
+import VisibilityIcon from '@mui/icons-material/Visibility'; // Fixed import
 import useUsers from '../../../../api/useUsers';
 import { useNavigate } from 'react-router-dom';
 import HeaderTitle from '../Title';
@@ -35,20 +39,8 @@ const StudentList = () => {
   return (
     <Box>
       <HeaderTitle des="Đây là trang chi danh sách người dùng" />
-      <TableContainer component={Paper}>
-        <Typography
-          variant="h1"
-          style={{
-            fontSize: '2rem',
-            paddingLeft: '10px',
-            paddingTop: '20px',
-            marginBottom: '10px',
-            fontWeight: 'bold',
-            fontFamily: 'Poppins'
-          }}
-        >
-        </Typography>
-        <Table aria-label="simple table">
+      <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell>Avatar</TableCell>
@@ -61,7 +53,7 @@ const StudentList = () => {
           </TableHead>
           <TableBody>
             {displayedRows.map((row) => (
-              <TableRow key={row.id || row._id}>
+              <TableRow key={row.id || row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell>
                   <Avatar alt={row.name} />
                 </TableCell>
@@ -70,15 +62,25 @@ const StudentList = () => {
                 <TableCell align="center">{row.phone || 'N/A'}</TableCell>
                 <TableCell align="center">{row.address || 'N/A'}</TableCell>
                 <TableCell align="center">
-                  <Button variant="outlined" onClick={() => handleViewDetails(row)}>
-                    Xem chi tiết
-                  </Button>
+                  <Tooltip title="Xem chi tiết">
+                    <IconButton
+                      onClick={() => handleViewDetails(row)}
+                      color="primary"
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Hạn chế">
+                    <IconButton>
+                      <LockIcon />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-        <Box sx={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Pagination
             count={totalPages}
             page={currentPage}

@@ -48,7 +48,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api", router);
+app.use("/api", router); 
 
 app.use(errorNotFound, errorCommon);
 

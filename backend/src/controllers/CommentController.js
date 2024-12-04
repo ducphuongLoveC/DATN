@@ -201,6 +201,69 @@ class CommentController {
     }
   }
 
+  async getAllComments(req, res) {
+    try {
+      // Lấy tất cả các bình luận (gồm cả bình luận gốc và trả lời)
+      const comments = await Comment.aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "user_id", // Lấy user_id từ bảng Comment
+            foreignField: "_id", // Tìm kiếm người dùng theo _id trong bảng users
+            as: "user", // Kết quả nối sẽ được lưu trong trường user
+          },
+        },
+        {
+          $addFields: {
+            user: { $arrayElemAt: ["$user", 0] }, // Chỉ lấy thông tin người dùng đầu tiên
+          },
+        },
+        { $sort: { timestamp: -1 } }, // Sắp xếp bình luận theo thời gian giảm dần
+      ]);
+
+      // Hàm đệ quy để lấy bình luận lồng cấp (replies)
+      async function getReplies(commentId) {
+        const replies = await Comment.aggregate([
+          {
+            $match: { parent_id: new mongoose.Types.ObjectId(commentId) },
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "user_id",
+              foreignField: "_id",
+              as: "user",
+            },
+          },
+          {
+            $addFields: {
+              user: { $arrayElemAt: ["$user", 0] }, // Lấy thông tin người dùng trả lời
+            },
+          },
+          { $sort: { timestamp: -1 } },
+        ]);
+
+        // Duyệt qua các bình luận trả lời để gọi đệ quy cho các trả lời (nếu có)
+        for (let reply of replies) {
+          reply.replies = await getReplies(reply._id); // Gọi đệ quy cho các bình luận trả lời
+        }
+
+        return replies;
+      }
+
+      // Lấy các bình luận trả lời cho mỗi bình luận
+      for (let comment of comments) {
+        comment.replies = await getReplies(comment._id);
+      }
+
+      // Trả kết quả
+      return res.status(200).json(comments);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
   async deleteComment(req, res) {
     try {
       const { id } = req.params; // Lấy ID của comment từ URL
