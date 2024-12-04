@@ -135,11 +135,9 @@ class RatingController {
         { $unwind: "$user" }, // Gỡ bỏ mảng để trả về thông tin user dưới dạng object
       ]);
   
-      // Nếu không có đánh giá nào
+      // Trả về các đánh giá nếu có, nếu không có đánh giá nào trả về một mảng rỗng
       if (ratings.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "No ratings found for the specified filters" });
+        return res.status(200).json([]); // Trả về mảng rỗng thay vì lỗi 404
       }
   
       // Trả về các đánh giá
@@ -149,6 +147,7 @@ class RatingController {
       res.status(500).json({ error: "Internal server error" });
     }
   }
+  
   
 }
 export default new RatingController();
