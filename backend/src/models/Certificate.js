@@ -17,7 +17,7 @@ const certificateSchema = new mongoose.Schema(
     issue_date: { type: Date, default: Date.now },
     certificate_code: {
       type: String,
-      unique: true, // Đảm bảo mã định danh là duy nhất
+      unique: true,
       required: true,
     },
   },

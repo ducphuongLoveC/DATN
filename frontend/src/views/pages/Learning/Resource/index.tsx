@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import HeadlessTippy from '@tippyjs/react/headless';
 import { useSelector } from 'react-redux';
 
@@ -27,6 +27,7 @@ const BoxHeaderAndNote = styled(Box)(({ theme }) => ({
 //  icon
 
 // my pj
+import useQueryParams from '@/hooks/useQueryParams';
 import formatLastUpdated from '@/utils/formatLastUpdated';
 import Wrapper from '@/components/Wrapper';
 import TextEditor from '@/components/TextEditor';
@@ -34,8 +35,12 @@ import { RootState } from '@/store/reducer';
 
 import formatTime from '@/utils/formatTime';
 import Certificate from './Cetificate/Cetificate';
+import { getSingleCourseById } from '@/api/courseApi';
+import { useParams } from 'react-router-dom';
 
 const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => {
+  const { id } = useParams();
+
   const user = useSelector((state: RootState) => state.authReducer.user);
   const [isVisibleNote, setIsVisibleNote] = useState<boolean>(false);
 
@@ -45,6 +50,11 @@ const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => 
   const artPlayer = useRef<any>();
 
   const theme = useTheme();
+
+  const { data: course, isLoading: isLoadingCourse } = useQuery({
+    queryKey: ['singleCourseById'],
+    queryFn: () => getSingleCourseById(id || ''),
+  });
 
   const mutationNote = useMutation({
     mutationKey: ['note'],
@@ -136,7 +146,15 @@ const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => 
               </Typography>
             );
           case 'Certificate':
-            return <Certificate />;
+            handleCompletedResource();
+            return (
+              <Certificate
+                user_id={user._id}
+                course_id={id}
+                description={!isLoadingCourse && course.title}
+                name={user.name}
+              />
+            );
         }
       })()}
       <Box

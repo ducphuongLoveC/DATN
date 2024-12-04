@@ -161,7 +161,9 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
                         <TableRow key={resource.title}>
                           <TableCell>{resource.title}</TableCell>
                           <TableCell>{resource.resource_type}</TableCell>
-                          <TableCell>{resource.description}</TableCell>
+                          <TableCell>
+                            <Typography dangerouslySetInnerHTML={{ __html: resource.description }} />
+                          </TableCell>
                           <TableCell align="right">{moment.utc(resource.duration * 1000).format('mm:ss')}</TableCell>
                           <TableCell align="right">
                             <Switch
@@ -281,6 +283,20 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
         setResourceOpenIndexes(updatedIndexes);
       };
 
+      const handleQuickAddCertificate = () => {
+        const resources: any = [
+          {
+            title: 'Cấp chứng chỉ',
+            resource_type: 'Certificate',
+            duration: 0,
+            description:
+              '<header class="wrapper"> <p><strong>Nhận chứng chỉ kh&oacute;a học</strong></p> </header> <div class="_wrapper_fl251_1"> <p><strong>Xin ch&uacute;c mừng 🎉</strong></p> <p>Ch&uacute;c mừng bạn đ&atilde; ho&agrave;n th&agrave;nh kh&oacute;a học! Bạn đ&atilde; l&agrave;m được một điều thật tuyệt vời!</p> </div>',
+            isActive: true,
+          },
+        ];
+        setModules((prev) => [...prev, { title: 'Hoàn thành khóa học', resources: resources, isActive: true }]);
+      };
+
       const onSubmit = (data: { title: string }) => {
         if (saveOrUpdateModule.type === 'update') {
           handleEditTitleModule(saveOrUpdateModule.index, data.title);
@@ -392,8 +408,8 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
               </Button>
             </form>
           </Dialog>
-
           <Button onClick={() => setSaveOrUpdateModule({ type: 'add' })}>Thêm chương</Button>
+          <Button onClick={handleQuickAddCertificate}>Thêm nhanh chứng chỉ</Button>
         </TableContainer>
       );
     })

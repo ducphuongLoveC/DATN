@@ -9,8 +9,8 @@ import * as _ from 'lodash';
 import CourseListSkl from '@/ui-component/cards/Skeleton/CourseListSkl';
 import HeaderTitle from '../Title';
 import path from '@/constants/routes';
-import { Course } from './CourseForm';
-
+import { Course } from '@/interfaces/course';
+import FilterComponent from '@/components/Filter';
 import { getCourseList } from '@/api/courseApi';
 const BoxBetween = styled(Box)(() => ({
   display: 'flex',
@@ -37,6 +37,22 @@ const CourseList: React.FC = () => {
         titleButton="Tạo khóa học"
         link={path.admin.newCourse}
       />
+      <FilterComponent
+        filters={[
+          {
+            name: 'Danh mục',
+            values: ['Khoa học', 'Kinh tế', 'Nghệ thuật'],
+          },
+          {
+            name: 'Loại khóa học',
+            values: ['Miễn phí', 'Tính phí'],
+          },
+        ]}
+        onFilter={(filters) => {
+          console.log('Kết quả lọc:', filters);
+        }}
+      />
+      
       <Grid container spacing={2}>
         {courses.data.map((course: Course) => (
           <Grid key={course._id} item sm={12} md={6}>

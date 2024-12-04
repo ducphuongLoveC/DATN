@@ -5,7 +5,7 @@ const routerCertificate = Router();
 
 routerCertificate.get("/", CertificateController.getAllCertificates);
 
-routerCertificate.get("/:id", CertificateController.getCertificateById);
+routerCertificate.get("/:certificate_code", CertificateController.getCertificateById);
 
 routerCertificate.post("/", CertificateController.createCertificate);
 

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Box, Paper, Typography, Button } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -6,20 +6,46 @@ import DownloadIcon from '@mui/icons-material/Download';
 import html2pdf from 'html2pdf.js';
 
 import certificateBackground from '@/assets/images/certificate/certificate.png';
-import { getCertificateByCertificateId } from '@/api/certificate';
+import { createCertificate, getCertificateByCertificateId } from '@/api/certificate';
+import moment from 'moment';
 interface CertificateProp {
+  user_id?: string;
+  course_id?: string;
+  name?: string;
+  description?: string;
   certificate_code?: string;
-  name: string;
-  description: string;
 }
-const Certificate: React.FC<CertificateProp> = ({ certificate_code, name, description }) => {
+const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, course_id, name, description }) => {
   const certificateRef = useRef<HTMLDivElement>(null);
 
-  const { data } = useQuery({
-    queryKey: ['certificate'],
-    queryFn: () => getCertificateByCertificateId(certificate_code || ''),
-    enabled: certificate_code ? true : false,
+  const [id, setId] = useState<any>();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['certificate', id],
+    queryFn: () => getCertificateByCertificateId(id || ''),
+    enabled: id ? true : false,
   });
+
+  useEffect(() => {
+    const fetchCreate = async () => {
+      if (user_id && course_id && name && description) {
+        const payload = {
+          user_id,
+          course_id,
+          name,
+          description,
+        };
+        const data = await createCertificate(payload);
+        setId(data.certificate_code);
+      }
+    };
+
+    if (!certificate_code) {
+      fetchCreate();
+    } else {
+      setId(certificate_code);
+    }
+  }, [user_id, course_id, name, description]);
   const downloadPDF = () => {
     if (certificateRef.current) {
       const element = certificateRef.current;
@@ -37,6 +63,8 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, name, descri
       html2pdf().from(element).set(options).save();
     }
   };
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 2 }}>
@@ -66,20 +94,20 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, name, descri
             <Typography variant="h6" fontSize={20} color="textSecondary" gutterBottom>
               This certifies that
             </Typography>
-            <Typography variant="h4" fontSize={25} fontWeight="bold" gutterBottom>
-              [Your Name]
+            <Typography variant="h4" fontSize={30} fontWeight="bold" gutterBottom>
+              {data?.name}
             </Typography>
             <Typography variant="h6" fontSize={20} color="textSecondary" gutterBottom>
               has successfully completed the course
             </Typography>
             <Typography variant="h5" fontSize={30} fontWeight="bold" gutterBottom>
-              JAVASCRIPT ADVANCED
+              {data?.description}
             </Typography>
             <Typography variant="body1" fontSize={20} color="textSecondary" sx={{ marginTop: 1.5 }}>
               Special Recognition: Outstanding Performance
             </Typography>
             <Typography variant="body2" fontSize={20} color="textSecondary" sx={{ marginTop: 1 }}>
-              Completion Date: [Date]
+              Completion Date: {data?.issue_date}
             </Typography>
           </Box>
         </Paper>
@@ -109,7 +137,7 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, name, descri
               justifyContent: 'center',
             }}
           >
-            <Box mt={17.5} textAlign={'center'}>
+            <Box mt={17} textAlign={'center'}>
               <Typography variant="h5" fontSize={12} color="primary" gutterBottom>
                 FTECH Academy
               </Typography>
@@ -119,20 +147,20 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, name, descri
               <Typography variant="h6" fontSize={12} color="textSecondary" gutterBottom>
                 This certifies that
               </Typography>
-              <Typography variant="h4" fontSize={12} fontWeight="bold" gutterBottom>
-                [Your Name]
+              <Typography variant="h4" fontSize={16} fontWeight="bold" gutterBottom>
+                {data?.name}
               </Typography>
               <Typography variant="h6" fontSize={12} color="textSecondary" gutterBottom>
                 has successfully completed the course
               </Typography>
               <Typography variant="h5" fontSize={15} fontWeight="bold" gutterBottom>
-                JAVASCRIPT ADVANCED
+                {data?.description}
               </Typography>
               <Typography variant="body1" fontSize={12} color="textSecondary" sx={{ marginTop: 1 }}>
                 Special Recognition: Outstanding Performance
               </Typography>
               <Typography variant="body2" fontSize={12} color="textSecondary" sx={{ marginTop: 1 }}>
-                Completion Date: [Date]
+              Completion Date: {moment(data?.issue_date).format('LLLL')}
               </Typography>
             </Box>
           </Box>
