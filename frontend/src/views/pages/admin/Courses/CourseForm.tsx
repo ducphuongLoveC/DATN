@@ -101,6 +101,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
           updatedResources[idResourceEdit] = resource;
           setResources(updatedResources);
           resetEditState();
+          setIsOpenModalDocument(false);
         }
       };
 
@@ -124,7 +125,6 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
       const resetEditState = () => {
         setIdResourceEdit(null);
         setDataEdit({});
-        setIsOpenModalDocument(false);
       };
 
       // Expose getData to parent via ref

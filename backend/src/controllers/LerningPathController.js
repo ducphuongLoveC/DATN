@@ -91,6 +91,6 @@ class learningPath {
     } catch (error) {
       next(error);
     }
-  } 
+  }
 }
 export default new learningPath();

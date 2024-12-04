@@ -55,6 +55,7 @@ export const newCourse = async (data: any) => {
   formData.append('description', data.description);
   formData.append('original_price', data.original_price.toString());
   formData.append('sale_price', data.sale_price.toString());
+  formData.append('has_certificate', data.has_certificate);
   formData.append('isFree', data.isFree);
   formData.append('isActive', data.isActive);
 
@@ -154,6 +155,7 @@ export const updateCourse = async (id: string, data: any) => {
   formData.append('description', data.description);
   formData.append('original_price', data.original_price.toString());
   formData.append('sale_price', data.sale_price.toString());
+  formData.append('has_certificate', data.has_certificate);
   formData.append('isFree', data.isFree ? 'true' : 'false');
   formData.append('isActive', data.isActive);
 

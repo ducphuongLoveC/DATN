@@ -23,6 +23,8 @@ const CustomCardMedia = styled(CardMedia)({
 
 const MyCourses: React.FC = () => {
   const user = useSelector((state: RootState) => state.authReducer.user);
+  console.log(user);
+
   const theme = useTheme();
   const { data: coursesWithProgress, isLoading } = useQuery({
     queryKey: ['coursesWithProgress'],
@@ -59,8 +61,8 @@ const MyCourses: React.FC = () => {
                   <Typography variant="h5" mt={1}>
                     Hoàn thành bài học: {` ${c.completedResources} / ${c.totalResources}`}{' '}
                   </Typography>
-
                   <Progress sx={{ mt: 3 }} textProgress={false} value={c.progress} />
+                  
                 </Box>
               </WrapperCard>
             </Link>

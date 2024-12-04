@@ -36,6 +36,7 @@ export interface Course {
   original_price: string;
   sale_price: string;
   thumbnail: File | null;
+  has_certificate: boolean;
   isActive: boolean;
   isFree: boolean;
 }

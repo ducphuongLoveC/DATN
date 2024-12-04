@@ -124,24 +124,24 @@ export default function Comment() {
 
   useEffect(() => {
     const comments = document.querySelectorAll('.comments');
-  
+
     comments.forEach((comment) => {
       const id = (comment as HTMLElement).getAttribute('data-id'); // Ép kiểu comment thành HTMLElement
-  
+
       if (id === comment_id) {
         // Ép kiểu lại để sử dụng `style`
         const element = comment as HTMLElement;
-  
+
         element.scrollIntoView({
           behavior: 'instant',
           block: 'start',
           inline: 'nearest',
         });
-  
+
         // Thay đổi style của phần tử
         element.style.border = '2px solid red';
         element.style.transition = 'border 0.5s ease-in-out';
-  
+
         // Xóa border sau 2 giây
         setTimeout(() => {
           element.style.border = 'none';
@@ -149,8 +149,6 @@ export default function Comment() {
       }
     });
   }, [comment_id]);
-  
-  
 
   if (isLoading) return <div>Loading comments...</div>;
   return (

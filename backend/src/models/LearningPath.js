@@ -2,7 +2,6 @@ import mongoose, { Schema } from "mongoose";
 
 const learningPathSchema = new Schema(
   {
-    
     title: {
       type: String,
       required: [true, "Learning_path is required"],
@@ -10,11 +9,11 @@ const learningPathSchema = new Schema(
       maxlength: 30,
     },
 
-    thumbnail: {
-      type: String,
-      required: [true, "Thumbnail is required"],
-      maxlength: 255,
-    },
+    // thumbnail: {
+    //   type: String,
+    //   required: [true, "Thumbnail is required"],
+    //   maxlength: 255,
+    // },
 
     description: {
       type: String,

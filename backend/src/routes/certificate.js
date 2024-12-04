@@ -1,13 +1,12 @@
 import { Router } from "express";
-import CertificateContronller from "../controllers/CertificateContronller.js";
-import { validBodyRequets } from "../middlewares/validbodyRequets.js";
-import { certificateSchema } from "../validSchema/certificateSchema.js";
+import CertificateController from "../controllers/CertificateController.js";
 
-const routerCertificate = Router()
-routerCertificate.get('/', CertificateContronller.get)
-routerCertificate.get('/:id', CertificateContronller.getDetail)
-routerCertificate.post('/',validBodyRequets(certificateSchema), CertificateContronller.create)
-routerCertificate.patch('/:id',validBodyRequets(certificateSchema), CertificateContronller.update)
-routerCertificate.delete('/:id', CertificateContronller.delete)
+const routerCertificate = Router();
 
-export default routerCertificate
+routerCertificate.get("/", CertificateController.getAllCertificates);
+
+routerCertificate.get("/:id", CertificateController.getCertificateById);
+
+routerCertificate.post("/", CertificateController.createCertificate);
+
+export default routerCertificate;

@@ -8,23 +8,17 @@ import {
     TableRow,
     Avatar,
     Paper,
-    Button,
-    Typography,
     Box,
     Pagination,
     Tooltip,
     IconButton,
 } from "@mui/material";
-
-import {
-    Delete as DeleteIcon,
-} from '@mui/icons-material';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import axiosInstance from "@/api/axiosInstance";
 import HeaderTitle from "../Title";
 
 const Comments = () => {
     const [comments, setComments] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
@@ -33,45 +27,47 @@ const Comments = () => {
             try {
                 const response = await axiosInstance.get("/api/comment");
                 setComments(response.data);
-                setLoading(false);
+                setTotalPages(Math.ceil(response.data.length / 10));
             } catch (error) {
                 console.error("Lỗi khi lấy bình luận:", error);
-                setLoading(false);
             }
         };
 
         fetchComments();
+
+        const interval = setInterval(fetchComments, 500); // Cập nhật sau mỗi 5 giây
+
+        return () => clearInterval(interval); // Dọn dẹp interval khi component unmount
     }, []);
 
     const handleChangePage = (event: any, value: any) => {
         setPage(value);
     };
 
-    if (loading) {
-        return <div>Đang tải...</div>;
-    }
+    const handleDelete = async (commentId: string) => {
+        const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa bình luận này không?");
+        if (!confirmDelete) return;
 
-    const renderReplies = (replies: any[]) => {
-        return replies.map((reply: any) => (
-            <TableRow key={reply._id}>
-                <TableCell align="center"></TableCell> {/* Giữ chỗ cho căn chỉnh */}
-                <TableCell align="center">
-                    <Avatar alt={reply.user.name} src={reply.user.avatar} />
-                </TableCell>
-                <TableCell align="left">
-                    <Typography variant="body2" style={{ marginLeft: "30px" }}>
-                        {reply.user.name}: {reply.content}
-                    </Typography>
-                </TableCell>
-                <TableCell align="center">{new Date(reply.timestamp).toLocaleString()}</TableCell>
-                <TableCell align="center">
-                    <Button variant="contained" color="secondary">
-                        Xóa
-                    </Button>
-                </TableCell>
-            </TableRow>
-        ));
+        try {
+            const response = await axiosInstance.delete(`/api/comment/${commentId}`);
+            console.log("Delete response:", response);
+
+            // Cập nhật danh sách bình luận sau khi xóa
+            setComments((prevComments) => prevComments.filter((comment) => comment._id !== commentId));
+            alert("Xóa bình luận thành công!");
+        } catch (error: any) {
+            if (error.response) {
+                console.error("Error response:", error.response.data);
+            }
+            console.error("Lỗi khi xóa bình luận:", error);
+            alert("Lỗi khi xóa bình luận. Vui lòng thử lại.");
+        }
     };
+
+
+    // if (loading) {
+    //     return <div>Đang tải...</div>;
+    // }
 
     return (
         <Box>
@@ -89,9 +85,8 @@ const Comments = () => {
                     </TableHead>
                     <TableBody>
                         {comments.length > 0 ? (
-                            comments.map((comment: any) => (
+                            comments.slice((page - 1) * 10, page * 10).map((comment: any) => (
                                 <React.Fragment key={comment._id}>
-                                    {/* Bình luận chính */}
                                     <TableRow>
                                         <TableCell sx={{ padding: "20px", textAlign: "center", display: 'flex', justifyContent: "center" }}>
                                             <Avatar src={comment.user.profile_picture} alt="" />
@@ -108,8 +103,8 @@ const Comments = () => {
                                         <TableCell align="center" sx={{ padding: "8px" }}>
                                             <Tooltip title="Xóa">
                                                 <IconButton
-
                                                     color="secondary"
+                                                    onClick={() => handleDelete(comment._id)} // Xử lý khi click vào icon xóa
                                                 >
                                                     <DeleteIcon />
                                                 </IconButton>
@@ -137,7 +132,6 @@ const Comments = () => {
                     />
                 </Box>
             </TableContainer>
-
         </Box>
     );
 };

@@ -27,7 +27,7 @@ export default function LearningPath() {
   const { control, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
       title: '',
-      thumbnail: '',
+      // thumbnail: '',
       description: '',
     },
   });
@@ -44,7 +44,7 @@ export default function LearningPath() {
       toast.error('Thêm thất bại');
     },
   });
-  const onSubmit = (data: { title: string; thumbnail: string; description: string }) => {
+  const onSubmit = (data: { title: string; description: string }) => {
     mutation.mutate(data);
   };
 
@@ -76,7 +76,7 @@ export default function LearningPath() {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Controller
                 name="thumbnail"
                 control={control}
@@ -92,7 +92,7 @@ export default function LearningPath() {
                   />
                 )}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
               <TextEditor
                 initialValue="Mô tả"

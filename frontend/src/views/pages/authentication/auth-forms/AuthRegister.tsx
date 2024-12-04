@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // import { Link } from 'react-router-dom';
-
+import { useMutation } from '@tanstack/react-query';
 import { useForm, Controller } from 'react-hook-form';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,6 +27,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AnimateButton from '@/ui-component/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from '@/utils/password-strength';
 import { verifyCaptcha } from '@/api/authApi';
+import OTPInput from '@/components/OtpInput';
+import { createOtp, verifyOtp } from '@/api/otpApi';
 
 const MainInput = styled(OutlinedInput)(() => ({
   input: {
@@ -35,10 +37,13 @@ const MainInput = styled(OutlinedInput)(() => ({
 }));
 
 const schema = z.object({
-  fname: z.string().min(1, 'First Name is required'),
-  lname: z.string().min(1, 'Last Name is required'),
-  email: z.string().email('Must be a valid email').max(255),
-  password: z.string().min(6, 'Mật khẩu phải hơn hoặc bằng 6 ký tự').max(255),
+  fname: z.string().min(1, 'Họ là bắt buộc'), // First Name
+  lname: z.string().min(1, 'Tên là bắt buộc'), // Last Name
+  email: z.string().email('Email không hợp lệ').max(255, 'Email không được vượt quá 255 ký tự'), // Email
+  isVerifyOtp: z.boolean().refine((val) => val === true, {
+    message: 'Bạn cần xác nhận mã OTP trước khi tiếp tục',
+  }), // Xác thực OTP
+  password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự').max(255, 'Mật khẩu không được vượt quá 255 ký tự'), // Password
 });
 
 const captchaSecret = import.meta.env.VITE_CAPTCHA_SECRET;
@@ -47,6 +52,7 @@ export type AuthRegisterData = z.infer<typeof schema>;
 interface AuthRegisterProps {
   onSubmit: (data: AuthRegisterData) => void;
 }
+
 const AuthRegister: React.FC<AuthRegisterProps> = ({ onSubmit, ...others }) => {
   const theme: any = useTheme();
   const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
@@ -54,9 +60,53 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ onSubmit, ...others }) => {
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [captchaError, setCaptchaError] = useState('');
 
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpError, setOtpError] = useState('');
+
+  const [stepOtp, setStepOtp] = useState('send');
   const [showPassword, setShowPassword] = useState(false);
-  // const [checked, setChecked] = useState(true);
+
   const [, setStrength] = useState<number>(0);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    getValues,
+    setValue,
+  } = useForm<AuthRegisterData>({
+    resolver: zodResolver(schema),
+  });
+
+  const { mutate: mttCreateOtp, isPending: isPendingCreateOtp } = useMutation({
+    mutationKey: ['create_otp'],
+    mutationFn: createOtp,
+    onSuccess: () => {
+      setStepOtp('verify');
+    },
+    onMutate: () => {
+      setOtpError('');
+    },
+    onError: (error: string) => {
+      setOtpError(error);
+    },
+  });
+
+  const { mutate: mttVerifyOtp } = useMutation({
+    mutationKey: ['verify_otp'],
+    mutationFn: verifyOtp,
+    onSuccess: () => {
+      setStepOtp('');
+      setOtpVerified(true);
+      setValue('isVerifyOtp', true, { shouldValidate: true });
+      setOtpError('');
+    },
+    onError: () => {
+      setValue('isVerifyOtp', false);
+      setOtpError('Otp không đúng vui lòng nhập lại');
+    },
+  });
+
   const [level, setLevel] = useState<{ color: string; label: string } | undefined>();
 
   const handleClickShowPassword = () => {
@@ -72,14 +122,6 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ onSubmit, ...others }) => {
     setStrength(temp);
     setLevel(strengthColor(temp));
   };
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<AuthRegisterData>({
-    resolver: zodResolver(schema),
-  });
 
   const handleCaptchaChange = async (token: string | null) => {
     let result = await verifyCaptcha(token);
@@ -167,6 +209,37 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ onSubmit, ...others }) => {
           )}
         </FormControl>
 
+        {stepOtp === 'send' && (
+          <Box>
+            {isPendingCreateOtp ? (
+              'Đang tạo mã OTP...'
+            ) : (
+              <Button
+                onClick={() => {
+                  mttCreateOtp(getValues('email'));
+                }}
+              >
+                Lấy mã OTP
+              </Button>
+            )}
+          </Box>
+        )}
+
+        {stepOtp == 'verify' && (
+          <OTPInput
+            onComplete={(otp) => {
+              const payload = {
+                email: getValues('email'),
+                otp,
+              };
+              mttVerifyOtp(payload);
+            }}
+          />
+        )}
+        {errors.isVerifyOtp && <FormHelperText error>{errors.isVerifyOtp.message}</FormHelperText>}
+        {otpError && <FormHelperText error>{otpError}</FormHelperText>}
+        {otpVerified && <FormHelperText sx={{ color: 'success.main' }}>Đã xác thực OTP!</FormHelperText>}
+
         <FormControl fullWidth error={!!errors.password} sx={{ ...theme.typography.customInput }}>
           <InputLabel htmlFor="outlined-adornment-password-register">Mật khẩu</InputLabel>
           <Controller
@@ -219,28 +292,6 @@ const AuthRegister: React.FC<AuthRegisterProps> = ({ onSubmit, ...others }) => {
           </Box>
         </FormControl>
 
-        {/* <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={checked}
-                  onChange={(event) => setChecked(event.target.checked)}
-                  name="checked"
-                  color="primary"
-                />
-              }
-              label={
-                <Typography variant="subtitle1">
-                  Agree with &nbsp;
-                  <Typography variant="subtitle1" component={Link} to="#">
-                    Terms & Condition.
-                  </Typography>
-                </Typography>
-              }
-            />
-          </Grid>
-        </Grid> */}
         <Box>
           <ReCAPTCHA sitekey={captchaSecret} onChange={handleCaptchaChange} />
           {captchaError && <FormHelperText error>{captchaError}</FormHelperText>}

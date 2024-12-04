@@ -8,17 +8,14 @@ export const fetchLearningPaths = async () => {
 
 export const newLearningPath = async (datas: {
   title: string;
-  thumbnail: string;
+  // thumbnail: string;
   description: string;
 }) => {
   const res = await axiosInstance.post('api/learning-path', datas);
   return res;
 };
 
-export const updateLearningPath = async (
-  _id: string,
-  updateData: LearningPath
-) => {
+export const updateLearningPath = async (_id: string, updateData: LearningPath) => {
   const res = await axiosInstance.patch(`api/learning-path/${_id}`, updateData);
   return res.data;
 };

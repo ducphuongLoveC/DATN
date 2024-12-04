@@ -4,7 +4,7 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import { useSelector } from 'react-redux';
 
 import ArtPlayerComponent from '@/components/ArtplayComponent';
-import Question from '../Question';
+import Question from './Question';
 // redux
 
 // ui
@@ -33,6 +33,7 @@ import TextEditor from '@/components/TextEditor';
 import { RootState } from '@/store/reducer';
 
 import formatTime from '@/utils/formatTime';
+import Certificate from './Cetificate/Cetificate';
 
 const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => {
   const user = useSelector((state: RootState) => state.authReducer.user);
@@ -125,6 +126,7 @@ const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => 
 
           case 'Question':
             return <Question questions={resource.questions} onCompleted={handleCompletedResource} />;
+
           case 'Document':
             setTimeout(handleCompletedResource, 3000);
 
@@ -133,6 +135,8 @@ const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => 
                 Tài liệu
               </Typography>
             );
+          case 'Certificate':
+            return <Certificate />;
         }
       })()}
       <Box
