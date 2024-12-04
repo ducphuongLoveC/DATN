@@ -103,5 +103,51 @@ class RatingController {
       res.status(500).json({ error: "Internal server error" });
     }
   }
+
+  async fetchAllRatings(req, res) {
+    const { stars } = req.query; // Lấy giá trị lọc số sao từ query params
+  
+    // Kiểm tra giá trị stars (nếu có)
+    if (stars && (isNaN(stars) || stars < 1 || stars > 5)) {
+      return res
+        .status(400)
+        .json({ error: "Stars filter must be a number between 1 and 5" });
+    }
+  
+    try {
+      // Điều kiện lọc
+      const matchCondition = {}; 
+      if (stars) {
+        matchCondition.stars = parseInt(stars, 10); // Chuyển stars về dạng số nguyên
+      }
+  
+      // Lấy danh sách tất cả các đánh giá kèm thông tin người dùng
+      const ratings = await Rating.aggregate([
+        { $match: matchCondition }, // Lọc theo stars nếu có
+        {
+          $lookup: {
+            from: "users", // Tên collection của User
+            localField: "user_id",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        { $unwind: "$user" }, // Gỡ bỏ mảng để trả về thông tin user dưới dạng object
+      ]);
+  
+      // Trả về các đánh giá nếu có, nếu không có đánh giá nào trả về một mảng rỗng
+      if (ratings.length === 0) {
+        return res.status(200).json([]); // Trả về mảng rỗng thay vì lỗi 404
+      }
+  
+      // Trả về các đánh giá
+      res.status(200).json(ratings);
+    } catch (error) {
+      console.error("Error fetching all ratings:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+  
+  
 }
 export default new RatingController();

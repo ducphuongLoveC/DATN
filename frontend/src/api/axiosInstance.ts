@@ -11,8 +11,11 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => { 
     const token = Cookies.get('accessToken');
+    console.log("Token:", token);  // Kiểm tra token có đúng không
+
+    // Kiểm tra nếu token có dấu ngoặc kép thì loại bỏ chúng
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers['Authorization'] = `Bearer ${token.replace(/['"]+/g, '')}`; // Loại bỏ dấu ngoặc kép
     }
     return config;
   },
@@ -20,6 +23,7 @@ axiosInstance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
 
 axiosInstance.interceptors.response.use(
   (response) => {

@@ -1,73 +1,130 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Avatar, Paper, Button, Typography, Box, Rating, Pagination
+  Avatar, Paper, Box, Rating, MenuItem, Select, InputLabel, FormControl, Typography,
+  TablePagination
 } from '@mui/material';
 import HeaderTitle from '../Title';
+import axiosInstance from '@/api/axiosInstance';
+
+interface User {
+  name: string;
+  profile_picture: string | null;
+}
+
+interface Review {
+  _id: string;
+  user: User;
+  comment: string;
+  stars: number;
+}
 
 const ReviewList = () => {
-  // Dữ liệu mẫu để hiển thị
-  const reviews = [
-    {
-      id: 1,
-      reviewerName: "Nguyễn Văn A",
-      reviewerAvatar: "https://via.placeholder.com/150",
-      courseName: "ReactJS Basics",
-      chapterName: "Introduction",
-      lessonName: "What is React?",
-      rating: 4.5,
-    },
-    {
-      id: 2,
-      reviewerName: "Trần Thị B",
-      reviewerAvatar: "https://via.placeholder.com/150",
-      courseName: "VueJS Advanced",
-      chapterName: "Directives",
-      lessonName: "v-if vs v-show",
-      rating: 5,
-    },
-  ];
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [starsFilter, setStarsFilter] = useState<number | ''>('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const fetchReviews = async () => {
+    try {
+      const response = await axiosInstance.get('/api/rating/all', {
+        params: { stars: starsFilter, page: page + 1, limit: rowsPerPage },
+      });
+      setReviews(response.data);
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    fetchReviews();
+  }, [starsFilter, page, rowsPerPage]);
+
+  if (loading) {
+    return <Box>Loading...</Box>;
+  }
+
+  if (error) {
+    return <Box>Error: {error}</Box>;
+  }
+
+  const paginatedReviews = reviews.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
   return (
     <Box>
       <HeaderTitle des="Đây là trang quản lý đánh giá" />
-      <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
-        <Table aria-label="review table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Avatar</TableCell>
-              <TableCell align="center">Tên người đánh giá</TableCell>
-              <TableCell align="center">Tên khóa học</TableCell>
-              <TableCell align="center">Tên chương</TableCell>
-              <TableCell align="center">Tên bài</TableCell>
-              <TableCell align="center">Đánh giá</TableCell>
-              <TableCell align="center">Hành động</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {reviews.map((review) => (
-              <TableRow key={review.id}>
-                <TableCell>
-                  <Avatar alt={review.reviewerName} src={review.reviewerAvatar} />
-                </TableCell>
-                <TableCell align="center">{review.reviewerName}</TableCell>
-                <TableCell align="center">{review.courseName}</TableCell>
-                <TableCell align="center">{review.chapterName}</TableCell>
-                <TableCell align="center">{review.lessonName}</TableCell>
-                <TableCell align="center">
-                  <Rating value={review.rating} readOnly />
-                </TableCell>
-                <TableCell align="center">
-                  <Button variant="outlined">Xem chi tiết</Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <Box sx={{ display: 'flex', justifyContent: 'center', margin: '20px 0' }}>
-          <Pagination count={1} page={1} variant="outlined" />
-        </Box>
-      </TableContainer>
+
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel id="stars-filter-label">Lọc theo số sao</InputLabel>
+        <Select
+          labelId="stars-filter-label"
+          value={starsFilter}
+          label="Lọc theo số sao"
+          onChange={(e: any) => setStarsFilter(e.target.value)}
+        >
+          <MenuItem value="">Tất cả</MenuItem>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <MenuItem key={star} value={star}>
+              {star} sao
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      {reviews.length === 0 ? (
+        <Typography variant="h6" align="center" color="textSecondary">
+          Không có đánh giá nào khớp với bộ lọc số sao bạn chọn
+        </Typography>
+      ) : (
+        <>
+          <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
+            <Table aria-label="review table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Avatar</TableCell>
+                  <TableCell align="center">Tên người đánh giá</TableCell>
+                  <TableCell align="center">Nội dung đánh giá</TableCell>
+                  <TableCell align="center">Đánh giá</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedReviews.map((review) => (
+                  <TableRow key={review._id}>
+                    <TableCell>
+                      <Avatar
+                        alt={review.user.name}
+                        src={review.user.profile_picture || 'https://via.placeholder.com/150'}
+                      />
+                    </TableCell>
+                    <TableCell align="center">{review.user.name}</TableCell>
+                    <TableCell align="center">{review.comment}</TableCell>
+                    <TableCell align="center">
+                      <Rating value={review.stars} readOnly />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={reviews.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={(_, newPage) => setPage(newPage)}
+            onRowsPerPageChange={(event) => {
+              setRowsPerPage(parseInt(event.target.value, 10));
+              setPage(0);
+            }}
+          />
+        </>
+      )}
     </Box>
   );
 };
