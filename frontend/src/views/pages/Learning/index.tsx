@@ -141,7 +141,6 @@ const Learning: React.FC = () => {
   const hanldeNoteDate = (value: string) => {
     setQueryNote((pre) => [...pre, { key: 'sort', value: value }]);
   };
-
   // note action
 
   const handleUpdateNote = async (id: string, newContent: string) => {
@@ -155,7 +154,10 @@ const Learning: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      queryClient.removeQueries({ queryKey: ['resource'] });
+      const keysToRemove = ['resource', 'module', 'note'];
+      keysToRemove.forEach((key) => {
+        queryClient.removeQueries({ queryKey: [key] });
+      });
     };
   }, [queryClient]);
 
