@@ -1,6 +1,7 @@
 import axios from "axios";
 import Access from "../models/Access.js";
 import { BASE_URL } from "../utils/env.js";
+import Course from "../models/Course.js";
 
 class AccessController {
   async createAccess(req, res) {
@@ -15,6 +16,10 @@ class AccessController {
       });
 
       const savedAccess = await newAccess.save();
+
+      await Course.findByIdAndUpdate(course_id, {
+        $inc: { enrollment_count: 1 },
+      });
 
       //  đồng thời tạo progress cho user luôn :))
       const apiUrl = `${BASE_URL}/api/progress/start`;

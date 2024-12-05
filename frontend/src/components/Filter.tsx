@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   TextField,
-  Typography,
   FormControl,
   Select,
   MenuItem,
@@ -11,43 +10,51 @@ import {
   ListItemText,
   Paper,
   Grid,
+  Button,
 } from '@mui/material';
-import useDebounce from '@/hooks/useDebounce';
 
-// Kiểu dữ liệu cho các bộ lọc
-type FilterOption = {
-  displayName: string;
-  name: string; // Tên bộ lọc, ví dụ: "Danh mục", "Loại khóa học"
-  values: string[]; // Danh sách giá trị của bộ lọc
-};
-
-// Kiểu dữ liệu cho props của FilterComponent
 type FilterProps = {
-  filters: FilterOption[]; // Danh sách bộ lọc
-  onFilter: (filters: { search: string | any; [key: string]: string[] }) => void; // Callback trả về kết quả lọc
+  filters: any;
+  onFilter: (filters: any) => void;
 };
 
 const FilterComponent: React.FC<FilterProps> = ({ filters, onFilter }) => {
   const [searchText, setSearchText] = useState<string>('');
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
-  const debouncedSearch: any = useDebounce(searchText, 300);
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, any[]>>({});
 
   // Gửi kết quả sau khi debounce
-  useEffect(() => {
-    const formattedFilters = Object.keys(selectedFilters).reduce(
-      (acc, key) => {
-        acc[key] = selectedFilters[key] || [];
-        return acc;
-      },
-      {} as Record<string, string[]>
-    );
-
-    // Đảm bảo 'search' được truyền dưới dạng chuỗi thay vì mảng
-    onFilter({ search: debouncedSearch, ...formattedFilters });
-  }, [debouncedSearch, selectedFilters]);
-
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);
+  };
+
+  const handleFilter = () => {
+    console.log(selectedFilters);
+
+    const data = Object.keys(selectedFilters).reduce(
+      (result, filterName) => {
+        const selectedItems = selectedFilters[filterName];
+        const filter = filters.find((f: any) => f.name === filterName);
+
+        // Kiểm tra xem filter có tồn tại hay không
+        if (!filter || !selectedItems || selectedItems.length === 0) return result;
+
+        // Không cần phải lọc theo `selected` nữa, chỉ sử dụng value trực tiếp
+        const filteredData = selectedItems.map((value: any) => {
+          return { value: value.value, display: value.display };
+        });
+
+        // Thêm vào đối tượng kết quả với key là filterName
+        if (filteredData.length > 0) {
+          result[filterName] = filteredData;
+        }
+
+        return result;
+      },
+      {} as Record<string, any>
+    );
+
+    // Gửi kết quả filter với searchText và các giá trị lọc
+    onFilter({ search: searchText, ...data });
   };
 
   return (
@@ -55,38 +62,48 @@ const FilterComponent: React.FC<FilterProps> = ({ filters, onFilter }) => {
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <FormControl fullWidth>
-            <InputLabel>Tìm kiếm</InputLabel>
-            <TextField variant="outlined" fullWidth value={searchText} onChange={handleSearchChange} />
+            <TextField label="Tìm kiếm" variant="outlined" fullWidth value={searchText} onChange={handleSearchChange} />
           </FormControl>
         </Grid>
 
-        {filters.map((filter) => (
-          <Grid item xs={12} md={3} key={filter.name}>
+        {filters.map((filter: any) => (
+          <Grid item xs={12} md={2} key={filter.name}>
             <FormControl fullWidth>
               <InputLabel>{filter.displayName}</InputLabel>
               <Select
+                label={filter.displayName}
                 multiple
                 value={selectedFilters[filter.name] || []}
                 onChange={(e) => {
-                  // Cập nhật các giá trị đã chọn
-                  const selectedValues = e.target.value as string[];
+                  const selectedValues = e.target.value as any[];
+
                   setSelectedFilters((prev) => ({
                     ...prev,
                     [filter.name]: selectedValues,
                   }));
                 }}
-                renderValue={(selected) => selected.join(', ')} // Hiển thị các giá trị đã chọn
+                renderValue={(selecteds) => {
+                  return selecteds.map((s) => s.display).join(', ');
+                }}
               >
-                {filter.values.map((value) => (
-                  <MenuItem key={value} value={value}>
+                {filter.values.map((value: any) => (
+                  <MenuItem key={value.value} value={value}>
                     <Checkbox checked={selectedFilters[filter.name]?.includes(value) || false} />
-                    <ListItemText primary={value} />
+                    <ListItemText primary={value.display} />
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Grid>
         ))}
+
+        <Grid item xs={12} md={2}>
+          <FormControl fullWidth>
+            <Button sx={{ p: 1.5 }} onClick={handleFilter} variant="outlined">
+              Áp dụng
+            </Button>
+          </FormControl>
+        </Grid>
       </Grid>
     </Box>
   );

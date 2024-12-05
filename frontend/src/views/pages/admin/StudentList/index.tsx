@@ -1,33 +1,24 @@
 import React, { useState } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Avatar, Paper, Typography, Box, Pagination,
-  Tooltip,
-  IconButton
+  Avatar, Paper, Typography, Box, Tooltip, IconButton, TablePagination
 } from '@mui/material';
-import LockIcon from '@mui/icons-material/Lock'; // Fixed import
-import VisibilityIcon from '@mui/icons-material/Visibility'; // Fixed import
+import LockIcon from '@mui/icons-material/Lock';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import useUsers from '../../../../api/useUsers';
 import { useNavigate } from 'react-router-dom';
 import HeaderTitle from '../Title';
 
 const StudentList = () => {
-  const { rows, loading, error } = useUsers(); // Fetch user data from API
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(5);
+  const { rows, loading, error } = useUsers();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const navigate = useNavigate();
 
-  const totalPages = Math.ceil(rows.length / rowsPerPage);
-  const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    setCurrentPage(value);
-  };
-
-  const displayedRows = rows.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
-
   const handleViewDetails = (user: any) => {
-    const userId = user?.id || user?._id; // Ưu tiên id, nếu không thì dùng _id
+    const userId = user?.id || user?._id;
     if (userId) {
-      navigate(`/user-detail/${userId}`); // Sử dụng navigate thay vì window.location.replace
+      navigate(`/user-detail/${userId}`);
     } else {
       console.error('Không tìm thấy id của người dùng.');
     }
@@ -35,6 +26,8 @@ const StudentList = () => {
 
   if (loading) return <Typography>Loading...</Typography>;
   if (error) return <Typography>Error: {error}</Typography>;
+
+  const paginatedRows = rows.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
   return (
     <Box>
@@ -52,7 +45,7 @@ const StudentList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {displayedRows.map((row) => (
+            {paginatedRows.map((row) => (
               <TableRow key={row.id || row._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell>
                   <Avatar alt={row.name} />
@@ -63,10 +56,7 @@ const StudentList = () => {
                 <TableCell align="center">{row.address || 'N/A'}</TableCell>
                 <TableCell align="center">
                   <Tooltip title="Xem chi tiết">
-                    <IconButton
-                      onClick={() => handleViewDetails(row)}
-                      color="primary"
-                    >
+                    <IconButton onClick={() => handleViewDetails(row)} color="primary">
                       <VisibilityIcon />
                     </IconButton>
                   </Tooltip>
@@ -80,14 +70,18 @@ const StudentList = () => {
             ))}
           </TableBody>
         </Table>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Pagination
-            count={totalPages}
-            page={currentPage}
-            onChange={handlePageChange}
-            variant="outlined"
-          />
-        </Box>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={(_, newPage) => setPage(newPage)}
+          onRowsPerPageChange={(event) => {
+            setRowsPerPage(parseInt(event.target.value, 10));
+            setPage(0);
+          }}
+        />
       </TableContainer>
     </Box>
   );

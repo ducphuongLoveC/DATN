@@ -9,12 +9,12 @@ import themes from '@/themes';
 // project imports
 import { router } from '@/routes';
 
+import moment from 'moment';
+moment.locale('vi');
+
 const App: React.FC = () => {
   const state = useSelector(
-    (state: any) =>
-      window.location.hostname.startsWith('admin')
-        ? state.customization
-        : state.homeReducer,
+    (state: any) => (window.location.hostname.startsWith('admin') ? state.customization : state.homeReducer),
     (prev, next) => prev === next
   );
 

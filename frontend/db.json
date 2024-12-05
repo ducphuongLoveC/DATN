@@ -485,10 +485,6 @@
       "accountName": "Nguyen Van A",
       "transactionDate": "2024-10-01",
       "description": "Chuyển khoản tiền hàng",
-<<<<<<< HEAD
-      "amount": 5000000,
-      "id": "1d83"
-=======
       "amount": 5000000
     },
     {
@@ -497,7 +493,6 @@
       "transactionDate": "2024-10-01",
       "description": "Chuyển khoản tiền hàng",
       "amount": 5000000
->>>>>>> e243d621ddcf429fac0f3c81ffbbd0b86703abfe
     }
    
   ]

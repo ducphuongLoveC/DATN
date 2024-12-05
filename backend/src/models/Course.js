@@ -44,6 +44,10 @@ const courseSchema = new mongoose.Schema(
     isFree: {
       type: Boolean,
     },
+    enrollment_count: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

@@ -147,23 +147,6 @@ const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
               />
             </FormControl>
           </Grid>
-
-          <Grid item xs={12}>
-            <FormControl>
-              <FormLabel id="radio-group-label">Chứng chỉ</FormLabel>
-              <Controller
-                name="has_certificate"
-                control={control}
-                render={({ field }) => (
-                  <RadioGroup {...field} onChange={(e) => setValue('has_certificate', e.target.value === 'true')}>
-                    <FormControlLabel value={true} control={<Radio />} label="Khóa học này cung cấp chứng chỉ" />
-                    <FormControlLabel value={false} control={<Radio />} label="Khóa học này không cung cấp chứng chỉ" />
-                  </RadioGroup>
-                )}
-              />
-            </FormControl>
-          </Grid>
-
           {/* Hiển thị các trường nhập giá chỉ khi isFree = false */}
           {!isFree && (
             <>
@@ -196,6 +179,22 @@ const OptionOther = forwardRef(({ defaultValue }: any, ref) => {
               </Grid>
             </>
           )}
+
+          <Grid item xs={12}>
+            <FormControl>
+              <FormLabel id="radio-group-label">Chứng chỉ</FormLabel>
+              <Controller
+                name="has_certificate"
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup {...field} onChange={(e) => setValue('has_certificate', e.target.value === 'true')}>
+                    <FormControlLabel value={true} control={<Radio />} label="Khóa học này cung cấp chứng chỉ" />
+                    <FormControlLabel value={false} control={<Radio />} label="Khóa học này không cung cấp chứng chỉ" />
+                  </RadioGroup>
+                )}
+              />
+            </FormControl>
+          </Grid>
 
           <Grid item xs={12} ml={2} mt={2} sx={{ backgroundColor: theme.palette.background.paper2 }}>
             <FormControl>

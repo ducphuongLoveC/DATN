@@ -22,7 +22,7 @@ export const ModulesSkeleton: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <Box sx={{ width: 420, p: 2, bgcolor: theme.palette.background.paper }}>
+    <Box sx={{ width: 440, p: 2, bgcolor: theme.palette.background.paper }}>
       <Stack spacing={2}>
         <Skeleton variant="text" width={200} height={30} />
         {[...Array(5)].map((_, i) => (
@@ -35,6 +35,3 @@ export const ModulesSkeleton: React.FC = () => {
     </Box>
   );
 };
-
-
-

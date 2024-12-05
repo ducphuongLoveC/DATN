@@ -21,8 +21,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import './index.css';
 
-import moment from 'moment';
-moment.locale('vi');
 
 const store = configureStore({ reducer });
 

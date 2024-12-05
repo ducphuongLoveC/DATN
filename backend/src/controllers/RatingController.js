@@ -1,4 +1,4 @@
-import express from "express";
+
 import mongoose from "mongoose";
 import Rating from "../models/Rating.js";
 
@@ -55,7 +55,6 @@ class RatingController {
       res.status(500).json({ error: "Internal server error" });
     }
   }
-
   async createRating(req, res) {
     const { course_id, user_id, stars, comment } = req.body;
 
@@ -100,6 +99,63 @@ class RatingController {
         .json({ message: "Rating created successfully", rating: newRating });
     } catch (error) {
       console.error("Error creating rating:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+  async fetchAllRatings(req, res) {
+    const { stars } = req.query;
+
+    if (stars && (isNaN(stars) || stars < 1 || stars > 5)) {
+      return res
+        .status(400)
+        .json({ error: "Stars filter must be a number between 1 and 5" });
+    }
+
+    try {
+      const matchCondition = {};
+      if (stars) {
+        matchCondition.stars = parseInt(stars, 10);
+      }
+
+      const ratings = await Rating.aggregate([
+        { $match: matchCondition },
+        {
+          $lookup: {
+            from: "users",
+            localField: "user_id",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        { $unwind: "$user" },
+        {
+          $lookup: {
+            from: "courses",
+            localField: "course_id",
+            foreignField: "_id",
+            as: "course",
+          },
+        },
+        { $unwind: { path: "$course", preserveNullAndEmptyArrays: true } },
+        {
+          $project: {
+            _id: 1,
+            stars: 1,
+            comment: 1,
+            createdAt: 1,
+            user: { _id: 1, name: 1, email: 1, profile_picture: 1 },
+            course: { _id: 1, title: 1 },
+          },
+        },
+      ]);
+
+      if (ratings.length === 0) {
+        return res.status(200).json([]);
+      }
+
+      res.status(200).json(ratings);
+    } catch (error) {
+      console.error("Error fetching all ratings:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   }

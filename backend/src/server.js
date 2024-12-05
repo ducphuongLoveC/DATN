@@ -1,5 +1,8 @@
 import express from "express";
+import cloudinary from "cloudinary";
+
 import router from "./routes/index.js";
+
 import { PORT } from "./utils/env.js";
 import cors from "cors";
 import connectDB from "./utils/connectDB.js";
@@ -48,7 +51,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api", router); 
+app.use("/api", router);
+
+// config clound
+cloudinary.config({
+  cloud_name: "dgzwrfdjn",
+  api_key: "884514879143886",
+  api_secret: "L_sdFIOH6Z164w43rJg3p-N_gWw",
+});
 
 app.use(errorNotFound, errorCommon);
 

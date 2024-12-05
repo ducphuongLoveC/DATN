@@ -1,5 +1,5 @@
 import * as actionTypes from './actions';
-//light, dark
+
 export const initialState = {
   seek: undefined,
   isFirstPlayingVideo: false,
