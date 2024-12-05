@@ -8,6 +8,9 @@ import { PersonPinCircleRounded } from '@mui/icons-material';
 import Progress from '@/components/Progress';
 import useQueryParams from '@/hooks/useQueryParams';
 
+// icon
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
 const ProFile = () => {
   const query = useQueryParams();
   const userIdFromURL = query.get('id');
@@ -73,7 +76,10 @@ const ProFile = () => {
         <div className={clsx(s['avatar-profileUser'])}>
           <img src={user?.profile_picture || 'default-avatar.png'} alt="Avatar" />
         </div>
-        <span className={clsx(s['name-profileProfile'])}>{user?.name || 'Tên người dùng'}</span>
+        <span className={clsx(s['name-profileProfile'])}>
+          {user?.name || 'Tên người dùng'}
+          {user?.role === 'admin' && <CheckCircleIcon sx={{ fontSize: 'var(--medium-icon)', color: 'primary.main', ml:1 }} />}
+        </span>
       </div>
 
       {/* Nội dung */}

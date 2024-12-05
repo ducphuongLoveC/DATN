@@ -14,18 +14,10 @@ const transaction_history = {
     {
       id: 'transhistory',
       title: 'Lịch sử giao dịch',
-      type: 'collapse',
+      type: 'item',
       icon: icons.CurrencyExchangeIcon,
-
-      children: [
-        {
-          id: 'history',
-          title: 'Danh sách giao dịch',
-          type: 'item',
-          url: path.admin.transactionHistory,
-          target: false,
-        },
-      ],
+      url: path.admin.transactionHistory,
+      breadcrumbs: true,
     },
   ],
 };

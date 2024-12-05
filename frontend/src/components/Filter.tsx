@@ -62,13 +62,7 @@ const FilterComponent: React.FC<FilterProps> = ({ filters, onFilter }) => {
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <FormControl fullWidth>
-            <InputLabel>Tìm kiếm</InputLabel>
-            <TextField
-              variant="outlined"
-              fullWidth
-              value={searchText}
-              onChange={handleSearchChange}
-            />
+            <TextField label="Tìm kiếm" variant="outlined" fullWidth value={searchText} onChange={handleSearchChange} />
           </FormControl>
         </Grid>
 
@@ -77,6 +71,7 @@ const FilterComponent: React.FC<FilterProps> = ({ filters, onFilter }) => {
             <FormControl fullWidth>
               <InputLabel>{filter.displayName}</InputLabel>
               <Select
+                label={filter.displayName}
                 multiple
                 value={selectedFilters[filter.name] || []}
                 onChange={(e) => {
@@ -88,7 +83,6 @@ const FilterComponent: React.FC<FilterProps> = ({ filters, onFilter }) => {
                   }));
                 }}
                 renderValue={(selecteds) => {
-                  // Hiển thị các giá trị đã chọn
                   return selecteds.map((s) => s.display).join(', ');
                 }}
               >

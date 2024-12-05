@@ -23,6 +23,8 @@ const path = {
     useUsersDetail: '/user-detail/:id',
     reviewList: '/reviewList',
     commentList: '/commentList',
+    coupon: '/coupon',
+
   },
   client: {
     auth: {

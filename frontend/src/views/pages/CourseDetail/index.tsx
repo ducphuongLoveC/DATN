@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 
@@ -205,17 +205,19 @@ const CourseDetail: React.FC = () => {
           />
 
           <AverageRating
-            totalStars={rating?.ratings.totalStars || 0}
-            totalUserRate={rating?.ratings.totalRatings || 0}
+            totalStars={rating?.stats.totalStars || 0}
+            totalUserRate={rating?.stats.totalRatings || 0}
             stars={5}
           />
           <Button
+            component={Link}
+            to={`/profile?id=${data.user._id}`}
             sx={{
               padding: 0,
               my: 'var(--medium-space)',
             }}
           >
-            <Avatar src="/images/avatar.jpg" />
+            <Avatar src={data.user.profile_picture} />
             <Typography variant="h4" ml="var(--medium-space)">
               {data.user.name}
             </Typography>
@@ -307,6 +309,7 @@ const CourseDetail: React.FC = () => {
             sx={{
               backgroundColor: theme.palette.background.paper2,
               paddingBottom: '20px',
+              minHeight: '80vh',
             }}
           >
             {/* preview video */}

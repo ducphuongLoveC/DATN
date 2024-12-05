@@ -5,37 +5,17 @@ import path from '@/constants/routes';
 import Loadable from '@/ui-component/Loadable';
 
 const Dashboard = Loadable(lazy(() => import('../views/pages/admin/Home')));
-const LearningPathList = Loadable(
-  lazy(() => import('../views/pages/admin/LearningPath/LearningPathList'))
-);
-const NewLearningPath = Loadable(
-  lazy(() => import('../views/pages/admin/LearningPath/NewLearningPath'))
-);
-const CoursesList = Loadable(
-  lazy(() => import('../views/pages/admin/Courses/CourseList'))
-);
-const NewCourses = Loadable(
-  lazy(() => import('../views/pages/admin/Courses/NewCourse'))
-);
-const UpdateCourse = Loadable(
-  lazy(() => import('../views/pages/admin/Courses/UpdateCourse'))
-);
-const CategoryList = Loadable(
-  lazy(() => import('../views/pages/admin/ListCategory'))
-);
-const ContentList = Loadable(
-  lazy(() => import('../views/pages/admin/Content'))
-);
-const AddContent = Loadable(
-  lazy(() => import('../views/pages/admin/Content/AddContent'))
-);
+const LearningPathList = Loadable(lazy(() => import('../views/pages/admin/LearningPath/LearningPathList')));
+const NewLearningPath = Loadable(lazy(() => import('../views/pages/admin/LearningPath/NewLearningPath')));
+const CoursesList = Loadable(lazy(() => import('../views/pages/admin/Courses/CourseList')));
+const NewCourses = Loadable(lazy(() => import('../views/pages/admin/Courses/NewCourse')));
+const UpdateCourse = Loadable(lazy(() => import('../views/pages/admin/Courses/UpdateCourse')));
+const CategoryList = Loadable(lazy(() => import('../views/pages/admin/ListCategory')));
+const ContentList = Loadable(lazy(() => import('../views/pages/admin/Content')));
+const AddContent = Loadable(lazy(() => import('../views/pages/admin/Content/AddContent')));
 
-const TransactionHistory = Loadable(
-  lazy(() => import('@/views/pages/admin/Transactions/transactionHistory'))
-);
-const Profile = Loadable(
-  lazy(() => import('@/views/pages/admin/Profile/Profile'))
-);
+const TransactionHistory = Loadable(lazy(() => import('@/views/pages/admin/Transactions/transactionHistory')));
+const Profile = Loadable(lazy(() => import('@/views/pages/admin/Profile/Profile')));
 
 const StudentList = Loadable(lazy(() => import('../views/pages/admin/StudentList')));
 
@@ -50,6 +30,8 @@ const UserDetails = Loadable(lazy(() => import('../views/pages/admin/StudentList
 const ReviewList = Loadable(lazy(() => import('../views/pages/admin/Review/index')));
 
 const Comments = Loadable(lazy(() => import('../views/pages/admin/Comments/index')));
+
+const Coupon = Loadable(lazy(() => import('../views/pages/admin/Coupon/index')));
 
 const PrivateRoutes: RouteProp[] = [
   {
@@ -93,6 +75,11 @@ const PrivateRoutes: RouteProp[] = [
     page: NewCourses,
   },
   {
+    path: path.admin.coupon,
+    layout: MainLayout,
+    page: Coupon,
+  },
+  {
     path: path.admin.listCategory,
     layout: MainLayout,
     page: CategoryList,
@@ -128,12 +115,12 @@ const PrivateRoutes: RouteProp[] = [
     page: HR,
   },
   {
-    path: path.admin.categorys, 
+    path: path.admin.categorys,
     layout: MainLayout,
-    page: Category
+    page: Category,
   },
   {
-    path: path.admin.Articlecategorys, 
+    path: path.admin.Articlecategorys,
     layout: MainLayout,
     page: Articlecategory,
   },
@@ -153,8 +140,7 @@ const PrivateRoutes: RouteProp[] = [
     layout: MainLayout,
     page: UserDetails,
   },
-  
-  
+
   {
     path: path.admin.reviewList,
     layout: MainLayout,
@@ -166,7 +152,6 @@ const PrivateRoutes: RouteProp[] = [
     layout: MainLayout,
     page: Comments,
   },
-
 ];
 
 export default PrivateRoutes;

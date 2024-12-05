@@ -8,12 +8,6 @@ import Resource from "../models/Resource.js";
 import CourseLearningPath from "../models/CourseLearningPath.js";
 import cloudinary from "cloudinary";
 
-cloudinary.config({
-  cloud_name: "dgzwrfdjn",
-  api_key: "884514879143886",
-  api_secret: "L_sdFIOH6Z164w43rJg3p-N_gWw",
-});
-
 class CoursesController {
   async get(req, res, next) {
     try {

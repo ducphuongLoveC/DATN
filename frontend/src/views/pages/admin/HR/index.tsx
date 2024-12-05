@@ -194,7 +194,7 @@ const HR = () => {
     email: '',
     password: '',
     phone: '',
-    role: 'Toàn Quyền Kiểm Soát', 
+    role: 'Toàn Quyền Kiểm Soát',
     avatar: '',
   });
   const [imagePreview, setImagePreview] = useState<string | ArrayBuffer | null>(null);
@@ -243,10 +243,10 @@ const HR = () => {
       email: '',
       password: '',
       phone: '',
-      role: 'Toàn Quyền Kiểm Soát', 
+      role: 'Toàn Quyền Kiểm Soát',
       avatar: '',
     });
-    setImagePreview(null); 
+    setImagePreview(null);
     setSnackbarMessage('Người dùng đã được thêm thành công');
     setSnackbarOpen(true);
   };
@@ -268,7 +268,14 @@ const HR = () => {
       <TableContainer component={Paper}>
         <Typography
           variant="h1"
-          style={{ fontSize: '2rem', paddingLeft: '10px', paddingTop: '20px', marginBottom: '10px', fontWeight: 'bold', fontFamily: 'Poppins' }}
+          style={{
+            fontSize: '2rem',
+            paddingLeft: '10px',
+            paddingTop: '20px',
+            marginBottom: '10px',
+            fontWeight: 'bold',
+            fontFamily: 'Poppins',
+          }}
         >
           Admin Manager
         </Typography>
@@ -317,11 +324,7 @@ const HR = () => {
                   >
                     Vô Hiệu Hóa
                   </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => handleDeleteUser(row.id)}
-                  >
+                  <Button variant="contained" color="error" onClick={() => handleDeleteUser(row.id)}>
                     Xóa
                   </Button>
                 </TableCell>
@@ -329,7 +332,7 @@ const HR = () => {
             ))}
           </TableBody>
         </Table>
-      
+
         <Box
           sx={{
             display: 'flex',
@@ -388,7 +391,6 @@ const HR = () => {
 
       {/* Form add new admin */}
       <Box
-        
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -409,12 +411,7 @@ const HR = () => {
           />
           <FormControl fullWidth margin="normal">
             <InputLabel id="role-label">Quyền Quản Trị</InputLabel>
-            <Select
-              labelId="role-label"
-              name="role"
-              value={newUser.role} 
-              onChange={handleSelectChange}
-            >
+            <Select labelId="role-label" name="role" value={newUser.role} onChange={handleSelectChange}>
               <MenuItem value={'Toàn Quyền Kiểm Soát'}>Toàn Quyền Kiểm Soát</MenuItem>
               <MenuItem value={'Quản lý người dùng'}>Quản lý người dùng</MenuItem>
               <MenuItem value={'Quản lý Thống Kê'}>Quản lý Thống Kê</MenuItem>
@@ -424,7 +421,7 @@ const HR = () => {
           </FormControl>
           <TextField
             label="Email"
-            type='email'
+            type="email"
             name="email"
             value={newUser.email}
             onChange={handleInputChange}
@@ -433,7 +430,7 @@ const HR = () => {
           />
           <TextField
             label="Password"
-            type='password'
+            type="password"
             name="password"
             value={newUser.password}
             onChange={handleInputChange}
@@ -449,10 +446,14 @@ const HR = () => {
             margin="normal"
           />
           <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-          <Button variant="contained" onClick={handleAddUser} style={{width : '65%'}} sx={{ marginRight: '10px' }}>
+            <Button variant="contained" onClick={handleAddUser} style={{ width: '65%' }} sx={{ marginRight: '10px' }}>
               Thêm người dùng
             </Button>
-            <Button variant="contained" style={{ width: '30%', backgroundColor :'red', color : 'white' }} onClick={handleCancel}>
+            <Button
+              variant="contained"
+              style={{ width: '30%', backgroundColor: 'red', color: 'white' }}
+              onClick={handleCancel}
+            >
               Hủy
             </Button>
           </Box>
@@ -483,9 +484,7 @@ const HR = () => {
               Tải ảnh lên
             </Button>
           </label>
-          {imagePreview && (
-            <Avatar alt="Preview" src={imagePreview as string} sx={{ width: 100, height: 100 }} />
-          )}
+          {imagePreview && <Avatar alt="Preview" src={imagePreview as string} sx={{ width: 100, height: 100 }} />}
         </Box>
       </Box>
     </Box>
