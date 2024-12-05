@@ -45,7 +45,6 @@ const ProfileSection: React.FC = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.authReducer.user);
   const theme = useTheme();
-
   const navigate = useNavigate();
 
   const [value, setValue] = useState<string>('');

@@ -27,7 +27,6 @@ const BoxHeaderAndNote = styled(Box)(({ theme }) => ({
 //  icon
 
 // my pj
-import useQueryParams from '@/hooks/useQueryParams';
 import formatLastUpdated from '@/utils/formatLastUpdated';
 import Wrapper from '@/components/Wrapper';
 import TextEditor from '@/components/TextEditor';

@@ -1,4 +1,5 @@
 import cloudinary from "cloudinary";
+import fs from 'fs';
 
 cloudinary.config({
   cloud_name: "dgzwrfdjn",
@@ -48,6 +49,30 @@ class CloudinaryController {
       res.status(500).json({
         success: false,
         message: "Failed to fetch videos",
+        error: error.message,
+      });
+    }
+  }
+
+  async uploadImage(req, res) {
+    try {
+      const filePath = req.file.path; // Đường dẫn tới file đã được upload
+      const result = await cloudinary.v2.uploader.upload(filePath, {
+        folder: "images", // Thư mục trên Cloudinary
+      });
+
+      // Xóa file sau khi upload
+      fs.unlinkSync(filePath);
+
+      res.status(200).json({
+        success: true,
+        url: result.secure_url, // URL của ảnh trên Cloudinary
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to upload image",
         error: error.message,
       });
     }

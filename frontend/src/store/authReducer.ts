@@ -1,11 +1,35 @@
 import * as actionTypes from './actions';
 import Cookies from 'js-cookie';
 
-const initialState = {
+
+export interface User {
+  _id?: string;
+  id?: string;
+  name?: string;
+  nickname?: string;
+  referring?: string;
+  avatar?: string;
+  fa?: string;
+}
+
+export interface AuthState {
+  accessToken: string;
+  user: User | null;
+}
+
+const initialState: AuthState = {
   accessToken: Cookies.get('accessToken') || '',
   user: (() => {
-    const user = Cookies.get('user');
-    return user ? JSON.parse(user) : null;
+    try {
+      const userStr = Cookies.get('user');
+      if (!userStr) return null;
+      const user = JSON.parse(userStr);
+      console.log('Parsed user from cookie:', user);
+      return user;
+    } catch (error) {
+      console.error('Error parsing user from cookie:', error);
+      return null;
+    }
   })(),
 };
 
@@ -20,6 +44,28 @@ const authReducer = (state = initialState, action: any) => {
       return {
         ...state,
         user: action.payload,
+      };
+    case actionTypes.UPDATE_USER:
+      const updatedUser = {
+        ...state.user,
+        ...action.payload,
+      };
+      // Cập nhật cookie khi user thay đổi
+      Cookies.set('user', JSON.stringify(updatedUser));
+      return {
+        ...state,
+        user: updatedUser,
+      };
+    case actionTypes.UPDATE_AVATAR:
+      if (!state.user) return state;
+      const userWithNewAvatar = {
+        ...state.user,
+        profile_picture: action.payload,
+      };
+      Cookies.set('user', JSON.stringify(userWithNewAvatar));
+      return {
+        ...state,
+        user: userWithNewAvatar,
       };
     default:
       return state;

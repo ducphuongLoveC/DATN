@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       maxlength: 255,
     },
+    refering: {
+      type: String,
+      maxlength: 255,
+    },
     phone: {
       type: String,
       minlength: 10,
@@ -28,7 +32,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       maxlength: 255,
       default:
-        "https://static-00.iconduck.com/assets.00/avatar-default-icon-2048x2048-h6w375ur.png",
+        "https://icon2.cleanpng.com/20180623/vr/aazrsnwge.webp",
     },
 
     role: {
