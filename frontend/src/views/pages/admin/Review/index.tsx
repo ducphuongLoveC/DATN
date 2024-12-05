@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   Avatar, Paper, Box, Rating, MenuItem, Select, InputLabel, FormControl, Typography,
@@ -6,6 +5,7 @@ import {
 } from '@mui/material';
 import HeaderTitle from '../Title';
 import axiosInstance from '@/api/axiosInstance';
+import { useState, useEffect } from 'react';
 
 interface User {
   name: string;
@@ -17,6 +17,10 @@ interface Review {
   user: User;
   comment: string;
   stars: number;
+  course: {
+    _id: string;
+    title: string;
+  };
 }
 
 const ReviewList = () => {
@@ -45,20 +49,12 @@ const ReviewList = () => {
     fetchReviews();
   }, [starsFilter, page, rowsPerPage]);
 
-  if (loading) {
-    return <Box>Loading...</Box>;
-  }
-
-  if (error) {
-    return <Box>Error: {error}</Box>;
-  }
-
-  const paginatedReviews = reviews.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  if (loading) return <Box>Loading...</Box>;
+  if (error) return <Box>Error: {error}</Box>;
 
   return (
     <Box>
       <HeaderTitle des="Đây là trang quản lý đánh giá" />
-
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="stars-filter-label">Lọc theo số sao</InputLabel>
         <Select
@@ -86,22 +82,21 @@ const ReviewList = () => {
             <Table aria-label="review table">
               <TableHead>
                 <TableRow>
-                  <TableCell>Avatar</TableCell>
+                  <TableCell align="center" sx={{ display: "flex", justifyItems: "center", alignItems: "center" }}>Avatar</TableCell>
                   <TableCell align="center">Tên người đánh giá</TableCell>
+                  <TableCell align="center">Khóa học đánh giá</TableCell>
                   <TableCell align="center">Nội dung đánh giá</TableCell>
                   <TableCell align="center">Đánh giá</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedReviews.map((review) => (
+                {reviews.map((review) => (
                   <TableRow key={review._id}>
                     <TableCell>
-                      <Avatar
-                        alt={review.user.name}
-                        src={review.user.profile_picture || 'https://via.placeholder.com/150'}
-                      />
+                      <Avatar src={review.user.profile_picture || undefined} />
                     </TableCell>
                     <TableCell align="center">{review.user.name}</TableCell>
+                    <TableCell align="center">{review.course?.title || 'N/A'}</TableCell>
                     <TableCell align="center">{review.comment}</TableCell>
                     <TableCell align="center">
                       <Rating value={review.stars} readOnly />
