@@ -133,6 +133,25 @@ class RatingController {
           },
         },
         { $unwind: "$user" }, // Gỡ bỏ mảng để trả về thông tin user dưới dạng object
+        {
+          $lookup: {
+            from: "courses", // Tên collection của Course
+            localField: "course_id", // Trường trong Rating kết nối với collection Course
+            foreignField: "_id", // Trường trong Course để nối
+            as: "course",
+          },
+        },
+        { $unwind: { path: "$course", preserveNullAndEmptyArrays: true } }, // Cho phép giữ các tài liệu không có course
+        {
+          $project: {
+            _id: 1,
+            stars: 1,
+            comment: 1,
+            createdAt: 1,
+            user: { _id: 1, name: 1, email: 1, profile_picture: 1 }, // Lấy thêm avatar (profile_picture)
+            course: { _id: 1, title: 1 }, // Lấy ID và title của khóa học
+          },
+        },
       ]);
 
       // Trả về các đánh giá nếu có, nếu không có đánh giá nào trả về một mảng rỗng

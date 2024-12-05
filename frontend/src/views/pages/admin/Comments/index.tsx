@@ -76,6 +76,7 @@ const Comments = () => {
                         <TableRow>
                             <TableCell align="center">Avatar</TableCell>
                             <TableCell align="center">Tên người dùng</TableCell>
+                            <TableCell align="center">Khóa học bình luận</TableCell> {/* Cột mới */}
                             <TableCell align="center">Nội dung</TableCell>
                             <TableCell align="center">Thời gian tạo</TableCell>
                             <TableCell align="center">Các hành động</TableCell>
@@ -92,11 +93,15 @@ const Comments = () => {
                                         </TableCell>
                                         <TableCell align="center">{comment.user.name}</TableCell>
                                         <TableCell align="center">
+                                            {comment.course ? comment.course.title : "Không có khóa học"} {/* Hiển thị tên khóa học */}
+                                        </TableCell>
+                                        <TableCell align="center">
                                             <span dangerouslySetInnerHTML={{ __html: comment.content }} />
                                         </TableCell>
                                         <TableCell align="center">
                                             {new Date(comment.createdAt).toLocaleString()}
                                         </TableCell>
+
                                         <TableCell align="center">
                                             <Tooltip title="Xóa">
                                                 <IconButton
@@ -111,12 +116,13 @@ const Comments = () => {
                                 ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={5} align="center">
+                                <TableCell colSpan={6} align="center">
                                     Không có dữ liệu.
                                 </TableCell>
                             </TableRow>
                         )}
                     </TableBody>
+
                 </Table>
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}

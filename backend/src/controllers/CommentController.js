@@ -207,7 +207,7 @@ class CommentController {
       const comments = await Comment.aggregate([
         {
           $lookup: {
-            from: "users",
+            from: "users", // Lấy thông tin người dùng
             localField: "user_id", // Lấy user_id từ bảng Comment
             foreignField: "_id", // Tìm kiếm người dùng theo _id trong bảng users
             as: "user", // Kết quả nối sẽ được lưu trong trường user
@@ -216,6 +216,45 @@ class CommentController {
         {
           $addFields: {
             user: { $arrayElemAt: ["$user", 0] }, // Chỉ lấy thông tin người dùng đầu tiên
+          },
+        },
+        {
+          $lookup: {
+            from: "resources", // Kết nối với bảng Resource
+            localField: "resource_id", // Lấy resource_id từ bảng Comment
+            foreignField: "_id", // Tìm kiếm resource theo _id trong bảng Resource
+            as: "resource", // Kết quả nối sẽ được lưu trong trường resource
+          },
+        },
+        {
+          $addFields: {
+            resource: { $arrayElemAt: ["$resource", 0] }, // Chỉ lấy thông tin resource đầu tiên
+          },
+        },
+        {
+          $lookup: {
+            from: "modules", // Kết nối với bảng Module
+            localField: "resource.module_id", // Lấy module_id từ bảng Resource
+            foreignField: "_id", // Tìm kiếm module theo _id trong bảng Module
+            as: "module", // Kết quả nối sẽ được lưu trong trường module
+          },
+        },
+        {
+          $addFields: {
+            module: { $arrayElemAt: ["$module", 0] }, // Chỉ lấy thông tin module đầu tiên
+          },
+        },
+        {
+          $lookup: {
+            from: "courses", // Kết nối với bảng Course
+            localField: "module.course_id", // Lấy course_id từ bảng Module
+            foreignField: "_id", // Tìm kiếm khóa học theo _id trong bảng Course
+            as: "course", // Kết quả nối sẽ được lưu trong trường course
+          },
+        },
+        {
+          $addFields: {
+            course: { $arrayElemAt: ["$course", 0] }, // Chỉ lấy thông tin khóa học đầu tiên
           },
         },
         { $sort: { timestamp: -1 } }, // Sắp xếp bình luận theo thời gian giảm dần
@@ -229,7 +268,7 @@ class CommentController {
           },
           {
             $lookup: {
-              from: "users",
+              from: "users", // Lấy thông tin người dùng trả lời
               localField: "user_id",
               foreignField: "_id",
               as: "user",
@@ -256,7 +295,7 @@ class CommentController {
         comment.replies = await getReplies(comment._id);
       }
 
-      // Trả kết quả
+      // Trả kết quả, bao gồm tên khóa học
       return res.status(200).json(comments);
     } catch (error) {
       console.error(error);
