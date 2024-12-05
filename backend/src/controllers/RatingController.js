@@ -1,4 +1,4 @@
-import express from "express";
+
 import mongoose from "mongoose";
 import Rating from "../models/Rating.js";
 
@@ -55,7 +55,6 @@ class RatingController {
       res.status(500).json({ error: "Internal server error" });
     }
   }
-
   async createRating(req, res) {
     const { course_id, user_id, stars, comment } = req.body;
 
@@ -103,11 +102,9 @@ class RatingController {
       res.status(500).json({ error: "Internal server error" });
     }
   }
-
   async fetchAllRatings(req, res) {
-    const { stars } = req.query; // Lấy giá trị lọc số sao từ query params
+    const { stars } = req.query;
 
-    // Kiểm tra giá trị stars (nếu có)
     if (stars && (isNaN(stars) || stars < 1 || stars > 5)) {
       return res
         .status(400)
@@ -115,51 +112,47 @@ class RatingController {
     }
 
     try {
-      // Điều kiện lọc
       const matchCondition = {};
       if (stars) {
-        matchCondition.stars = parseInt(stars, 10); // Chuyển stars về dạng số nguyên
+        matchCondition.stars = parseInt(stars, 10);
       }
 
-      // Lấy danh sách tất cả các đánh giá kèm thông tin người dùng
       const ratings = await Rating.aggregate([
-        { $match: matchCondition }, // Lọc theo stars nếu có
+        { $match: matchCondition },
         {
           $lookup: {
-            from: "users", // Tên collection của User
+            from: "users",
             localField: "user_id",
             foreignField: "_id",
             as: "user",
           },
         },
-        { $unwind: "$user" }, // Gỡ bỏ mảng để trả về thông tin user dưới dạng object
+        { $unwind: "$user" },
         {
           $lookup: {
-            from: "courses", // Tên collection của Course
-            localField: "course_id", // Trường trong Rating kết nối với collection Course
-            foreignField: "_id", // Trường trong Course để nối
+            from: "courses",
+            localField: "course_id",
+            foreignField: "_id",
             as: "course",
           },
         },
-        { $unwind: { path: "$course", preserveNullAndEmptyArrays: true } }, // Cho phép giữ các tài liệu không có course
+        { $unwind: { path: "$course", preserveNullAndEmptyArrays: true } },
         {
           $project: {
             _id: 1,
             stars: 1,
             comment: 1,
             createdAt: 1,
-            user: { _id: 1, name: 1, email: 1, profile_picture: 1 }, // Lấy thêm avatar (profile_picture)
-            course: { _id: 1, title: 1 }, // Lấy ID và title của khóa học
+            user: { _id: 1, name: 1, email: 1, profile_picture: 1 },
+            course: { _id: 1, title: 1 },
           },
         },
       ]);
 
-      // Trả về các đánh giá nếu có, nếu không có đánh giá nào trả về một mảng rỗng
       if (ratings.length === 0) {
-        return res.status(200).json([]); // Trả về mảng rỗng thay vì lỗi 404
+        return res.status(200).json([]);
       }
 
-      // Trả về các đánh giá
       res.status(200).json(ratings);
     } catch (error) {
       console.error("Error fetching all ratings:", error);
