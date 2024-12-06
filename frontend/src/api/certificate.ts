@@ -1,8 +1,8 @@
 import axiosInstance from './axiosInstance';
 
-export const getCertificateByCertificateId = async (certificate_id: string) => {
+export const getCertificateByCertificateId = async (certificate_code: string) => {
   try {
-    const { data } = await axiosInstance.get(`api/certificate/${certificate_id}`);
+    const { data } = await axiosInstance.get(`api/certificate/${certificate_code}`);
     return data;
   } catch (error) {
     throw error;

@@ -29,7 +29,6 @@ import { io } from 'socket.io-client';
 // api
 import { getNotificationById } from '../../../../api/notification';
 
-
 interface UserProp {
   user: {
     _id: string;
@@ -164,7 +163,7 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
           </HeadlessTippy>
         </div>
       </li>
-      
+
       {/* logined */}
       <li className={`${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
         <HeadlessTippy
@@ -176,7 +175,7 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
             <Wrapper
               style={{
                 background: theme.palette.background.paper,
-              
+
                 borderRadius: '8px',
                 boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                 padding: '1rem',
@@ -197,16 +196,22 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
               <hr className="tw-my-2" />
               <ul>
                 <li className="tw-py-2 tw-cursor-pointer">
-                <Link to={`/profile?id=${user._id}`}>Trang cá nhân</Link>
+                  <Link to={`/profile?id=${user._id}`}>Trang cá nhân</Link>
                 </li>
-                <li className="tw-py-2 tw-cursor-pointer">
+                {/* <li className="tw-py-2 tw-cursor-pointer">
                   <Link to={path.client.newPost}>Viết blog</Link>
-                </li>
-                <li className="tw-py-2 tw-cursor-pointer">
+                </li> */}
+                {/* <li className="tw-py-2 tw-cursor-pointer">
                   <Link to={path.client.myPost}>Bài viết của tôi</Link>
+                </li> */}
+                {/* <li className="tw-py-2 tw-cursor-pointer">
+                  <Link to={path.client.bookmark}>Bài viết đã lưu</Link>
+                </li> */}
+                 <li className="tw-py-2 tw-cursor-pointer">
+                  <Link to={path.client.myCourses}>Khóa học của tôi</Link>
                 </li>
                 <li className="tw-py-2 tw-cursor-pointer">
-                  <Link to={path.client.bookmark}>Bài viết đã lưu</Link>
+                  <Link to={path.client.checkCertificate}>Tìm chứng chỉ</Link>
                 </li>
                 <li className="tw-py-2 tw-cursor-pointer">
                   <Link to={path.client.setting}>Cài đặt</Link>

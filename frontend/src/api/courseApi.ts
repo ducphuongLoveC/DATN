@@ -1,5 +1,9 @@
 import axiosInstance from './axiosInstance';
 
+export const getPaidCourses  = async () => {
+  const {data} = await axiosInstance.get(`api/courses?isFree=false`);
+  return data.data;
+};
 export const getSingleCourseById = async (id: string) => {
   try {
     const res = await axiosInstance.get(`api/courses/single/${id}`);
@@ -8,32 +12,26 @@ export const getSingleCourseById = async (id: string) => {
     console.log(error);
   }
 };
-
 export const getCourseList = async (params: string) => {
   const res = await axiosInstance.get(`api/courses/modules-resources${params}`);
-  return res.data;  
+  return res.data;
 };
-
 export const getCourseSearch = async (search: string) => {
   const res = await axiosInstance.get(`api/courses?search=${search}`);
   return res.data;
 };
-
 export const getCourse = async (id: string) => {
   const res = await axiosInstance.get(`api/courses/${id}/modules-resources`);
   return res.data;
 };
-
 export const getCourseFull = async (id: string) => {
   const res = await axiosInstance.get(`api/courses/${id}/modules-resources-user`);
   return res.data;
 };
-
 export const getCourseFullList = async () => {
   const res = await axiosInstance.get('api/courses/with-user');
   return res.data;
 };
-
 export const newCourse = async (data: any) => {
   const formData = new FormData();
 

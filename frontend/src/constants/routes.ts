@@ -24,7 +24,6 @@ const path = {
     reviewList: '/reviewList',
     commentList: '/commentList',
     coupon: '/coupon',
-
   },
   client: {
     auth: {
@@ -46,7 +45,7 @@ const path = {
     newPost: '/new-post',
     myPost: '/my-post',
     bookmark: '/me/bookmark',
-    certificate: '/certificate',
+    checkCertificate: 'certificate/check',
   },
 };
 export default path;

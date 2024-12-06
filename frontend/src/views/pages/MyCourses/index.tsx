@@ -57,12 +57,21 @@ const MyCourses: React.FC = () => {
 
                   <Typography variant="h5" mt={1}>
                     Hoàn thành chương: {`${c.completedModules} / ${c.totalModules}`}{' '}
+                    {c.completedModules === c.totalModules ? (
+                      <Typography color={'green'} component={'span'}>
+                        Hoàn thành
+                      </Typography>
+                    ) : null}
                   </Typography>
                   <Typography variant="h5" mt={1}>
                     Hoàn thành bài học: {` ${c.completedResources} / ${c.totalResources}`}{' '}
+                    {c.completedResources === c.totalResources ? (
+                      <Typography color={'green'} component={'span'}>
+                        Hoàn thành
+                      </Typography>
+                    ) : null}
                   </Typography>
                   <Progress sx={{ mt: 3 }} textProgress={false} value={c.progress} />
-                  
                 </Box>
               </WrapperCard>
             </Link>

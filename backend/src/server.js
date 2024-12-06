@@ -12,6 +12,9 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 
 import { BASE_URL_CLIENT, BASE_URL_ADMIN_CLIENT } from "./utils/env.js";
+// server.js hoặc index.js
+//  chạy tự động
+import "./jobs/couponCleaner.js";
 
 // room sockets
 import CommentRoom from "./sockets/CommentRoom.js";

@@ -18,6 +18,7 @@ import routerCloudinary from "./cloudinary.js";
 import routerNote from "./note.js";
 import routerRating from "./rating.js";
 import routerOtp from "./otp.js";
+import routerCoupon from "./coupon.js";
 const router = Router();
 
 router.use("/courses", routerCourse);
@@ -39,5 +40,6 @@ router.use("/media", routerCloudinary);
 router.use("/note", routerNote);
 router.use("/rating", routerRating);
 router.use("/otp", routerOtp);
+router.use("/coupon", routerCoupon);
 
 export default router;
