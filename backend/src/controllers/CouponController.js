@@ -1,5 +1,5 @@
 import Coupon from "../models/Coupon.js";
-
+import User from "../models/User.js";
 class CouponController {
   createCoupon = async (req, res) => {
     try {
@@ -221,8 +221,7 @@ class CouponController {
 
       discountedPrice = Math.max(discountedPrice, 0);
 
-      coupon.used_count += 1;
-      await coupon.save();
+    
       res.status(200).json({
         success: true,
         message: "Áp dụng mã giảm giá thành công",

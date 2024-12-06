@@ -14,7 +14,7 @@ const CouponList: React.FC<CouponListProps> = ({ coupons, onChange }) => {
         <Grid item xs={12} md={6}>
           <Box
             sx={{
-              height: '100px',
+              height: '120px',
               display: 'flex',
               alignItems: 'center',
               boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',

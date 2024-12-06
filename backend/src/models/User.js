@@ -43,6 +43,12 @@ const userSchema = new mongoose.Schema(
       ],
       default: "member",
     },
+    used_vouchers: [
+      {
+        course_id: mongoose.Schema.Types.ObjectId,
+        voucher_code: String,
+      },
+    ],
 
     isActive: {
       type: Boolean,

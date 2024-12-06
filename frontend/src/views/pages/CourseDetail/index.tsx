@@ -6,7 +6,7 @@ import moment from 'moment';
 // redux
 
 // ui
-import { Box, Grid, Typography, Button, CardMedia, styled, useTheme, Avatar, TextField } from '@mui/material';
+import { Box, Grid, Typography, Button, CardMedia, styled, useTheme, Avatar, TextField, Alert } from '@mui/material';
 //icon
 import DoneIcon from '@mui/icons-material/Done';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
@@ -113,7 +113,7 @@ const CourseDetail: React.FC = () => {
     onSuccess: (data) => {
       toast.success('Áp dụng khuyến mãi thành công');
       setDiscountData(data);
-      setCode('');
+      refetchCoupons();
     },
     onError: (error: any) => {
       toast.error(error.response.data.message);
@@ -128,7 +128,11 @@ const CourseDetail: React.FC = () => {
     queryFn: () => getCourseFull(id || ''),
   });
 
-  const { data: coupons, isLoading: isLoadingCoupon } = useQuery({
+  const {
+    data: coupons,
+    isLoading: isLoadingCoupon,
+    refetch: refetchCoupons,
+  } = useQuery({
     queryKey: ['coupons', data?._id],
     queryFn: () => getCouponsByCourseId(data?._id),
     enabled: data?.isFree === false,
@@ -157,11 +161,13 @@ const CourseDetail: React.FC = () => {
       navigate(path.client.auth.login);
       return;
     }
+
     mutation.mutate({
       user_id: authState.user?._id,
       course_id: data?._id,
-      amount: data?.sale_price,
+      amount: Math.round(discountData?.discountedPrice) || data?.sale_price,
       payment_method: 'MOMO',
+      code: code,
     });
   };
 
@@ -178,15 +184,16 @@ const CourseDetail: React.FC = () => {
   };
 
   const handleApplyCoupon = () => {
-    if (!code) toast.error('Vui lòng nhập code');
-    if (!authState?.user?._id) toast.error('Vui lòng đăng nhập');
+    if (!code) return toast.error('Vui lòng nhập code');
+    if (!authState?.user?._id) return toast.error('Vui lòng đăng nhập');
     if (!data?.sale_price) return;
     if (!id) return;
 
-    const payload: { code: string; course_id: string; price: string } = {
+    const payload: { code: string; course_id: string; price: string; user_id: string } = {
       code,
       course_id: id,
       price: data?.sale_price,
+      user_id: authState?.user?._id,
     };
     mutationCoupon.mutate(payload);
   };
@@ -404,10 +411,20 @@ const CourseDetail: React.FC = () => {
                   {/* giá */}
                   <Grid item xs={12} mt={'var(--medium-space)'}>
                     <Grid container spacing={2} alignItems="center">
+                      {Object.keys(discountData)?.length > 0 && (
+                        <Grid item>
+                          <Typography variant="h3">
+                            {Number(Math.round(discountData?.discountedPrice)).toLocaleString('vi-VN')} VND
+                          </Typography>
+                        </Grid>
+                      )}
+
                       <Grid item>
-                        <Typography variant="h2">
-                          {Number(Math.round(discountData?.discountedPrice || data.sale_price)).toLocaleString('vi-VN')}{' '}
-                          VND
+                        <Typography
+                          sx={{ textDecoration: Object.keys(discountData)?.length > 0 ? 'line-through' : '' }}
+                          variant={Object.keys(discountData)?.length > 0 ? 'h5' : 'h3'}
+                        >
+                          {Number(data.sale_price).toLocaleString('vi-VN')} VND
                         </Typography>
                       </Grid>
                       <Grid item>
@@ -417,8 +434,8 @@ const CourseDetail: React.FC = () => {
                       </Grid>
                       {Object.keys(discountData)?.length > 0 && (
                         <Grid xs={12} item>
-                          Bạn đã dùng mã {discountData.code} được giảm{' '}
-                          {Number(Math.round(discountData?.discount)).toLocaleString('vi-VN')}
+                          Bạn dùng mã {discountData.code} được giảm{' '}
+                          {Number(Math.round(discountData?.discount)).toLocaleString('vi-VN')} đ
                         </Grid>
                       )}
                     </Grid>
@@ -428,6 +445,7 @@ const CourseDetail: React.FC = () => {
                     <Grid container spacing={1} alignItems="center">
                       <Grid item xs={6}>
                         <TextField
+                          onChange={(e) => setCode(e.target.value)}
                           value={code}
                           placeholder="nhập mã"
                           variant="outlined"

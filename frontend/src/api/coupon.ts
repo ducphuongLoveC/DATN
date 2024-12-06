@@ -54,7 +54,7 @@ export const getCouponsByCourseId = async (course_id: string) => {
   }
 };
 
-export const applyCoupon = async (payload: { code: string; course_id: string; price: string }) => {
+export const applyCoupon = async (payload: { code: string; course_id: string; price: string; user_id: string }) => {
   try {
     const { data } = await axiosInstance.post(`api/coupon/apply-coupon`, payload);
     return data.data;
