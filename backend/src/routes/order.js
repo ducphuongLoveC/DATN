@@ -1,5 +1,6 @@
 import { Router } from "express";
 import OrderController from "../controllers/OrderController.js";
+import { checkAuth, checkRoles } from "../middlewares/checkAuth.js";
 
 const routerOrder = Router();
 
@@ -11,6 +12,8 @@ routerOrder.get("/", OrderController.getAllOrders);
 routerOrder.get("/:id", OrderController.getOrderById);
 // Cập nhật trạng thái đơn hàng
 routerOrder.put("/:id/status", OrderController.updateOrderStatus);
+
+routerOrder.use('/', checkAuth,  checkRoles(['admin']))
 // Xóa đơn hàng
 routerOrder.delete("/:id", OrderController.deleteOrder);
 

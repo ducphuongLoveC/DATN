@@ -7,9 +7,10 @@ import { learningPathSchema } from "../validSchema/learningPathSchema.js";
 const routerLearningPath = Router();
 routerLearningPath.get('/', learningPath.getAll);
 routerLearningPath.get('/:id', learningPath.getDetail);
-// routerLearningPath.use('/', checkAuth,  checkRoles(['admin', 'post manager']))
 routerLearningPath.post('/',validBodyRequets(learningPathSchema), learningPath.create);
 routerLearningPath.patch('/:id',validBodyRequets(learningPathSchema), learningPath.update);
+routerLearningPath.use('/', checkAuth,  checkRoles(['admin']))
+
 routerLearningPath.delete('/:id', learningPath.delete);
 
 export default routerLearningPath;
