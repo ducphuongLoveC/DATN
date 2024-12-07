@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import axiosInstance from '@/api/axiosInstance';
 
 interface Course {
   _id: string;
@@ -22,8 +23,8 @@ const useCourses = () => {
     const fetchCourses = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:8000/api/courses');
-        const coursesData = response.data.data; // Adjust to match response structure
+        const response = await axiosInstance.get('api/courses');
+        const coursesData = response.data.data;
         if (Array.isArray(coursesData)) {
           setCourses(coursesData);
         } else {

@@ -304,9 +304,7 @@ const Dashboard: React.FC = () => {
                 .sort((a, b) => b.totalSpent - a.totalSpent)
                 .slice(0, 10)
                 .map((user, index) => (
-                  <tr key={user._id} className="tw-border-b">
-                    {' '}
-                    {/* Unique key here */}
+                  <tr key={index} className="tw-border-b">
                     <td className="tw-px-4 tw-py-2">{index + 1}</td>
                     <td className="tw-px-4 tw-py-2">{user.name}</td>
                     <td className="tw-px-4 tw-py-2">{user.totalSpent.toLocaleString('vi-VN')} VNĐ</td>
