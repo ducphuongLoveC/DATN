@@ -1,5 +1,6 @@
 import Order from "../models/Order.js";
 import axios from "axios";
+import { BASE_URL } from "../utils/env.js";
 
 class OrderController {
   async createOrder(req, res, next) {
@@ -18,12 +19,10 @@ class OrderController {
       });
 
       if (existingOrder) {
-        // Xóa đơn hàng cũ
         await Order.deleteOne({ _id: existingOrder._id });
         console.log("Deleted existing order:", existingOrder._id);
       }
 
-      // Tạo đơn hàng mới
       const newOrder = new Order({
         user_id,
         course_id,
@@ -34,17 +33,13 @@ class OrderController {
       const savedOrder = await newOrder.save();
       console.log("Order saved:", savedOrder);
 
-      // Gọi API thanh toán
-      const paymentResponse = await axios.post(
-        `http://localhost:8000/api/payment`,
-        {
-          user_id,
-          course_id,
-          amount,
-          order_id: savedOrder._id,
-          code,
-        }
-      );
+      const paymentResponse = await axios.post(`${BASE_URL}/api/payment`, {
+        user_id,
+        course_id,
+        amount,
+        order_id: savedOrder._id,
+        code,
+      });
 
       console.log("Payment response:", paymentResponse.data);
 
@@ -60,7 +55,6 @@ class OrderController {
     }
   }
 
-  // Lấy danh sách đơn hàng
   async getAllOrders(req, res, next) {
     try {
       const orders = await Order.find()
@@ -72,7 +66,6 @@ class OrderController {
     }
   }
 
-  // Lấy thông tin đơn hàng theo ID
   async getOrderById(req, res, next) {
     try {
       const { id } = req.params;
@@ -90,7 +83,6 @@ class OrderController {
     }
   }
 
-  // Cập nhật trạng thái đơn hàng
   async updateOrderStatus(req, res, next) {
     try {
       const { id } = req.params;
@@ -116,7 +108,6 @@ class OrderController {
     }
   }
 
-  // Xóa đơn hàng
   async deleteOrder(req, res, next) {
     try {
       const { id } = req.params;
