@@ -1,23 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-// import axios from 'axios';
 import { useTheme } from '@mui/material';
 import useUsers from '@/api/useUsers';
 import useCourses from './api/useCourses';
-import { getOrders } from '@/api/OrderApi'; // Import API function
+import { getOrders } from '@/api/OrderApi';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-interface ChartData {
-  day: string;
-  value: number;
-}
-
-// interface Revenue {
-//   thisMonth: number;
-//   totalRevenue: number;
-// }
 
 interface Order {
   _id: object;
@@ -32,7 +21,6 @@ const Dashboard: React.FC = () => {
   const theme = useTheme();
   const { rows: users } = useUsers();
   const { courses } = useCourses();
-  const [chartData] = useState<ChartData[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,27 +30,7 @@ const Dashboard: React.FC = () => {
   const [dailyRevenue, setDailyRevenue] = useState<number>(0);
   const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
-  // const [revenue, setRevenue] = useState<Revenue>({
-  //   thisMonth: 0,
-  //   totalRevenue: 0,
-  // });
-
-  // useEffect(() => {
-  //   const fetchDashboardData = async () => {
-  //     try {
-  //       const [chartResponse] = await Promise.all([
-  //         // axios.get('http://localhost:3000/chartData'),
-  //         // axios.get('http://localhost:3000/revenue'),
-  //       ]);
-
-  //       setChartData(chartResponse.data);
-  //       // setRevenue(revenueResponse.data);
-  //     } catch (error) {
-  //       console.error('Error fetching dashboard data:', error);
-  //     }
-  //   };
-  //   fetchDashboardData();
-  // }, []);
+  const [chartData, setChartData] = useState<{ day: string; value: number }[]>([]);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -82,6 +50,33 @@ const Dashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const filteredOrders = orders.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      return orderDate.getMonth() === selectedMonth && orderDate.getFullYear() === selectedYear;
+    });
+
+    // Tạo danh sách tất cả các ngày trong tháng
+    const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+    const allDays = Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString().padStart(2, '0'));
+
+    // Nhóm doanh số theo ngày
+    const groupedData = filteredOrders.reduce((acc: { [key: string]: number }, order) => {
+      const orderDate = new Date(order.createdAt);
+      const day = orderDate.getDate().toString().padStart(2, '0');
+      acc[day] = (acc[day] || 0) + order.amount;
+      return acc;
+    }, {});
+
+    // Tạo dữ liệu cho tất cả các ngày trong tháng, nếu không có đơn hàng thì gán giá trị 0
+    const formattedData = allDays.map((day) => ({
+      day,
+      value: groupedData[day] || 0,
+    }));
+
+    setChartData(formattedData);
+  }, [orders, selectedMonth, selectedYear]);
+
+  useEffect(() => {
     calculateRevenues();
   }, [orders, selectedDate, selectedMonth, selectedYear]);
 
@@ -99,11 +94,8 @@ const Dashboard: React.FC = () => {
         orderDate.getFullYear() === selectedDate.getFullYear()
       );
     });
-    const total = orders.reduce((acc, order) => {
-      const amount = typeof order.amount === 'number' && !isNaN(order.amount) ? order.amount : 0;
-      return acc + amount;
-    }, 0);
 
+    const total = orders.reduce((acc, order) => acc + order.amount, 0);
     const monthly = monthlyOrders.reduce((acc, order) => acc + order.amount, 0);
     const daily = dailyOrders.reduce((acc, order) => acc + order.amount, 0);
 
@@ -125,7 +117,7 @@ const Dashboard: React.FC = () => {
   };
 
   const data = {
-    labels: chartData.map((item) => item.day),
+    labels: chartData.map((item) => `${selectedYear}-${selectedMonth + 1}-${item.day}`),
     datasets: [
       {
         label: 'Doanh số',
@@ -143,6 +135,19 @@ const Dashboard: React.FC = () => {
         beginAtZero: true,
       },
     },
+  };
+
+  const fetchOrders = async () => {
+    setLoading(true); // Set loading to true when fetching starts
+    try {
+      const data = await getOrders(); // Fetch orders from the API
+      setOrders(data); // Set the fetched orders to the state
+    } catch (error: any) {
+      console.error('Error fetching orders:', error);
+      setError('Failed to fetch orders'); // Set error message if the fetch fails
+    } finally {
+      setLoading(false); // Set loading to false once the fetch is done
+    }
   };
 
   const top10Courses = [...courses].sort((a, b) => b.enrollment_count - a.enrollment_count).slice(0, 10);
@@ -202,11 +207,12 @@ const Dashboard: React.FC = () => {
               <p className="tw-text-xs md:tw-text-base tw-mb-1">Tải xuống báo cáo thống kê thu nhập của bạn</p>
               <p className="tw-text-[10px] md:tw-text-xs">Thống kê tài chính khóa học</p>
             </div>
-            <button className="tw-bg-violet-500 tw-text-white tw-py-2 tw-px-4">Tải xuống</button>
+            <button onClick={fetchOrders} className="tw-bg-violet-500 tw-text-white tw-py-2 tw-px-4">
+              Tải xuống
+            </button>
           </div>
         </div>
 
-        {/* Users Section */}
         <div style={{ background: theme.palette.background.default }} className="tw-shadow-md tw-relative">
           <div className="tw-flex tw-justify-between tw-px-4">
             <h3 className="tw-text-lg tw-font-semibold">Học viên</h3>
@@ -221,7 +227,7 @@ const Dashboard: React.FC = () => {
                 Doanh thu tháng {new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'numeric' })}
               </p>
               <p className="tw-font-semibold tw-text-3xl">{monthlyRevenue.toLocaleString('vi-VN')} VNĐ</p>
-              <p className="tw-text-green-600">Tổng doanh thu trong cả một tháng</p>
+              <p className="tw-text-green-600">Doanh thu trong cả một tháng</p>
             </div>
           </div>
         </div>
@@ -256,7 +262,6 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Favorite Courses */}
         <div style={{ background: theme.palette.background.default }} className="md:tw-col-span-2 tw-shadow-md">
           <div className="tw-flex tw-justify-between tw-px-4">
             <h3 className="tw-text-lg tw-font-semibold">Khoá học yêu thích</h3>
@@ -304,20 +309,15 @@ const Dashboard: React.FC = () => {
             <tbody>
               {users
                 .map((user) => {
-                  // Lọc các đơn hàng của mỗi học viên
                   const userOrders = orders.filter((order) => String(order.user_id) === String(user._id));
-
-                  // Tính tổng chi tiêu của học viên
                   const totalSpent = userOrders.reduce((sum, order) => {
                     const amount = typeof order.amount === 'number' && !isNaN(order.amount) ? order.amount : 0;
                     return sum + amount;
                   }, 0);
-
-                  // Trả về user cùng với tổng chi tiêu
                   return { ...user, totalSpent };
                 })
-                .sort((a, b) => b.totalSpent - a.totalSpent) // Sort the users by totalSpent in descending order
-                .slice(0, 10) // Limit to top 10 users with highest totalSpent
+                .sort((a, b) => b.totalSpent - a.totalSpent)
+                .slice(0, 10)
                 .map((user, index) => (
                   <tr key={user._id} className="tw-border-b">
                     {' '}
