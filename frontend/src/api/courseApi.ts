@@ -11,7 +11,7 @@ export const getSingleCourseById = async (id: string) => {
 
 export const getCourseList = async (params: string) => {
   const res = await axiosInstance.get(`api/courses/modules-resources${params}`);
-  return res.data;  
+  return res.data;
 };
 
 export const getCourseSearch = async (search: string) => {
