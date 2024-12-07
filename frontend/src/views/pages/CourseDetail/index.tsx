@@ -3,9 +3,10 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+// redux
 
 // ui
-import { Box, Grid, Typography, Button, CardMedia, styled, useTheme, Avatar, TextField } from '@mui/material';
+import { Box, Grid, Typography, Button, CardMedia, styled, useTheme, Avatar, TextField, Alert } from '@mui/material';
 //icon
 import DoneIcon from '@mui/icons-material/Done';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
@@ -25,6 +26,7 @@ import ButtonPrimary from '@/components/ButtonPrimary';
 import RatingPreview from '@/components/RatingPreview';
 
 //my pj
+import Dialog from '@/components/Dialog';
 import { getCourseFull } from '@/api/courseApi';
 import { createOrder } from '@/api/OrderApi';
 import { createAccess } from '@/api/accessApi';
@@ -33,6 +35,8 @@ import sleep from '@/utils/sleep';
 import path from '@/constants/routes';
 import CourseDetailSkeleton from '../../../ui-component/cards/Skeleton/CourseDetailSkeleton';
 import { fetchRatingByCourseId } from '@/api/rating';
+import { applyCoupon, getCouponsByCourseId } from '@/api/coupon';
+import CouponList from './CouponList';
 
 const BoxCenter = styled(Box)(() => ({
   display: 'flex',
@@ -57,6 +61,10 @@ const BoxPreviewVideo = styled(Box)(({}) => ({
 }));
 
 const CourseDetail: React.FC = () => {
+  const [isOpenCoupon, setIsOpenCoupon] = useState(false);
+  const [code, setCode] = useState('');
+  const [discountData, setDiscountData] = useState<any>({});
+
   const { id } = useParams<{ id: string }>();
   const authState = useSelector((state: RootState) => state.authReducer);
 
@@ -77,7 +85,7 @@ const CourseDetail: React.FC = () => {
     },
     onError: () => {
       toast.dismiss();
-      toast.error('Đặt hàng thất bại. Vui lòng thử lại!');
+      toast.error('Thanh toán thất bại. Vui lòng thử lại!');
     },
   });
 
@@ -98,6 +106,19 @@ const CourseDetail: React.FC = () => {
       toast.error('Tạo quyền truy cập khóa học thất bại. Vui lòng thử lại!');
     },
   });
+
+  const mutationCoupon = useMutation({
+    mutationKey: ['coupon'],
+    mutationFn: applyCoupon,
+    onSuccess: (data) => {
+      toast.success('Áp dụng khuyến mãi thành công');
+      setDiscountData(data);
+      refetchCoupons();
+    },
+    onError: (error: any) => {
+      toast.error(error.response.data.message);
+    },
+  });
   const { data: rating } = useQuery({
     queryKey: ['rating', id],
     queryFn: () => fetchRatingByCourseId(id || ''),
@@ -105,6 +126,16 @@ const CourseDetail: React.FC = () => {
   const { data, isLoading, isError, isFetching } = useQuery({
     queryKey: ['course'],
     queryFn: () => getCourseFull(id || ''),
+  });
+
+  const {
+    data: coupons,
+    isLoading: isLoadingCoupon,
+    refetch: refetchCoupons,
+  } = useQuery({
+    queryKey: ['coupons', data?._id],
+    queryFn: () => getCouponsByCourseId(data?._id),
+    enabled: data?.isFree === false,
   });
 
   const handleToggleExpanded = (index: number) => {
@@ -130,11 +161,13 @@ const CourseDetail: React.FC = () => {
       navigate(path.client.auth.login);
       return;
     }
+
     mutation.mutate({
       user_id: authState.user?._id,
       course_id: data?._id,
-      amount: data?.sale_price,
+      amount: Math.round(discountData?.discountedPrice) || data?.sale_price,
       payment_method: 'MOMO',
+      code: code,
     });
   };
 
@@ -148,6 +181,21 @@ const CourseDetail: React.FC = () => {
       user_id: authState.user?._id,
       course_id: data?._id,
     });
+  };
+
+  const handleApplyCoupon = () => {
+    if (!code) return toast.error('Vui lòng nhập code');
+    if (!authState?.user?._id) return toast.error('Vui lòng đăng nhập');
+    if (!data?.sale_price) return;
+    if (!id) return;
+
+    const payload: { code: string; course_id: string; price: string; user_id: string } = {
+      code,
+      course_id: id,
+      price: data?.sale_price,
+      user_id: authState?.user?._id,
+    };
+    mutationCoupon.mutate(payload);
   };
 
   const totalResources = useMemo(() => {
@@ -191,7 +239,7 @@ const CourseDetail: React.FC = () => {
             md: 'row',
           },
           px: {
-            xs: '10px',
+            xs: '2px',
             md: '0',
           },
         }}
@@ -350,7 +398,7 @@ const CourseDetail: React.FC = () => {
 
             <Grid
               container
-              spacing={2}
+              spacing={1}
               sx={{
                 px: {
                   sm: 0,
@@ -363,14 +411,33 @@ const CourseDetail: React.FC = () => {
                   {/* giá */}
                   <Grid item xs={12} mt={'var(--medium-space)'}>
                     <Grid container spacing={2} alignItems="center">
+                      {Object.keys(discountData)?.length > 0 && (
+                        <Grid item>
+                          <Typography variant="h3">
+                            {Number(Math.round(discountData?.discountedPrice)).toLocaleString('vi-VN')} VND
+                          </Typography>
+                        </Grid>
+                      )}
+
                       <Grid item>
-                        <Typography variant="h2">{Number(data.sale_price).toLocaleString('vi-VN')} VND</Typography>
+                        <Typography
+                          sx={{ textDecoration: Object.keys(discountData)?.length > 0 ? 'line-through' : '' }}
+                          variant={Object.keys(discountData)?.length > 0 ? 'h5' : 'h3'}
+                        >
+                          {Number(data.sale_price).toLocaleString('vi-VN')} VND
+                        </Typography>
                       </Grid>
                       <Grid item>
                         <Typography variant="h5" sx={{ textDecoration: 'line-through' }}>
                           {Number(data.original_price).toLocaleString('vi-VN')} VND
                         </Typography>
                       </Grid>
+                      {Object.keys(discountData)?.length > 0 && (
+                        <Grid xs={12} item>
+                          Bạn dùng mã {discountData.code} được giảm{' '}
+                          {Number(Math.round(discountData?.discount)).toLocaleString('vi-VN')} đ
+                        </Grid>
+                      )}
                     </Grid>
                   </Grid>
                   {/* mã giảm giá */}
@@ -378,6 +445,8 @@ const CourseDetail: React.FC = () => {
                     <Grid container spacing={1} alignItems="center">
                       <Grid item xs={6}>
                         <TextField
+                          onChange={(e) => setCode(e.target.value)}
+                          value={code}
                           placeholder="nhập mã"
                           variant="outlined"
                           fullWidth
@@ -385,7 +454,7 @@ const CourseDetail: React.FC = () => {
                         />
                       </Grid>
                       <Grid item xs={6}>
-                        <ButtonPrimary customVariant="outlined" fullWidth>
+                        <ButtonPrimary onClick={handleApplyCoupon} customVariant="outlined" fullWidth>
                           Áp dụng
                         </ButtonPrimary>
                       </Grid>
@@ -393,6 +462,14 @@ const CourseDetail: React.FC = () => {
                   </Grid>
                 </>
               )}
+              {!data.isFree && (
+                <Grid item>
+                  <Button onClick={() => setIsOpenCoupon(true)} sx={{ p: 0, m: 0 }} size="small">
+                    Khuyến mãi
+                  </Button>
+                </Grid>
+              )}
+
               <Grid item xs={12}>
                 {data.isFree ? (
                   <ButtonPrimary
@@ -442,6 +519,19 @@ const CourseDetail: React.FC = () => {
         </Grid>
       </Grid>
       <ToastContainer />
+      <Dialog title="Mã khuyến mãi" open={isOpenCoupon} onClose={() => setIsOpenCoupon(false)}>
+        {isLoadingCoupon ? (
+          'loading...'
+        ) : (
+          <CouponList
+            coupons={coupons}
+            onChange={(code) => {
+              setCode(code);
+              setIsOpenCoupon(false);
+            }}
+          />
+        )}
+      </Dialog>
     </Box>
   );
 };

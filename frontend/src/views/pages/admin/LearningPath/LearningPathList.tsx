@@ -196,7 +196,7 @@ export default function LearningPathList() {
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Xóa">
-                      <IconButton onClick={() => handleDelete(path._id)} color="secondary">
+                      <IconButton onClick={() => handleDelete(path._id)} color="error">
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
@@ -230,19 +230,6 @@ export default function LearningPathList() {
                 <TextField fullWidth label="Title" {...field} disabled={!editMode} margin="normal" />
               )}
             />
-            {/* <Controller
-              name="thumbnail"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="Thumbnail URL"
-                  {...field}
-                  disabled={!editMode}
-                  margin="normal"
-                />
-              )}
-            /> */}
 
             <TextEditor
               initialValue={getValues('description')}

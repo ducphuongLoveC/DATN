@@ -1,10 +1,13 @@
 import axios from "axios";
 import crypto from "crypto";
+import Coupon from "../models/Coupon.js";
 import { URL_REDIRECT_LEARNING, BASE_URL, URL_NGROK } from "../utils/env.js";
 
 class PaymentContronller {
   async createPayment(req, res, next) {
-    const { user_id, course_id, order_id, amount } = req.body;
+    const { user_id, course_id, order_id, code, amount } = req.body;
+
+    console.log("rq", req.body);
 
     // Kiểm tra thông tin đầu vào
     if (!user_id || !course_id || !order_id || !amount) {
@@ -24,6 +27,7 @@ class PaymentContronller {
     const extraData = JSON.stringify({
       userId: user_id,
       courseId: course_id,
+      codeCoupon: code,
     });
 
     const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${order_id}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
@@ -41,6 +45,8 @@ class PaymentContronller {
       userId: user_id,
       orderId: order_id,
       courseId: course_id,
+      codeCoupon: code,
+
       orderInfo,
       redirectUrl,
       ipnUrl,
@@ -82,12 +88,15 @@ class PaymentContronller {
 
     const { resultCode, orderId, extraData } = req.body;
 
-    let userId, courseId;
+    let userId, courseId, codeCoupon;
     if (extraData) {
       try {
         const parsedExtraData = JSON.parse(extraData);
+        console.log("extra", parsedExtraData);
+
         userId = parsedExtraData.userId;
         courseId = parsedExtraData.courseId;
+        codeCoupon = parsedExtraData.codeCoupon;
       } catch (error) {
         console.error("Error parsing extraData:", error);
         return res.status(400).send("Invalid extraData format");
@@ -113,6 +122,12 @@ class PaymentContronller {
           }
         );
         console.log("Order status updated:", orderResponse.data);
+
+        if (codeCoupon) {
+          const coupon = await Coupon.findOne({ code: codeCoupon });
+          coupon.used_count += 1;
+          await coupon.save();
+        }
 
         res.status(200).send("Payment successful, order completed.");
       } catch (error) {

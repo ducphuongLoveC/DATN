@@ -15,7 +15,7 @@ import FilterComponent from '@/components/Filter';
 import { getCourseList } from '@/api/courseApi';
 import { useState } from 'react';
 import { fetchLearningPaths } from '@/api/learningPathApi';
-import Page from '@/components/Page';
+
 const BoxBetween = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
@@ -73,9 +73,6 @@ const CourseList: React.FC = () => {
     setParams(queryString);
   };
 
-  const handlePageChange = (page: number, rowsPerPage: number) => {
-    console.log(page, rowsPerPage);
-  };
 
   return (
     <Box>
@@ -173,7 +170,7 @@ const CourseList: React.FC = () => {
           </Grid>
         )}
       </Grid>
-      <Page rowsPerPageOptions={[4, 8, 20]} count={courses?.data?.length} onChange={handlePageChange} />
+     
     </Box>
   );
 };

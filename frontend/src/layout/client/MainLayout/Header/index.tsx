@@ -27,6 +27,7 @@ import { RootState } from '@/store/reducer';
 import { getCourseSearch } from '@/api/courseApi';
 import path from '@/constants/routes';
 
+import SearchIcon from '@mui/icons-material/Search';
 // ==============================|| NAVBAR ||============================== //
 
 const ContentSearch = styled(Box)(() => ({
@@ -148,7 +149,7 @@ const Header: React.FC = () => {
             <div className={`tw-flex tw-items-center tw-border-solid ${downSM ? 'tw-w-full' : 'tw-w-1/3'}`}>
               <div className={clsx(s['search'], 'tw-relative tw-w-full')}>
                 <span className="tw-absolute tw-top-3 tw-left-4">
-                  <i className="fa-solid fa-magnifying-glass tw-text-[15px]"></i>
+                  <SearchIcon />
                 </span>
 
                 <HeadlessTippy

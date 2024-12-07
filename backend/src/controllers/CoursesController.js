@@ -11,8 +11,18 @@ import cloudinary from "cloudinary";
 class CoursesController {
   async get(req, res, next) {
     try {
-      const { search } = req.query;
-      const filter = search ? { title: { $regex: search, $options: "i" } } : {};
+      const { search, isFree } = req.query; // Lấy query isFree từ yêu cầu
+      let filter = {};
+
+      // Điều kiện tìm kiếm theo title
+      if (search) {
+        filter.title = { $regex: search, $options: "i" }; // tìm kiếm không phân biệt hoa thường
+      }
+
+      // Điều kiện lọc theo isFree
+      if (isFree !== undefined) {
+        filter.isFree = isFree === "true";
+      }
 
       const data = await Course.find(filter);
 
@@ -583,7 +593,6 @@ class CoursesController {
           else console.log("Temp file deleted");
         });
       }
-      
       const savedCourse = await newCourse.save();
 
       if (Array.isArray(learning_path_ids) && learning_path_ids.length > 0) {

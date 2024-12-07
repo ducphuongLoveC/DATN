@@ -27,7 +27,6 @@ const BoxHeaderAndNote = styled(Box)(({ theme }) => ({
 //  icon
 
 // my pj
-import useQueryParams from '@/hooks/useQueryParams';
 import formatLastUpdated from '@/utils/formatLastUpdated';
 import Wrapper from '@/components/Wrapper';
 import TextEditor from '@/components/TextEditor';
@@ -138,7 +137,9 @@ const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => 
             return <Question questions={resource.questions} onCompleted={handleCompletedResource} />;
 
           case 'Document':
-            setTimeout(handleCompletedResource, 3000);
+            if (!resource.progress.is_completed) {
+              setTimeout(handleCompletedResource, 3000);
+            }
 
             return (
               <Typography mt={2} fontSize={20} textAlign={'center'}>
@@ -146,7 +147,9 @@ const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => 
               </Typography>
             );
           case 'Certificate':
-            handleCompletedResource();
+            if (!resource.progress.is_completed) {
+              handleCompletedResource();
+            }
             return (
               <Certificate
                 user_id={user._id}

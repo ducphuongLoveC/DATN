@@ -2,10 +2,9 @@ import Order from "../models/Order.js";
 import axios from "axios";
 
 class OrderController {
-
   async createOrder(req, res, next) {
     try {
-      const { user_id, course_id, payment_method, amount } = req.body;
+      const { user_id, course_id, payment_method, amount, code } = req.body;
 
       if (!user_id || !course_id || !payment_method || !amount) {
         return res.status(400).json({ message: "Missing required fields" });
@@ -43,6 +42,7 @@ class OrderController {
           course_id,
           amount,
           order_id: savedOrder._id,
+          code,
         }
       );
 
