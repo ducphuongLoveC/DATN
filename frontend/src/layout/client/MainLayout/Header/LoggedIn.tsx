@@ -163,7 +163,6 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
           </HeadlessTippy>
         </div>
       </li>
-
       {/* logined */}
       <li className={`${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
         <HeadlessTippy
@@ -175,7 +174,6 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
             <Wrapper
               style={{
                 background: theme.palette.background.paper,
-
                 borderRadius: '8px',
                 boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                 padding: '1rem',

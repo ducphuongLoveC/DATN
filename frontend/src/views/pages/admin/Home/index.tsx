@@ -1,77 +1,126 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import axios from 'axios';
 import { useTheme } from '@mui/material';
+import useUsers from '@/api/useUsers';
+import useCourses from './api/useCourses';
+import { getOrders } from '@/api/OrderApi';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-interface ChartData {
-  day: string;
-  value: number;
-}
-
-interface Student {
-  id: number;
-  name: string;
-  email: string;
-  top: string;
-}
-
-interface Revenue {
-  thisMonth: number;
-  totalRevenue: number;
-}
-
-interface Courses {
-  id: number;
-  title: string;
-  image: string;
-  sale: number;
-}
-
-interface Transaction {
-  id: number;
-  name: string;
-  date: string;
+interface Order {
+  _id: object;
+  user_id: object;
+  course_id: object;
+  payment_method: string;
   amount: number;
+  createdAt: string;
 }
 
 const Dashboard: React.FC = () => {
   const theme = useTheme();
-
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-  const [students, setStudents] = useState<Student[]>([]);
-  const [courses, setCourses] = useState<Courses[]>([]);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [revenue, setRevenue] = useState<Revenue>({
-    thisMonth: 0,
-    totalRevenue: 0,
-  });
+  const { rows: users } = useUsers();
+  const { courses } = useCourses();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const [dailyRevenue, setDailyRevenue] = useState<number>(0);
+  const [monthlyRevenue, setMonthlyRevenue] = useState<number>(0);
+  const [totalRevenue, setTotalRevenue] = useState<number>(0);
+  const [chartData, setChartData] = useState<{ day: string; value: number }[]>([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/chartData').then((response) => {
-      setChartData(response.data);
-    });
-    axios.get('http://localhost:3000/transactions').then((response) => {
-      setTransactions(response.data);
-    });
-    axios.get('http://localhost:3000/students').then((response) => {
-      setStudents(response.data);
-    });
-    axios.get('http://localhost:3000/revenue').then((response) => {
-      setRevenue(response.data);
-    });
-    axios.get('http://localhost:3000/courses').then((response) => {
-      setCourses(response.data);
-    });
+    const fetchOrders = async () => {
+      setLoading(true);
+      try {
+        const data = await getOrders();
+        setOrders(data);
+      } catch (error: any) {
+        console.error('Error fetching orders:', error);
+        setError('Failed to fetch orders');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
   }, []);
 
+  useEffect(() => {
+    const filteredOrders = orders.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      return orderDate.getMonth() === selectedMonth && orderDate.getFullYear() === selectedYear;
+    });
+
+    // Tạo danh sách tất cả các ngày trong tháng
+    const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+    const allDays = Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString().padStart(2, '0'));
+
+    // Nhóm doanh số theo ngày
+    const groupedData = filteredOrders.reduce((acc: { [key: string]: number }, order) => {
+      const orderDate = new Date(order.createdAt);
+      const day = orderDate.getDate().toString().padStart(2, '0');
+      acc[day] = (acc[day] || 0) + order.amount;
+      return acc;
+    }, {});
+
+    // Tạo dữ liệu cho tất cả các ngày trong tháng, nếu không có đơn hàng thì gán giá trị 0
+    const formattedData = allDays.map((day) => ({
+      day,
+      value: groupedData[day] || 0,
+    }));
+
+    setChartData(formattedData);
+  }, [orders, selectedMonth, selectedYear]);
+
+  useEffect(() => {
+    calculateRevenues();
+  }, [orders, selectedDate, selectedMonth, selectedYear]);
+
+  const calculateRevenues = () => {
+    const monthlyOrders = orders.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      return orderDate.getMonth() === selectedMonth && orderDate.getFullYear() === selectedYear;
+    });
+
+    const dailyOrders = orders.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      return (
+        orderDate.getDate() === selectedDate.getDate() &&
+        orderDate.getMonth() === selectedDate.getMonth() &&
+        orderDate.getFullYear() === selectedDate.getFullYear()
+      );
+    });
+
+    const total = orders.reduce((acc, order) => acc + order.amount, 0);
+    const monthly = monthlyOrders.reduce((acc, order) => acc + order.amount, 0);
+    const daily = dailyOrders.reduce((acc, order) => acc + order.amount, 0);
+
+    setTotalRevenue(total);
+    setMonthlyRevenue(monthly);
+    setDailyRevenue(daily);
+  };
+
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(new Date(event.target.value));
+  };
+
+  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedMonth(Number(event.target.value));
+  };
+
+  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedYear(Number(event.target.value));
+  };
+
   const data = {
-    labels: chartData.map((item) => item.day),
+    labels: chartData.map((item) => `${selectedYear}-${selectedMonth + 1}-${item.day}`),
     datasets: [
       {
-        label: 'Số lượt hiển thị',
+        label: 'Doanh số',
         data: chartData.map((item) => item.value),
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         borderColor: 'rgba(75, 192, 192, 1)',
@@ -88,13 +137,19 @@ const Dashboard: React.FC = () => {
     },
   };
 
-  const top10Courses = courses.sort((a, b) => b.sale - a.sale).slice(0, 10);
-  const top10sSudents = students.sort((a: any, b: any) => b.top - a.top).slice(0, 10);
+  const top10Courses = [...courses].sort((a, b) => b.enrollment_count - a.enrollment_count).slice(0, 10);
+
+  if (loading) {
+    return <p>Loading ...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <div className="tw-container tw-mx-auto tw-px-4">
-      {/* Header */}
-      <div className="tw-flex  tw-justify-between tw-items-center tw-mb-4">
+      <div className="tw-flex tw-justify-between tw-items-center tw-mb-4">
         <h1 className="tw-text-xl tw-font-semibold">Bảng điều khiển</h1>
         <button style={{ background: theme.palette.background.default }} className="tw-py-2 tw-px-4">
           Bảng điều khiển
@@ -104,7 +159,30 @@ const Dashboard: React.FC = () => {
       <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3">
         <div className="md:tw-col-span-3">
           <div className="tw-p-5" style={{ background: theme.palette.background.default }}>
-            <h2 className="tw-text-lg tw-font-semibold">Số tiền</h2>
+            <div>
+              <h2 className="tw-text-lg tw-font-semibold">Số tiền</h2>
+
+              <div className="mb-2">
+                <select id="month" value={selectedMonth} onChange={handleMonthChange}>
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <option key={i} value={i}>
+                      {new Date(0, i).toLocaleString('default', { month: 'long' })}
+                    </option>
+                  ))}
+                </select>
+
+                <label htmlFor="year" className="ml-4 mr-2">
+                  Năm:
+                </label>
+                <select id="year" value={selectedYear} onChange={handleYearChange}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <option key={i} value={new Date().getFullYear() - i}>
+                      {new Date().getFullYear() - i}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <Bar data={data} options={options} />
           </div>
 
@@ -114,7 +192,7 @@ const Dashboard: React.FC = () => {
           >
             <div>
               <p className="tw-text-xs md:tw-text-base tw-mb-1">Tải xuống báo cáo thống kê thu nhập của bạn</p>
-              <p className="tw-text-[10px] cmd:tw-text-xs">Thống kê tài chính khóa học</p>
+              <p className="tw-text-[10px] md:tw-text-xs">Thống kê tài chính khóa học</p>
             </div>
             <button className="tw-bg-violet-500 tw-text-white tw-py-2 tw-px-4">Tải xuống</button>
           </div>
@@ -126,106 +204,50 @@ const Dashboard: React.FC = () => {
             <p className="tw-mt-6 tw-text-xs tw-text-gray-400">Xem thêm</p>
           </div>
           <div className="tw-text-[90px] tw-text-white tw-bg-violet-500 tw-rounded-full tw-h-[200px] tw-w-[200px] tw-flex tw-items-center tw-justify-center tw-mx-auto tw-my-10">
-            {students.length}
+            {users.length}
           </div>
-          <div className="tw-bg-black tw-text-white tw-h-[25%] tw-w-[100%] lg:tw-absolute tw-bottom-0 tw-p-5">
-            <p className="tw-text-[#AAC8C6] tw-font-medium tw-text-lg tw-mb-2">Doanh thu tháng này</p>
-            <p className="tw-font-semibold tw-text-2xl">{revenue.thisMonth.toLocaleString()} VND</p>
-            <p className="tw-text-[13px] tw-mb-3 tw-text-[#AAC8C6]">
-              <span className="tw-text-green-500">10%</span> so với tháng trước
-            </p>
+          <div className="tw-bg-black tw-text-white tw-h-[25%] tw-w-[100%] lg:tw-absolute tw-bottom-0 tw-p-4">
+            <div className="md:tw-mt-3">
+              <p className="tw-text-[#AAC8C6] tw-font-medium tw-text-lg tw-mb-2">
+                Doanh thu tháng {new Date(selectedYear, selectedMonth).toLocaleString('default', { month: 'numeric' })}
+              </p>
+              <p className="tw-font-semibold tw-text-3xl">{monthlyRevenue.toLocaleString('vi-VN')} VNĐ</p>
+              <p className="tw-text-green-600">Doanh thu trong cả một tháng</p>
+            </div>
           </div>
         </div>
-
-        <div className="tw-mt-3 md:tw-col-span-4 ">
-          <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-5 tw-gap-3">
-            <div
-              style={{ background: theme.palette.background.default }}
-              className="md:tw-col-span-2 tw-px-4 tw-shadow-md"
-            >
-              <div className="tw-flex tw-justify-between">
-                <h3 className="tw-text-lg tw-font-semibold">Lịch sử giao dịch</h3>
-                <p className="tw-mt-6 tw-text-xs tw-text-gray-400">Xem thêm</p>
-              </div>
-              <ul>
-                {transactions
-                  .slice(-6)
-                  .reverse()
-                  .map((transaction) => (
-                    <li key={transaction.id} className="tw-flex tw-justify-between tw-items-center tw-border-b tw-py-2">
-                      <div className="tw-flex tw-items-center">
-                        <img
-                          src="https://png.pngtree.com/png-clipart/20190630/original/pngtree-vector-success-icon-png-image_4165492.jpg"
-                          alt="icon"
-                          className="tw-w-8 tw-h-8 tw-mr-3"
-                        />
-                        <div>
-                          <p className="tw-font-medium">{transaction.name}</p>
-                          <p className="tw-text-sm tw-text-gray-500">{transaction.date}</p>
-                        </div>
-                      </div>
-                      <div className="tw-text-green-600 tw-font-semibold">
-                        + {transaction.amount.toLocaleString()} VND
-                      </div>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-            <div className="md:tw-col-span-3 tw-min-h-[450px]">
+        <div className=" md:tw-col-span-4 ">
+          <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-3">
+            <div className="md:tw-col-span-3 ">
               <div className="tw-mb-3 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-3  ">
                 <div style={{ background: theme.palette.background.default }} className=" tw-px-4 tw-shadow-md ">
-                  <h3 className="tw-text-base tw-font-semibold">Doanh thu hôm nay</h3>
-                  <p className="tw-text-2xl tw-pb-0 tw-text-center tw-font-bold">
-                    {revenue.totalRevenue.toLocaleString()}
+                  <div className="tw-flex tw-justify-between">
+                    <h3 className="tw-text-base tw-font-semibold">Doanh thu ngày:</h3>
+                    <div className="tw-mt-5">
+                      <input
+                        id="date"
+                        type="date"
+                        value={selectedDate.toISOString().split('T')[0]}
+                        onChange={handleDateChange}
+                      />
+                    </div>
+                  </div>
+                  <p className="tw-text-4xl tw-pb-10 tw-mt-5 tw-text-center tw-font-bold">
+                    {dailyRevenue.toLocaleString('vi-VN')} VNĐ
                   </p>
                 </div>
                 <div style={{ background: theme.palette.background.default }} className=" tw-px-4 tw-shadow-md  ">
-                  <h3 className="tw-text-base tw-font-semibold">Khoá học đã bán hôm nay</h3>
-                  <p className="tw-text-2xl tw-pb-10 tw-text-center tw-font-bold">10</p>
-                </div>
-              </div>
-              <div
-                style={{ background: theme.palette.background.default }}
-                className="tw-shadow-md tw-overflow-hidden tw-h-[350px]"
-              >
-                <div className="tw-flex tw-justify-between tw-px-4">
-                  <h3 className="tw-text-base tw-font-semibold">Quản trị viên</h3>
-                  <p className="tw-mt-6 tw-text-xs tw-text-gray-400">Xem thêm</p>
-                </div>
-                <div>
-                  <table className="tw-w-full ">
-                    <thead>
-                      <tr style={{ background: theme.palette.background.default }}>
-                        <th className="tw-px-4 tw-py-2 tw-text-left">STT</th>
-                        <th className="tw-px-4 tw-py-2 tw-text-left">Họ và tên</th>
-                        <th className="tw-px-4 tw-py-2 tw-text-left">Email</th>
-                        <th className="tw-px-4 tw-py-2 tw-text-left">Cấp quyền</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {students
-                        .slice(-6)
-                        .reverse()
-                        .map((student, index) => (
-                          <tr key={student.id} className="">
-                            <td className="tw-px-4 tw-py-2">{index + 1}</td>
-                            <td className="tw-px-4 tw-py-2">{student.name}</td>
-                            <td className="tw-px-4 tw-py-2">{student.email}</td>
-                            <td className="tw-px-4 tw-py-2">admin</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
+                  <h3 className="tw-text-base tw-font-semibold">Tổng danh thu:</h3>
+                  <p className="tw-text-5xl tw-mt-8 tw-pb-10 tw-text-center tw-font-bold">
+                    {totalRevenue.toLocaleString('vi-VN')} VNĐ
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div
-          style={{ background: theme.palette.background.default }}
-          className="md:tw-col-span-2  tw-shadow-md  tw-overflow-hidden"
-        >
+        <div style={{ background: theme.palette.background.default }} className="md:tw-col-span-2 tw-shadow-md">
           <div className="tw-flex tw-justify-between tw-px-4">
             <h3 className="tw-text-lg tw-font-semibold">Khoá học yêu thích</h3>
             <p className="tw-mt-6 tw-text-xs tw-text-gray-400">Xem thêm</p>
@@ -241,43 +263,53 @@ const Dashboard: React.FC = () => {
             </thead>
             <tbody>
               {top10Courses.map((course, index) => (
-                <tr key={course.id} className="tw-border-b">
+                <tr key={course._id} className="tw-border-b">
                   <td className="tw-px-4 tw-py-2">{index + 1}</td>
                   <td className="tw-px-4 tw-py-2">
-                    <img src={course.image} alt="Course" className="tw-w-10 tw-h-7" />
+                    <img src={course.thumbnail} alt="Course" className="tw-w-10 tw-h-7" />
                   </td>
                   <td className="tw-px-4 tw-py-2">{course.title}</td>
-                  <td className="tw-px-4 tw-py-2">{course.sale}</td>
+                  <td className="tw-px-4 tw-py-2">{course.enrollment_count}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
         <div
           style={{ background: theme.palette.background.default }}
-          className="tw-shadow-md  tw-overflow-hidden md:tw-col-span-2"
+          className="tw-shadow-md tw-overflow-hidden md:tw-col-span-2"
         >
           <div className="tw-flex tw-justify-between tw-px-4">
-            <h3 className="tw-text-lg tw-font-semibold">Học viên chăm chỉ</h3>
+            <h3 className="tw-text-lg tw-font-semibold">Chiến thần chi tiêu</h3>
             <p className="tw-mt-6 tw-text-xs tw-text-gray-400">Xem thêm</p>
           </div>
           <table className="tw-w-full">
             <thead>
-              <tr className="">
+              <tr>
                 <th className="tw-px-4 tw-py-2">STT</th>
                 <th className="tw-px-4 tw-py-2">Tên học viên</th>
-                <th className="tw-px-4 tw-py-2">hoàn thành</th>
+                <th className="tw-px-4 tw-py-2">Số tiền chi tiêu</th>
               </tr>
             </thead>
             <tbody>
-              {top10sSudents.map((student, index) => (
-                <tr key={student.id} className="tw-border-b">
-                  <td className="tw-px-4 tw-py-2">{index + 1}</td>
-                  <td className="tw-px-4 tw-py-2">{student.name}</td>
-                  <td className="tw-px-4 tw-py-2">{student.top}</td>
-                </tr>
-              ))}
+              {users
+                .map((user) => {
+                  const userOrders = orders.filter((order) => String(order.user_id) === String(user._id));
+                  const totalSpent = userOrders.reduce((sum, order) => {
+                    const amount = typeof order.amount === 'number' && !isNaN(order.amount) ? order.amount : 0;
+                    return sum + amount;
+                  }, 0);
+                  return { ...user, totalSpent };
+                })
+                .sort((a, b) => b.totalSpent - a.totalSpent)
+                .slice(0, 10)
+                .map((user, index) => (
+                  <tr key={index} className="tw-border-b">
+                    <td className="tw-px-4 tw-py-2">{index + 1}</td>
+                    <td className="tw-px-4 tw-py-2">{user.name}</td>
+                    <td className="tw-px-4 tw-py-2">{user.totalSpent.toLocaleString('vi-VN')} VNĐ</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

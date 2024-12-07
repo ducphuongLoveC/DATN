@@ -40,8 +40,10 @@ export default function LearningPath() {
       reset();
       navigate('/learning-path');
     },
-    onError: () => {
-      toast.error('Thêm thất bại');
+    onError: (error: any) => {
+      console.log(error);
+      
+      toast.error(error.response.data.message);
     },
   });
   const onSubmit = (data: { title: string; description: string }) => {

@@ -123,8 +123,6 @@ class PaymentContronller {
         );
         console.log("Order status updated:", orderResponse.data);
 
-        console.log("hereee", codeCoupon);
-
         if (codeCoupon) {
           const coupon = await Coupon.findOne({ code: codeCoupon });
           coupon.used_count += 1;

@@ -21,9 +21,7 @@ class CoursesController {
 
       // Điều kiện lọc theo isFree
       if (isFree !== undefined) {
-        // Kiểm tra xem isFree có được cung cấp hay không
-        // Nếu isFree là true hoặc false, thêm điều kiện lọc vào filter
-        filter.isFree = isFree === "true"; // Chuyển giá trị 'true' thành boolean true, 'false' thành boolean false
+        filter.isFree = isFree === "true";
       }
 
       const data = await Course.find(filter);
@@ -37,7 +35,6 @@ class CoursesController {
       next(error);
     }
   }
-
   async getById(req, res, next) {
     try {
       const { id } = req.params;
@@ -596,7 +593,6 @@ class CoursesController {
           else console.log("Temp file deleted");
         });
       }
-
       const savedCourse = await newCourse.save();
 
       if (Array.isArray(learning_path_ids) && learning_path_ids.length > 0) {
