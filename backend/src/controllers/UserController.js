@@ -4,6 +4,9 @@ import Access from "../models/Access.js";
 import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
 import Progress from "../models/Progress.js";
+import cloudinary from "cloudinary";
+import fs from "fs";
+import bcrypt from "bcryptjs";
 
 class UserController {
   // Fetch all users
@@ -52,32 +55,122 @@ class UserController {
     }
   }
 
-  // Update user information
   async updateUser(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, phone } = req.body; // Only update name and phone
+      const { name, phone, profile_picture } = req.body;
 
-      const updatedUser = await User.findByIdAndUpdate(
-        id,
-        { name, phone },
-        { new: true }
+      let updatedUserData = { name, phone };
+
+      // Find profile picture file from req.files array
+      const profilePictureFile = req.files?.find(
+        (file) => file.fieldname === "profile_picture"
       );
+
+      if (profilePictureFile) {
+        const uploadedProfilePicture = await cloudinary.v2.uploader.upload(
+          profilePictureFile.path,
+          { folder: "users" }
+        );
+
+        updatedUserData.profile_picture = uploadedProfilePicture.secure_url;
+
+        // Xóa file tạm sau khi upload
+        fs.unlink(profilePictureFile.path, (err) => {
+          if (err) console.error("Error deleting temp file:", err);
+          else console.log("Temp file deleted");
+        });
+      } else if (profile_picture) {
+        // If no new file uploaded but profile_picture URL provided in body
+        updatedUserData.profile_picture = profile_picture;
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(id, updatedUserData, {
+        new: true,
+        runValidators: true,
+      });
 
       if (!updatedUser) {
         return res.status(404).json({
           success: false,
-          message: "Người dùng không tồn tại",
+          message: "User not found",
         });
       }
 
       return res.status(200).json({
         success: true,
         data: updatedUser,
-        message: "Cập nhật thông tin người dùng thành công",
+        message: "User updated successfully",
       });
     } catch (error) {
+      console.error("Error updating user:", error);
       next(error);
+    }
+  }
+
+  // Đổi mật khẩu
+
+  async changePassword(req, res) {
+    try {
+      const { currentPassword, newPassword, confirmPassword } = req.body;
+      const userId = req.user._id; // Sửa từ req.user.id thành req.user._id
+
+      // Kiểm tra các trường bắt buộc
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        return res.status(400).json({
+          message: "Vui lòng điền đầy đủ thông tin",
+        });
+      }
+
+      // Kiểm tra mật khẩu mới và xác nhận mật khẩu có khớp nhau
+      if (newPassword !== confirmPassword) {
+        return res.status(400).json({
+          message: "Mật khẩu mới và xác nhận mật khẩu không khớp",
+        });
+      }
+
+      // Kiểm tra độ dài mật khẩu mới
+      if (newPassword.length < 6) {
+        return res.status(400).json({
+          message: "Mật khẩu mới phải có ít nhất 6 ký tự",
+        });
+      }
+
+      // Tìm user trong database
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({
+          message: "Không tìm thấy người dùng",
+        });
+      }
+
+      // Kiểm tra mật khẩu hiện tại
+      const isPasswordValid = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
+      if (!isPasswordValid) {
+        return res.status(400).json({
+          message: "Mật khẩu hiện tại không đúng",
+        });
+      }
+
+      // Mã hóa mật khẩu mới
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      // Cập nhật mật khẩu mới
+      user.password = hashedPassword;
+      await user.save();
+
+      return res.status(200).json({
+        message: "Đổi mật khẩu thành công",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Lỗi server",
+        error: error.message,
+      });
     }
   }
 

@@ -1,39 +1,73 @@
 import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/reducer';
+import clsx from 'clsx';
 import s from './Profile.module.scss';
 import axiosInstance from '@/api/axiosInstance';
 import { SET_USER } from '@/store/actions';
 import Cookies from 'js-cookie';
+
+interface FormData {
+  id?: string;
+  _id?: string;
+  name: string;
+  phone: string;
+  profile_picture: string;
+}
+
+interface PasswordFormData {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
 
 const Profile: React.FC = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.authReducer.user);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: user?.name || '',
-    phone: user?.phone || '',  // Thêm phone vào formData
+    phone: user?.phone || '',
+    profile_picture: user?.profile_picture || '', // Thêm giá trị mặc định
   });
+
+  // State cho phần đổi mật khẩu
+  const [passwordForm, setPasswordForm] = useState<PasswordFormData>({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Kiểm tra nếu user chưa được tải, không render giao diện
   if (!user) {
     return <div>Loading...</div>;
   }
 
-  // Lấy thông tin người dùng từ cookies và cập nhật Redux khi trang tải lại
   useEffect(() => {
     const userFromCookies = Cookies.get('user');
     if (userFromCookies) {
       const userObj = JSON.parse(userFromCookies);
       dispatch({ type: SET_USER, payload: userObj });
+      console.log('Đã lấy thông tin người dùng từ cookies: ', userObj);
     }
   }, [dispatch]);
 
-  // Xử lý thay đổi trong input
+  useEffect(() => {
+    if (!isEditing) {
+      console.log('Dữ liệu user được cập nhật: ', user);
+      setFormData({
+        name: user?.name || '',
+        phone: user?.phone || '',
+        profile_picture: user?.profile_picture || '',
+      });
+    }
+  }, [user, isEditing]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({
@@ -42,39 +76,127 @@ const Profile: React.FC = () => {
     });
   };
 
-  // Xử lý lưu thông tin
+  const handlePasswordFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Reset error when user starts typing
+    setPasswordError(null);
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError(null);
+
+    // Validate password
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordError('Mật khẩu mới và xác nhận mật khẩu không khớp');
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 6) {
+      setPasswordError('Mật khẩu mới phải có ít nhất 6 ký tự');
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.put('/api/user/change-password', passwordForm);
+
+      if (response.data.message) {
+        alert(response.data.message);
+        // Reset form sau khi đổi mật khẩu thành công
+        setPasswordForm({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+        setIsChangingPassword(false);
+      }
+    } catch (error: any) {
+      setPasswordError(error.response?.data?.message || 'Có lỗi xảy ra khi đổi mật khẩu');
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const userId = user?._id || user?.id;
+
+    if (file && userId) {
+      console.log('Bắt đầu upload ảnh...');
+
+      const formDataToSend = new FormData();
+      formDataToSend.append('profile_picture', file);
+
+      axiosInstance.put(`/api/user/users/${userId}`, formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }).then(response => {
+        console.log('Ảnh đã được upload thành công: ', response.data);
+        if (response.data.success) {
+          const uploadedImageUrl = response.data.data.profile_picture;
+
+          // Cập nhật formData
+          setFormData(prevData => ({
+            ...prevData,
+            profile_picture: uploadedImageUrl,
+          }));
+
+          // Cập nhật user trong Redux và cookies
+          const updatedUser = { ...user, profile_picture: uploadedImageUrl };
+          dispatch({ type: SET_USER, payload: updatedUser });
+          Cookies.set('user', JSON.stringify(updatedUser), {
+            domain: 'admin.localhost',
+            expires: 7
+          });
+        }
+      }).catch(error => {
+        console.error('Lỗi khi upload ảnh: ', error);
+        setError('Có lỗi xảy ra khi upload ảnh!');
+      });
+    }
+  };
   const handleSave = async () => {
-    if (!user?.id && !user?._id) {  // Kiểm tra cả id và _id
+    if (!user?._id && !user?.id) {
       setError('Không tìm thấy thông tin người dùng!');
       return;
     }
 
     setLoading(true);
-    setError(null); // Reset lỗi trước khi gửi yêu cầu
+    setError(null);
 
     try {
-      const response = await axiosInstance.put(`api/user/users/${user._id || user.id}`, formData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const updatedData = {
+        name: formData.name,
+        phone: formData.phone,
+        profile_picture: formData.profile_picture,
+      };
+
+      const response = await axiosInstance.put(
+        `/api/user/users/${user._id || user.id}`,
+        updatedData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (response.data.success) {
-        alert('Cập nhật thông tin thành công!');
-
-        // Cập nhật lại thông tin người dùng trong Redux
-        const updatedUser = { ...user, ...formData };
+        const updatedUser = { ...user, ...response.data.data };
         dispatch({ type: SET_USER, payload: updatedUser });
-
-        // Cập nhật lại thông tin người dùng trong Cookies
-        Cookies.set('user', JSON.stringify(updatedUser), { domain: 'admin.localhost', expires: 7 });
+        Cookies.set('user', JSON.stringify(updatedUser), {
+          domain: 'admin.localhost',
+          expires: 7
+        });
 
         setIsEditing(false);
-      } else {
-        setError(response.data.message || 'Có lỗi xảy ra!');
+        alert('Cập nhật thông tin thành công!');
       }
     } catch (error) {
-      console.error(error);
+      console.error('Lỗi khi cập nhật:', error);
       setError('Có lỗi xảy ra, vui lòng thử lại!');
     } finally {
       setLoading(false);
@@ -84,7 +206,6 @@ const Profile: React.FC = () => {
   return (
     <div className="container">
       <div className="main-body">
-        {/* Breadcrumb */}
         <nav aria-label="breadcrumb" className="main-breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
@@ -98,25 +219,31 @@ const Profile: React.FC = () => {
             </li>
           </ol>
         </nav>
-        {/* /Breadcrumb */}
+
         <div className="row gutters-sm">
           <div className="col-md-4 mb-3">
             <div className="card">
               <div className={clsx(s['card-body-user'])}>
                 <div className="d-flex flex-column align-items-center text-center">
-                  <img src={user.thumbnail} alt="Admin" className={clsx(s['rounded-circle'])} width={150} />
+                  <img
+                    src={formData.profile_picture || user.profile_picture}
+                    alt="Admin"
+                    className={clsx(s['rounded-circle'])}
+                    width={150}
+                  />
                   <div className="mt-3">
-                    <h4>{user.name}</h4>
+                    <h4>{formData.name}</h4>
                     <p className="mb-1">{user.role}</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
           <div className="col-md-8">
+            {/* Card thông tin cá nhân */}
             <div className="card mb-3">
               <div className={clsx(s['card-body'])}>
-                {/* Họ và tên */}
                 <div className="row align-items-center">
                   <div className="col-sm-3">
                     <h6 className="mb-10">Họ và tên:</h6>
@@ -131,13 +258,12 @@ const Profile: React.FC = () => {
                         className="form-control"
                       />
                     ) : (
-                      <span>{user.name}</span>
+                      <span>{formData.name}</span>
                     )}
                   </div>
                 </div>
                 <hr />
 
-                {/* Phone */}
                 <div className="row align-items-center">
                   <div className="col-sm-3">
                     <h6 className="mb-10">Phone:</h6>
@@ -152,13 +278,12 @@ const Profile: React.FC = () => {
                         className="form-control"
                       />
                     ) : (
-                      <span>{user.phone}</span>
+                      <span>{formData.phone}</span>
                     )}
                   </div>
                 </div>
                 <hr />
 
-                {/* Email (Hiển thị nhưng không chỉnh sửa) */}
                 <div className="row align-items-center">
                   <div className="col-sm-3">
                     <h6 className="mb-10">Email:</h6>
@@ -169,10 +294,26 @@ const Profile: React.FC = () => {
                 </div>
                 <hr />
 
-                {/* Hiển thị lỗi nếu có */}
+                <div className="row align-items-center">
+                  <div className="col-sm-3">
+                    <h6 className="mb-10">Ảnh đại diện:</h6>
+                  </div>
+                  <div className="col-sm-9">
+                    {isEditing ? (
+                      <input
+                        type="file"
+                        onChange={handleImageChange}
+                        className="form-control"
+                      />
+                    ) : (
+                      <span>Ảnh hiện tại đã được lưu</span>
+                    )}
+                  </div>
+                </div>
+                <hr />
+
                 {error && <div className="alert alert-danger">{error}</div>}
 
-                {/* Nút Edit và Save */}
                 {isEditing ? (
                   <button
                     className={clsx(s['button-edit-profile'])}
@@ -188,6 +329,76 @@ const Profile: React.FC = () => {
                   >
                     Edit
                   </button>
+                )}
+              </div>
+            </div>
+
+            {/* Card đổi mật khẩu */}
+            <div className="card">
+              <div className={clsx(s['card-body'])}>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h6 className="mb-0">Đổi mật khẩu</h6>
+                  <button
+                    className={clsx(s['button-edit-profile'])}
+                    onClick={() => {
+                      setIsChangingPassword(!isChangingPassword);
+                      setPasswordError(null);
+                      setPasswordForm({
+                        currentPassword: '',
+                        newPassword: '',
+                        confirmPassword: ''
+                      });
+                    }}
+                  >
+                    {isChangingPassword ? 'Hủy' : 'Đổi mật khẩu'}
+                  </button>
+                </div>
+
+                {isChangingPassword && (
+                  <form onSubmit={handlePasswordChange}>
+                    <div className="form-group mb-3">
+                      <label>Mật khẩu hiện tại:</label>
+                      <input
+                        type="password"
+                        name="currentPassword"
+                        value={passwordForm.currentPassword}
+                        onChange={handlePasswordFormChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="form-group mb-3">
+                      <label>Mật khẩu mới:</label>
+                      <input
+                        type="password"
+                        name="newPassword"
+                        value={passwordForm.newPassword}
+                        onChange={handlePasswordFormChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="form-group mb-3">
+                      <label>Xác nhận mật khẩu mới:</label>
+                      <input
+                        type="password"
+                        name="confirmPassword"
+                        value={passwordForm.confirmPassword}
+                        onChange={handlePasswordFormChange}
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    {passwordError && (
+                      <div className="alert alert-danger">{passwordError}</div>
+                    )}
+                    <button
+                      type="submit"
+                      className={clsx(s['button-edit-profile'])}
+                    >
+                      Xác nhận đổi mật khẩu
+                    </button>
+                  </form>
                 )}
               </div>
             </div>
