@@ -60,7 +60,81 @@ class OrderController {
     }
   }
 
+  // Lấy danh sách đơn hàng
   async getAllOrders(req, res, next) {
+    try {
+      const orders = await Order.find()
+        .populate("user_id")
+        .populate("course_id");
+      return res.status(200).json(orders);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Lấy thông tin đơn hàng theo ID
+  async getOrderById(req, res, next) {
+    try {
+      const { id } = req.params;
+      const order = await Order.findById(id)
+        .populate("user_id")
+        .populate("course_id");
+
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      return res.status(200).json(order);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Cập nhật trạng thái đơn hàng
+  async updateOrderStatus(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      // Kiểm tra nếu trạng thái không hợp lệ
+      if (!["pending", "completed", "failed", "canceled"].includes(status)) {
+        return res.status(400).json({ message: "Invalid status value" });
+      }
+
+      const updatedOrder = await Order.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true }
+      );
+
+      if (!updatedOrder) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      return res.status(200).json(updatedOrder);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Xóa đơn hàng
+  async deleteOrder(req, res, next) {
+    try {
+      const { id } = req.params;
+      const deletedOrder = await Order.findByIdAndDelete(id);
+
+      if (!deletedOrder) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      return res.status(200).json({ message: "Order deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // Lấy ra tất cả lịch sử giao dịch
+
+  async Transactionhistory(req, res, next) {
     try {
       const { 
         minPrice, 
@@ -103,68 +177,6 @@ class OrderController {
   
     } catch (error) {
       console.error('Error getting orders:', error);
-      next(error);
-    }
-  }
-  
-
-  // Lấy thông tin đơn hàng theo ID
-  async getOrderById(req, res, next) {
-    try {
-      const { id } = req.params;
-      const order = await Order.findById(id)
-        .populate("user_id")
-        .populate("course_id");
-
-      if (!order) {
-        return res.status(404).json({ message: "Order not found" });
-      }
-
-      return res.status(200).json(order);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  // Cập nhật trạng thái đơn hàng
-  async updateOrderStatus(req, res, next) {
-    try {
-      const { id } = req.params;
-      const { status } = req.body;
-
-      // Kiểm tra nếu trạng thái không hợp lệ
-      if (!["pending", "completed", "failed", "canceled"].includes(status)) {
-        return res.status(400).json({ message: "Invalid status value" });
-      }
-
-      const updatedOrder = await Order.findByIdAndUpdate(
-        id,
-        { status },
-        { new: true }
-      );
-
-      if (!updatedOrder) {
-        return res.status(404).json({ message: "Order not found" });
-      }
-
-      return res.status(200).json(updatedOrder);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  // Xóa đơn hàng
-  async deleteOrder(req, res, next) {
-    try {
-      const { id } = req.params;
-      const deletedOrder = await Order.findByIdAndDelete(id);
-
-      if (!deletedOrder) {
-        return res.status(404).json({ message: "Order not found" });
-      }
-
-      return res.status(200).json({ message: "Order deleted successfully" });
-    } catch (error) {
       next(error);
     }
   }

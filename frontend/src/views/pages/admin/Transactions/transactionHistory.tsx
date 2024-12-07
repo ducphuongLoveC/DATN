@@ -198,7 +198,7 @@ const TransactionHistory: React.FC = () => {
       if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
       if (filters.sortPrice) params.append('sortPrice', filters.sortPrice);
 
-      const response = await axiosInstance.get(`/api/order?${params.toString()}`);
+      const response = await axiosInstance.get(`/api/order/transactionhistory?${params.toString()}`);
       if (response.data && Array.isArray(response.data.data)) {
         setOrders(response.data.data);
       } else {
