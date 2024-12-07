@@ -1,7 +1,7 @@
 import axiosInstance from './axiosInstance';
 
-export const getPaidCourses  = async () => {
-  const {data} = await axiosInstance.get(`api/courses?isFree=false`);
+export const getPaidCourses = async () => {
+  const { data } = await axiosInstance.get(`api/courses?isFree=false`);
   return data.data;
 };
 export const getSingleCourseById = async (id: string) => {
@@ -12,8 +12,11 @@ export const getSingleCourseById = async (id: string) => {
     console.log(error);
   }
 };
-export const getCourseList = async (params: string) => {
-  const res = await axiosInstance.get(`api/courses/modules-resources${params}`);
+export const getCourseList = async (params:{}) => {
+  console.log(params);
+  const res = await axiosInstance.get(`api/courses/modules-resources`, {
+    params,
+  });
   return res.data;
 };
 export const getCourseSearch = async (search: string) => {

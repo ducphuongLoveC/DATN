@@ -152,9 +152,15 @@ class CoursesController {
       next(error);
     }
   }
+
   async getCoursesWithModulesAndResources(req, res, next) {
     try {
-      const { search, learning_paths, types } = req.query;
+      const { search, learning_paths, types, page = 0, limit = 4 } = req.query;
+
+      // Xử lý tham số phân trang
+      const currentPage = parseInt(page);
+      const pageSize = parseInt(limit);
+      const skip = (currentPage) * pageSize;
 
       const isFreeFilter =
         types === "true" ? true : types === "false" ? false : null;
@@ -262,9 +268,31 @@ class CoursesController {
         {
           $sort: { _id: -1 },
         },
+
+        // Áp dụng phân trang
+        {
+          $skip: skip,
+        },
+        {
+          $limit: pageSize,
+        },
       ]);
 
-      res.status(200).json(courses);
+      // Lấy tổng số lượng tài liệu để trả về tổng số trang
+      const totalCourses = await Course.countDocuments(
+        search ? { title: { $regex: search, $options: "i" } } : {}
+      );
+      const totalPages = Math.ceil(totalCourses / pageSize);
+
+      res.status(200).json({
+        data: courses,
+        pagination: {
+          currentPage,
+          totalPages,
+          pageSize,
+          totalItems: totalCourses,
+        },
+      });
     } catch (error) {
       next(error);
     }

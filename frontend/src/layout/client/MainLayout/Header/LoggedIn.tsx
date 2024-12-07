@@ -151,7 +151,7 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
                       />
                     ))
                   ) : (
-                    <Typography textAlign={'center'}>Không có comment</Typography>
+                    <Typography textAlign={'center'}>Không có thông báo</Typography>
                   )}
                 </Dropdown.Container>
               </Wrapper>
