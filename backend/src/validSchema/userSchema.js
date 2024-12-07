@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const userSchema = Joi.object({
-  name: Joi.string().required().min(6).max(255).messages({
+  name: Joi.string().required().min(3).max(255).messages({
     "string.base": "Name must be a string",
     "string.empty": "Name can not be empty",
     "string.min": "Name must have at least 6 character",

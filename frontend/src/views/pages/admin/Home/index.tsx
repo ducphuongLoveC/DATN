@@ -220,8 +220,6 @@ const Dashboard: React.FC = () => {
           <div className="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-3">
             <div className="md:tw-col-span-3 ">
               <div className="tw-mb-3 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-3  ">
-
-
                 <div style={{ background: theme.palette.background.default }} className=" tw-px-4 tw-shadow-md ">
                   <div className="tw-flex tw-justify-between">
                     <h3 className="tw-text-base tw-font-semibold">Doanh thu ngày:</h3>
@@ -234,9 +232,7 @@ const Dashboard: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <p className="tw-text-2xl tw-text-center tw-font-bold">
-                    {dailyRevenue.toLocaleString('vi-VN')} VNĐ
-                  </p>
+                  <p className="tw-text-2xl tw-text-center tw-font-bold">{dailyRevenue.toLocaleString('vi-VN')} VNĐ</p>
                 </div>
                 <div style={{ background: theme.palette.background.default }} className=" tw-px-4 tw-shadow-md  ">
                   <h3 className="tw-text-base tw-font-semibold">Tổng danh thu:</h3>

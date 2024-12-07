@@ -69,7 +69,7 @@ class CoursesController {
     try {
       const courses = await Course.aggregate([
         {
-          $match: { isActive: true }, // Lọc các khóa học đang hoạt động
+          $match: { isActive: true },
         },
         {
           $lookup: {

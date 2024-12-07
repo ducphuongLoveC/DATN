@@ -30,14 +30,13 @@ const LogAuth: React.FC = () => {
 
         window.location.href =
           import.meta.env.VITE_URL_ADMIN +
-          `?accessToken=${JSON.stringify(encodeURIComponent(data. accessToken))}&info=${encodeURIComponent(JSON.stringify(data.user))}`;
+          `?accessToken=${JSON.stringify(encodeURIComponent(data.accessToken))}&info=${encodeURIComponent(JSON.stringify(data.user))}`;
       } else {
         toast.warn('Tài khoản không đủ quyền hạn!');
       }
     },
-    onError: (error) => {
-      toast.error(`${error}`);
-      console.log(error);
+    onError: (error: any) => {
+      toast.error(error.response.data.message);
     },
   });
 
