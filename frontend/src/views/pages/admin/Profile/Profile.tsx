@@ -6,6 +6,7 @@ import s from './Profile.module.scss';
 import axiosInstance from '@/api/axiosInstance';
 import { SET_USER } from '@/store/actions';
 import Cookies from 'js-cookie';
+import { Button } from '@mui/material';
 
 interface FormData {
   id?: string;
@@ -315,20 +316,20 @@ const Profile: React.FC = () => {
                 {error && <div className="alert alert-danger">{error}</div>}
 
                 {isEditing ? (
-                  <button
+                  <Button color="primary" variant="outlined"
                     className={clsx(s['button-edit-profile'])}
                     onClick={handleSave}
                     disabled={loading}
                   >
                     {loading ? 'Saving...' : 'Save'}
-                  </button>
+                  </Button>
                 ) : (
-                  <button
+                  <Button color="primary" variant="outlined"
                     className={clsx(s['button-edit-profile'])}
                     onClick={() => setIsEditing(true)}
                   >
                     Edit
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
@@ -338,7 +339,7 @@ const Profile: React.FC = () => {
               <div className={clsx(s['card-body'])}>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h6 className="mb-0">Đổi mật khẩu</h6>
-                  <button
+                  <Button color="primary" variant="outlined"
                     className={clsx(s['button-edit-profile'])}
                     onClick={() => {
                       setIsChangingPassword(!isChangingPassword);
@@ -351,7 +352,7 @@ const Profile: React.FC = () => {
                     }}
                   >
                     {isChangingPassword ? 'Hủy' : 'Đổi mật khẩu'}
-                  </button>
+                  </Button>
                 </div>
 
                 {isChangingPassword && (

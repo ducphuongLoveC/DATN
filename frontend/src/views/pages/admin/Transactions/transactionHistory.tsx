@@ -1,84 +1,293 @@
 import React, { useEffect, useState } from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import Button from '@mui/material/Button';
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TextField,
+  Box,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  SelectChangeEvent,
+} from '@mui/material';
+import axiosInstance from '@/api/axiosInstance';
+import HeaderTitle from '../Title';
 
-// Define the data type for the transaction
-interface Transaction {
-  transactionId: string;
-  accountName: string;
-  transactionDate: string;
-  description: string;
+// Định nghĩa các interface
+interface Order {
+  _id: string;
+  user_id: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  course_id: {
+    _id: string;
+    title: string;
+    thumbnail: string;
+  };
+  purchaseDate: string;
+  status: 'pending' | 'completed' | 'failed';
+  payment_method: string;
   amount: number;
 }
 
-// Define the columns in the table
-const columns = [
-  { id: 'transactionId', label: 'Mã Giao Dịch', minWidth: 100 },
-  { id: 'accountName', label: 'Tên Tài Khoản', minWidth: 150 },
-  { id: 'transactionDate', label: 'Ngày Giao Dịch', minWidth: 150 },
-  { id: 'description', label: 'Nội Dung Chuyển Khoản', minWidth: 200 },
+interface FilterOptions {
+  minPrice: string;
+  maxPrice: string;
+  sortPrice: 'asc' | 'desc' | '';
+}
+
+interface Column {
+  id: keyof Order | 'actions';
+  label: string;
+  minWidth: number;
+  align?: 'right';
+  format?: (value: any) => React.ReactNode;
+}
+
+const DEFAULT_IMAGE = '/placeholder-image.jpg';
+
+const columns: Column[] = [
   {
-    id: 'amount',
+    id: 'user_id',
+    label: 'Người Mua',
+    minWidth: 150,
+    format: (value: Order['user_id']) => {
+      if (!value || typeof value !== 'object') return 'N/A';
+      return (
+        <div>
+          <div>{value.name || 'Không có tên'}</div>
+          <div style={{ fontSize: '0.8em', color: '#666' }}>
+            {value.email || 'Không có email'}
+          </div>
+        </div>
+      );
+    }
+  },
+  {
+    id: 'course_id',
+    label: 'Khóa Học Mua',
+    minWidth: 200,
+    format: (value: Order['course_id']) => {
+      if (!value || typeof value !== 'object') return 'N/A';
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img
+            src={value.thumbnail || DEFAULT_IMAGE}
+            alt={value.title || 'Khóa học'}
+            style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = DEFAULT_IMAGE;
+            }}
+          />
+          <span>{value.title || 'Không có tiêu đề'}</span>
+        </div>
+      );
+    }
+  },
+  {
+    id: 'purchaseDate',
+    label: 'Ngày Mua',
+    minWidth: 120,
+    format: (value: string) => {
+      if (!value) return 'N/A';
+      try {
+        return new Date(value).toLocaleDateString('vi-VN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } catch {
+        return 'Ngày không hợp lệ';
+      }
+    }
+  },
+  {
+    id: 'status',
+    label: 'Trạng Thái',
+    minWidth: 120,
+    format: (value: string) => {
+      if (!value) return 'N/A';
+      const statusStyles: Record<string, React.CSSProperties> = {
+        pending: { color: '#f59e0b', background: '#fef3c7' },
+        completed: { color: '#10b981', background: '#d1fae5' },
+        failed: { color: '#ef4444', background: '#fee2e2' }
+      };
+      const statusText: Record<string, string> = {
+        pending: 'Đang xử lý',
+        completed: 'Hoàn thành',
+        failed: 'Thất bại'
+      };
+      const style = statusStyles[value] || { color: '#666', background: '#f3f4f6' };
+      const text = statusText[value] || value;
+
+      return (
+        <span style={{
+          padding: '4px 8px',
+          borderRadius: '4px',
+          fontSize: '0.875rem',
+          ...style
+        }}>
+          {text}
+        </span>
+      );
+    }
+  },
+  {
+    id: 'payment_method',
+    label: 'Phương Thức Thanh Toán',
+    minWidth: 150,
+    format: (value: string) => {
+      if (!value) return 'N/A';
+      const methodText: Record<string, string> = {
+        'bank_transfer': 'Chuyển khoản ngân hàng',
+        'momo': 'Ví MoMo',
+        'vnpay': 'VNPay',
+        'cash': 'Tiền mặt'
+      };
+      return methodText[value] || value;
+    }
+  },
+  {
+    id: 'amount', // Đổi từ 'total_price' thành 'amount'
     label: 'Tổng Tiền',
     minWidth: 120,
-    align: 'right' as const,
-    format: (value: number) => value.toLocaleString(),
-  },
-  { id: 'actions', label: 'Hành Động', minWidth: 100 }, // Add actions column
+    align: 'right',
+    format: (value: number) => {
+      if (typeof value !== 'number') return '0 ₫';
+      try {
+        return value.toLocaleString('vi-VN', {
+          style: 'currency',
+          currency: 'VND'
+        });
+      } catch {
+        return `${value.toLocaleString()} ₫`;
+      }
+    }
+  }
 ];
 
-const TransactionHistory = () => {
+const TransactionHistory: React.FC = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [rows, setRows] = useState<Transaction[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [filters, setFilters] = useState<FilterOptions>({
+    minPrice: '',
+    maxPrice: '',
+    sortPrice: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch data from the API
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const params = new URLSearchParams();
+      if (filters.minPrice) params.append('minPrice', filters.minPrice);
+      if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
+      if (filters.sortPrice) params.append('sortPrice', filters.sortPrice);
+
+      const response = await axiosInstance.get(`/api/order?${params.toString()}`);
+      if (response.data && Array.isArray(response.data.data)) {
+        setOrders(response.data.data);
+      } else {
+        setOrders([]);
+        setError('Định dạng dữ liệu không hợp lệ');
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      setError('Có lỗi xảy ra khi tải dữ liệu');
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetch('http://localhost:3000/transactionHistory')
-      .then((response) => response.json())
-      .then((data) => setRows(data))
-      .catch((error) =>
-        console.error('Error fetching transaction history:', error)
-      );
-  }, []);
+    fetchOrders();
+  }, [filters]);
 
-  // Handle page change
-  const handleChangePage = (_event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  // Handle change in number of rows per page
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
-  // Function to handle the detail button click
-  const handleViewDetails = (transactionId: string) => {
-    // Replace this with your logic to view transaction details
-    alert(`Viewing details for transaction ID: ${transactionId}`);
+  const handleFilterChange = (
+    event: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent
+  ) => {
+    const { name, value } = event.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
   };
 
   return (
+
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <HeaderTitle des="Đây là trang lịch sử giao dịch" />
+      <Box sx={{ p: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+
+        <TextField
+          label="Giá tối thiểu"
+          name="minPrice"
+          type="number"
+          value={filters.minPrice}
+          onChange={handleFilterChange as React.ChangeEventHandler<HTMLInputElement>}
+          size="small"
+          InputProps={{
+            inputProps: { min: 0 },
+            startAdornment: <span style={{ marginRight: 8 }}>₫</span>
+          }}
+        />
+        <TextField
+          label="Giá tối đa"
+          name="maxPrice"
+          type="number"
+          value={filters.maxPrice}
+          onChange={handleFilterChange as React.ChangeEventHandler<HTMLInputElement>}
+          size="small"
+          InputProps={{
+            inputProps: { min: 0 },
+            startAdornment: <span style={{ marginRight: 8 }}>₫</span>
+          }}
+        />
+        <FormControl size="small" sx={{ minWidth: 120 }}>
+          <InputLabel>Sắp xếp giá</InputLabel>
+          <Select
+            value={filters.sortPrice}
+            label="Sắp xếp giá"
+            name="sortPrice"
+            onChange={handleFilterChange}
+          >
+            <MenuItem value="">Không sắp xếp</MenuItem>
+            <MenuItem value="asc">Tăng dần</MenuItem>
+            <MenuItem value="desc">Giảm dần</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
       <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{ minWidth: column.minWidth, fontWeight: 'bold' }}
                 >
                   {column.label}
                 </TableCell>
@@ -86,52 +295,58 @@ const TransactionHistory = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <TableRow
-                  hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={row.transactionId}
-                >
-                  {columns.map((column) => {
-                    const value = row[column.id as keyof Transaction];
-                    if (column.id === 'actions') {
-                      // Render the action button for each row
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} align="center">
+                  Đang tải dữ liệu...
+                </TableCell>
+              </TableRow>
+            ) : error ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} align="center" style={{ color: 'red' }}>
+                  {error}
+                </TableCell>
+              </TableRow>
+            ) : orders.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} align="center">
+                  Không có dữ liệu
+                </TableCell>
+              </TableRow>
+            ) : (
+              orders
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((order) => (
+                  <TableRow hover key={order._id}>
+                    {columns.map((column) => {
+                      const value = order[column.id as keyof Order];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handleViewDetails(row.transactionId)}
-                          >
-                            Chi Tiết
-                          </Button>
+                          {column.format
+                            ? column.format(value)
+                            : (value?.toString() || 'N/A')}
                         </TableCell>
                       );
-                    }
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.format && typeof value === 'number'
-                          ? column.format(value)
-                          : value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
+                    })}
+                  </TableRow>
+                ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>
+
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={orders.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Số dòng mỗi trang"
+        labelDisplayedRows={({ from, to, count }) =>
+          `${from}-${to} của ${count}`
+        }
       />
     </Paper>
   );
