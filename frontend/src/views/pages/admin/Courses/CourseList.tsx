@@ -111,11 +111,12 @@ const CourseList: React.FC = () => {
             <Grid key={course._id} item sm={12} md={6}>
               <Box sx={{ backgroundColor: theme.palette.background.paper }} p={2}>
                 <BoxBetween>
-                  <Typography variant="h3">{course.title}</Typography>
-                  <More />
+                  <Typography  variant="h3">{course.title}</Typography>
+
+                  <More sx={{cursor:'pointer'}} />
                 </BoxBetween>
 
-                <Grid container spacing={10}>
+                <Grid container spacing={3}>
                   <Grid item lg={6}>
                     <Grid container spacing={2}>
                       <Grid item>
