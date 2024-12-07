@@ -137,19 +137,6 @@ const Dashboard: React.FC = () => {
     },
   };
 
-  const fetchOrders = async () => {
-    setLoading(true); // Set loading to true when fetching starts
-    try {
-      const data = await getOrders(); // Fetch orders from the API
-      setOrders(data); // Set the fetched orders to the state
-    } catch (error: any) {
-      console.error('Error fetching orders:', error);
-      setError('Failed to fetch orders'); // Set error message if the fetch fails
-    } finally {
-      setLoading(false); // Set loading to false once the fetch is done
-    }
-  };
-
   const top10Courses = [...courses].sort((a, b) => b.enrollment_count - a.enrollment_count).slice(0, 10);
 
   if (loading) {
@@ -207,9 +194,7 @@ const Dashboard: React.FC = () => {
               <p className="tw-text-xs md:tw-text-base tw-mb-1">Tải xuống báo cáo thống kê thu nhập của bạn</p>
               <p className="tw-text-[10px] md:tw-text-xs">Thống kê tài chính khóa học</p>
             </div>
-            <button onClick={fetchOrders} className="tw-bg-violet-500 tw-text-white tw-py-2 tw-px-4">
-              Tải xuống
-            </button>
+            <button className="tw-bg-violet-500 tw-text-white tw-py-2 tw-px-4">Tải xuống</button>
           </div>
         </div>
 
