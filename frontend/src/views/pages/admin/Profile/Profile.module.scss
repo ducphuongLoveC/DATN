@@ -1,47 +1,125 @@
-.main-body {
-  padding: 15px;
+.container {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+
+  .main-body {
+    .main-breadcrumb {
+      padding: 1rem 0;
+
+      .breadcrumb {
+        background: transparent;
+
+        a {
+          color: #6c757d;
+          text-decoration: none;
+          transition: color 0.3s ease;
+
+          &:hover {
+            color: #007bff;
+          }
+        }
+      }
+    }
+  }
 }
 
 .card {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  border-radius: 0.25rem;
-  background-color: #fff;
-}
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transition: transform 0.3s ease;
+  border-radius: 0; // Loại bỏ border-radius cho card
 
-.card-body {
-  padding: 1rem;
-  min-height: 360px;
+  &:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .card-body-user {
-  background-color: #1e293a;
-  color: #fff;
-  padding: 20px;
+  padding: 1.5rem;
+  border-radius: 0; // Loại bỏ border-radius
+
+  .rounded-circle {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    clip-path: circle(50% at center);
+    border: 3px solid #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.card-body {
+  padding: 1.5rem;
+  border-radius: 0; // Loại bỏ border-radius
+
+  h6 {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    border: 1px solid #ced4da;
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.15s ease-in-out;
+    border-radius: 0; // Loại bỏ border-radius cho input
+
+    &:focus {
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+  }
 }
 
 .button-edit-profile {
-  width: 100%;
-  max-width: 100px;
-  height: 35px;
-  margin-top: 20px;
-  background: linear-gradient(135deg, #ff9800 50%, #1a202c 60%);
-  border: none;
-  color: white;
-  cursor: pointer;
-  transition: background-position 0.5s ease;
-  background-size: 200% 100%;
-  background-position: left bottom;
+  margin-top: 25px;
 }
 
-.button-edit-profile:hover {
-  background-position: right bottom;
+.form-group {
+  margin-bottom: 1.5rem;
+
+  label {
+    color: #495057;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
 }
 
-.rounded-circle {
-  border-radius: 50%;
-  margin-top: 20px;
+.alert {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0; // Loại bỏ border-radius cho alert
+
+  &.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+  }
 }
 
-.rounded-circle:hover {
-  filter: drop-shadow(10px 10px 10px pink);
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .card-body-user {
+    padding: 1rem;
+
+    .rounded-circle {
+      width: 120px;
+      height: 120px;
+      clip-path: circle(50% at center);
+    }
+  }
+
+  .button-edit-profile {
+    width: 100%;
+    margin-top: 1rem;
+  }
 }

@@ -102,7 +102,6 @@ class OrderController {
       if (!updatedOrder) {
         return res.status(404).json({ message: "Order not found" });
       }
-
       return res.status(200).json(updatedOrder);
     } catch (error) {
       next(error);
@@ -120,6 +119,55 @@ class OrderController {
 
       return res.status(200).json({ message: "Order deleted successfully" });
     } catch (error) {
+      next(error);
+    }
+  }
+
+  // Lấy ra tất cả lịch sử giao dịch
+
+  async Transactionhistory(req, res, next) {
+    try {
+      const { 
+        minPrice, 
+        maxPrice, 
+        sortPrice // 'asc' hoặc 'desc' để sắp xếp theo giá
+      } = req.query;
+  
+      // Xây dựng query filter
+      let query = Order.find();
+  
+      // Thêm điều kiện lọc theo giá
+      if (minPrice || maxPrice) {
+        let priceFilter = {};
+        if (minPrice) priceFilter['$gte'] = parseFloat(minPrice);
+        if (maxPrice) priceFilter['$lte'] = parseFloat(maxPrice);
+  
+        query = query.where('amount', priceFilter);
+      }
+  
+      // Thêm populate
+      query = query
+        .populate("user_id")
+        .populate("course_id");
+  
+      // Thêm sắp xếp theo giá nếu có
+      if (sortPrice) {
+        query = query.sort({ 
+          amount: sortPrice === 'desc' ? -1 : 1 
+        });
+      }
+  
+      const orders = await query;
+  
+      return res.status(200).json({
+        success: true,
+        total: orders.length,
+        data: orders,
+        message: "Lấy danh sách đơn hàng thành công"
+      });
+  
+    } catch (error) {
+      console.error('Error getting orders:', error);
       next(error);
     }
   }

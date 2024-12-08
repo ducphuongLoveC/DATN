@@ -107,7 +107,7 @@ const Comments = () => {
                 </Select>
             </FormControl>
 
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -154,15 +154,21 @@ const Comments = () => {
                         )}
                     </TableBody>
                 </Table>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    count={comments.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
+
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={comments.length} // Sử dụng comments thay vì reviews
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={(_, newPage) => setPage(newPage)}
+                onRowsPerPageChange={(event) => {
+                    setRowsPerPage(parseInt(event.target.value, 10));
+                    setPage(0);
+                }}
+            />
+
         </Box>
     );
 };
