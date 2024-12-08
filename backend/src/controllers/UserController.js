@@ -5,6 +5,8 @@ import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
 import Progress from "../models/Progress.js";
 
+
+
 class UserController {
   // Fetch all users
   async get(req, res, next) {
@@ -56,11 +58,11 @@ class UserController {
   async updateUser(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, phone } = req.body; // Only update name and phone
-
+      const { name, phone, nickname, referring, profile_picture } = req.body; 
+      console.log(req.body)
       const updatedUser = await User.findByIdAndUpdate(
         id,
-        { name, phone },
+        { name, phone, nickname, referring, profile_picture },
         { new: true }
       );
 
@@ -81,6 +83,73 @@ class UserController {
     }
   }
 
+
+  // lấy lại mật khẩu
+  async changePassword(req, res) {
+  try {
+    const { userId, currentPassword, newPassword } = req.body;
+    console.log('Received request data:', { userId, hasCurrentPass: !!currentPassword, hasNewPass: !!newPassword });
+
+    // Validate input
+    if (!userId || !currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Vui lòng cung cấp đầy đủ thông tin'
+      });
+    }
+
+    // Find user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Không tìm thấy thông tin người dùng'
+      });
+    }
+
+    try {
+      // Verify current password
+      const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({
+          success: false,
+          message: 'Mật khẩu hiện tại không đúng'
+        });
+      }
+    } catch (bcryptError) {
+      console.error('Bcrypt error:', bcryptError);
+      return res.status(500).json({
+        success: false,
+        message: 'Lỗi xác thực mật khẩu'
+      });
+    }
+
+    try {
+      // Hash new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
+
+      return res.status(200).json({
+        success: true,
+        message: 'Đổi mật khẩu thành công'
+      });
+    } catch (hashError) {
+      console.error('Hash/Save error:', hashError);
+      return res.status(500).json({
+        success: false,
+        message: 'Lỗi khi cập nhật mật khẩu'
+      });
+    }
+
+  } catch (error) {
+    console.error('Change password error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Đã có lỗi xảy ra, vui lòng thử lại sau'
+    });
+  }
+}
   // async getUserCourses(req, res, next) {
   //   try {
   //     const { id } = req.params;

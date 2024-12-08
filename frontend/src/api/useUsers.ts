@@ -8,7 +8,7 @@ export interface User {
   name: string;
   email: string;
   refering: string;
-  profile_picture : File
+  profile_picture: string;
   phone: string;
   address: string;
   role: string;

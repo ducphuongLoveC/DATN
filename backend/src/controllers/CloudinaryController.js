@@ -58,7 +58,7 @@ class CloudinaryController {
     try {
       const filePath = req.file.path; // Đường dẫn tới file đã được upload
       const result = await cloudinary.v2.uploader.upload(filePath, {
-        folder: "images", // Thư mục trên Cloudinary
+        folder: "users", // Thư mục trên Cloudinary
       });
 
       // Xóa file sau khi upload

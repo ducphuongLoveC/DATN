@@ -66,7 +66,7 @@ const SettingUser: React.FC = () => {
 
   // Log để debug
   console.log('User from Redux:', user);
-  console.log('UserId:', userId);
+  // console.log('UserId:', userId);
 
   useEffect(() => {
     if (user) {
@@ -81,7 +81,7 @@ const SettingUser: React.FC = () => {
 
   useEffect(() => {
     if (user?.profile_picture) {
-      setAvatarUrl(user.profile_picture);
+      setAvatarUrl(user.profile_picture); 
     }
   }, [user?.profile_picture]);
 
@@ -212,8 +212,8 @@ const SettingUser: React.FC = () => {
 
       if (response.data.success) {
         const newAvatarUrl = response.data.url; // URL từ Cloudinary
-        dispatch(updateAvatar(newAvatarUrl));
-        setAvatarUrl(newAvatarUrl);
+        dispatch(updateAvatar(newAvatarUrl)); // Cập nhật Redux store
+        setAvatarUrl(newAvatarUrl); // Cập nhật trạng thái local
         setIsModalOpen(false);
         setSnackbar({ open: true, message: 'Cập nhật ảnh đại diện thành công!' });
       } else {

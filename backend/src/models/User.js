@@ -8,6 +8,12 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       maxlength: 255,
     },
+    nickname: {
+      type: String,
+      required: [true, "Nickname is required"],
+      minlength: 6,
+      maxlength: 255,
+    },
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -19,7 +25,7 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       maxlength: 255,
     },
-    refering: {
+    referring: {
       type: String,
       maxlength: 255,
     },
@@ -31,10 +37,8 @@ const userSchema = new mongoose.Schema(
     profile_picture: {
       type: String,
       maxlength: 255,
-      default:
-        "https://icon2.cleanpng.com/20180623/vr/aazrsnwge.webp",
+      required: [true, "picture is required"],
     },
-
     role: {
       type: String,
       enum: [

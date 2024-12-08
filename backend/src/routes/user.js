@@ -15,4 +15,6 @@ routerUser.get("/:id", UserController.getUserById);
 // Lấy danh sách khóa học người dùng
 routerUser.get("/:id/courses", UserController.getUserCourses);
 
+routerUser.post("/change-password", UserController.changePassword)
+
 export default routerUser;

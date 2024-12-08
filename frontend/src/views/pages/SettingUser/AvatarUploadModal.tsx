@@ -59,10 +59,10 @@ const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
 
     setIsUploading(true);
     try {
-      // Chắc chắn rằng onUpload trả về một giá trị hợp lệ
-      await onUpload(selectedFile); // Lỗi ở đây vì onUpload có thể không trả về gì
+      
+      await onUpload(selectedFile); 
       setSelectedFile(null);
-      setPreview(currentAvatarUrl); // Điều này có thể gây lỗi nếu không có giá trị trả về
+      setPreview(currentAvatarUrl); 
       onClose();
     } catch (error) {
       console.error('Upload failed:', error);
