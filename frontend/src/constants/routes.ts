@@ -24,6 +24,7 @@ const path = {
     reviewList: '/reviewList',
     commentList: '/commentList',
     coupon: '/coupon',
+    courseStatistics: '/course-statistics',
   },
   client: {
     auth: {

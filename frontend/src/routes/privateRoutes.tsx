@@ -32,6 +32,8 @@ const Comments = Loadable(lazy(() => import('../views/pages/admin/Comments/index
 
 const Coupon = Loadable(lazy(() => import('../views/pages/admin/Coupon/index')));
 
+const CourseStatistics = Loadable(lazy(() => import('../views/pages/admin/Courses/CourseStatistics')));
+
 const PrivateRoutes: RouteProp[] = [
   {
     path: '/',
@@ -140,6 +142,11 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.commentList,
     layout: MainLayout,
     page: Comments,
+  },
+  {
+    path: path.admin.courseStatistics,
+    layout: MainLayout,
+    page: CourseStatistics,
   },
 ];
 
