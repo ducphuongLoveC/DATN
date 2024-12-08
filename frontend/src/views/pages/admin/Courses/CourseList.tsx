@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Box, Button, Grid, styled, TablePagination, Typography, useTheme } from '@mui/material';
+import { Box, Button, Grid, styled, TablePagination, Typography, useTheme, List, ListItem } from '@mui/material';
 import { More } from '@mui/icons-material';
 import moment from 'moment';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
+
+import HeadlessTippy from '@tippyjs/react/headless';
 
 // my pj
 import CourseListSkl from '@/ui-component/cards/Skeleton/CourseListSkl';
@@ -15,6 +17,7 @@ import FilterComponent from '@/components/Filter';
 import { getCourseList } from '@/api/courseApi';
 import { useState } from 'react';
 import { fetchLearningPaths } from '@/api/learningPathApi';
+import Wrapper from '@/components/Wrapper';
 
 const BoxBetween = styled(Box)(() => ({
   display: 'flex',
@@ -111,9 +114,20 @@ const CourseList: React.FC = () => {
             <Grid key={course._id} item sm={12} md={6}>
               <Box sx={{ backgroundColor: theme.palette.background.paper }} p={2}>
                 <BoxBetween>
-                  <Typography  variant="h3">{course.title}</Typography>
-
-                  <More sx={{cursor:'pointer'}} />
+                  <Typography variant="h3">{course.title}</Typography>
+                  <HeadlessTippy
+                    placement="bottom-end"
+                    trigger="click"
+                    interactive
+                    allowHTML
+                    render={({ attrs }: any) => <Wrapper sx={{p:0}}  {...attrs}>
+                      <List>
+                        <ListItem><Link to={path.admin.courseStatistics}>Thống kê khóa học</Link></ListItem>
+                      </List>
+                    </Wrapper>}
+                  >
+                    <More sx={{ cursor: 'pointer' }} />
+                  </HeadlessTippy>
                 </BoxBetween>
 
                 <Grid container spacing={3}>

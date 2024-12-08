@@ -1,16 +1,23 @@
-import clsx from 'clsx';
-import s from './Wrapper.module.scss';
+import { Box, BoxProps } from '@mui/material';
 
-interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-}
-
-const Wrapper: React.FC<WrapperProps> = ({ children, className, ...props }) => {
-  return (
-    <div className={clsx(s['wrapper'], className)} {...props}>
-      {children}
-    </div>
-  );
-};
+const Wrapper: React.FC<BoxProps> = ({ children, sx, ...props }) => (
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      fontSize: '16px',
+      backgroundColor: 'white',
+      padding: '20px',
+      fontWeight: 'lighter',
+      marginTop: '12px',
+      borderRadius: '10px',
+      boxShadow: '0 -4px 32px #0003',
+      ...sx, // Merge sx từ bên ngoài
+    }}
+    {...props}
+  >
+    {children}
+  </Box>
+);
 
 export default Wrapper;
