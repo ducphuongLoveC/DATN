@@ -56,7 +56,7 @@ const PrivateRoutes: RouteProp[] = [
     page: CoursesList,
   },
   {
-    path: path.admin.updateCourse,
+    path: path.admin.updateCourse(':id'),
     layout: MainLayout,
     page: UpdateCourse,
   },
@@ -127,7 +127,7 @@ const PrivateRoutes: RouteProp[] = [
   },
 
   {
-    path: path.admin.useUsersDetail,
+    path: path.admin.usersDetail(':id'),
     layout: MainLayout,
     page: UserDetails,
   },
@@ -144,7 +144,7 @@ const PrivateRoutes: RouteProp[] = [
     page: Comments,
   },
   {
-    path: path.admin.courseStatistics,
+    path: path.admin.courseStatistics(':id'),
     layout: MainLayout,
     page: CourseStatistics,
   },

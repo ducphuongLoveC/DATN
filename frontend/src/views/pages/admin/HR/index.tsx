@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -10,8 +10,6 @@ import {
   Paper,
   Typography,
   Box,
-  Tooltip,
-  IconButton,
   TablePagination,
 } from '@mui/material';
 import useUsersAdmin from '@/api/useUserAdmin';
@@ -32,17 +30,15 @@ const HR = () => {
 
   if (error) {
     return (
-      <Box sx={{ padding: '20px' }}>
+      <Box>
         <Typography>Error: {error}</Typography>
       </Box>
     );
   }
-
-  // Dữ liệu sau khi phân trang
   const paginatedRows = rows.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
   return (
-    <Box sx={{ padding: '20px' }}>
+    <Box>
       <HeaderTitle des="Đây là trang danh sách admin" />
       <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
         <Table sx={{ minWidth: 650 }} aria-label="user table">
@@ -59,7 +55,7 @@ const HR = () => {
             {paginatedRows.map((user) => (
               <TableRow key={user._id}>
                 <TableCell>
-                  <Avatar>{user.name.charAt(0)}</Avatar>
+                  <Avatar src={user._id} />
                 </TableCell>
                 <TableCell align="center">{user.name}</TableCell>
                 <TableCell align="center">{user.email}</TableCell>

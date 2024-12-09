@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Avatar, Paper, Typography, Box, Tooltip, IconButton, TablePagination
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Avatar,
+  Paper,
+  Typography,
+  Box,
+  Tooltip,
+  IconButton,
+  TablePagination,
 } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -60,17 +71,11 @@ const StudentList = () => {
                       <VisibilityIcon />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Hạn chế">
-                    <IconButton>
-                      <LockIcon />
-                    </IconButton>
-                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}

@@ -81,6 +81,27 @@ const CourseList: React.FC = () => {
     });
   };
 
+  const CourseDuration = (course: any) => {
+    const totalDuration = course.modules.reduce((moduleAcc: number, module: any) => {
+      return (
+        moduleAcc +
+        module.resources.reduce((resourceAcc: number, resource: any) => {
+          return resourceAcc + resource.duration;
+        }, 0)
+      );
+    }, 0);
+
+    return <div>{moment.utc(totalDuration * 1000).format('HH:mm:ss')}</div>;
+  };
+
+  const CourseResourceTotal = (course: any) => {
+    const resourceTotal = course.modules.reduce((moduleAcc: number, module: any) => {
+      return moduleAcc + module.resources.length;
+    }, 0);
+
+    return resourceTotal;
+  };
+
   return (
     <Box>
       <HeaderTitle
@@ -120,11 +141,18 @@ const CourseList: React.FC = () => {
                     trigger="click"
                     interactive
                     allowHTML
-                    render={({ attrs }: any) => <Wrapper sx={{p:0}}  {...attrs}>
-                      <List>
-                        <ListItem><Link to={path.admin.courseStatistics}>Thống kê khóa học</Link></ListItem>
-                      </List>
-                    </Wrapper>}
+                    render={({ attrs }: any) => (
+                      <Wrapper sx={{ p: 0 }} {...attrs}>
+                        <List sx={{ p: 0 }}>
+                          <ListItem>
+                            <Link to={path.admin.courseStatistics(course._id)}>Xem chi tiết</Link>
+                          </ListItem>
+                          <ListItem>
+                            <Link to={path.admin.courseStatistics(course._id)}>Xóa</Link>
+                          </ListItem>
+                        </List>
+                      </Wrapper>
+                    )}
                   >
                     <More sx={{ cursor: 'pointer' }} />
                   </HeadlessTippy>
@@ -146,17 +174,7 @@ const CourseList: React.FC = () => {
                   <Grid item lg={6}>
                     <BoxBetween>
                       <Typography>Tổng thời gian</Typography>
-                      <Typography>
-                        {(() => {
-                          let totalDuration = 0;
-                          for (let i = 0; i < course.modules.length; i++) {
-                            for (let j = 0; j < course.modules[i].resources.length; j++) {
-                              totalDuration += course.modules[i].resources[j].duration;
-                            }
-                          }
-                          return moment.utc(totalDuration * 1000).format('HH:mm:ss');
-                        })()}
-                      </Typography>
+                      <Typography>{CourseDuration(course)}</Typography>
                     </BoxBetween>
                     <BoxBetween>
                       <Box>Số lượng chương</Box>
@@ -164,15 +182,7 @@ const CourseList: React.FC = () => {
                     </BoxBetween>
                     <BoxBetween>
                       <Box>Số lượng tài liệu</Box>
-                      <Box>
-                        {(() => {
-                          let totalResource = 0;
-                          for (let i = 0; i < course.modules.length; i++) {
-                            totalResource += course.modules[i].resources.length;
-                          }
-                          return totalResource;
-                        })()}
-                      </Box>
+                      <Box>{CourseResourceTotal(course)}</Box>
                     </BoxBetween>
                     <BoxBetween>
                       <Box>Loại khóa học</Box>
@@ -185,7 +195,7 @@ const CourseList: React.FC = () => {
           ))
         ) : (
           <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center' }} justifyContent={'center'}>
-            <Typography>Không tìm thấy khóa học</Typography>
+            <Typography>Hong tìm thấy khóa học</Typography>
           </Grid>
         )}
       </Grid>

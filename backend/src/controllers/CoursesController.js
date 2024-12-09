@@ -160,7 +160,7 @@ class CoursesController {
       // Xử lý tham số phân trang
       const currentPage = parseInt(page);
       const pageSize = parseInt(limit);
-      const skip = (currentPage) * pageSize;
+      const skip = currentPage * pageSize;
 
       const isFreeFilter =
         types === "true" ? true : types === "false" ? false : null;
@@ -375,6 +375,277 @@ class CoursesController {
       }
 
       res.status(200).json(course[0]);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // async getCourseStatistics(req, res, next) {
+  //   try {
+  //     const courseId = req.params.id;
+
+  //     // Fetch course data with user statistics and modules/resources
+  //     const course = await Course.aggregate([
+  //       {
+  //         $match: { _id: new mongoose.Types.ObjectId(courseId) },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "modules",
+  //           localField: "_id",
+  //           foreignField: "course_id",
+  //           as: "modules",
+  //         },
+  //       },
+  //       {
+  //         $unwind: {
+  //           path: "$modules",
+  //           preserveNullAndEmptyArrays: true,
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "resources",
+  //           localField: "modules._id",
+  //           foreignField: "module_id",
+  //           as: "modules.resources",
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "usercourses", // Join with usercourses to get user statistics
+  //           localField: "_id",
+  //           foreignField: "course_id",
+  //           as: "userStats",
+  //         },
+  //       },
+  //       {
+  //         $addFields: {
+  //           total_users: { $size: "$userStats" }, // Total users enrolled
+  //           total_learning_hours: {
+  //             $sum: {
+  //               $map: {
+  //                 input: "$userStats",
+  //                 as: "user",
+  //                 in: "$$user.total_time", // Total learning time in seconds
+  //               },
+  //             },
+  //           },
+  //         },
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: "users", // Lookup for user details based on usercourses
+  //           localField: "userStats.user_id",
+  //           foreignField: "_id",
+  //           as: "enrolled_users",
+  //         },
+  //       },
+  //       {
+  //         $addFields: {
+  //           enrolled_users: {
+  //             $map: {
+  //               input: "$enrolled_users",
+  //               as: "user",
+  //               in: {
+  //                 user_id: "$$user._id",
+  //                 name: "$$user.name",
+  //                 email: "$$user.email", // Add other user fields as needed
+  //                 total_time: {
+  //                   $arrayElemAt: [
+  //                     {
+  //                       $filter: {
+  //                         input: "$userStats",
+  //                         as: "userStats",
+  //                         cond: { $eq: ["$$userStats.user_id", "$$user._id"] },
+  //                       },
+  //                     },
+  //                     0,
+  //                   ],
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //       },
+  //       {
+  //         $group: {
+  //           _id: "$_id",
+  //           title: { $first: "$title" },
+  //           level: { $first: "$level" },
+  //           thumbnail: { $first: "$thumbnail" },
+  //           description: { $first: "$description" },
+  //           original_price: { $first: "$original_price" },
+  //           sale_price: { $first: "$sale_price" },
+  //           has_certificate: { $first: "$has_certificate" },
+  //           isFree: { $first: "$isFree" },
+  //           isActive: { $first: "$isActive" },
+  //           total_users: { $first: "$total_users" },
+  //           total_learning_hours: { $first: "$total_learning_hours" },
+  //           modules: { $push: "$modules" },
+  //           enrolled_users: { $first: "$enrolled_users" },
+  //         },
+  //       },
+  //       {
+  //         $project: {
+  //           title: 1,
+  //           level: 1,
+  //           thumbnail: 1,
+  //           description: 1,
+  //           original_price: 1,
+  //           sale_price: 1,
+  //           has_certificate: 1,
+  //           isFree: 1,
+  //           isActive: 1,
+  //           total_users: 1,
+  //           total_learning_hours: { $divide: ["$total_learning_hours", 3600] }, // Convert seconds to hours
+  //           modules: 1,
+  //           enrolled_users: 1,
+  //         },
+  //       },
+  //     ]);
+
+  //     if (!course || course.length === 0) {
+  //       return res.status(404).json({ message: "Course not found" });
+  //     }
+
+  //     res.status(200).json(course[0]); // Return the first course data
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
+
+  async getCourseStatistics(req, res, next) {
+    try {
+      const courseId = req.params.id;
+
+      // Fetch course data with user statistics and modules/resources
+      const course = await Course.aggregate([
+        {
+          $match: { _id: new mongoose.Types.ObjectId(courseId) },
+        },
+        {
+          $lookup: {
+            from: "modules",
+            localField: "_id",
+            foreignField: "course_id",
+            as: "modules",
+          },
+        },
+        {
+          $unwind: {
+            path: "$modules",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: "resources",
+            localField: "modules._id",
+            foreignField: "module_id",
+            as: "modules.resources",
+          },
+        },
+        {
+          $lookup: {
+            from: "usercourses", // Join with usercourses to get user statistics
+            localField: "_id",
+            foreignField: "course_id",
+            as: "userStats",
+          },
+        },
+        {
+          $addFields: {
+            total_users: { $size: "$userStats" }, // Total users enrolled
+            total_learning_seconds: {
+              $sum: {
+                $map: {
+                  input: "$userStats",
+                  as: "user",
+                  in: "$$user.total_time", // Total learning time in seconds
+                },
+              },
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "users", // Lookup for user details based on usercourses
+            localField: "userStats.user_id",
+            foreignField: "_id",
+            as: "enrolled_users",
+          },
+        },
+        {
+          $addFields: {
+            enrolled_users: {
+              $map: {
+                input: "$enrolled_users",
+                as: "user",
+                in: {
+                  user_id: "$$user._id",
+                  name: "$$user.name",
+                  email: "$$user.email",
+                  profile_picture: "$$user.profile_picture",
+                  stats: {
+                    $arrayElemAt: [
+                      {
+                        $filter: {
+                          input: "$userStats",
+                          as: "userStats",
+                          cond: { $eq: ["$$userStats.user_id", "$$user._id"] },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$_id",
+            title: { $first: "$title" },
+            level: { $first: "$level" },
+            thumbnail: { $first: "$thumbnail" },
+            description: { $first: "$description" },
+            original_price: { $first: "$original_price" },
+            sale_price: { $first: "$sale_price" },
+            has_certificate: { $first: "$has_certificate" },
+            isFree: { $first: "$isFree" },
+            isActive: { $first: "$isActive" },
+            total_users: { $first: "$total_users" },
+            total_learning_seconds: { $first: "$total_learning_seconds" }, // Total time in seconds
+            modules: { $push: "$modules" },
+            enrolled_users: { $first: "$enrolled_users" },
+          },
+        },
+        {
+          $project: {
+            title: 1,
+            level: 1,
+            thumbnail: 1,
+            description: 1,
+            original_price: 1,
+            sale_price: 1,
+            has_certificate: 1,
+            isFree: 1,
+            isActive: 1,
+            total_users: 1,
+            total_learning_seconds: 1, // Keep total time in seconds
+            modules: 1,
+            enrolled_users: 1,
+          },
+        },
+      ]);
+
+      if (!course || course.length === 0) {
+        return res.status(404).json({ message: "Course not found" });
+      }
+
+      res.status(200).json(course[0]); // Return the first course data
     } catch (error) {
       next(error);
     }

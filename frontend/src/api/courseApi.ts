@@ -12,7 +12,7 @@ export const getSingleCourseById = async (id: string) => {
     console.log(error);
   }
 };
-export const getCourseList = async (params:{}) => {
+export const getCourseList = async (params: {}) => {
   console.log(params);
   const res = await axiosInstance.get(`api/courses/modules-resources`, {
     params,
@@ -23,10 +23,16 @@ export const getCourseSearch = async (search: string) => {
   const res = await axiosInstance.get(`api/courses?search=${search}`);
   return res.data;
 };
+export const getCourseStatistics = async (id: string) => {
+  const res = await axiosInstance.get(`api/courses/${id}/statistics`);
+  return res.data;
+};
+
 export const getCourse = async (id: string) => {
   const res = await axiosInstance.get(`api/courses/${id}/modules-resources`);
   return res.data;
 };
+
 export const getCourseFull = async (id: string) => {
   const res = await axiosInstance.get(`api/courses/${id}/modules-resources-user`);
   return res.data;

@@ -19,14 +19,14 @@ const user = {
       children: [
         {
           id: 'userStudent',
-          title: 'Danh sách',
+          title: 'Học viên',
           type: 'item',
           url: path.admin.studentList,
           target: false,
         },
         {
           id: 'userAdmin',
-          title: 'Admin Manager',
+          title: 'Quản trị',
           type: 'item',
           url: path.admin.hr,
           target: false,
