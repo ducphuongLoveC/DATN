@@ -6,7 +6,7 @@ import moment from 'moment';
 // redux
 
 // ui
-import { Box, Grid, Typography, Button, CardMedia, styled, useTheme, Avatar, TextField, Alert } from '@mui/material';
+import { Box, Grid, Typography, Button, CardMedia, styled, useTheme, Avatar, TextField } from '@mui/material';
 //icon
 import DoneIcon from '@mui/icons-material/Done';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
@@ -168,6 +168,7 @@ const CourseDetail: React.FC = () => {
       amount: Math.round(discountData?.discountedPrice) || data?.sale_price,
       payment_method: 'MOMO',
       code: code,
+      email: authState.user.email,
     });
   };
 

@@ -7,6 +7,7 @@ import { EMAIL, PASSWORD } from "../utils/env.js";
 console.log(EMAIL, PASSWORD);
 
 class OTPController {
+
   constructor() {
     this.otpStore = {};
 
@@ -14,7 +15,7 @@ class OTPController {
       service: "gmail",
       auth: {
         user: EMAIL,
-        pass: PASSWORD,
+        pass: PASSWORD
       },
     });
 

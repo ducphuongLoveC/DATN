@@ -142,13 +142,6 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course }) => {
             </StyledTypography>
             <DetailValue>{moment.utc(course.total_learning_seconds * 1000).format('HH:mm:ss')}</DetailValue>
           </BoxCenter>
-
-          <BoxCenter>
-            <StyledTypography>
-              <AccessTime sx={{ mr: 1, color: theme.palette.primary.main }} /> Thời gian khóa học tạo:
-            </StyledTypography>
-            <DetailValue>{moment(course.created_at).format('HH:mm:ss DD/MM/YYYY')}</DetailValue>
-          </BoxCenter>
         </HighlightBox>
       </Grid>
     </Grid>
