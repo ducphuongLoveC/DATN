@@ -324,9 +324,6 @@ const HR = () => {
                   >
                     Vô Hiệu Hóa
                   </Button>
-                  <Button variant="contained" color="error" onClick={() => handleDeleteUser(row.id)}>
-                    Xóa
-                  </Button>
                 </TableCell>
               </TableRow>
             ))}

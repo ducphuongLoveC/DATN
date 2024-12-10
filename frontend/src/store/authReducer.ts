@@ -7,9 +7,13 @@ export interface User {
   id?: string;
   name?: string;
   nickname?: string;
+  profile_picture: string;
   referring?: string;
   avatar?: string;
   fa?: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthState {

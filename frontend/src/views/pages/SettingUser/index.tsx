@@ -34,7 +34,7 @@ const SettingUser: React.FC = () => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.authReducer.user);
   // Thay đổi cách lấy userId
-  const userId = user?._id; // hoặc user?.id tùy vào cấu trúc data của bạn
+  const userId = user?._id; 
   const dispatch = useDispatch();
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<string>('personalInfo');
@@ -49,10 +49,11 @@ const SettingUser: React.FC = () => {
     name: { isEditing: false, value: user?.name || '' },
     nickname: { isEditing: false, value: user?.nickname || '' },
     referring: { isEditing: false, value: user?.referring || '' },
+    profile_picture: { isEditing: false, value: user?.profile_picture || '' },
   });
 
   // State để lưu URL avatar hiện tại
-  const [avatarUrl, setAvatarUrl] = useState<string>(user?.profile_picture || '/default-avatar.png');
+  const [avatarUrl, setAvatarUrl] = useState<any>(user?.profile_picture || 'default-avatar.png');
 
   // State để quản lý trạng thái loading khi upload
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -75,6 +76,7 @@ const SettingUser: React.FC = () => {
         name: { isEditing: false, value: user.name || '' },
         nickname: { isEditing: false, value: user.nickname || '' },
         referring: { isEditing: false, value: user.referring || '' },
+        profile_picture: { isEditing: false, value: user.profile_picture || '' },
       });
     }
   }, [user]);

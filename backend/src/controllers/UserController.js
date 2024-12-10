@@ -4,7 +4,7 @@ import Access from "../models/Access.js";
 import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
 import Progress from "../models/Progress.js";
-
+import bcrypt from 'bcryptjs';
 
 
 class UserController {
@@ -86,70 +86,68 @@ class UserController {
 
   // lấy lại mật khẩu
   async changePassword(req, res) {
-  try {
-    const { userId, currentPassword, newPassword } = req.body;
-    console.log('Received request data:', { userId, hasCurrentPass: !!currentPassword, hasNewPass: !!newPassword });
-
-    // Validate input
-    if (!userId || !currentPassword || !newPassword) {
-      return res.status(400).json({
-        success: false,
-        message: 'Vui lòng cung cấp đầy đủ thông tin'
-      });
-    }
-
-    // Find user
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'Không tìm thấy thông tin người dùng'
-      });
-    }
-
     try {
-      // Verify current password
-      const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
-      if (!isPasswordValid) {
-        return res.status(401).json({
-          success: false,
-          message: 'Mật khẩu hiện tại không đúng'
+      const { currentPassword, newPassword, confirmPassword } = req.body;
+      const userId = req.user._id; 
+
+      // Kiểm tra các trường bắt buộc
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        return res.status(400).json({
+          message: "Vui lòng điền đầy đủ thông tin",
         });
       }
-    } catch (bcryptError) {
-      console.error('Bcrypt error:', bcryptError);
-      return res.status(500).json({
-        success: false,
-        message: 'Lỗi xác thực mật khẩu'
-      });
-    }
 
-    try {
-      // Hash new password
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      // Kiểm tra mật khẩu mới và xác nhận mật khẩu có khớp nhau
+      if (newPassword !== confirmPassword) {
+        return res.status(400).json({
+          message: "Mật khẩu mới và xác nhận mật khẩu không khớp",
+        });
+      }
+
+      // Kiểm tra độ dài mật khẩu mới
+      if (newPassword.length < 6) {
+        return res.status(400).json({
+          message: "Mật khẩu mới phải có ít nhất 6 ký tự",
+        });
+      }
+
+      // Tìm user trong database
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({
+          message: "Không tìm thấy người dùng",
+        });
+      }
+
+      // Kiểm tra mật khẩu hiện tại
+      const isPasswordValid = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
+      if (!isPasswordValid) {
+        return res.status(400).json({
+          message: "Mật khẩu hiện tại không đúng",
+        });
+      }
+
+      // Mã hóa mật khẩu mới
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      // Cập nhật mật khẩu mới
       user.password = hashedPassword;
       await user.save();
 
       return res.status(200).json({
-        success: true,
-        message: 'Đổi mật khẩu thành công'
+        message: "Đổi mật khẩu thành công",
       });
-    } catch (hashError) {
-      console.error('Hash/Save error:', hashError);
+    } catch (error) {
       return res.status(500).json({
-        success: false,
-        message: 'Lỗi khi cập nhật mật khẩu'
+        message: "Lỗi server",
+        error: error.message,
       });
     }
-
-  } catch (error) {
-    console.error('Change password error:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Đã có lỗi xảy ra, vui lòng thử lại sau'
-    });
   }
-}
   // async getUserCourses(req, res, next) {
   //   try {
   //     const { id } = req.params;

@@ -1,19 +1,20 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  Button,
-  IconButton,
-  Typography,
-  Alert,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
-import axiosInstance from '../../../api/axiosInstance';
-import { useSelector } from 'react-redux';
 import { RootState } from '@/store/reducer';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  Alert,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import axiosInstance from '../../../api/axiosInstance';
+import Cookies from 'js-cookie';
 
 const PasswordModal: React.FC<{
   open: boolean;
@@ -27,10 +28,15 @@ const PasswordModal: React.FC<{
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const user = useSelector((state: RootState) => state.authReducer.user); 
-
+  const user = useSelector((state: RootState) => state.authReducer.user);
 
   const handleSave = async () => {
+    // Kiểm tra user authentication
+    if (!user || !user._id) {
+      setError('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
+      return;
+    }
+
     // Validation trước khi gửi request
     if (!currentPassword) {
       setError('Vui lòng nhập mật khẩu hiện tại');
@@ -52,15 +58,8 @@ const PasswordModal: React.FC<{
       return;
     }
 
-    // Kiểm tra độ dài mật khẩu
     if (newPassword.length < 6) {
       setError('Mật khẩu mới phải có ít nhất 6 ký tự');
-      return;
-    }
-
-    // Kiểm tra user
-    if (!user?._id) {
-      setError('Không tìm thấy thông tin người dùng, vui lòng đăng nhập lại');
       return;
     }
 
@@ -68,66 +67,66 @@ const PasswordModal: React.FC<{
       setLoading(true);
       setError('');
 
-      console.log('Sending request with data:', {
-        userId: user._id,
+      // Lấy token từ localStorage hoặc từ Redux state
+      const token = Cookies.get('accessToken');
+      console.log(token)
+      if (!token) {
+        setError('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
+        return;
+      }
+      
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          userId: user._id  // thử gửi userId qua query params
+        }
+      };
+
+      const response = await axiosInstance.put('/api/user/update-password', {
         currentPassword,
-        newPassword
-      });
+        newPassword,
+        confirmPassword
+      }, config);
 
-      const response = await axiosInstance.post(`/api/user/${user._id}/change-password`, {
-        userId: user._id,
-        currentPassword,
-        newPassword
-      });
-
-      console.log('Response:', response);
-
-      if (response.data.success) {
+      if (response.status === 200) {
         onSave(newPassword);
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
         setError('');
         onClose();
-      } else {
-        setError(response.data.message || 'Có lỗi xảy ra');
       }
     } catch (err: any) {
       console.error('Error details:', err);
-      if (err.response) {
-        switch (err.response.status) {
-          case 400:
-            setError(err.response.data.message || 'Dữ liệu không hợp lệ');
-            break;
-          case 401:
-            setError('Mật khẩu hiện tại không chính xác');
-            break;
-          case 404:
-            setError('Không tìm thấy thông tin người dùng');
-            break;
-          case 500:
-            setError('Lỗi server, vui lòng thử lại sau');
-            break;
-          default:
-            setError('Đã có lỗi xảy ra, vui lòng thử lại');
-        }
-      } else if (err.request) {
-        setError('Không thể kết nối đến máy chủ');
+      if (err.response?.status === 401) {
+        setError('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
       } else {
-        setError('Đã có lỗi xảy ra, vui lòng thử lại');
+        const errorMessage = err.response?.data?.message || 'Đã có lỗi xảy ra, vui lòng thử lại';
+        setError(errorMessage);
       }
     } finally {
       setLoading(false);
     }
   };
 
+  const handleClose = () => {
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setError('');
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         Đổi mật khẩu
         <IconButton
           aria-label="close"
-          onClick={onClose}
+          onClick={handleClose}
           sx={{ position: 'absolute', right: 8, top: 8 }}
         >
           <CloseIcon />
@@ -191,7 +190,7 @@ const PasswordModal: React.FC<{
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} sx={{ color: '#757575' }} disabled={loading}>
+        <Button onClick={handleClose} sx={{ color: '#757575' }} disabled={loading}>
           Hủy
         </Button>
         <Button
