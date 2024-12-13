@@ -14,8 +14,9 @@ interface CertificateProp {
   name?: string;
   description?: string;
   certificate_code?: string;
+  code?: string;
 }
-const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, course_id, name, description }) => {
+const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, course_id, name, description, code }) => {
   const certificateRef = useRef<HTMLDivElement>(null);
 
   const [id, setId] = useState<any>();
@@ -27,25 +28,30 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
   });
 
   useEffect(() => {
-    const fetchCreate = async () => {
-      if (user_id && course_id && name && description) {
-        const payload = {
-          user_id,
-          course_id,
-          name,
-          description,
-        };
-        const data = await createCertificate(payload);
-        setId(data.certificate_code);
+    const fetchCertificate = async () => {
+      if (certificate_code) {
+        setId(certificate_code); 
+      } else if (user_id && course_id && name && description) {
+        const { certificate_code: existingCertificateCode } = await getCertificateByCertificateId(certificate_code || '');
+
+        if (existingCertificateCode) {
+          setId(existingCertificateCode); 
+        } else {
+          const payload = {
+            user_id,
+            course_id,
+            name,
+            description,
+          };
+          const data = await createCertificate(payload);
+          setId(data.certificate_code)
+        }
       }
     };
 
-    if (!certificate_code) {
-      fetchCreate();
-    } else {
-      setId(certificate_code);
-    }
-  }, [user_id, course_id, name, description]);
+    fetchCertificate();
+  }, [user_id, course_id, name, description, certificate_code]);
+
   const downloadPDF = () => {
     if (certificateRef.current) {
       const element = certificateRef.current;
@@ -88,7 +94,7 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
           <Box mt={22} textAlign={'center'}>
             <Box position={'absolute'} bottom={20} right={15}>
               <Typography variant="body2" fontSize={20} color="textSecondary" sx={{ marginTop: 1 }}>
-                code: {data?.certificate_code}
+                code: {data?.certificate_code || code}
               </Typography>
             </Box>
             <Typography variant="h5" fontSize={20} color="primary" marginBottom={2.5} gutterBottom>
@@ -101,13 +107,13 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
               This certifies that
             </Typography>
             <Typography variant="h4" fontSize={30} fontWeight="bold" gutterBottom>
-              {data?.name}
+              {data?.name || name}
             </Typography>
             <Typography variant="h6" fontSize={20} color="textSecondary" gutterBottom>
               has successfully completed the course
             </Typography>
             <Typography variant="h5" fontSize={30} fontWeight="bold" gutterBottom>
-              {data?.description}
+              {data?.description || description}
             </Typography>
             <Typography variant="body1" fontSize={20} color="textSecondary" sx={{ marginTop: 1.5 }}>
               Special Recognition: Outstanding Performance
@@ -147,7 +153,7 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
             <Box mt={17} textAlign={'center'}>
               <Box position={'absolute'} bottom={15} right={10}>
                 <Typography variant="body2" fontSize={12} color="textSecondary" sx={{ marginTop: 1 }}>
-                  code: {data?.certificate_code}
+                  code: {data?.certificate_code || code}
                 </Typography>
               </Box>
               <Typography variant="h5" fontSize={12} color="primary" gutterBottom>
@@ -160,13 +166,13 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
                 This certifies that
               </Typography>
               <Typography variant="h4" fontSize={16} fontWeight="bold" gutterBottom>
-                {data?.name}
+                {data?.name || name}
               </Typography>
               <Typography variant="h6" fontSize={12} color="textSecondary" gutterBottom>
                 has successfully completed the course
               </Typography>
               <Typography variant="h5" fontSize={15} fontWeight="bold" gutterBottom>
-                {data?.description}
+                {data?.description || description}
               </Typography>
               <Typography variant="body1" fontSize={12} color="textSecondary" sx={{ marginTop: 1 }}>
                 Special Recognition: Outstanding Performance

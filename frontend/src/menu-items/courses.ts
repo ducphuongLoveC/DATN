@@ -26,13 +26,6 @@ const courses = {
           target: false,
         },
         {
-          id: 'newLearningPath',
-          title: 'Tạo danh mục khóa học',
-          type: 'item',
-          url: path.admin.newLearningPath,
-          target: false,
-        },
-        {
           id: 'courseList',
           title: 'Danh sách khóa học',
           type: 'item',

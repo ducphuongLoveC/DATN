@@ -203,7 +203,12 @@ class CommentController {
 
   async getAllComments(req, res) {
     try {
-      // Lấy tất cả các bình luận (gồm cả bình luận gốc và trả lời)
+      const { courseId } = req.query; // Lấy khóa học từ query string
+  
+      // Tạo điều kiện lọc nếu có courseId
+      const matchCondition = courseId ? { 'course._id': new mongoose.Types.ObjectId(courseId) } : {};
+  
+      // Lấy tất cả các bình luận (gồm cả bình luận gốc và trả lời) với điều kiện lọc khóa học
       const comments = await Comment.aggregate([
         {
           $lookup: {
@@ -257,9 +262,10 @@ class CommentController {
             course: { $arrayElemAt: ["$course", 0] }, // Chỉ lấy thông tin khóa học đầu tiên
           },
         },
+        { $match: matchCondition }, // Lọc bình luận theo khóa học nếu courseId có
         { $sort: { timestamp: -1 } }, // Sắp xếp bình luận theo thời gian giảm dần
       ]);
-
+  
       // Hàm đệ quy để lấy bình luận lồng cấp (replies)
       async function getReplies(commentId) {
         const replies = await Comment.aggregate([
@@ -281,28 +287,28 @@ class CommentController {
           },
           { $sort: { timestamp: -1 } },
         ]);
-
+  
         // Duyệt qua các bình luận trả lời để gọi đệ quy cho các trả lời (nếu có)
         for (let reply of replies) {
           reply.replies = await getReplies(reply._id); // Gọi đệ quy cho các bình luận trả lời
         }
-
+  
         return replies;
       }
-
+  
       // Lấy các bình luận trả lời cho mỗi bình luận
       for (let comment of comments) {
         comment.replies = await getReplies(comment._id);
       }
-
+  
       // Trả kết quả, bao gồm tên khóa học
-      return res.status(200).json(comments);
+      return res.status(200).json(comments || []); // Đảm bảo trả về mảng, ngay cả khi không có bình luận
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   }
-
+  
   async deleteComment(req, res) {
     try {
       const { id } = req.params; // Lấy ID của comment từ URL

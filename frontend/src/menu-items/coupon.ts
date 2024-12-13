@@ -12,7 +12,7 @@ const coupon = {
   type: 'group',
   children: [
     {
-      id: 'dashboard',
+      id: 'coupon ',
       title: 'Quản lý mã giảm giá',
       type: 'item',
       url: path.admin.coupon,

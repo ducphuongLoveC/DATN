@@ -14,10 +14,13 @@ routerCourse.get(
   "/modules-resources",
   CoursesController.getCoursesWithModulesAndResources
 );
+
 routerCourse.get(
   "/:id/modules-resources",
   CoursesController.getCourseWithModulesAndResources
 );
+
+routerCourse.get("/:id/statistics", CoursesController.getCourseStatistics);
 
 routerCourse.get(
   "/modules-resources-user",

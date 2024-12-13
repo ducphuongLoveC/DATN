@@ -26,18 +26,17 @@ import { toast, ToastContainer } from 'react-toastify';
 import { Edit as EditIcon, Delete as DeleteIcon, Visibility as VisibilityIcon } from '@mui/icons-material';
 
 // my pj
+
 import TextEditor from '@/components/TextEditor';
 import LearningPathSkeletonList from '@/ui-component/cards/Skeleton/LearningPathListSkl';
 import Dialog from '@/components/Dialog';
-import { deleteLearningPath, fetchLearningPaths, updateLearningPath } from '@/api/learningPathApi';
+import { deleteLearningPath, fetchLearningPaths, newLearningPath, updateLearningPath } from '@/api/learningPathApi';
 
-import path from '@/constants/routes';
 import HeaderTitle from '../Title';
 
 export interface LearningPath {
   _id: string;
   title: string;
-  // thumbnail: string;
   description: string;
 }
 
@@ -46,14 +45,27 @@ export default function LearningPathList() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentPath, setCurrentPath] = useState<LearningPath | null>(null);
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState<'create' | 'update' | 'detail' | ''>('');
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['learningPath'],
     queryFn: fetchLearningPaths,
   });
 
-  const mutation = useMutation<
+  const mutationCreate = useMutation({
+    mutationKey: ['learningPath'],
+    mutationFn: newLearningPath,
+    onSuccess: () => {
+      refetch();
+      toast.success('Thêm thành công');
+      reset();
+    },
+    onError: (error: any) => {
+      toast.error(error.response.data.message);
+    },
+  });
+
+  const mutationUpdate = useMutation<
     { _id: string; updateData: LearningPath },
     Error,
     { _id: string; updateData: LearningPath }
@@ -86,7 +98,6 @@ export default function LearningPathList() {
   const { control, handleSubmit, reset, setValue, getValues } = useForm<LearningPath>({
     defaultValues: {
       title: '',
-      // thumbnail: '',
       description: '',
     },
   });
@@ -100,30 +111,31 @@ export default function LearningPathList() {
     setPage(0);
   };
 
+  const openCreate = () => {
+    reset({
+      title: '',
+      description: '',
+    });
+    setEditMode('create');
+    setOpenDialog(true);
+  };
+
   const openEdit = (path: LearningPath) => {
     setCurrentPath(path);
-    setEditMode(true);
+    setEditMode('update');
     setOpenDialog(true);
     reset({
       title: path.title,
-      // thumbnail: path.thumbnail,
       description: path.description,
     });
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Bạn có muốn xóa không?')) {
-      mutationDelete.mutate(id);
-    }
-  };
-
   const openView = (path: LearningPath) => {
     setCurrentPath(path);
-    setEditMode(false);
+    setEditMode('detail');
     setOpenDialog(true);
     reset({
       title: path.title,
-      // thumbnail: path.thumbnail,
       description: path.description,
     });
   };
@@ -131,20 +143,38 @@ export default function LearningPathList() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setCurrentPath(null);
-    setEditMode(false);
+    setEditMode('');
   };
 
   const onSubmit = (data: LearningPath) => {
     console.log('Saving changes:', data);
-    handleEdit(data);
+
+    switch (editMode) {
+      case 'create':
+        handleCreate(data);
+        break;
+      case 'update':
+        handleEdit(data);
+        break;
+    }
+  };
+
+  const handleCreate = (data: LearningPath) => {
+    mutationCreate.mutate(data);
   };
 
   const handleEdit = (data: LearningPath) => {
     if (currentPath?._id) {
-      mutation.mutate({
+      mutationUpdate.mutate({
         _id: currentPath?._id,
         updateData: data,
       });
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm('Bạn có muốn xóa không?')) {
+      mutationDelete.mutate(id);
     }
   };
 
@@ -156,7 +186,7 @@ export default function LearningPathList() {
       <HeaderTitle
         des='Chức năng "danh sách lộ trình học" cho phép quản trị viên có 
         cái nhìn trực quan về tổng thể lộ trình. Bao gồm Chi tiết, Sửa, Xóa'
-        link={path.admin.newLearningPath}
+        onClick={openCreate}
         titleButton="Tạo lộ trình học"
       />
       <Box sx={{ width: '100%' }}>
@@ -196,7 +226,7 @@ export default function LearningPathList() {
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Xóa">
-                      <IconButton onClick={() => handleDelete(path._id)} color="secondary">
+                      <IconButton onClick={() => handleDelete(path._id)} color="error">
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
@@ -219,50 +249,37 @@ export default function LearningPathList() {
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
-        title={editMode ? 'Sửa learning path' : 'Xem chi tiết learning path'}
+        title={
+          editMode === 'create' ? 'Thêm learning path' : editMode === 'update' ? 'Sửa learning path' : 'Xem chi tiết'
+        }
       >
-        {currentPath && (
-          <Box sx={{ pt: 2 }} component="form" onSubmit={handleSubmit(onSubmit)}>
-            <Controller
-              name="title"
-              control={control}
-              render={({ field }) => (
-                <TextField fullWidth label="Title" {...field} disabled={!editMode} margin="normal" />
-              )}
-            />
-            {/* <Controller
-              name="thumbnail"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="Thumbnail URL"
-                  {...field}
-                  disabled={!editMode}
-                  margin="normal"
-                />
-              )}
-            /> */}
+        <Box sx={{ pt: 2 }} component="form" onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+            name="title"
+            control={control}
+            render={({ field }) => (
+              <TextField fullWidth label="Title" {...field} disabled={editMode === 'detail'} margin="normal" />
+            )}
+          />
 
-            <TextEditor
-              initialValue={getValues('description')}
-              onChange={(content) => setValue('description', content)}
-              mode="advanced"
-              disabled={!editMode}
-              initialHeight="300px"
-            />
-            <Box mt={2}>
-              <Button onClick={handleCloseDialog} color="primary">
-                {editMode ? 'Hủy' : 'Đóng'}
+          <TextEditor
+            initialValue={getValues('description')}
+            onChange={(content) => setValue('description', content)}
+            mode="advanced"
+            disabled={!editMode}
+            initialHeight="300px"
+          />
+          <Box mt={2}>
+            <Button onClick={handleCloseDialog} color="primary">
+              {editMode ? 'Hủy' : 'Đóng'}
+            </Button>
+            {editMode !== 'detail' && (
+              <Button type="submit" color="primary" variant="outlined">
+                {mutationCreate.isPending || mutationUpdate.isPending ? 'Đang lưu...' : 'Lưu'}
               </Button>
-              {editMode && (
-                <Button type="submit" color="primary" variant="contained">
-                  {mutation.isPending ? 'Đang lưu...' : 'Lưu'}
-                </Button>
-              )}
-            </Box>
+            )}
           </Box>
-        )}
+        </Box>
       </Dialog>
       <ToastContainer />
     </>

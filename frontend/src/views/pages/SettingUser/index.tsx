@@ -47,7 +47,7 @@ const SettingUser: React.FC = () => {
     [key: string]: EditableField;
   }>({
     name: { isEditing: false, value: user?.name || '' },
-    nickname: { isEditing: false, value: user?.nickname || '' },
+    phone: { isEditing: false, value: user?.phone || '' },
     referring: { isEditing: false, value: user?.referring || '' },
     profile_picture: { isEditing: false, value: user?.profile_picture || '' },
   });
@@ -74,7 +74,7 @@ const SettingUser: React.FC = () => {
       // Cập nhật editableFields khi user thay đổi
       setEditableFields({
         name: { isEditing: false, value: user.name || '' },
-        nickname: { isEditing: false, value: user.nickname || '' },
+        phone: { isEditing: false, value: user.phone || '' },
         referring: { isEditing: false, value: user.referring || '' },
         profile_picture: { isEditing: false, value: user.profile_picture || '' },
       });
@@ -321,7 +321,7 @@ const SettingUser: React.FC = () => {
                 </p>
                 <div className="tw-grid tw-grid-cols-1 md:tw-max-w-[800px] tw-gap-6">
                   {renderEditableField('name', 'Họ và tên')}
-                  {renderEditableField('nickname', 'Tên người dùng')}
+                  {renderEditableField('phone', 'Số điện thoại')}
                   {renderEditableField('referring', 'Giới thiệu')}
                   <div className="tw-border tw-border-gray-300 tw-rounded-md tw-p-4 hover:tw-shadow-md tw-transition-shadow">
                     <div className="tw-flex tw-items-start tw-gap-6">

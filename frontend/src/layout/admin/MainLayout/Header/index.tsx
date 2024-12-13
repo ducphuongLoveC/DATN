@@ -25,7 +25,6 @@ const Header: FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
 
   return (
     <>
-      {/* logo & toggler button */}
       <Box
         sx={{
           width: 228,

@@ -1,20 +1,16 @@
 import { Router } from "express";
 import UserController from "../controllers/UserController.js";
 import { checkAuth } from "../middlewares/checkAuth.js";
+import upload from "../middlewares/multer.js";
+
 const routerUser = Router();
 
-// Lấy tất cả người dùng
 routerUser.get("/", UserController.get);
-
-// Cập nhật thông tin người dùng
-routerUser.put("/users/:id", UserController.updateUser);
-
-// Lấy thông tin người dùng theo ID
+routerUser.put("/users/:id", upload, UserController.updateUser);
 routerUser.get("/:id", UserController.getUserById);
-
-// Lấy danh sách khóa học người dùng
 routerUser.get("/:id/courses", UserController.getUserCourses);
-
 routerUser.put("/update-password",checkAuth, UserController.changePassword)
+routerUser.put("/change-password", checkAuth, UserController.changePassword);
+
 
 export default routerUser;

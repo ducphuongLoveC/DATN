@@ -6,7 +6,6 @@ import Loadable from '@/ui-component/Loadable';
 
 const Dashboard = Loadable(lazy(() => import('../views/pages/admin/Home')));
 const LearningPathList = Loadable(lazy(() => import('../views/pages/admin/LearningPath/LearningPathList')));
-const NewLearningPath = Loadable(lazy(() => import('../views/pages/admin/LearningPath/NewLearningPath')));
 const CoursesList = Loadable(lazy(() => import('../views/pages/admin/Courses/CourseList')));
 const NewCourses = Loadable(lazy(() => import('../views/pages/admin/Courses/NewCourse')));
 const UpdateCourse = Loadable(lazy(() => import('../views/pages/admin/Courses/UpdateCourse')));
@@ -33,6 +32,8 @@ const Comments = Loadable(lazy(() => import('../views/pages/admin/Comments/index
 
 const Coupon = Loadable(lazy(() => import('../views/pages/admin/Coupon/index')));
 
+const CourseStatistics = Loadable(lazy(() => import('../views/pages/admin/Courses/CourseStatistics')));
+
 const PrivateRoutes: RouteProp[] = [
   {
     path: '/',
@@ -45,19 +46,9 @@ const PrivateRoutes: RouteProp[] = [
     page: Dashboard,
   },
   {
-    path: path.admin.newLearningPath,
-    layout: MainLayout,
-    page: NewLearningPath,
-  },
-  {
     path: path.admin.LearningPathList,
     layout: MainLayout,
     page: LearningPathList,
-  },
-  {
-    path: path.admin.newLearningPath,
-    layout: MainLayout,
-    page: NewLearningPath,
   },
   {
     path: path.admin.courses,
@@ -65,7 +56,7 @@ const PrivateRoutes: RouteProp[] = [
     page: CoursesList,
   },
   {
-    path: path.admin.updateCourse,
+    path: path.admin.updateCourse(':id'),
     layout: MainLayout,
     page: UpdateCourse,
   },
@@ -136,7 +127,7 @@ const PrivateRoutes: RouteProp[] = [
   },
 
   {
-    path: path.admin.useUsersDetail,
+    path: path.admin.usersDetail(':id'),
     layout: MainLayout,
     page: UserDetails,
   },
@@ -151,6 +142,11 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.commentList,
     layout: MainLayout,
     page: Comments,
+  },
+  {
+    path: path.admin.courseStatistics(':id'),
+    layout: MainLayout,
+    page: CourseStatistics,
   },
 ];
 

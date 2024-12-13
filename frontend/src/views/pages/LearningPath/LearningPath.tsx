@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import imgCard from '@/assets/images/course/iimg-langage.png'
 import imgCard1 from '@/assets/images/course/image-3.png'
-import img1 from '@/assets/images/course/be.png'
-import img2 from '@/assets/images/course/fe.png'
-import img3 from '@/assets/images/course/fullstack.png'
-import img4 from '@/assets/images/course/ai.png'
+
 import { Link } from 'react-router-dom';
 import {
   Container,

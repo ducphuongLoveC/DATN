@@ -6,7 +6,7 @@ const path = {
     listCategory: '/category',
     listContent: '/content',
     addContent: '/content/add',
-    updateCourse: '/courses/:id/update',
+    updateCourse: (id: string) => `/courses/${id}/update`,
     LearningPathList: '/learning-path',
     newLearningPath: '/learning-path/new',
     posts: '/posts',
@@ -20,11 +20,11 @@ const path = {
     studentList: '/student-list',
     categorys: '/categorys',
     Articlecategorys: '/categorys/article',
-    useUsersDetail: '/user-detail/:id',
+    usersDetail: (id: string) => `/user-detail/${id}`,
     reviewList: '/reviewList',
     commentList: '/commentList',
     coupon: '/coupon',
-
+    courseStatistics: (id: string) => `/course-statistics/${id}`,
   },
   client: {
     auth: {
@@ -46,7 +46,7 @@ const path = {
     newPost: '/new-post',
     myPost: '/my-post',
     bookmark: '/me/bookmark',
-    certificate: '/certificate',
+    checkCertificate: '/certificate/check',
   },
 };
 export default path;

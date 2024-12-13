@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Box, Button, Grid, styled, Typography, useTheme } from '@mui/material';
+import { Box, Button, Grid, styled, TablePagination, Typography, useTheme, List, ListItem } from '@mui/material';
 import { More } from '@mui/icons-material';
 import moment from 'moment';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
+
+import HeadlessTippy from '@tippyjs/react/headless';
 
 // my pj
 import CourseListSkl from '@/ui-component/cards/Skeleton/CourseListSkl';
@@ -15,7 +17,8 @@ import FilterComponent from '@/components/Filter';
 import { getCourseList } from '@/api/courseApi';
 import { useState } from 'react';
 import { fetchLearningPaths } from '@/api/learningPathApi';
-import Page from '@/components/Page';
+import Wrapper from '@/components/Wrapper';
+
 const BoxBetween = styled(Box)(() => ({
   display: 'flex',
   justifyContent: 'space-between',
@@ -24,8 +27,10 @@ const BoxBetween = styled(Box)(() => ({
 
 const CourseList: React.FC = () => {
   const theme = useTheme();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(4);
 
-  const [params, setParams] = useState('');
+  const [params, setParams] = useState({});
 
   const queries = useQueries({
     queries: [
@@ -40,41 +45,61 @@ const CourseList: React.FC = () => {
     ],
   });
 
-  const courses = queries[0];
+  const { data: courses, isLoading: isLoadingCourses } = queries[0];
   const learningPaths = queries[1];
-
+  ``;
   const filterLearningPathList = useMemo(() => {
     return learningPaths?.data?.map((l: any) => ({ display: l.title, value: l._id }));
   }, [learningPaths]);
 
-  if (courses.isLoading) return <CourseListSkl />;
+  if (isLoadingCourses) return <CourseListSkl />;
 
   const handleSetParams = (params: any) => {
     const { search, ...rest } = params;
 
-    const transform = Object.entries(rest).map(([key, values]: [string, any]) => ({
-      [key]: values.map(({ value }: { value: string }) => value).join(','),
-    }));
+    const transform = Object.entries(rest).reduce((acc: any, [key, values]: [string, any]) => {
+      acc[key] = values.map(({ value }: { value: string }) => value).join(',');
+      return acc;
+    }, {});
 
-    const newParams = transform.map((item) => {
-      const key = Object.keys(item)[0];
-      const value = item[key];
-      return `${key}=${value}`;
-    });
-
-    let queryString = '';
-    if (search) {
-      queryString = `?search=${search}`;
-    }
-
-    if (newParams.length > 0) {
-      queryString += (search ? '&' : '?') + newParams.join('&');
-    }
-    setParams(queryString);
+    setParams({ ...transform, search });
   };
 
-  const handlePageChange = (page: number, rowsPerPage: number) => {
-    console.log(page, rowsPerPage);
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+    setParams((pre) => {
+      return { ...pre, page: newPage };
+    });
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setPage(0);
+    setParams((pre) => {
+      return { ...pre, limit: newRowsPerPage };
+    });
+  };
+
+  const CourseDuration = (course: any) => {
+    const totalDuration = course.modules.reduce((moduleAcc: number, module: any) => {
+      return (
+        moduleAcc +
+        module.resources.reduce((resourceAcc: number, resource: any) => {
+          return resourceAcc + resource.duration;
+        }, 0)
+      );
+    }, 0);
+
+    return <div>{moment.utc(totalDuration * 1000).format('HH:mm:ss')}</div>;
+  };
+
+  const CourseResourceTotal = (course: any) => {
+    const resourceTotal = course.modules.reduce((moduleAcc: number, module: any) => {
+      return moduleAcc + module.resources.length;
+    }, 0);
+
+    return resourceTotal;
   };
 
   return (
@@ -106,15 +131,34 @@ const CourseList: React.FC = () => {
 
       <Grid container spacing={2}>
         {courses?.data?.length ? (
-          courses.data.map((course: Course) => (
+          courses?.data?.map((course: Course) => (
             <Grid key={course._id} item sm={12} md={6}>
               <Box sx={{ backgroundColor: theme.palette.background.paper }} p={2}>
                 <BoxBetween>
                   <Typography variant="h3">{course.title}</Typography>
-                  <More />
+                  <HeadlessTippy
+                    placement="bottom-end"
+                    trigger="click"
+                    interactive
+                    allowHTML
+                    render={({ attrs }: any) => (
+                      <Wrapper sx={{ p: 0 }} {...attrs}>
+                        <List sx={{ p: 0 }}>
+                          <ListItem>
+                            <Link to={path.admin.courseStatistics(course._id)}>Xem chi tiết</Link>
+                          </ListItem>
+                          <ListItem>
+                            <Link to={path.admin.courseStatistics(course._id)}>Xóa</Link>
+                          </ListItem>
+                        </List>
+                      </Wrapper>
+                    )}
+                  >
+                    <More sx={{ cursor: 'pointer' }} />
+                  </HeadlessTippy>
                 </BoxBetween>
 
-                <Grid container spacing={10}>
+                <Grid container spacing={3}>
                   <Grid item lg={6}>
                     <Grid container spacing={2}>
                       <Grid item>
@@ -130,17 +174,7 @@ const CourseList: React.FC = () => {
                   <Grid item lg={6}>
                     <BoxBetween>
                       <Typography>Tổng thời gian</Typography>
-                      <Typography>
-                        {(() => {
-                          let totalDuration = 0;
-                          for (let i = 0; i < course.modules.length; i++) {
-                            for (let j = 0; j < course.modules[i].resources.length; j++) {
-                              totalDuration += course.modules[i].resources[j].duration;
-                            }
-                          }
-                          return moment.utc(totalDuration * 1000).format('HH:mm:ss');
-                        })()}
-                      </Typography>
+                      <Typography>{CourseDuration(course)}</Typography>
                     </BoxBetween>
                     <BoxBetween>
                       <Box>Số lượng chương</Box>
@@ -148,15 +182,7 @@ const CourseList: React.FC = () => {
                     </BoxBetween>
                     <BoxBetween>
                       <Box>Số lượng tài liệu</Box>
-                      <Box>
-                        {(() => {
-                          let totalResource = 0;
-                          for (let i = 0; i < course.modules.length; i++) {
-                            totalResource += course.modules[i].resources.length;
-                          }
-                          return totalResource;
-                        })()}
-                      </Box>
+                      <Box>{CourseResourceTotal(course)}</Box>
                     </BoxBetween>
                     <BoxBetween>
                       <Box>Loại khóa học</Box>
@@ -169,11 +195,19 @@ const CourseList: React.FC = () => {
           ))
         ) : (
           <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center' }} justifyContent={'center'}>
-            <Typography>Không tìm thấy khóa học</Typography>
+            <Typography>Hong tìm thấy khóa học</Typography>
           </Grid>
         )}
       </Grid>
-      <Page rowsPerPageOptions={[4, 8, 20]} count={courses?.data?.length} onChange={handlePageChange} />
+      <TablePagination
+        rowsPerPageOptions={[4, 8, 20]}
+        component="div"
+        count={courses.pagination.totalItems}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </Box>
   );
 };

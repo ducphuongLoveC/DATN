@@ -1,8 +1,41 @@
-import { Box, TextField, MenuItem, Button, Grid } from '@mui/material';
+import { useState } from 'react';
+import moment from 'moment';
+
+import { useQuery, useMutation } from '@tanstack/react-query';
+
+import {
+  Box,
+  Button,
+  Grid,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  IconButton,
+  Tooltip,
+  Paper,
+  Typography,
+  Card,
+  CardMedia,
+  CardContent,
+  TablePagination,
+} from '@mui/material';
+import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+
+import useQueryParams from '@/hooks/useQueryParams';
 import HeaderTitle from '../Title';
 import Dialog from '@/components/Dialog';
-import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { getPaidCourses } from '@/api/courseApi';
+import { createCoupon, deleteCoupon, getAllCoupon, updateCoupon } from '@/api/coupon';
+import { toast, ToastContainer } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import { useTheme } from '@mui/material';
+
+// my pj
+
+import FormCoupon from './FormCoupon';
 
 type FormValues = {
   code: string;
@@ -11,46 +44,105 @@ type FormValues = {
   start_date: string;
   end_date: string;
   max_uses: number;
+  course_ids: string[];
 };
 
 const Coupon: React.FC = () => {
-  const [openCreate, setOpenCreate] = useState(false);
+  const theme = useTheme();
+  const query = useQueryParams();
+  const [openDialogCouponForm, setOpenDialogCouponForm] = useState(false);
+  const [openApplyCourseMore, setOpenApplyCourseMore] = useState(false);
+
+  const [applyCourseMoreData, setApplyCourseMoreData] = useState<any>([]);
+  const [editData, setEditData] = useState<any>({});
+
+  const { data: courses, isLoading: isLoadingCourses } = useQuery({
+    queryKey: ['courses'],
+    queryFn: getPaidCourses,
+  });
 
   const {
-    control,
-    handleSubmit,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm<FormValues>({
-    defaultValues: {
-      code: '',
-      discount_type: '',
-      discount_value: 0,
-      start_date: new Date().toISOString().slice(0, 10),
-      end_date: '',
-      max_uses: 1,
+    data: coupons,
+    isLoading: isLoadingCoupons,
+    refetch: refetchCouponList,
+  } = useQuery({
+    queryKey: ['coupons', query.get('page'), query.get('limit')],
+    queryFn: () => getAllCoupon({ page: query.get('page'), limit: query.get('limit') }),
+  });
+
+  const mutationCreateCoupon = useMutation({
+    mutationKey: ['createCoupon'],
+    mutationFn: createCoupon,
+    onSuccess: () => {
+      refetchCouponList();
+      toast.success('Tạo mã giảm giá thành công');
+    },
+    onError(error: any) {
+      toast.error(error.response.data.message);
+    },
+  });
+
+  const mutationUpdateCoupon = useMutation({
+    mutationKey: ['updateCoupon'],
+    mutationFn: updateCoupon,
+    onSuccess: () => {
+      setEditData({});
+      refetchCouponList();
+      toast.success('Cập nhật mã giảm giá thành công');
+    },
+    onError(error: any) {
+      toast.error(error.response.data.message);
+    },
+  });
+
+  const mutationDeleteCoupon = useMutation({
+    mutationKey: ['deleteCoupon'],
+    mutationFn: deleteCoupon,
+    onSuccess: () => {
+      refetchCouponList();
+      toast.success('Xóa mã giảm giá thành công');
+    },
+    onError(error: any) {
+      toast.error(error.response.data.message);
     },
   });
 
   const handleOpenCreateCoupon = () => {
-    setOpenCreate(true);
+    setOpenDialogCouponForm(true);
   };
 
-  const handleCloseCreateCoupon = () => {
-    setOpenCreate(false);
-    reset(); // Reset form khi đóng dialog
+  const handleCloseDialogCoupon = () => {
+    setOpenDialogCouponForm(false);
+    setEditData({});
   };
 
-  const generateRandomCode = () => {
-    const randomCode = Math.random().toString(36).substring(2, 10).toUpperCase();
-    setValue('code', randomCode);
+  const handleOpenApplyCourseMore = () => {
+    setOpenApplyCourseMore(true);
+  };
+  const handleCloseApplyCourseMore = () => {
+    setOpenApplyCourseMore(false);
+    setApplyCourseMoreData([]);
+  };
+
+  const handleDeleteCoupon = (id: string) => {
+    if (confirm('Xác nhận xóa')) {
+      mutationDeleteCoupon.mutate(id);
+    }
   };
 
   const onSubmit = (data: FormValues) => {
-    console.log('Form data:', data);
-    handleCloseCreateCoupon();
+    if (Object.keys(editData).length) {
+      mutationUpdateCoupon.mutate({
+        id: editData._id,
+        data,
+      });
+    } else {
+      mutationCreateCoupon.mutate(data);
+    }
+    handleCloseDialogCoupon();
   };
+
+  if (isLoadingCourses || isLoadingCoupons) return <div>loading...</div>;
 
   return (
     <Box>
@@ -58,143 +150,141 @@ const Coupon: React.FC = () => {
         des="Cho phép quản trị tạo ra các mã giảm giá cho khóa học"
         titleButton="Tạo mã"
         onClick={handleOpenCreateCoupon}
+      ></HeaderTitle>
+      {/* main */}
+
+      <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
+        <Table aria-label="learning paths table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Mã</TableCell>
+              <TableCell>Áp dụng khóa học</TableCell>
+              <TableCell>Loại giảm giá</TableCell>
+              <TableCell>Giá trị giảm</TableCell>
+              <TableCell>Đã sử dụng</TableCell>
+              <TableCell>Số lượng</TableCell>
+              <TableCell>Ngày tạo</TableCell>
+              <TableCell>Ngày hết hạn</TableCell>
+              <TableCell align="right">Hành động</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {coupons?.data?.length > 0 ? (
+              coupons.data.map((c: any) => (
+                <TableRow key={c._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell component="th" scope="row">
+                    {c.code}
+                  </TableCell>
+
+                  <TableCell>
+                    {c.courses.length > 0 && (
+                      <>
+                        {c.courses.length} khóa học
+                        {c.courses.map((course: any) => course.title).join(', ').length > 5 && (
+                          <Button
+                            onClick={() => {
+                              setApplyCourseMoreData(c.courses);
+                              handleOpenApplyCourseMore();
+                            }}
+                            size="small"
+                            sx={{ ml: 1 }}
+                          >
+                            Xem
+                          </Button>
+                        )}
+                      </>
+                    )}
+                  </TableCell>
+                  <TableCell>{c.discount_type}</TableCell>
+                  <TableCell>
+                    {c.discount_value}
+                    {(() => {
+                      switch (c.discount_type) {
+                        case 'percentage':
+                          return '%';
+                      }
+                    })()}
+                  </TableCell>
+                  <TableCell>{c.used_count}</TableCell>
+                  <TableCell>{c.max_uses}</TableCell>
+                  <TableCell>{moment(c.start_date).format('HH:mm DD-MM-YYYY')}</TableCell>
+                  <TableCell>{moment(c.end_date).format('HH:mm DD-MM-YYYY')}</TableCell>
+                  <TableCell align="right">
+                    <Tooltip title="Sửa">
+                      <IconButton
+                        onClick={() => {
+                          setEditData(c);
+                          setOpenDialogCouponForm(true);
+                        }}
+                        color="primary"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Xóa">
+                      <IconButton onClick={() => handleDeleteCoupon(c._id)} color="error">
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <Typography>Không có dữ liệu</Typography>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        component="div"
+        rowsPerPageOptions={[5, 10, 25]}
+        count={coupons?.totalCoupons || 0}
+        page={parseInt(query.get('page') || '1') - 1}
+        rowsPerPage={parseInt(query.get('limit') || '5')}
+        onPageChange={(_event, newPage) => {
+          query.set('page', (newPage + 1).toString());
+        }}
+        onRowsPerPageChange={(event) => {
+          const newRowsPerPage = event.target.value;
+          query.set('limit', newRowsPerPage);
+          query.set('page', '1');
+        }}
       />
-      <Dialog title="Tạo mã" open={openCreate} onClose={handleCloseCreateCoupon}>
-        <Box component="form" noValidate sx={{ mt: 2 }} onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
-            {/* Code */}
-            <Grid item xs={12} sx={{ display: 'flex', alignItems: 'center' }}>
-              <Controller
-                name="code"
-                control={control}
-                rules={{ required: 'Vui lòng nhập mã giảm giá' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    label="Mã giảm giá"
-                    error={!!errors.code}
-                    helperText={errors.code?.message}
-                    sx={{ flex: 1, mr: 1 }}
-                  />
-                )}
-              />
-              <Button variant="outlined" onClick={generateRandomCode}>
-                Tạo ngẫu nhiên
-              </Button>
-            </Grid>
-            {/* Discount Type */}
-            <Grid item xs={12}>
-              <Controller
-                name="discount_type"
-                control={control}
-                rules={{ required: 'Vui lòng chọn loại giảm giá' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    select
-                    fullWidth
-                    label="Loại giảm giá"
-                    error={!!errors.discount_type}
-                    helperText={errors.discount_type?.message}
-                  >
-                    <MenuItem value="percentage">Phần trăm</MenuItem>
-                  </TextField>
-                )}
-              />
-            </Grid>
-            {/* Discount Value */}
-            <Grid item xs={12}>
-              <Controller
-                name="discount_value"
-                control={control}
-                rules={{ required: 'Vui lòng nhập giá trị giảm giá', min: 1 }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    type="number"
-                    label="Giá trị giảm giá"
-                    error={!!errors.discount_value}
-                    helperText={errors.discount_value?.message}
-                  />
-                )}
-              />
-            </Grid>
-            {/* Start Date */}
-            <Grid item xs={6}>
-              <Controller
-                name="start_date"
-                control={control}
-                rules={{ required: 'Vui lòng chọn ngày bắt đầu' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    type="date"
-                    label="Ngày bắt đầu"
-                    InputLabelProps={{ shrink: true }}
-                    error={!!errors.start_date}
-                    helperText={errors.start_date?.message}
-                  />
-                )}
-              />
-            </Grid>
-            {/* End Date */}
-            <Grid item xs={6}>
-              <Controller
-                name="end_date"
-                control={control}
-                rules={{
-                  required: 'Vui lòng chọn ngày kết thúc',
-                  validate: (value) =>
-                    value >= (control._formValues.start_date || '') || 'Ngày kết thúc phải sau ngày bắt đầu',
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    type="date"
-                    label="Ngày kết thúc"
-                    InputLabelProps={{ shrink: true }}
-                    error={!!errors.end_date}
-                    helperText={errors.end_date?.message}
-                  />
-                )}
-              />
-            </Grid>
-            {/* Max Uses */}
-            <Grid item xs={12}>
-              <Controller
-                name="max_uses"
-                control={control}
-                rules={{
-                  required: 'Vui lòng nhập số lần sử dụng tối đa',
-                  min: { value: 1, message: 'Số lần sử dụng tối thiểu là 1' },
-                }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    type="number"
-                    label="Số lần sử dụng tối đa"
-                    error={!!errors.max_uses}
-                    helperText={errors.max_uses?.message}
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button onClick={handleCloseCreateCoupon} sx={{ mr: 2 }}>
-              Hủy
-            </Button>
-            <Button variant="contained" type="submit">
-              Tạo
-            </Button>
-          </Box>
-        </Box>
+
+      {/* dialog create */}
+      <Dialog
+        title={Object.keys(editData).length > 0 ? 'Cập nhật mã giảm giá' : 'Tạo mã giảm giá'}
+        open={openDialogCouponForm}
+        onClose={handleCloseDialogCoupon}
+      >
+        <FormCoupon
+          textBtn={Object.keys(editData).length > 0 ? 'Cập nhật' : 'Tạo'}
+          values={Object.keys(editData).length > 0 && editData}
+          onClose={handleCloseDialogCoupon}
+          courses={courses}
+          onSubmit={onSubmit}
+        />
       </Dialog>
+
+      <Dialog title="Áp dụng cho khóa học" open={openApplyCourseMore} onClose={handleCloseApplyCourseMore}>
+        <Grid container spacing={3}>
+          {applyCourseMoreData.map((c: any) => (
+            <Grid item md={4} key={c.id}>
+              <Link to={`/courses/${c._id}/update`}>
+                <Card sx={{ backgroundColor: theme.palette.background.paper2 }}>
+                  <CardMedia component="img" alt={c.title} height="140" image={c.thumbnail} />
+                  <CardContent sx={{ p: 0 }}>
+                    <Typography mt={2} variant="h4" gutterBottom>
+                      {c.title}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Link>
+            </Grid>
+          ))}
+        </Grid>
+      </Dialog>
+      <ToastContainer />
     </Box>
   );
 };

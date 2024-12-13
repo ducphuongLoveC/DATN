@@ -5,13 +5,7 @@ const userSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "Name is required"],
-      minlength: 6,
-      maxlength: 255,
-    },
-    nickname: {
-      type: String,
-      required: [true, "Nickname is required"],
-      minlength: 6,
+      minlength: 3,
       maxlength: 255,
     },
     email: {
@@ -51,7 +45,6 @@ const userSchema = new mongoose.Schema(
       ],
       default: "member",
     },
-
     isActive: {
       type: Boolean,
       default: true,

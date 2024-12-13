@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from "multer";
-import CloudinaryController from "../controllers/cloudinaryController.js";
+import CloudinaryController from "../controllers/CloudinaryController.js";
 
 const upload = multer({ dest: 'uploads/' }); // Thư mục tạm để lưu file
 

@@ -7,6 +7,8 @@ const routerOrder = Router();
 routerOrder.post("/", OrderController.createOrder);
 // Lấy danh sách đơn hàng
 routerOrder.get("/", OrderController.getAllOrders);
+// Lấy ra tất cả lịch sử giao dịch
+routerOrder.get("/transactionhistory", OrderController.Transactionhistory);
 // Lấy thông tin đơn hàng theo ID
 routerOrder.get("/:id", OrderController.getOrderById);
 // Cập nhật trạng thái đơn hàng

@@ -113,12 +113,12 @@ const ProfileSection: React.FC = () => {
         }}
         icon={
           <Avatar
-            src={user.thumbnail}
+            src={user.profile_picture}
             sx={{
               margin: '8px 0 8px 8px !important',
               cursor: 'pointer',
             }}
-            ref={anchorRef as React.RefObject<HTMLDivElement>} // Cast ref to match Avatar's expected type
+            ref={anchorRef as React.RefObject<HTMLDivElement>}
             aria-controls={open ? 'menu-list-grow' : undefined}
             aria-haspopup="true"
             color="inherit"
@@ -126,7 +126,7 @@ const ProfileSection: React.FC = () => {
         }
         label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
         variant="outlined"
-        ref={anchorRef as any} // Cast ref as any if needed
+        ref={anchorRef as any}
         aria-controls={open ? 'menu-list-grow' : undefined}
         aria-haspopup="true"
         onClick={handleToggle}
