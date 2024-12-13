@@ -26,6 +26,7 @@ const initialState: AuthState = {
   user: (() => {
     try {
       const userStr = Cookies.get('user');
+      console.log(userStr)
       if (!userStr) return null;
       const user = JSON.parse(userStr);
       console.log('Parsed user from cookie:', user);
@@ -35,6 +36,7 @@ const initialState: AuthState = {
       return null;
     }
   })(),
+  
 };
 
 const authReducer = (state = initialState, action: any) => {

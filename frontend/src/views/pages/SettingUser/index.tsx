@@ -49,7 +49,6 @@ const SettingUser: React.FC = () => {
     name: { isEditing: false, value: user?.name || '' },
     phone: { isEditing: false, value: user?.phone || '' },
     referring: { isEditing: false, value: user?.referring || '' },
-
   });
 
   // State để lưu URL avatar hiện tại
@@ -65,10 +64,8 @@ const SettingUser: React.FC = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
-  // Log để debug
   // console.log('User from Redux:', user);
   // console.log('UserId:', userId);
-
   useEffect(() => {
     if (user) {
       // Cập nhật editableFields khi user thay đổi
@@ -77,6 +74,7 @@ const SettingUser: React.FC = () => {
         phone: { isEditing: false, value: user.phone || '' },
         referring: { isEditing: false, value: user.referring || '' },
       });
+      setAvatarUrl(user.profile_picture || 'default-avatar.png');
     }
   }, [user]);
 
@@ -217,9 +215,11 @@ const SettingUser: React.FC = () => {
         setAvatarUrl(newAvatarUrl); // Cập nhật trạng thái local
         setIsModalOpen(false);
         setSnackbar({ open: true, message: 'Cập nhật ảnh đại diện thành công!' });
+        console.log(newAvatarUrl)
       } else {
         throw new Error(response.data.message || 'Upload failed');
       }
+      
     } catch (error) {
       console.error('Error uploading avatar:', error);
       setSnackbar({ open: true, message: 'Có lỗi xảy ra khi tải ảnh lên. Vui lòng thử lại!' });
@@ -232,7 +232,7 @@ const SettingUser: React.FC = () => {
   const handleClosePage = () => {
     navigate('/');
   };
-
+  console.log(avatarUrl)
   // Render field với khả năng chỉnh sửa
   const renderEditableField = (field: string, label: string) => {
     const { isEditing, value } = editableFields[field];
