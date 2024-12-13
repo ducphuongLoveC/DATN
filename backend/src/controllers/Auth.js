@@ -74,5 +74,6 @@ class Auth {
       next(error);
     }
   }
+ 
 }
 export default new Auth();

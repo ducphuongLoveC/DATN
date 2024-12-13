@@ -7,4 +7,5 @@ const routerAuth = Router();
 routerAuth.post("/register", validBodyRequets(userSchema), Auth.register);
 routerAuth.post("/login", Auth.login);
 
+
 export default routerAuth;

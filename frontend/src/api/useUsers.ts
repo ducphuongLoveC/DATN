@@ -2,11 +2,13 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '@/api/axiosInstance';
 
-interface User {
+export interface User {
   id: number;
   _id: string;
   name: string;
   email: string;
+  refering: string;
+  profile_picture: string;
   phone: string;
   address: string;
   role: string;

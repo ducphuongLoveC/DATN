@@ -10,6 +10,7 @@ import useQueryParams from '@/hooks/useQueryParams';
 
 // icon
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { User } from '@/store/authReducer';
 
 const ProFile = () => {
   const query = useQueryParams();
@@ -17,7 +18,7 @@ const ProFile = () => {
   const navigate = useNavigate();
 
   const { courses, coursesError } = useUserCourses(userIdFromURL);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   console.log('User ID from URL:', userIdFromURL);
@@ -27,6 +28,7 @@ const ProFile = () => {
       if (userIdFromURL) {
         try {
           const response = await axiosInstance.get(`/api/user/${userIdFromURL}`);
+          // console.log(response.data)
           if (response.status === 200) {
             if (response.data.data) {
               setUser(response.data.data);
