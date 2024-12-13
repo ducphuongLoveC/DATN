@@ -25,6 +25,7 @@ const path = {
     commentList: '/commentList',
     coupon: '/coupon',
     courseStatistics: (id: string) => `/course-statistics/${id}`,
+    carousel: '/carousel',
   },
   client: {
     auth: {

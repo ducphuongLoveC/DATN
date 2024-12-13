@@ -184,8 +184,8 @@ export default function LearningPathList() {
   return (
     <>
       <HeaderTitle
-        des='Chức năng "danh sách lộ trình học" cho phép quản trị viên có 
-        cái nhìn trực quan về tổng thể lộ trình. Bao gồm Chi tiết, Sửa, Xóa'
+        des='Chức năng "danh mục khóa học" giúp quản trị viên có 
+        cái nhìn trực quan về tổng thể các danh mục. Gồm các chức năng Chi tiết, Sửa, Xóa'
         onClick={openCreate}
         titleButton="Tạo lộ trình học"
       />

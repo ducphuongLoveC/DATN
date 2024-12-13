@@ -107,7 +107,7 @@ const ArtPlayerComponent = forwardRef(
           if (!art?.current?.currentTime) {
             return;
           }
-          if (art?.current?.currentTime >= art.current?.duration / 2 && onCompleted && !isCompleted.current) {
+          if (art?.current?.currentTime >= art.current?.duration / 2 && onCompleted) {
             onCompleted();
             isCompleted.current = true;
           }

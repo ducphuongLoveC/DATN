@@ -183,8 +183,10 @@ class ProgressController {
 
         if (nextProgress) {
           // Nếu tiến độ đã có, chỉ cần cập nhật
-          nextProgress.is_unlocked = true;
-          await nextProgress.save();
+          if (!nextProgress.is_unlocked) {
+            nextProgress.is_unlocked = true;
+            await nextProgress.save();
+          }
         } else {
           // Nếu chưa có, tạo mới tiến độ cho resource tiếp theo
           nextProgress = new Progress({

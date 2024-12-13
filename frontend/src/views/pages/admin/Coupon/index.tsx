@@ -21,10 +21,14 @@ import {
   CardMedia,
   CardContent,
   TablePagination,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
+
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
-import useQueryParams from '@/hooks/useQueryParams';
 import HeaderTitle from '../Title';
 import Dialog from '@/components/Dialog';
 import { getPaidCourses } from '@/api/courseApi';
@@ -49,12 +53,16 @@ type FormValues = {
 
 const Coupon: React.FC = () => {
   const theme = useTheme();
-  const query = useQueryParams();
   const [openDialogCouponForm, setOpenDialogCouponForm] = useState(false);
   const [openApplyCourseMore, setOpenApplyCourseMore] = useState(false);
 
   const [applyCourseMoreData, setApplyCourseMoreData] = useState<any>([]);
   const [editData, setEditData] = useState<any>({});
+  const [params, setParams] = useState<any>({
+    page: 1,
+    limit: 5,
+    order: 'asc',
+  });
 
   const { data: courses, isLoading: isLoadingCourses } = useQuery({
     queryKey: ['courses'],
@@ -66,8 +74,8 @@ const Coupon: React.FC = () => {
     isLoading: isLoadingCoupons,
     refetch: refetchCouponList,
   } = useQuery({
-    queryKey: ['coupons', query.get('page'), query.get('limit')],
-    queryFn: () => getAllCoupon({ page: query.get('page'), limit: query.get('limit') }),
+    queryKey: ['coupons', params],
+    queryFn: () => getAllCoupon(params),
   });
 
   const mutationCreateCoupon = useMutation({
@@ -152,6 +160,19 @@ const Coupon: React.FC = () => {
         onClick={handleOpenCreateCoupon}
       ></HeaderTitle>
       {/* main */}
+
+      <FormControl sx={{ width: 'auto', minWidth: '150px', mb: 2 }}>
+        <InputLabel>Sắp xếp theo giá trị giảm</InputLabel>
+        <Select
+          value={params.order}
+          onChange={(e: any) => setParams((pre: any) => ({ ...pre, order: e.target.value }))}
+          fullWidth
+          label="Sắp xếp theo giá trị giảm"
+        >
+          <MenuItem value="asc">Tăng dần</MenuItem>
+          <MenuItem value="desc">Giảm dần</MenuItem>
+        </Select>
+      </FormControl>
 
       <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
         <Table aria-label="learning paths table">
@@ -239,15 +260,20 @@ const Coupon: React.FC = () => {
         component="div"
         rowsPerPageOptions={[5, 10, 25]}
         count={coupons?.totalCoupons || 0}
-        page={parseInt(query.get('page') || '1') - 1}
-        rowsPerPage={parseInt(query.get('limit') || '5')}
+        page={params.page - 1}
+        rowsPerPage={params?.limit}
         onPageChange={(_event, newPage) => {
-          query.set('page', (newPage + 1).toString());
+          console.log(newPage);
+
+          setParams((pre: any) => ({ ...pre, page: newPage + 1 }));
+          // query.set('page', (newPage + 1).toString());
         }}
         onRowsPerPageChange={(event) => {
           const newRowsPerPage = event.target.value;
-          query.set('limit', newRowsPerPage);
-          query.set('page', '1');
+          setParams((pre: any) => ({ ...pre, page: 1, limit: newRowsPerPage }));
+
+          // query.set('limit', newRowsPerPage);
+          // query.set('page', '1');
         }}
       />
 

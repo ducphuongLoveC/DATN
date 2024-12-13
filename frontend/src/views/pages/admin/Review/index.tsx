@@ -73,7 +73,7 @@ const ReviewList = () => {
       </FormControl>
 
       {reviews.length === 0 ? (
-        <Typography variant="h6" align="center" color="textSecondary">
+        <Typography align="center" color="textSecondary">
           Không có đánh giá nào khớp với bộ lọc số sao bạn chọn
         </Typography>
       ) : (

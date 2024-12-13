@@ -64,12 +64,10 @@ const columns: Column[] = [
       return (
         <div>
           <div>{value.name || 'Không có tên'}</div>
-          <div style={{ fontSize: '0.8em', color: '#666' }}>
-            {value.email || 'Không có email'}
-          </div>
+          <div style={{ fontSize: '0.8em', color: '#666' }}>{value.email || 'Không có email'}</div>
         </div>
       );
-    }
+    },
   },
   {
     id: 'course_id',
@@ -82,7 +80,7 @@ const columns: Column[] = [
           <img
             src={value.thumbnail || DEFAULT_IMAGE}
             alt={value.title || 'Khóa học'}
-            style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
+            style={{ width: '50px', objectFit: 'cover', borderRadius: 4 }}
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.src = DEFAULT_IMAGE;
@@ -91,7 +89,7 @@ const columns: Column[] = [
           <span>{value.title || 'Không có tiêu đề'}</span>
         </div>
       );
-    }
+    },
   },
   {
     id: 'purchaseDate',
@@ -105,12 +103,12 @@ const columns: Column[] = [
           month: 'long',
           day: 'numeric',
           hour: '2-digit',
-          minute: '2-digit'
+          minute: '2-digit',
         });
       } catch {
         return 'Ngày không hợp lệ';
       }
-    }
+    },
   },
   {
     id: 'status',
@@ -121,27 +119,29 @@ const columns: Column[] = [
       const statusStyles: Record<string, React.CSSProperties> = {
         pending: { color: '#f59e0b', background: '#fef3c7' },
         completed: { color: '#10b981', background: '#d1fae5' },
-        failed: { color: '#ef4444', background: '#fee2e2' }
+        failed: { color: '#ef4444', background: '#fee2e2' },
       };
       const statusText: Record<string, string> = {
         pending: 'Đang xử lý',
         completed: 'Hoàn thành',
-        failed: 'Thất bại'
+        failed: 'Thất bại',
       };
       const style = statusStyles[value] || { color: '#666', background: '#f3f4f6' };
       const text = statusText[value] || value;
 
       return (
-        <span style={{
-          padding: '4px 8px',
-          borderRadius: '4px',
-          fontSize: '0.875rem',
-          ...style
-        }}>
+        <span
+          style={{
+            padding: '4px 8px',
+            borderRadius: '4px',
+            fontSize: '0.875rem',
+            ...style,
+          }}
+        >
           {text}
         </span>
       );
-    }
+    },
   },
   {
     id: 'payment_method',
@@ -150,13 +150,13 @@ const columns: Column[] = [
     format: (value: string) => {
       if (!value) return 'N/A';
       const methodText: Record<string, string> = {
-        'bank_transfer': 'Chuyển khoản ngân hàng',
-        'momo': 'Ví MoMo',
-        'vnpay': 'VNPay',
-        'cash': 'Tiền mặt'
+        bank_transfer: 'Chuyển khoản ngân hàng',
+        momo: 'Ví MoMo',
+        vnpay: 'VNPay',
+        cash: 'Tiền mặt',
       };
       return methodText[value] || value;
-    }
+    },
   },
   {
     id: 'amount', // Đổi từ 'total_price' thành 'amount'
@@ -168,13 +168,13 @@ const columns: Column[] = [
       try {
         return value.toLocaleString('vi-VN', {
           style: 'currency',
-          currency: 'VND'
+          currency: 'VND',
         });
       } catch {
         return `${value.toLocaleString()} ₫`;
       }
-    }
-  }
+    },
+  },
 ];
 
 const TransactionHistory: React.FC = () => {
@@ -184,7 +184,7 @@ const TransactionHistory: React.FC = () => {
   const [filters, setFilters] = useState<FilterOptions>({
     minPrice: '',
     maxPrice: '',
-    sortPrice: ''
+    sortPrice: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -227,128 +227,111 @@ const TransactionHistory: React.FC = () => {
     setPage(0);
   };
 
-  const handleFilterChange = (
-    event: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent
-  ) => {
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent) => {
     const { name, value } = event.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
+    setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
-
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+    <Box>
       <HeaderTitle des="Đây là trang lịch sử giao dịch" />
-      <Box sx={{ p: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <Box sx={{ p: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+          <TextField
+            label="Giá tối thiểu"
+            name="minPrice"
+            type="number"
+            value={filters.minPrice}
+            onChange={handleFilterChange as React.ChangeEventHandler<HTMLInputElement>}
+            size="small"
+            InputProps={{
+              inputProps: { min: 0 },
+              startAdornment: <span style={{ marginRight: 8 }}>₫</span>,
+            }}
+          />
+          <TextField
+            label="Giá tối đa"
+            name="maxPrice"
+            type="number"
+            value={filters.maxPrice}
+            onChange={handleFilterChange as React.ChangeEventHandler<HTMLInputElement>}
+            size="small"
+            InputProps={{
+              inputProps: { min: 0 },
+              startAdornment: <span style={{ marginRight: 8 }}>₫</span>,
+            }}
+          />
+          <FormControl size="small" sx={{ minWidth: 120 }}>
+            <InputLabel>Sắp xếp giá</InputLabel>
+            <Select value={filters.sortPrice} label="Sắp xếp giá" name="sortPrice" onChange={handleFilterChange}>
+              <MenuItem value="">Không sắp xếp</MenuItem>
+              <MenuItem value="asc">Tăng dần</MenuItem>
+              <MenuItem value="desc">Giảm dần</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
 
-        <TextField
-          label="Giá tối thiểu"
-          name="minPrice"
-          type="number"
-          value={filters.minPrice}
-          onChange={handleFilterChange as React.ChangeEventHandler<HTMLInputElement>}
-          size="small"
-          InputProps={{
-            inputProps: { min: 0 },
-            startAdornment: <span style={{ marginRight: 8 }}>₫</span>
-          }}
-        />
-        <TextField
-          label="Giá tối đa"
-          name="maxPrice"
-          type="number"
-          value={filters.maxPrice}
-          onChange={handleFilterChange as React.ChangeEventHandler<HTMLInputElement>}
-          size="small"
-          InputProps={{
-            inputProps: { min: 0 },
-            startAdornment: <span style={{ marginRight: 8 }}>₫</span>
-          }}
-        />
-        <FormControl size="small" sx={{ minWidth: 120 }}>
-          <InputLabel>Sắp xếp giá</InputLabel>
-          <Select
-            value={filters.sortPrice}
-            label="Sắp xếp giá"
-            name="sortPrice"
-            onChange={handleFilterChange}
-          >
-            <MenuItem value="">Không sắp xếp</MenuItem>
-            <MenuItem value="asc">Tăng dần</MenuItem>
-            <MenuItem value="desc">Giảm dần</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-
-      <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth, fontWeight: 'bold' }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {loading ? (
+        <TableContainer sx={{ maxHeight: 440 }}>
+          <Table stickyHeader>
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={columns.length} align="center">
-                  Đang tải dữ liệu...
-                </TableCell>
+                {columns.map((column) => (
+                  <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                    {column.label}
+                  </TableCell>
+                ))}
               </TableRow>
-            ) : error ? (
-              <TableRow>
-                <TableCell colSpan={columns.length} align="center" style={{ color: 'red' }}>
-                  {error}
-                </TableCell>
-              </TableRow>
-            ) : orders.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={columns.length} align="center">
-                  Không có dữ liệu
-                </TableCell>
-              </TableRow>
-            ) : (
-              orders
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((order) => (
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length} align="center">
+                    Đang tải dữ liệu...
+                  </TableCell>
+                </TableRow>
+              ) : error ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length} align="center" style={{ color: 'red' }}>
+                    {error}
+                  </TableCell>
+                </TableRow>
+              ) : orders.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length} align="center">
+                    Không có dữ liệu
+                  </TableCell>
+                </TableRow>
+              ) : (
+                orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
                   <TableRow hover key={order._id}>
                     {columns.map((column) => {
                       const value = order[column.id as keyof Order];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format
-                            ? column.format(value)
-                            : (value?.toString() || 'N/A')}
+                          {column.format ? column.format(value) : value?.toString() || 'N/A'}
                         </TableCell>
                       );
                     })}
                   </TableRow>
                 ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={orders.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage="Số dòng mỗi trang"
-        labelDisplayedRows={({ from, to, count }) =>
-          `${from}-${to} của ${count}`
-        }
-      />
-    </Paper>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={orders.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage="Số dòng mỗi trang"
+          labelDisplayedRows={({ from, to, count }) => `${from}-${to} của ${count}`}
+        />
+      </Paper>
+    </Box>
   );
 };
 

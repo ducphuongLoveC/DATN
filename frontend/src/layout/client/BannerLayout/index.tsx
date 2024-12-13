@@ -103,6 +103,7 @@ const fakeSlider = [
       'Trở thành chuyên gia Java, phát triển ứng dụng doanh nghiệp, hệ thống lớn và phần mềm di động với Java Spring.',
   },
 ];
+
 const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
   const theme: Theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
