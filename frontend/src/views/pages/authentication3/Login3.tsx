@@ -184,10 +184,10 @@ const Login: React.FC = () => {
       
       Cookies.set('accessToken', res.data.accessToken || '', ); 
       Cookies.set('user', JSON.stringify(res.data.user || {}));
-
+      console.log(res.data.user)
       dispatch({ type: actionTypes.SET_ACCESS_TOKEN, payload: res.data.accessToken });
       dispatch({ type: actionTypes.SET_USER, payload: res.data.user });
-
+     
       navigate('/');
     },
     onError: (error) => {

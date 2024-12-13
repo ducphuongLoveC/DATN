@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -9,6 +9,7 @@ import {
   Avatar,
   Typography,
   Box,
+  CircularProgress,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
@@ -27,18 +28,46 @@ const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
   onUpload,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string>(currentAvatarUrl);
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Hiển thị preview khi chọn ảnh mới
+  useEffect(() => {
+    if (selectedFile) {
+      const objectUrl = URL.createObjectURL(selectedFile);
+      setPreview(objectUrl);
+
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  }, [selectedFile]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
+      const file = event.target.files[0];
+
+      // Kiểm tra loại file hợp lệ
+      if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+        alert('Chỉ chấp nhận các định dạng JPG, PNG.');
+        return;
+      }
+      setSelectedFile(file);
     }
   };
 
-  const handleUpload = () => {
-    if (selectedFile) {
-      onUpload(selectedFile);
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+
+    setIsUploading(true);
+    try {
+      
+      await onUpload(selectedFile); 
       setSelectedFile(null);
+      setPreview(currentAvatarUrl); 
       onClose();
+    } catch (error) {
+      console.error('Upload failed:', error);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -56,12 +85,12 @@ const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
       </DialogTitle>
       <DialogContent>
         <Typography variant="body2" sx={{ marginBottom: 2 }}>
-          Ảnh đại diện giúp mọi người nhận biết bạn dễ dàng hơn qua các  bài viết, bình luận, tin nhắn...
+          Ảnh đại diện giúp mọi người nhận biết bạn dễ dàng hơn qua các bài viết, bình luận, tin nhắn...
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
           <Avatar
             alt="Current Avatar"
-            src={currentAvatarUrl}
+            src={preview || currentAvatarUrl || 'fallback-image-url'}
             sx={{ width: 100, height: 100 }}
           />
         </Box>
@@ -90,21 +119,21 @@ const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} sx={{ color: '#757575' }}>
+        <Button onClick={onClose} sx={{ color: '#757575' }} disabled={isUploading}>
           Hủy
         </Button>
         <Button
           onClick={handleUpload}
           variant="contained"
-          disabled={!selectedFile}
+          disabled={!selectedFile || isUploading}
           sx={{
             backgroundColor: '#36404D',
             '&:hover': {
-              backgroundColor: '#38364d ',
+              backgroundColor: '#38364d',
             },
           }}
         >
-          Lưu
+          {isUploading ? <CircularProgress size={24} color="inherit" /> : 'Lưu'}
         </Button>
       </DialogActions>
     </Dialog>

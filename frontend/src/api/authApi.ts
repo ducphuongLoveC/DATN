@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import axiosInstance from './axiosInstance';
 export const verifyCaptcha = async (token: string | null) => {
   if (token) {
@@ -23,5 +24,6 @@ export const registerUser = async (data: { name: string; email: string; password
 
 export const login = async (data: { email: string; password: string }) => {
   const res = await axiosInstance.post('api/auth/login', data);
+  Cookies.get('user')
   return res;
 };
