@@ -49,7 +49,7 @@ const SettingUser: React.FC = () => {
     name: { isEditing: false, value: user?.name || '' },
     phone: { isEditing: false, value: user?.phone || '' },
     referring: { isEditing: false, value: user?.referring || '' },
-    profile_picture: { isEditing: false, value: user?.profile_picture || '' },
+
   });
 
   // State để lưu URL avatar hiện tại
@@ -66,7 +66,7 @@ const SettingUser: React.FC = () => {
   };
 
   // Log để debug
-  console.log('User from Redux:', user);
+  // console.log('User from Redux:', user);
   // console.log('UserId:', userId);
 
   useEffect(() => {
@@ -76,7 +76,6 @@ const SettingUser: React.FC = () => {
         name: { isEditing: false, value: user.name || '' },
         phone: { isEditing: false, value: user.phone || '' },
         referring: { isEditing: false, value: user.referring || '' },
-        profile_picture: { isEditing: false, value: user.profile_picture || '' },
       });
     }
   }, [user]);
@@ -128,7 +127,7 @@ const SettingUser: React.FC = () => {
       console.log('Đang cập nhật field:', field, 'với giá trị:', editableFields[field].value);
 
       // Sửa lại endpoint theo router backend
-      const response = await axiosInstance.put(`/api/user/users/${userId}`, {
+      const response = await axiosInstance.put(`/api/user/${userId}`, {
         [field]: editableFields[field].value
       });
 

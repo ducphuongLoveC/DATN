@@ -66,7 +66,7 @@ const authReducer = (state = initialState, action: any) => {
         ...state.user,
         profile_picture: action.payload,
       };
-      Cookies.set('user', JSON.stringify(userWithNewAvatar));
+      Cookies.set('user', JSON.stringify(userWithNewAvatar)); 
       return {
         ...state,
         user: userWithNewAvatar,

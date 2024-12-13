@@ -11,7 +11,6 @@ import {
   Typography,
   Box,
   TablePagination,
-  Button,
 } from '@mui/material';
 import useUsersAdmin from '@/api/useUserAdmin';
 import HeaderTitle from '../Title';
@@ -56,35 +55,7 @@ const HR = () => {
             {paginatedRows.map((user) => (
               <TableRow key={user._id}>
                 <TableCell>
-                  <Avatar alt={user.name} src={user.profile_picture} />
-                </TableCell>
-                <TableCell align="center">{user.name}</TableCell>
-                <TableCell align="center">{user.email}</TableCell>
-                <TableCell align="center">{user.phone}</TableCell>
-                <TableCell align="center">{user.role}</TableCell>
-                <TableCell align="center">
-                  <Box
-                    sx={{
-                      // backgroundColor: user.status === 'Online' ? 'green' : 'gray',
-                      color: 'white',
-                      padding: '4px',
-                      borderRadius: '20px',
-                      textAlign: 'center',
-                    }}
-                  >
-                    {/* {user.status} */}
-                  </Box>
-                </TableCell>
-                <TableCell align="center">
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: 'rgb(123, 126, 196)',
-                      marginRight: 1,
-                    }}
-                  >
-                    Vô Hiệu Hóa
-                  </Button>
+                  <Avatar src={user._id} />
                 </TableCell>
                 <TableCell align="center">{user.name}</TableCell>
                 <TableCell align="center">{user.email}</TableCell>
