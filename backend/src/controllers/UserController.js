@@ -4,8 +4,7 @@ import Access from "../models/Access.js";
 import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
 import Progress from "../models/Progress.js";
-import bcrypt from 'bcryptjs';
-
+import bcrypt from "bcryptjs";
 
 class UserController {
   // Fetch all users
@@ -50,15 +49,15 @@ class UserController {
       });
     } catch (error) {
       console.error("Error fetching user:", error);
-      next(error); 
+      next(error);
     }
   }
 
   async updateUser(req, res, next) {
     try {
       const { id } = req.params;
-      const { name, phone, referring, profile_picture } = req.body; 
-      console.log(req.body)
+      const { name, phone, referring, profile_picture } = req.body;
+      console.log(req.body);
       const updatedUser = await User.findByIdAndUpdate(
         id,
         { name, phone, referring, profile_picture },
@@ -82,12 +81,11 @@ class UserController {
     }
   }
 
-
   // lấy lại mật khẩu
   async changePassword(req, res) {
     try {
       const { currentPassword, newPassword, confirmPassword } = req.body;
-      const userId = req.user._id; 
+      const userId = req.user._id; // Sửa từ req.user.id thành req.user._id
 
       // Kiểm tra các trường bắt buộc
       if (!currentPassword || !newPassword || !confirmPassword) {

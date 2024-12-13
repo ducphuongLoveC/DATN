@@ -34,7 +34,7 @@ const SettingUser: React.FC = () => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.authReducer.user);
   // Thay đổi cách lấy userId
-  const userId = user?._id; 
+  const userId = user?._id;
   const dispatch = useDispatch();
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<string>('personalInfo');
@@ -58,7 +58,7 @@ const SettingUser: React.FC = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
   // State để quản lý Snackbar
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; }>({ open: false, message: '' });
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: '' });
 
   const handleSnackbarClose = () => {
     setSnackbar({ ...snackbar, open: false });
@@ -80,7 +80,7 @@ const SettingUser: React.FC = () => {
 
   useEffect(() => {
     if (user?.profile_picture) {
-      setAvatarUrl(user.profile_picture); 
+      setAvatarUrl(user.profile_picture);
     }
   }, [user?.profile_picture]);
 
@@ -98,7 +98,7 @@ const SettingUser: React.FC = () => {
   const startEditing = (field: string) => {
     setEditableFields({
       ...editableFields,
-      [field]: { ...editableFields[field], isEditing: true }
+      [field]: { ...editableFields[field], isEditing: true },
     });
   };
 
@@ -108,8 +108,8 @@ const SettingUser: React.FC = () => {
       ...editableFields,
       [field]: {
         isEditing: false,
-        value: user[field] || ''
-      }
+        value: user[field] || '',
+      },
     });
   };
 
@@ -126,7 +126,7 @@ const SettingUser: React.FC = () => {
 
       // Sửa lại endpoint theo router backend
       const response = await axiosInstance.put(`/api/user/${userId}`, {
-        [field]: editableFields[field].value
+        [field]: editableFields[field].value,
       });
 
       console.log('Kết quả API:', response.data);
@@ -139,8 +139,8 @@ const SettingUser: React.FC = () => {
           ...editableFields,
           [field]: {
             ...editableFields[field],
-            isEditing: false
-          }
+            isEditing: false,
+          },
         });
 
         // Hiển thị thông báo thành công
@@ -162,8 +162,8 @@ const SettingUser: React.FC = () => {
       ...editableFields,
       [field]: {
         ...editableFields[field],
-        value: newValue
-      }
+        value: newValue,
+      },
     });
   };
 
@@ -197,7 +197,6 @@ const SettingUser: React.FC = () => {
       console.error('Không tìm thấy userId');
       return;
     }
-
     try {
       setIsUploading(true);
       const formData = new FormData();
@@ -209,17 +208,20 @@ const SettingUser: React.FC = () => {
         },
       });
 
-      if (response.data.success) {
-        const newAvatarUrl = response.data.url; // URL từ Cloudinary
-        dispatch(updateAvatar(newAvatarUrl)); // Cập nhật Redux store
-        setAvatarUrl(newAvatarUrl); // Cập nhật trạng thái local
+      const responseUpdatePictureLink = await axiosInstance.put(`/api/user/${userId}`, {
+        profile_picture: response.data.url,
+      });
+
+      if (response.data.success && responseUpdatePictureLink.data.success) {
+        const newAvatarUrl = response.data.url;
+        dispatch(updateAvatar(newAvatarUrl));
+        setAvatarUrl(newAvatarUrl);
         setIsModalOpen(false);
         setSnackbar({ open: true, message: 'Cập nhật ảnh đại diện thành công!' });
-        console.log(newAvatarUrl)
+        console.log(newAvatarUrl);
       } else {
         throw new Error(response.data.message || 'Upload failed');
       }
-      
     } catch (error) {
       console.error('Error uploading avatar:', error);
       setSnackbar({ open: true, message: 'Có lỗi xảy ra khi tải ảnh lên. Vui lòng thử lại!' });
@@ -232,7 +234,7 @@ const SettingUser: React.FC = () => {
   const handleClosePage = () => {
     navigate('/');
   };
-  console.log(avatarUrl)
+  console.log(avatarUrl);
   // Render field với khả năng chỉnh sửa
   const renderEditableField = (field: string, label: string) => {
     const { isEditing, value } = editableFields[field];
@@ -271,10 +273,7 @@ const SettingUser: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div
-            className="tw-cursor-pointer"
-            onClick={() => startEditing(field)}
-          >
+          <div className="tw-cursor-pointer" onClick={() => startEditing(field)}>
             <p className="">{user[field] || 'Chưa cập nhật'}</p>
           </div>
         )}
@@ -283,10 +282,7 @@ const SettingUser: React.FC = () => {
   };
 
   return (
-    <div
-      className="tw-w-full"
-      style={{ background: theme.palette.background.paper }}
-    >
+    <div className="tw-w-full" style={{ background: theme.palette.background.paper }}>
       <div className="tw-relative tw-flex tw-flex-col md:tw-flex-row tw-w-full tw-min-h-screen tw-bg-gray-100">
         <IconButton
           onClick={handleClosePage}
@@ -295,26 +291,14 @@ const SettingUser: React.FC = () => {
         >
           <CloseIcon />
         </IconButton>
-        <Section
-          data={sections}
-          onChange={(s) => handleSectionChange(s.section)}
-        />
-        <div
-          className="tw-w-full md:tw-w-3/4 tw-p-8"
-          style={{ background: theme.palette.background.paper }}
-        >
+        <Section data={sections} onChange={(s) => handleSectionChange(s.section)} />
+        <div className="tw-w-full md:tw-w-3/4 tw-p-8" style={{ background: theme.palette.background.paper }}>
           {activeSection === 'personalInfo' && (
             <>
-              <h3 className="tw-text-2xl tw-font-semibold tw-mb-2 tw-font-bold">
-                Thông tin cá nhân
-              </h3>
-              <p className="tw-text-xs tw-mb-6 tw-text-gray-400">
-                Quản lý thông tin cá nhân của bạn.
-              </p>
+              <h3 className="tw-text-2xl tw-font-semibold tw-mb-2 tw-font-bold">Thông tin cá nhân</h3>
+              <p className="tw-text-xs tw-mb-6 tw-text-gray-400">Quản lý thông tin cá nhân của bạn.</p>
               <div className="tw-mb-12">
-                <h4 className="tw-text-lg tw-font-medium tw-mb-2">
-                  Thông tin cơ bản
-                </h4>
+                <h4 className="tw-text-lg tw-font-medium tw-mb-2">Thông tin cơ bản</h4>
                 <p className="tw-text-xs tw-mb-6 tw-text-gray-400">
                   Quản lý tên hiển thị, tên người dùng, bio và avatar của bạn
                 </p>
@@ -333,9 +317,11 @@ const SettingUser: React.FC = () => {
                             className={`tw-w-full tw-h-full tw-object-cover tw-transition-transform ${isUploading ? 'tw-opacity-50' : 'hover:tw-scale-105'}`}
                             alt={user?.name || 'Avatar'}
                           />
-                          {isUploading && <div className="tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black/50 tw-rounded-full">
-                            <span className="tw-text-white">Đang tải...</span>
-                          </div>}
+                          {isUploading && (
+                            <div className="tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center tw-bg-black/50 tw-rounded-full">
+                              <span className="tw-text-white">Đang tải...</span>
+                            </div>
+                          )}
                         </div>
                         <button
                           onClick={handleAvatarClick}
@@ -392,18 +378,14 @@ const SettingUser: React.FC = () => {
               <h3 className="tw-text-2xl tw-font-semibold tw-mb-2 tw-font-bold hover:tw-shadow-md">
                 Mật khẩu và bảo mật
               </h3>
-              <p className="tw-mb-10 tw-text-xs tw-text-gray-400">
-                Cài đặt bảo mật tài khoản của bạn.
-              </p>
+              <p className="tw-mb-10 tw-text-xs tw-text-gray-400">Cài đặt bảo mật tài khoản của bạn.</p>
               <div className="tw-space-y-4">
                 <div
                   className="tw-border tw-border-gray-300 hover:tw-shadow-md tw-rounded-md tw-p-4 cursor-pointer"
                   onClick={handleOpenPasswordModal}
                 >
                   <span className="">Đổi mật khẩu</span>
-                  <p className="tw-text-xs tw-text-gray-400">
-                    Bạn có muốn đổi mật khẩu chứ
-                  </p>
+                  <p className="tw-text-xs tw-text-gray-400">Bạn có muốn đổi mật khẩu chứ</p>
                 </div>
                 <div className="tw-border tw-border-gray-300 hover:tw-shadow-md tw-rounded-md tw-p-4">
                   <span className="">Xác thực hai yếu tố</span>
@@ -419,7 +401,7 @@ const SettingUser: React.FC = () => {
         open={openPasswordModal}
         onClose={handleClosePasswordModal}
         onSave={handleSavePassword}
-        onForgotPassword={() => { }}
+        onForgotPassword={() => {}}
       />
 
       <AvatarUploadModal
@@ -429,8 +411,13 @@ const SettingUser: React.FC = () => {
         onUpload={handleAvatarUpload}
       />
 
-      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleSnackbarClose} message={snackbar.message} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} />
-
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={snackbar.message}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </div>
   );
 };

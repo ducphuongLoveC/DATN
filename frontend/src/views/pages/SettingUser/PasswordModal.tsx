@@ -67,29 +67,28 @@ const PasswordModal: React.FC<{
       setLoading(true);
       setError('');
 
-      // Lấy token từ localStorage hoặc từ Redux state
-      const token = Cookies.get('accessToken');
-      console.log(token)
-      if (!token) {
-        setError('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
-        return;
-      }
-      
-      const config = {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        params: {
-          userId: user._id  // thử gửi userId qua query params
-        }
-      };
+      // const token = Cookies.get('accessToken');
+      // console.log(token);
+      // if (!token) {
+      //   setError('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
+      //   return;
+      // }
 
-      const response = await axiosInstance.put('/api/user/update-password', {
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //     'Content-Type': 'application/json',
+      //   },
+      //   params: {
+      //     userId: user._id,
+      //   },
+      // };
+
+      const response = await axiosInstance.put(`/api/user/change-password`, {
         currentPassword,
         newPassword,
-        confirmPassword
-      }, config);
+        confirmPassword,
+      });
 
       if (response.status === 200) {
         onSave(newPassword);
@@ -124,11 +123,7 @@ const PasswordModal: React.FC<{
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>
         Đổi mật khẩu
-        <IconButton
-          aria-label="close"
-          onClick={handleClose}
-          sx={{ position: 'absolute', right: 8, top: 8 }}
-        >
+        <IconButton aria-label="close" onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -165,11 +160,7 @@ const PasswordModal: React.FC<{
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           error={newPassword !== confirmPassword && !!error}
-          helperText={
-            newPassword !== confirmPassword && !!error
-              ? 'Mật khẩu xác nhận không khớp.'
-              : ''
-          }
+          helperText={newPassword !== confirmPassword && !!error ? 'Mật khẩu xác nhận không khớp.' : ''}
         />
         {error && (
           <Alert severity="error" sx={{ mt: 2 }}>

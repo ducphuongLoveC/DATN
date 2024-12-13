@@ -11,6 +11,9 @@ export const checkAuth = async (req, res, next) => {
     }
 
     const decode = verifyToken(token);
+
+    console.log('here',decode);
+    
     if (!decode) {
       return res.status(401).json({
         message: "Token invalid or expired",
