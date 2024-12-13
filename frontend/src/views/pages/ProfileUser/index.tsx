@@ -69,7 +69,7 @@ const ProFile = () => {
   return (
     <div className={clsx(s['main-profileUser'])}>
       <div className={clsx(s['banner-profileUser'])}>
-        <img src="https://fullstack.edu.vn/assets/cover-profile-CDYcrPwJ.png" alt="Banner" />
+        <img src="/images/banner-user.png" alt="Banner" />
       </div>
 
       <div className={clsx(s['box-avatar-name'])}>
