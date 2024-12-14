@@ -21,7 +21,6 @@ class UserController {
     }
   }
 
-  // Fetch user by ID
   async getUserById(req, res, next) {
     try {
       const { id } = req.params;
@@ -57,7 +56,14 @@ class UserController {
     try {
       const { id } = req.params;
       const { name, phone, referring, profile_picture } = req.body;
-      console.log(req.body);
+
+      if (phone && !/^\d{10}$/.test(phone)) {
+        return res.status(400).json({
+          success: false,
+          message: "Số điện thoại phải là 10 chữ số",
+        });
+      }
+
       const updatedUser = await User.findByIdAndUpdate(
         id,
         { name, phone, referring, profile_picture },
@@ -81,7 +87,6 @@ class UserController {
     }
   }
 
-  // lấy lại mật khẩu
   async changePassword(req, res) {
     try {
       const { currentPassword, newPassword, confirmPassword } = req.body;
@@ -137,6 +142,58 @@ class UserController {
 
       return res.status(200).json({
         message: "Đổi mật khẩu thành công",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "Lỗi server",
+        error: error.message,
+      });
+    }
+  }
+
+  async resetPassword(req, res) {
+    try {
+      const { email, newPassword, confirmPassword } = req.body;
+
+      // Kiểm tra các trường bắt buộc
+      if (!email || !newPassword || !confirmPassword) {
+        return res.status(400).json({
+          message: "Vui lòng điền đầy đủ thông tin",
+        });
+      }
+
+      // Kiểm tra mật khẩu mới và xác nhận mật khẩu có khớp nhau
+      if (newPassword !== confirmPassword) {
+        return res.status(400).json({
+          message: "Mật khẩu mới và xác nhận mật khẩu không khớp",
+        });
+      }
+
+      // Kiểm tra độ dài mật khẩu mới
+      if (newPassword.length < 6) {
+        return res.status(400).json({
+          message: "Mật khẩu mới phải có ít nhất 6 ký tự",
+        });
+      }
+
+      // Tìm user trong database bằng email
+      const user = await User.findOne({ email });
+      if (!user) {
+        return res.status(404).json({
+          message: "Không tìm thấy người dùng",
+        });
+      }
+
+      // Mã hóa mật khẩu mới
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      // Cập nhật mật khẩu mới
+      user.password = hashedPassword;
+      await user.save();
+
+      return res.status(200).json({
+        message: "Đặt lại mật khẩu thành công",
       });
     } catch (error) {
       return res.status(500).json({

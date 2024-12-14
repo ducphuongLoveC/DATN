@@ -148,7 +148,7 @@ const Header: React.FC = () => {
             {/* Box chứa tìm kiếm */}
             <div className={`tw-flex tw-items-center tw-border-solid ${downSM ? 'tw-w-full' : 'tw-w-1/3'}`}>
               <div className={clsx(s['search'], 'tw-relative tw-w-full')}>
-                <span className="tw-absolute tw-top-3 tw-left-4">
+                <span className="tw-absolute tw-top-2.5 tw-left-4">
                   <SearchIcon />
                 </span>
 

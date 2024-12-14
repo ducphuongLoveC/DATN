@@ -31,6 +31,8 @@ import AnimateButton from '@/ui-component/extended/AnimateButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Google from '@/assets/images/icons/social-google.svg';
+import { Link } from 'react-router-dom';
+import path from '@/constants/routes';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -249,16 +251,18 @@ const AuthLogin: React.FC<AuthLoginProps> = ({ google = false, onSubmit, ...othe
             }
             label="Lưu cho lần đăng nhập sau"
           />
-          <Typography
-            variant="subtitle1"
-            color="secondary"
-            sx={{
-              textDecoration: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            Quên mật khẩu?
-          </Typography>
+          <Link to={path.client.forgetPass}>
+            <Typography
+              variant="subtitle1"
+              color="secondary"
+              sx={{
+                textDecoration: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              Quên mật khẩu?
+            </Typography>
+          </Link>
         </Stack>
 
         <Box

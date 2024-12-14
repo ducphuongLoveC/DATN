@@ -48,6 +48,8 @@ const path = {
     myPost: '/my-post',
     bookmark: '/me/bookmark',
     checkCertificate: '/certificate/check',
+    forgetPass: '/forget-password',
+
   },
 };
 export default path;

@@ -9,8 +9,9 @@ import themes from '@/themes';
 // project imports
 import { router } from '@/routes';
 
-import moment from 'moment';
-moment.locale('vi');
+
+
+
 
 const App: React.FC = () => {
   const state = useSelector(

@@ -37,7 +37,7 @@ const HasAccess: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     fetchAccessData();
   }, [user, course_id]);
 
-  if (isLoading) return <div>Loading...hehe</div>;
+  if (isLoading) return <div></div>;
   if (isError) return <div>Error fetching access data. Please try again.</div>;
 
   if (!user || !hasAccessData) {
