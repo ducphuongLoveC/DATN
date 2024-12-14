@@ -27,7 +27,7 @@ const Header: FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
     <>
       <Box
         sx={{
-          width: 228,
+          width: 258,
           display: 'flex',
           [theme.breakpoints.down('md')]: {
             width: 'auto',

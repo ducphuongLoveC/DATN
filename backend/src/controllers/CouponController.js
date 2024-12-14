@@ -44,17 +44,18 @@ class CouponController {
 
   getAllCoupons = async (req, res) => {
     try {
-      const { page = 1, limit = 5 } = req.query;
+      const { page = 1, limit = 5, order = "asc" } = req.query;
 
       const pageNumber = parseInt(page);
       const limitNumber = parseInt(limit);
-
-      console.log(limitNumber);
-
       const skip = (pageNumber - 1) * limitNumber;
+
+      // Xác định thứ tự sắp xếp (asc: 1, desc: -1)
+      const sortOrder = order === "asc" ? 1 : -1;
 
       const coupons = await Coupon.find()
         .populate("course_ids")
+        .sort({ discount_value: sortOrder }) // Áp dụng sắp xếp
         .skip(skip)
         .limit(limitNumber)
         .exec();
@@ -221,7 +222,6 @@ class CouponController {
 
       discountedPrice = Math.max(discountedPrice, 0);
 
-    
       res.status(200).json({
         success: true,
         message: "Áp dụng mã giảm giá thành công",

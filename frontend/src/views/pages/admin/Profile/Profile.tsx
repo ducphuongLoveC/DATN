@@ -130,7 +130,7 @@ const Profile: React.FC = () => {
       const formDataToSend = new FormData();
       formDataToSend.append('profile_picture', file);
 
-      axiosInstance.put(`/api/user/users/${userId}`, formDataToSend, {
+      axiosInstance.put(`/api/user/${userId}`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -176,7 +176,7 @@ const Profile: React.FC = () => {
       };
 
       const response = await axiosInstance.put(
-        `/api/user/users/${user._id || user.id}`,
+        `/api/user/${user._id || user.id}`,
         updatedData,
         {
           headers: {

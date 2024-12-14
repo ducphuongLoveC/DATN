@@ -19,18 +19,22 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       maxlength: 255,
     },
+    referring: {
+      type: String,
+      maxlength: 255,
+    },
     phone: {
       type: String,
       minlength: 10,
       maxlength: 10,
     },
     profile_picture: {
+      default:
+        "https://t4.ftcdn.net/jpg/05/89/93/27/360_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.webp",
       type: String,
       maxlength: 255,
-      default:
-        "https://static-00.iconduck.com/assets.00/avatar-default-icon-2048x2048-h6w375ur.png",
+      required: [true, "picture is required"],
     },
-
     role: {
       type: String,
       enum: [

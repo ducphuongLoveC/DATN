@@ -22,12 +22,7 @@ export const updateCoupon = async (payload: any) => {
 
 export const getAllCoupon = async (params: any) => {
   try {
-    const paramsSet: any = {};
-
-    if (params?.page) paramsSet.page = params.page;
-    if (params?.limit) paramsSet.limit = params.limit;
-
-    const { data } = await axiosInstance.get('api/coupon', { params: paramsSet });
+    const { data } = await axiosInstance.get('api/coupon', { params });
     return data;
   } catch (error) {
     console.log(error);

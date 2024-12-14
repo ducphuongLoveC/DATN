@@ -5,7 +5,6 @@ import DownloadIcon from '@mui/icons-material/Download';
 
 import html2pdf from 'html2pdf.js';
 
-import certificateBackground from '@/assets/images/certificate/certificate.png';
 import { createCertificate, getCertificateByCertificateId } from '@/api/certificate';
 import moment from 'moment';
 interface CertificateProp {
@@ -18,6 +17,7 @@ interface CertificateProp {
 }
 const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, course_id, name, description, code }) => {
   const certificateRef = useRef<HTMLDivElement>(null);
+  const [backgroundImage, setBackgroundImage] = useState<string>('');
 
   const [id, setId] = useState<any>();
 
@@ -28,14 +28,32 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
   });
 
   useEffect(() => {
+    const fetchImage = async () => {
+      const url = 'https://res.cloudinary.com/dgzwrfdjn/image/upload/v1733853248/certificate_qt2ndi.png';
+      try {
+        const response = await fetch(url, { mode: 'cors' });
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        setBackgroundImage(blobUrl);
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    };
+
+    fetchImage();
+  }, []);
+
+  useEffect(() => {
     const fetchCertificate = async () => {
       if (certificate_code) {
-        setId(certificate_code); 
+        setId(certificate_code);
       } else if (user_id && course_id && name && description) {
-        const { certificate_code: existingCertificateCode } = await getCertificateByCertificateId(certificate_code || '');
+        const { certificate_code: existingCertificateCode } = await getCertificateByCertificateId(
+          certificate_code || ''
+        );
 
         if (existingCertificateCode) {
-          setId(existingCertificateCode); 
+          setId(existingCertificateCode);
         } else {
           const payload = {
             user_id,
@@ -44,7 +62,7 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
             description,
           };
           const data = await createCertificate(payload);
-          setId(data.certificate_code)
+          setId(data.certificate_code);
         }
       }
     };
@@ -85,7 +103,7 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
             flexDirection: 'column',
             alignItems: 'center',
 
-            backgroundImage: `url(${certificateBackground})`,
+            backgroundImage: `url(${backgroundImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             position: 'relative',
@@ -140,7 +158,7 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
               width: '80%',
               height: 'auto',
               margin: '0 auto',
-              backgroundImage: `url(${certificateBackground})`,
+              backgroundImage: `url(${backgroundImage})`,
               backgroundSize: 'contain',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',

@@ -7,6 +7,9 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import DescriptionIcon from '@mui/icons-material/Description';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
+
+// import CodeIcon from '@mui/icons-material/Code';
+// import CreateCodePractice from './CreateCodePractice';
 const contentTypes = [
   { name: 'Upload video', resource_type: 'Video', Component: VideoUpload, icon: PlayCircleIcon },
   { name: 'Upload question', resource_type: 'Question', Component: QuizCreation, icon: QuizIcon },

@@ -137,9 +137,7 @@ const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => 
             return <Question questions={resource.questions} onCompleted={handleCompletedResource} />;
 
           case 'Document':
-            if (!resource.progress.is_completed) {
-              setTimeout(handleCompletedResource, 3000);
-            }
+            setTimeout(handleCompletedResource, 3000);
 
             return (
               <Typography mt={2} fontSize={20} textAlign={'center'}>

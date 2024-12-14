@@ -5,7 +5,8 @@ import { BASE_URL } from "../utils/env.js";
 class OrderController {
   async createOrder(req, res, next) {
     try {
-      const { user_id, course_id, payment_method, amount, code, email } = req.body;
+      const { user_id, course_id, payment_method, amount, code, email } =
+        req.body;
 
       if (!user_id || !course_id || !payment_method || !amount) {
         return res.status(400).json({ message: "Missing required fields" });
@@ -39,7 +40,7 @@ class OrderController {
         amount,
         order_id: savedOrder._id,
         code,
-        email
+        email,
       });
 
       console.log("Payment response:", paymentResponse.data);
@@ -58,7 +59,7 @@ class OrderController {
 
   async getAllOrders(req, res, next) {
     try {
-      const orders = await Order.find()
+      const orders = await Order.find({ status: "completed" })
         .populate("user_id")
         .populate("course_id");
       return res.status(200).json(orders);
@@ -128,47 +129,44 @@ class OrderController {
 
   async Transactionhistory(req, res, next) {
     try {
-      const { 
-        minPrice, 
-        maxPrice, 
-        sortPrice // 'asc' hoặc 'desc' để sắp xếp theo giá
+      const {
+        minPrice,
+        maxPrice,
+        sortPrice, // 'asc' hoặc 'desc' để sắp xếp theo giá
       } = req.query;
-  
+
       // Xây dựng query filter
       let query = Order.find();
-  
+
       // Thêm điều kiện lọc theo giá
       if (minPrice || maxPrice) {
         let priceFilter = {};
-        if (minPrice) priceFilter['$gte'] = parseFloat(minPrice);
-        if (maxPrice) priceFilter['$lte'] = parseFloat(maxPrice);
-  
-        query = query.where('amount', priceFilter);
+        if (minPrice) priceFilter["$gte"] = parseFloat(minPrice);
+        if (maxPrice) priceFilter["$lte"] = parseFloat(maxPrice);
+
+        query = query.where("amount", priceFilter);
       }
-  
+
       // Thêm populate
-      query = query
-        .populate("user_id")
-        .populate("course_id");
-  
+      query = query.populate("user_id").populate("course_id");
+
       // Thêm sắp xếp theo giá nếu có
       if (sortPrice) {
-        query = query.sort({ 
-          amount: sortPrice === 'desc' ? -1 : 1 
+        query = query.sort({
+          amount: sortPrice === "desc" ? -1 : 1,
         });
       }
-  
+
       const orders = await query;
-  
+
       return res.status(200).json({
         success: true,
         total: orders.length,
         data: orders,
-        message: "Lấy danh sách đơn hàng thành công"
+        message: "Lấy danh sách đơn hàng thành công",
       });
-  
     } catch (error) {
-      console.error('Error getting orders:', error);
+      console.error("Error getting orders:", error);
       next(error);
     }
   }

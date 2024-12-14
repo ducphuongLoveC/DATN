@@ -1,7 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { useTheme } from '@mui/material';
+import {
+  Avatar,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  useTheme,
+} from '@mui/material';
 import useUsers from '@/api/useUsers';
 import useCourses from './api/useCourses';
 import { getOrders } from '@/api/OrderApi';
@@ -137,6 +147,20 @@ const Dashboard: React.FC = () => {
     },
   };
 
+  const ordersSorted = useMemo(() => {
+    const merged = orders.reduce((acc: any, o: any) => {
+      const user: any = acc.find((item: any) => item.user_id._id === o.user_id._id);
+      if (user) {
+        user.amount += o.amount;
+      } else {
+        acc.push({ ...o });
+      }
+      return acc;
+    }, []);
+
+    return merged.sort((a: any, b: any) => b.amount - a.amount);
+  }, [orders]);
+
   const top10Courses = [...courses].sort((a, b) => b.enrollment_count - a.enrollment_count).slice(0, 10);
 
   if (loading) {
@@ -201,7 +225,7 @@ const Dashboard: React.FC = () => {
         <div style={{ background: theme.palette.background.default }} className="tw-shadow-md tw-relative">
           <div className="tw-flex tw-justify-between tw-px-4">
             <h3 className="tw-text-lg tw-font-semibold">Học viên</h3>
-            <p className="tw-mt-6 tw-text-xs tw-text-gray-400">Xem thêm</p>
+            {/* <p className="tw-mt-6 tw-text-xs tw-text-gray-400">Xem thêm</p> */}
           </div>
           <div className="tw-text-[90px] tw-text-white tw-bg-violet-500 tw-rounded-full tw-h-[200px] tw-w-[200px] tw-flex tw-items-center tw-justify-center tw-mx-auto tw-my-10">
             {users.length}
@@ -247,69 +271,61 @@ const Dashboard: React.FC = () => {
 
         <div style={{ background: theme.palette.background.default }} className="md:tw-col-span-2 tw-shadow-md">
           <div className="tw-flex tw-justify-between tw-px-4">
-            <h3 className="tw-text-lg tw-font-semibold">Khoá học yêu thích</h3>
-            <p className="tw-mt-6 tw-text-xs tw-text-gray-400">Xem thêm</p>
+            <h3 className="tw-text-lg tw-font-semibold">Top 10 khoá học yêu thích</h3>
           </div>
-          <table className="tw-w-full">
-            <thead>
-              <tr>
-                <th className="tw-px-4 tw-py-2">STT</th>
-                <th className="tw-px-4 tw-py-2">Ảnh</th>
-                <th className="tw-px-4 tw-py-2">Tên khoá học</th>
-                <th className="tw-px-4 tw-py-2">Lượt đăng ký</th>
-              </tr>
-            </thead>
-            <tbody>
-              {top10Courses.map((course, index) => (
-                <tr key={course._id} className="tw-border-b">
-                  <td className="tw-px-4 tw-py-2">{index + 1}</td>
-                  <td className="tw-px-4 tw-py-2">
-                    <img src={course.thumbnail} alt="Course" className="tw-w-10 tw-h-7" />
-                  </td>
-                  <td className="tw-px-4 tw-py-2">{course.title}</td>
-                  <td className="tw-px-4 tw-py-2">{course.enrollment_count}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TableContainer component={Paper}>
+            <Table size="small" aria-label="top 10 courses table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>STT</TableCell>
+                  <TableCell>Ảnh</TableCell>
+                  <TableCell>Tên khoá học</TableCell>
+                  <TableCell align="right">Lượt đăng ký</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {top10Courses.map((course, index) => (
+                  <TableRow key={course._id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>
+                      <Avatar variant="square" src={course.thumbnail} alt="Course" sx={{ width: 40, height: 28 }} />
+                    </TableCell>
+                    <TableCell>{course.title}</TableCell>
+                    <TableCell align="right">{course.enrollment_count}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
         <div
           style={{ background: theme.palette.background.default }}
           className="tw-shadow-md tw-overflow-hidden md:tw-col-span-2"
         >
           <div className="tw-flex tw-justify-between tw-px-4">
-            <h3 className="tw-text-lg tw-font-semibold">Chiến thần chi tiêu</h3>
-            <p className="tw-mt-6 tw-text-xs tw-text-gray-400">Xem thêm</p>
+            <h3 className="tw-text-lg tw-font-semibold">Top 10 chiến thần chi tiêu</h3>
+            {/* <p className="tw-mt-6 tw-text-xs tw-text-gray-400">Xem thêm</p> */}
           </div>
-          <table className="tw-w-full">
-            <thead>
-              <tr>
-                <th className="tw-px-4 tw-py-2">STT</th>
-                <th className="tw-px-4 tw-py-2">Tên học viên</th>
-                <th className="tw-px-4 tw-py-2">Số tiền chi tiêu</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users
-                .map((user) => {
-                  const userOrders = orders.filter((order) => String(order.user_id) === String(user._id));
-                  const totalSpent = userOrders.reduce((sum, order) => {
-                    const amount = typeof order.amount === 'number' && !isNaN(order.amount) ? order.amount : 0;
-                    return sum + amount;
-                  }, 0);
-                  return { ...user, totalSpent };
-                })
-                .sort((a, b) => b.totalSpent - a.totalSpent)
-                .slice(0, 10)
-                .map((user, index) => (
-                  <tr key={index} className="tw-border-b">
-                    <td className="tw-px-4 tw-py-2">{index + 1}</td>
-                    <td className="tw-px-4 tw-py-2">{user.name}</td>
-                    <td className="tw-px-4 tw-py-2">{user.totalSpent.toLocaleString('vi-VN')} VNĐ</td>
-                  </tr>
+          <TableContainer component={Paper} sx={{ px: 3 }}>
+            <Table size="small" aria-label="a dense table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>STT</TableCell>
+                  <TableCell>Tên học viên</TableCell>
+                  <TableCell align="right">Số tiền chi tiêu</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {ordersSorted.map((o: any, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{o.user_id.name}</TableCell>
+                    <TableCell align="right">{o.amount.toLocaleString('vi-VN')} VNĐ</TableCell>
+                  </TableRow>
                 ))}
-            </tbody>
-          </table>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
       </div>
     </div>

@@ -11,9 +11,11 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => { 
     const token = Cookies.get('accessToken');
+    // console.log("Token:", token);  // Kiểm tra token có đúng không
+
     // Kiểm tra nếu token có dấu ngoặc kép thì loại bỏ chúng
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token.replace(/['"]+/g, '')}`; // Loại bỏ dấu ngoặc kép
+      config.headers['Authorization'] = `Bearer ${token.replace(/['"]+/g, '')}`;
     }
     return config;
   },

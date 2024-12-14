@@ -33,6 +33,7 @@ const Comments = Loadable(lazy(() => import('../views/pages/admin/Comments/index
 const Coupon = Loadable(lazy(() => import('../views/pages/admin/Coupon/index')));
 
 const CourseStatistics = Loadable(lazy(() => import('../views/pages/admin/Courses/CourseStatistics')));
+const CarouselManager = Loadable(lazy(() => import('../views/pages/admin/CarouselManager')));
 
 const PrivateRoutes: RouteProp[] = [
   {
@@ -147,6 +148,11 @@ const PrivateRoutes: RouteProp[] = [
     path: path.admin.courseStatistics(':id'),
     layout: MainLayout,
     page: CourseStatistics,
+  },
+  {
+    path: path.admin.carousel,
+    layout: MainLayout,
+    page: CarouselManager,
   },
 ];
 

@@ -1,3 +1,5 @@
+
+
 // action - customization reducer
 const SET_MENU = '@customization/SET_MENU';
 const MENU_TOGGLE = '@customization/MENU_TOGGLE';
@@ -15,6 +17,9 @@ const SET_SEEK = '@/home/SET_SEEK';
 // auth
 const SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN';
 const SET_USER = 'SET_USER';
+export const UPDATE_USER = 'UPDATE_USER';
+export const UPDATE_AVATAR = 'UPDATE_AVATAR';
+
 
 export {
   SET_MENU,
@@ -30,3 +35,15 @@ export {
   SET_IS_FIRST_PLAYING_VIDEO,
   SET_SEEK,
 };
+  
+  export const updateUser = (userData: Partial<any>) => ({
+    type: UPDATE_USER,
+    payload: userData,
+});
+  
+export const updateAvatar = (avatarUrl: string) => ({
+  type: UPDATE_AVATAR,
+  payload: avatarUrl,
+});
+  
+ 

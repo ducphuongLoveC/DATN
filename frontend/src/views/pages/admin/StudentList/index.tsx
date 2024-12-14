@@ -51,7 +51,6 @@ const StudentList = () => {
               <TableCell align="center">Tên</TableCell>
               <TableCell align="center">Địa chỉ Email</TableCell>
               <TableCell align="center">Số Điện thoại</TableCell>
-              <TableCell align="center">Địa chỉ</TableCell>
               <TableCell align="center">Hành động</TableCell>
             </TableRow>
           </TableHead>
@@ -64,7 +63,6 @@ const StudentList = () => {
                 <TableCell align="center">{row.name || 'N/A'}</TableCell>
                 <TableCell align="center">{row.email || 'N/A'}</TableCell>
                 <TableCell align="center">{row.phone || 'N/A'}</TableCell>
-                <TableCell align="center">{row.address || 'N/A'}</TableCell>
                 <TableCell align="center">
                   <Tooltip title="Xem chi tiết">
                     <IconButton onClick={() => handleViewDetails(row)} color="primary">
