@@ -4,7 +4,6 @@ import CourseLearningPathController from "../controllers/CourseLearningPathContr
 
 const routerCourseLearningPath = Router();
 
-
 routerCourseLearningPath.get(
   "/:id",
   CourseLearningPathController.getCoursesByLearningPathId

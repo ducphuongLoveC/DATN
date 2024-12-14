@@ -2,7 +2,7 @@ import { useTheme, IconButton, TextField, Button, Typography, Snackbar } from '@
 import CloseIcon from '@mui/icons-material/Close';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUser, updateAvatar } from '../../../store/actions';
 import PasswordModal from './PasswordModal';
@@ -19,7 +19,7 @@ const sections: SectionItem[] = [
     section: 'personalInfo',
   },
   {
-    field: 'Đổi mật khẩu và bảo mật',
+    field: 'Đổi mật khẩu',
     section: 'securitySettings',
   },
 ];
@@ -36,7 +36,6 @@ const SettingUser: React.FC = () => {
   // Thay đổi cách lấy userId
   const userId = user?._id;
   const dispatch = useDispatch();
-  const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<string>('personalInfo');
   const [loading, setLoading] = useState<boolean>(false);
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
@@ -83,11 +82,6 @@ const SettingUser: React.FC = () => {
       setAvatarUrl(user.profile_picture);
     }
   }, [user?.profile_picture]);
-
-  // Check if user is not found
-  if (!user) {
-    setError('Không tìm thấy dữ liệu người dùng');
-  }
 
   // Handle section change
   const handleSectionChange = (section: string) => {
@@ -146,11 +140,16 @@ const SettingUser: React.FC = () => {
         // Hiển thị thông báo thành công
         setSnackbar({ open: true, message: 'Cập nhật thành công!' });
       } else {
-        throw new Error(response.data.message || 'Cập nhật thất bại');
+        setSnackbar({ open: true, message: response.data.message });
+
+        throw new Error(response.data.message);
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.log(error);
+      
       console.error('Lỗi khi cập nhật dữ liệu:', error);
-      setSnackbar({ open: true, message: 'Có lỗi xảy ra khi cập nhật. Vui lòng thử lại!' });
+      setSnackbar({ open: true, message: error.response.data.message });
+      
     } finally {
       setLoading(false);
     }
@@ -295,7 +294,7 @@ const SettingUser: React.FC = () => {
         <div className="tw-w-full md:tw-w-3/4 tw-p-8" style={{ background: theme.palette.background.paper }}>
           {activeSection === 'personalInfo' && (
             <>
-              <h3 className="tw-text-2xl tw-font-semibold tw-mb-2 tw-font-bold">Thông tin cá nhân</h3>
+              <h3 className="tw-text-2xl tw-mb-2 tw-font-bold">Thông tin cá nhân</h3>
               <p className="tw-text-xs tw-mb-6 tw-text-gray-400">Quản lý thông tin cá nhân của bạn.</p>
               <div className="tw-mb-12">
                 <h4 className="tw-text-lg tw-font-medium tw-mb-2">Thông tin cơ bản</h4>
@@ -303,9 +302,6 @@ const SettingUser: React.FC = () => {
                   Quản lý tên hiển thị, tên người dùng, bio và avatar của bạn
                 </p>
                 <div className="tw-grid tw-grid-cols-1 md:tw-max-w-[800px] tw-gap-6">
-                  {renderEditableField('name', 'Họ và tên')}
-                  {renderEditableField('phone', 'Số điện thoại')}
-                  {renderEditableField('referring', 'Giới thiệu')}
                   <div className="tw-border tw-border-gray-300 tw-rounded-md tw-p-4 hover:tw-shadow-md tw-transition-shadow">
                     <div className="tw-flex tw-items-start tw-gap-6">
                       {/* Avatar section */}
@@ -368,6 +364,9 @@ const SettingUser: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                  {renderEditableField('name', 'Họ và tên')}
+                  {renderEditableField('phone', 'Số điện thoại')}
+                  {renderEditableField('referring', 'Giới thiệu')}
                 </div>
               </div>
             </>
@@ -375,9 +374,7 @@ const SettingUser: React.FC = () => {
 
           {activeSection === 'securitySettings' && (
             <>
-              <h3 className="tw-text-2xl tw-font-semibold tw-mb-2 tw-font-bold hover:tw-shadow-md">
-                Mật khẩu và bảo mật
-              </h3>
+              <h3 className=" tw-mb-2 tw-font-bold hover:tw-shadow-md">Mật khẩu và bảo mật</h3>
               <p className="tw-mb-10 tw-text-xs tw-text-gray-400">Cài đặt bảo mật tài khoản của bạn.</p>
               <div className="tw-space-y-4">
                 <div
@@ -387,22 +384,17 @@ const SettingUser: React.FC = () => {
                   <span className="">Đổi mật khẩu</span>
                   <p className="tw-text-xs tw-text-gray-400">Bạn có muốn đổi mật khẩu chứ</p>
                 </div>
-                <div className="tw-border tw-border-gray-300 hover:tw-shadow-md tw-rounded-md tw-p-4">
+                {/* <div className="tw-border tw-border-gray-300 hover:tw-shadow-md tw-rounded-md tw-p-4">
                   <span className="">Xác thực hai yếu tố</span>
                   <p className="">{user?.fa === 'true' ? 'Đã bật' : 'Chưa bật'}</p>
-                </div>
+                </div> */}
               </div>
             </>
           )}
         </div>
       </div>
 
-      <PasswordModal
-        open={openPasswordModal}
-        onClose={handleClosePasswordModal}
-        onSave={handleSavePassword}
-        onForgotPassword={() => {}}
-      />
+      <PasswordModal open={openPasswordModal} onClose={handleClosePasswordModal} onSave={handleSavePassword} />
 
       <AvatarUploadModal
         open={isModalOpen}
@@ -413,7 +405,7 @@ const SettingUser: React.FC = () => {
 
       <Snackbar
         open={snackbar.open}
-        autoHideDuration={6000}
+        autoHideDuration={1000}
         onClose={handleSnackbarClose}
         message={snackbar.message}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}

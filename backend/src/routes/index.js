@@ -20,6 +20,7 @@ import routerRating from "./rating.js";
 import routerOtp from "./otp.js";
 import routerCoupon from "./coupon.js";
 import routerUserCourse from "./userCourser.js";
+import routerCarousel from "./carousel.js";
 const router = Router();
 
 router.use("/courses", routerCourse);
@@ -43,5 +44,7 @@ router.use("/rating", routerRating);
 router.use("/otp", routerOtp);
 router.use("/coupon", routerCoupon);
 router.use("/user-course", routerUserCourse);
+router.use("/carousel", routerCarousel);
+
 
 export default router;

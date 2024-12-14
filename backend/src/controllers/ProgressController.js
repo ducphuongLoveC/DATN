@@ -158,6 +158,9 @@ class ProgressController {
       const module = await Module.findById(module_id);
       const course_id = module.course_id;
 
+      console.log(currentResource.duration);
+      
+
       await axios.post(`${BASE_URL}/api/user-course`, {
         user_id,
         course_id,

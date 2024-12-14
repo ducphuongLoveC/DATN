@@ -1,27 +1,17 @@
 import { RootState } from '@/store/reducer';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../../../api/axiosInstance';
-import Cookies from 'js-cookie';
+import { toast, ToastContainer } from 'react-toastify';
+import sleep from '@/utils/sleep';
 
 const PasswordModal: React.FC<{
   open: boolean;
   onClose: () => void;
   onSave: (newPassword: string) => void;
-  onForgotPassword: () => void;
-}> = ({ open, onClose, onSave, onForgotPassword }) => {
+}> = ({ open, onClose, onSave }) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -67,23 +57,6 @@ const PasswordModal: React.FC<{
       setLoading(true);
       setError('');
 
-      // const token = Cookies.get('accessToken');
-      // console.log(token);
-      // if (!token) {
-      //   setError('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại');
-      //   return;
-      // }
-
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //     'Content-Type': 'application/json',
-      //   },
-      //   params: {
-      //     userId: user._id,
-      //   },
-      // };
-
       const response = await axiosInstance.put(`/api/user/change-password`, {
         currentPassword,
         newPassword,
@@ -91,6 +64,8 @@ const PasswordModal: React.FC<{
       });
 
       if (response.status === 200) {
+        toast.success('Đổi mật khẩu thành công');
+        await sleep(1000);
         onSave(newPassword);
         setCurrentPassword('');
         setNewPassword('');
@@ -167,18 +142,6 @@ const PasswordModal: React.FC<{
             {error}
           </Alert>
         )}
-        <Typography
-          variant="body2"
-          onClick={onForgotPassword}
-          sx={{
-            cursor: 'pointer',
-            color: '#ec5e5e',
-            textDecoration: 'underline',
-            marginTop: '12px',
-          }}
-        >
-          Bạn quên mật khẩu ư?
-        </Typography>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} sx={{ color: '#757575' }} disabled={loading}>
@@ -198,6 +161,7 @@ const PasswordModal: React.FC<{
           {loading ? 'Đang xử lý...' : 'Đổi mật khẩu'}
         </Button>
       </DialogActions>
+      <ToastContainer />
     </Dialog>
   );
 };

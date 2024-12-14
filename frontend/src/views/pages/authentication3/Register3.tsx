@@ -24,7 +24,6 @@ import { registerUser } from '@/api/authApi';
 import sleep from '@/utils/sleep';
 import { AxiosError } from 'axios';
 
-
 interface ErrorResponse {
   message?: string; // message có thể không tồn tại
 }
@@ -55,7 +54,6 @@ const Register: React.FC = () => {
   const handleRegisterUser = (data: AuthRegisterData) => {
     const fullName = `${data.fname} ${data.lname}`;
     const fData = {
-      
       name: fullName,
       email: data.email,
       password: data.password,

@@ -29,6 +29,7 @@ const CourseDetail = Loadable(lazy(() => import('@/views/pages/CourseDetail')));
 const NewPost = Loadable(lazy(() => import('@/views/pages/Post/NewPost')));
 const MyCourses = Loadable(lazy(() => import('@/views/pages/MyCourses')));
 const CertificateCheck = Loadable(lazy(() => import('@/views/pages/CertificateCheck')));
+const ForgetPassword = Loadable(lazy(() => import('../views/pages/authentication3/ForgetPassword')));
 
 import RouteProp from '@/interfaces/route';
 import HasUser from '@/middlewares/HasUser';
@@ -115,6 +116,11 @@ const publicRoutes: RouteProp[] = [
     layout: BasicLayout,
     path: path.client.checkCertificate,
     page: CertificateCheck,
+  },
+  {
+    layout: MainLayout,
+    path: path.client.forgetPass,
+    page: ForgetPassword,
   },
 ];
 

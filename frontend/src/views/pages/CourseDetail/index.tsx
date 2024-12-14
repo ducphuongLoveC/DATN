@@ -349,6 +349,7 @@ const CourseDetail: React.FC = () => {
             }
           />
         </Grid>
+        
         {/* box 2 */}
         <Grid item xs={12} md={4} xl={4}>
           <Box
@@ -523,7 +524,7 @@ const CourseDetail: React.FC = () => {
       <Dialog title="Mã khuyến mãi" open={isOpenCoupon} onClose={() => setIsOpenCoupon(false)}>
         {isLoadingCoupon ? (
           'loading...'
-        ) : (
+        ) : coupons?.length > 0 ? (
           <CouponList
             coupons={coupons}
             onChange={(code) => {
@@ -531,6 +532,8 @@ const CourseDetail: React.FC = () => {
               setIsOpenCoupon(false);
             }}
           />
+        ) : (
+          <Typography>Không có mã giảm giá nào cho khóa học này</Typography>
         )}
       </Dialog>
     </Box>

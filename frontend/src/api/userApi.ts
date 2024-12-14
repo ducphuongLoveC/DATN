@@ -8,3 +8,12 @@ export const getCoursesProgressWithUser = async (user_id: string) => {
     throw error;
   }
 };
+
+export const resetPassword = async (data: { email: string; newPassword: string; confirmPassword: string }) => {
+  try {
+    const res = await axiosInstance.put('api/user/reset-password', data);
+    return res;
+  } catch (error) {
+    throw error;
+  }
+};

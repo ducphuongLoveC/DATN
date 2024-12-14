@@ -15,6 +15,8 @@ import {
   TablePagination,
 } from '@mui/material';
 import moment from 'moment';
+moment.locale('vi');
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -37,7 +39,7 @@ const StudentList: React.FC<StudentListProps> = ({ users }) => {
   };
 
   // Calculate rows to display
-  const paginatedUsers = users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const paginatedUsers = users?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
     <>
