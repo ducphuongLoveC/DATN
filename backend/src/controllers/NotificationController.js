@@ -24,10 +24,10 @@ class NotificationController {
   // Đánh dấu thông báo là đã đọc
   async markAsRead(req, res) {
     try {
-      const { notification_id } = req.params;
+      const { id } = req.params;
 
       // Kiểm tra notification_id
-      if (!notification_id) {
+      if (!id) {
         return res
           .status(400)
           .json({ message: "Notification ID is required." });
@@ -35,7 +35,7 @@ class NotificationController {
 
       // Đánh dấu thông báo là đã đọc
       const notification = await Notification.findByIdAndUpdate(
-        notification_id,
+        id,
         { isRead: true },
         { new: true }
       );
@@ -47,6 +47,43 @@ class NotificationController {
       return res.status(200).json(notification);
     } catch (error) {
       console.error("Error marking notification as read:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  async markAllAsRead(req, res) {
+    try {
+      const { id } = req.params; // `id` là `user_id`
+      if (!id) {
+        return res.status(400).json({ message: "User ID is required." });
+      }
+      const result = await Notification.updateMany(
+        { user_id: id, isRead: false },
+        { $set: { isRead: true } }
+      );
+      return res.status(200).json({
+        message: "All notifications marked as read.",
+        modifiedCount: result.modifiedCount,
+      });
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  async deleteAllNotificationsByUserId(req, res) {
+    try {
+      const { id } = req.params; // `id` là `user_id`
+      if (!id) {
+        return res.status(400).json({ message: "User ID is required." });
+      }
+      const result = await Notification.deleteMany({ user_id: id });
+      return res.status(200).json({
+        message: "All notifications deleted successfully.",
+        deletedCount: result.deletedCount,
+      });
+    } catch (error) {
+      console.error("Error deleting all notifications:", error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   }

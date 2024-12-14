@@ -93,7 +93,7 @@ const publicRoutes: RouteProp[] = [
     page: CourseDetail,
   },
   {
-    path: path.client.profile,
+    path: path.client.profile(''),
     layout: MainLayout,
     page: ProFile,
   },

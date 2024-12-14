@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Box, Typography, styled, useMediaQuery, Button, Hidden } from '@mui/material';
 import { useTheme } from '@mui/material';
@@ -34,6 +34,7 @@ import Resource from './Resource';
 import TrackList from './TrackList';
 import { RootState } from '@/store/reducer';
 import Header from './Header/Header';
+import { SET_EXPANDED_INDEXS } from '@/store/actions';
 
 const LessonNavigation = styled(Box)(({ theme }) => ({
   position: 'fixed',
@@ -64,6 +65,10 @@ const ButtonStyle = styled(Button)(({ theme }) => ({
 }));
 
 const Learning: React.FC = () => {
+  const dispatch = useDispatch();
+  const storedExpandedIndexs = useSelector((state: RootState) => state.homeReducer.expandedIndexs);
+  const user = useSelector((state: RootState) => state.authReducer.user);
+
   const [seek, setSeek] = useState<any>(0);
 
   const [queryNote, setQueryNote] = useState<any[]>([
@@ -80,14 +85,12 @@ const Learning: React.FC = () => {
   const { id } = useParams();
   const query = useQueryParams();
 
-  const user = useSelector((state: RootState) => state.authReducer.user);
-
   const idResource = query.get('id') || '';
   const [openTrackList, setOpenTrackList] = useState<boolean>(true);
 
   const queryClient = useQueryClient();
   const moduleQuery = useQuery({
-    queryKey: ['module'],
+    queryKey: ['module', id],
     queryFn: () => findModuleByCourseId(id || '', user._id),
   });
 
@@ -108,6 +111,20 @@ const Learning: React.FC = () => {
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
+  const handleOpenModuleByCurrentModuleId = (module_id: string) => {
+    const findIndexModule = moduleQuery.data?.findIndex((module: any) => module._id === module_id);
+
+    console.log('Find Index Module:', findIndexModule);
+    console.log('Stored Expanded Indexs:', storedExpandedIndexs);
+
+    if (findIndexModule !== undefined && !storedExpandedIndexs.includes(findIndexModule)) {
+      dispatch({
+        type: SET_EXPANDED_INDEXS,
+        payload: [...storedExpandedIndexs, findIndexModule],
+      });
+    }
+  };
+
   const toggleLearningList = () => {
     setOpenTrackList((prev) => !prev);
   };
@@ -116,9 +133,9 @@ const Learning: React.FC = () => {
     try {
       const res = await getAdjacentResourceId(idResource, direction, user._id);
 
-      console.log(res);
       if (res?.progress?.is_unlocked) {
         query.set('id', res._id);
+        handleOpenModuleByCurrentModuleId(res.module_id);
       }
     } catch (error) {
       console.log(error);
@@ -137,12 +154,10 @@ const Learning: React.FC = () => {
   const handleNoteFilter = (value: string) => {
     setQueryNote((pre) => [...pre, { key: 'type', value: value }]);
   };
-
   const hanldeNoteDate = (value: string) => {
     setQueryNote((pre) => [...pre, { key: 'sort', value: value }]);
   };
   // note action
-
   const handleUpdateNote = async (id: string, newContent: string) => {
     await updateNote(id, newContent);
     refetchNote();
@@ -164,6 +179,13 @@ const Learning: React.FC = () => {
   useEffect(() => {
     setSeek(undefined);
   }, [idResource]);
+
+  // mở ra module mà resource đang nằm trong nó
+  useEffect(() => {
+    if (resourceQuery?.data && moduleQuery?.data) {
+      handleOpenModuleByCurrentModuleId(resourceQuery.data.module_id);
+    }
+  }, [resourceQuery?.data, moduleQuery?.data]);
 
   if (moduleQuery.isError || resourceQuery.isError) return <div>Error</div>;
 
@@ -289,7 +311,16 @@ const Learning: React.FC = () => {
 
             <Button sx={{ color: theme.palette.text.primary, height: '50px' }} onClick={toggleLearningList}>
               <Hidden mdDown>
-                <Typography mr={1} variant="h4">
+                <Typography
+                  mr={1}
+                  variant="h4"
+                  sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    maxWidth: '25ch',
+                  }}
+                >
                   {!resourceQuery.isLoading && resourceQuery.data.module.title}
                 </Typography>
               </Hidden>

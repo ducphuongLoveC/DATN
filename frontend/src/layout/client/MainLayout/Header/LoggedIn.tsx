@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useTheme } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
 import HeadlessTippy from '@tippyjs/react/headless';
 import { Link, useNavigate } from 'react-router-dom';
 
-import lodash from 'lodash';
+import lodash from 'lodash';  
 // moment
 import moment from 'moment';
 // mui
@@ -27,7 +27,12 @@ import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
 
 // api
-import { getNotificationById } from '../../../../api/notification';
+import {
+  deleteAllNotificationsByUserId,
+  getNotificationById,
+  markAllAsRead,
+  markAsRead,
+} from '../../../../api/notification';
 
 interface UserProp {
   user: {
@@ -62,13 +67,35 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
     dispatch({ type: actionTypes.SET_USER, payload: '' });
   };
 
-  const handleNotificationClick = (notification: any) => {
+  const handleNotificationClick = async (notification: any) => {
+    await markAsRead(notification._id);
     switch (notification.type) {
       case 'comment':
         const { course_id, resource_id, comment_id } = notification.data;
         navigate(`/learning/${course_id}?id=${resource_id}&comment=${comment_id}`);
         break;
     }
+  };
+
+  const handleMarkIsReadUserNotifications = async () => {
+    const res = await markAllAsRead(user._id);
+    if (res.status === 200) {
+      refetch();
+    }
+  };
+
+  const handleDeleteAllNotificationsByUserId = async () => {
+    const res = await deleteAllNotificationsByUserId(user._id);
+    if (res.status === 200) {
+      refetch();
+    }
+  };
+
+  const notificationUnReadTotal = () => {
+    return notifications.reduce(
+      (acc: number, currentNotification: any) => acc + (!currentNotification.isRead ? 1 : 0),
+      0
+    );
   };
 
   // socket notification
@@ -92,9 +119,9 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
     <>
       <li className={`tw-relative ${downSM ? 'tw-ml-1' : 'tw-ml-4'}`}>
         <div className={`tw-text-xl`}>
-          {!!notifications.length && (
+          {notificationUnReadTotal() > 0 && (
             <span className="tw-absolute -tw-top-2 tw-bg-red-500 -tw-right-3.5 tw-text-white tw-pl-1.5 tw-text-sm tw-rounded-full tw-h-5 tw-w-5">
-              {notifications.length}
+              {notificationUnReadTotal()}
             </span>
           )}
 
@@ -119,14 +146,19 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
                     head="Thông báo"
                     hExtend={
                       <div className="tw-flex tw-justify-between">
-                        <button className="tw-py-2">Đánh dấu là đã đọc</button>
-                        <button className="tw-text-red-500">xóa</button>
+                        <Button onClick={handleMarkIsReadUserNotifications} className="tw-py-2">
+                          Đánh dấu là đã đọc
+                        </Button>
+                        <Button onClick={handleDeleteAllNotificationsByUserId} className="tw-text-red-500">
+                          xóa
+                        </Button>
                       </div>
                     }
                   />
                   {notifications.length > 0 ? (
                     notifications.map((n: any, index: number) => (
                       <Dropdown.ImageDescription
+                        isUnRead={!n.isRead}
                         onClick={() => handleNotificationClick(n)}
                         key={index}
                         hover
@@ -205,7 +237,7 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
                 {/* <li className="tw-py-2 tw-cursor-pointer">
                   <Link to={path.client.bookmark}>Bài viết đã lưu</Link>
                 </li> */}
-                 <li className="tw-py-2 tw-cursor-pointer">
+                <li className="tw-py-2 tw-cursor-pointer">
                   <Link to={path.client.myCourses}>Khóa học của tôi</Link>
                 </li>
                 <li className="tw-py-2 tw-cursor-pointer">

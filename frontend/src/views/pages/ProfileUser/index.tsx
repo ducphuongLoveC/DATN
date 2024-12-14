@@ -15,6 +15,8 @@ import { User } from '@/store/authReducer';
 const ProFile = () => {
   const query = useQueryParams();
   const userIdFromURL = query.get('id');
+  console.log(userIdFromURL);
+  
   const navigate = useNavigate();
 
   const { courses, coursesError } = useUserCourses(userIdFromURL);

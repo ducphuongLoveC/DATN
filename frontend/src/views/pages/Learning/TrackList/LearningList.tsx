@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from 'react';
-import { Typography, Box, useTheme } from '@mui/material';
+import { Typography, Box, useTheme, IconButton } from '@mui/material';
 
 // redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Resource } from '@/interfaces/course';
 import { RootState } from '@/store/reducer';
 import { SET_EXPANDED_INDEXS } from '@/store/actions';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
 
 interface LearningListProps {
   modules: { title: string; resources: Resource }[];
@@ -28,12 +29,20 @@ const LearningList: React.FC<LearningListProps> = memo(({ onClose, modules }) =>
         : [...storedExpandedIndexs, index],
     });
   };
+
+  const handleToggleExpandedAll = () => {
+    dispatch({
+      type: SET_EXPANDED_INDEXS,
+      payload:
+        storedExpandedIndexs.length > 0
+          ? []
+          : Array(modules.length)
+              .fill(0)
+              .map((_, index: number) => index),
+    });
+  };
   const theme = useTheme();
-  useEffect(() => {
-    return () => {
-      dispatch({ type: SET_EXPANDED_INDEXS, payload: [0] });
-    };
-  }, []);
+ 
   return (
     <PerfectScrollbar
       style={{
@@ -52,19 +61,20 @@ const LearningList: React.FC<LearningListProps> = memo(({ onClose, modules }) =>
           borderBottom: `1px solid ${theme.palette.background.paper2}`,
         }}
       >
-        <Typography fontSize="15px" p={2} variant="body1" fontWeight="500">
-          Nội dung khóa học của bạn
-        </Typography>
-        <Box
-          onClick={onClose}
-          sx={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            cursor: 'pointer',
-          }}
-        >
-          <CloseIcon />
+        <Box sx={{ display: 'flex', alignItems: 'center', py: 1, justifyContent: 'space-between' }}>
+          <Box display={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton onClick={handleToggleExpandedAll}>
+              {storedExpandedIndexs.length > 0 ? <ArrowUpward /> : <ArrowDownward />}
+            </IconButton>
+            <Typography fontSize="15px" variant="body1" fontWeight="500">
+              Nội dung khóa học của bạn
+            </Typography>
+          </Box>
+          <Box onClick={onClose} mr={1}>
+            <IconButton>
+              <CloseIcon />
+            </IconButton>
+          </Box>
         </Box>
       </Box>
       <Box>

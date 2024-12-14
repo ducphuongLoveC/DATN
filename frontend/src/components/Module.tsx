@@ -50,11 +50,17 @@ const Module: React.FC<ModuleProps> = ({
     </Box>
   );
 
-  const renderSummary = () => (
-    <Typography variant="caption">
-      0/{items.length} | {moment.utc(items.reduce((acc: any, c: any) => acc + c.duration, 0) * 1000).format('HH:mm:ss')}
-    </Typography>
-  );
+  const renderSummary = () => {
+    const completedResourceTotal = () => {
+      return items.reduce((acc: number, resource: any) => acc + (resource?.progress?.is_completed ? 1 : 0), 0);
+    };
+    return (
+      <Typography variant="caption">
+        {`${completedResourceTotal()}/${items.length} - `}
+        {moment.utc(items.reduce((acc: any, c: any) => acc + c.duration, 0) * 1000).format('HH:mm:ss')}
+      </Typography>
+    );
+  };
 
   const renderItems = () =>
     items.map((item: any, idx: number) => (
@@ -111,11 +117,15 @@ const Module: React.FC<ModuleProps> = ({
       disableGutters
       sx={{
         mb: styleM === 'two' ? '10px' : '0',
+        '&:before': {
+          display: 'none',
+        },
       }}
     >
       <AccordionSummary
         sx={{
           backgroundColor: styleM === 'two' ? theme.palette.background.paper2 : theme.palette.background.paper,
+          borderBottom: `2px solid ${theme.palette.background.paper2}`,
         }}
         expandIcon={styleM === 'one' ? <ExpandMore sx={{ color: theme.palette.text.primary }} /> : null}
       >

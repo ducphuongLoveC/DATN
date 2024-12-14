@@ -45,6 +45,7 @@ interface CommentData {
 }
 
 interface CommentInputProps {
+  mutation: any;
   user: User;
   onSubmit?: (comment: string) => void;
   placeholder?: string;
@@ -61,6 +62,8 @@ interface CommentItemProps {
   parent_id: string | null;
 }
 import { CommentPayloadData } from '@/interfaces/Comment';
+import { BeatLoader } from 'react-spinners';
+import path from '@/constants/routes';
 
 const socket = io(import.meta.env.VITE_URL_SERVER);
 
@@ -156,7 +159,7 @@ export default function Comment() {
       <Typography variant="h4" gutterBottom fontWeight="bold">
         Bình luận
       </Typography>
-      <CommentInput user={user} onSubmit={handleComment} buttonText="Bình luận" />
+      <CommentInput mutation={mutation} user={user} onSubmit={handleComment} buttonText="Bình luận" />
       <Stack spacing={3}>
         {comments.length ? (
           comments.map((c: CommentData) => (
@@ -170,7 +173,7 @@ export default function Comment() {
   );
 }
 
-function CommentInput({ user, onSubmit, buttonText = 'Bình luận', init = '' }: CommentInputProps) {
+function CommentInput({ user, onSubmit, buttonText = 'Bình luận', init = '', mutation }: CommentInputProps) {
   const [comment, setComment] = useState<string>(init);
   const theme = useTheme();
 
@@ -204,7 +207,7 @@ function CommentInput({ user, onSubmit, buttonText = 'Bình luận', init = '' }
             disableElevation
             onClick={handleSubmit}
           >
-            {buttonText}
+            {mutation.isPending ? <BeatLoader style={{ marginLeft: '3px' }} size={10} /> : buttonText}
           </Button>
         </Box>
       </Box>
@@ -219,9 +222,12 @@ function CommentItem({ user, fatherCommentUser = null, comment, deep = 1 }: Comm
   const mutation = useMutation({
     mutationKey: ['comment'],
     mutationFn: createComment,
+    onSuccess: () => {
+      setIsReplying(false);
+    },
   });
 
-  const handleReply = (content: string) => {
+  const handleReply = async (content: string) => {
     console.log(`Reply to ${comment.user.name}:`, content);
     if (comment.resource_id && user?._id && comment._id && content) {
       const payloadData: CommentPayloadData = {
@@ -232,7 +238,6 @@ function CommentItem({ user, fatherCommentUser = null, comment, deep = 1 }: Comm
       };
       mutation.mutate(payloadData);
     }
-    setIsReplying(false);
   };
 
   const handleDeleteComment = async (id: string) => {
@@ -245,6 +250,9 @@ function CommentItem({ user, fatherCommentUser = null, comment, deep = 1 }: Comm
     <Box className="comments" data-id={comment._id}>
       <Box display="flex">
         <Avatar
+          target='_blank'
+          to={path.client.profile(`?id=${comment.user._id}`)}
+          component={Link}
           src={comment.user.profile_picture}
           alt={comment.user.name}
           sx={{
@@ -284,7 +292,12 @@ function CommentItem({ user, fatherCommentUser = null, comment, deep = 1 }: Comm
           <Typography variant="body2" paragraph sx={{ mt: 0.5, color: 'text.primary' }}>
             <Box display={'flex'}>
               {fatherCommentUser && (
-                <MUILink mr={1} target="_blank" to={`/@${fatherCommentUser.nickname}`} component={Link}>
+                <MUILink
+                  mr={1}
+                  target="_blank"
+                  to={path.client.profile(`?id=${fatherCommentUser._id}`)}
+                  component={Link}
+                >
                   @{fatherCommentUser.name}
                 </MUILink>
               )}
@@ -320,7 +333,13 @@ function CommentItem({ user, fatherCommentUser = null, comment, deep = 1 }: Comm
 
       {isReplying && (
         <Box ml={7} mt={2}>
-          <CommentInput user={user} onSubmit={handleReply} placeholder="Add a reply..." buttonText="Trả lời" />
+          <CommentInput
+            mutation={mutation}
+            user={user}
+            onSubmit={handleReply}
+            placeholder="Add a reply..."
+            buttonText="Trả lời"
+          />
         </Box>
       )}
 
