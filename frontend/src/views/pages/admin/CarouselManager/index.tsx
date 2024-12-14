@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Collapse,
+  Grid,
   IconButton,
   Paper,
   Table,
@@ -19,6 +20,8 @@ import { Link } from 'react-router-dom';
 import { Delete, Edit, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import { useState } from 'react';
 import TabsCustom from '@/components/TabsCustom';
+
+import Dialog from '@/components/Dialog';
 
 const fakeSlider = [
   {
@@ -112,8 +115,24 @@ const fakeSlider = [
   },
 ];
 
+const colors = [
+  'linear-gradient(to right, #00C9FF, #92FE9D)',
+  'linear-gradient(to right, #FDC830, #F37335)',
+  'linear-gradient(to right, #7F00FF, #E100FF)',
+  'linear-gradient(to right, #FF512F, #DD2476)',
+  'linear-gradient(to right, #FFE000, #799F0C)',
+  'linear-gradient(to right, #00B4DB, #0083B0)',
+  'linear-gradient(to right, #FF416C, #FF4B2B)',
+  'linear-gradient(to right, #1D976C, #93F9B9)',
+  'linear-gradient(to right, #36D1DC, #5B86E5)',
+  'linear-gradient(to right, #FFB75E, #ED8F03)',
+];
+
 const CarouselManager: React.FC = () => {
+  const [openDialog, setOpenDialog] = useState(false);
   const [isIndexOpens, setIsIndexOpens] = useState<number[]>([]);
+
+  const [dataEdit, setDataEdit] = useState({});
 
   const handleToggler = (index: number) => {
     if (isIndexOpens.includes(index)) {
@@ -124,7 +143,7 @@ const CarouselManager: React.FC = () => {
   };
   return (
     <>
-      <HeaderTitle des="Quản lý banner" />
+      <HeaderTitle des="Quản lý banner" titleButton="Tạo carousel" onClick={() => setOpenDialog(true)} />
       <Box component={Paper}>
         <TabsCustom
           onChange={() => {}}
@@ -159,7 +178,13 @@ const CarouselManager: React.FC = () => {
                           <TableCell>{s.path}</TableCell>
                           <TableCell align="right">
                             <Tooltip title="Sửa">
-                              <IconButton color="primary">
+                              <IconButton
+                                onClick={() => {
+                                  setOpenDialog(true);
+                                  setDataEdit(s);
+                                }}
+                                color="primary"
+                              >
                                 <Edit />
                               </IconButton>
                             </Tooltip>
@@ -255,6 +280,22 @@ const CarouselManager: React.FC = () => {
           ]}
         />
       </Box>
+      <Dialog
+        open={openDialog}
+        title={Object.keys(dataEdit).length > 0 ? 'Sửa carousel' : 'Thêm carousel'}
+        onClose={() => setOpenDialog(false)}
+      >
+        <Typography>Chọn mẫu màu</Typography>
+        <Grid container spacing={1}>
+          {colors.map((c, index: number) => (
+            <Grid item key={index} xs={1}>
+              <Box sx={{ width: '60px', height: '60px', background: c }} />
+            </Grid>
+          ))}
+        </Grid>
+        thêm/ sửa ở đây
+        {Object.keys(dataEdit).length > 0 && JSON.stringify(dataEdit)}
+      </Dialog>
     </>
   );
 };
