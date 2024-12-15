@@ -58,9 +58,9 @@ app.use("/api", router);
 
 // config clound
 cloudinary.config({
-  cloud_name: "dgzwrfdjn",
-  api_key: "884514879143886",
-  api_secret: "L_sdFIOH6Z164w43rJg3p-N_gWw",
+  cloud_name: "dbd4kxjwi",
+  api_key: "969952351213972",
+  api_secret: "UZCefW8CVdqg5eI24ZaKSsp-ziU",
 });
 
 app.use(errorNotFound, errorCommon);

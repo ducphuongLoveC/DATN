@@ -1192,9 +1192,12 @@ class CoursesController {
                   // Upload the new file to Cloudinary
                   const uploadedFile = await cloudinary.v2.uploader.upload(
                     resourceFile.path,
-                    { folder: "videos" },
-                    { resource_type: resource.type || "auto" }
+                    {
+                      folder: "videos",
+                      resource_type: resource.type || "auto",
+                    }
                   );
+
                   updateData = {
                     title: resource.title,
                     description: resource.description,

@@ -25,10 +25,10 @@ const UpdateCourse: React.FC = () => {
       toast.dismiss();
       toast.success('Cập nhật khóa học thành công...');
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.log(error.response.data.message);
       toast.dismiss();
-      toast.success('Cập nhật khóa học thất bại...');
-      console.log(error);
+      toast.error(error.response.data.message);
     },
   });
 

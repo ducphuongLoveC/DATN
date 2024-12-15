@@ -1,11 +1,5 @@
 import cloudinary from 'cloudinary';
 
-// Cấu hình Cloudinary
-cloudinary.config({
-  cloud_name: 'dauyavqpr',
-  api_key: '663283623232467',
-  api_secret: 'h8EpbOZGM4V5dXUMgrq8rRGhOi4',
-});
 
 class TestUpload {
   // Hàm để tải lên video
