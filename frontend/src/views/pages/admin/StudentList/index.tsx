@@ -15,7 +15,6 @@ import {
   TablePagination,
   TextField,
 } from '@mui/material';
-import LockIcon from '@mui/icons-material/Lock';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import useUsers from '../../../../api/useUsers';
 import { useNavigate } from 'react-router-dom';
@@ -55,6 +54,7 @@ const StudentList = () => {
       <HeaderTitle des="Đây là trang chi danh sách người dùng" />
       
       {/* Tìm kiếm người dùng */}
+       <Box sx={{ mb: 2, p: 2 }} component={Paper}>
       <TextField
         label="Tìm kiếm theo tên"
         variant="outlined"
@@ -63,7 +63,7 @@ const StudentList = () => {
         onChange={handleSearchChange}
         sx={{ marginBottom: 2 }}
       />
-      
+      </Box>
       <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
         <Table>
           <TableHead>

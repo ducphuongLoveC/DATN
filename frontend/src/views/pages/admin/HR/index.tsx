@@ -54,17 +54,19 @@ const HR = () => {
   return (
     <Box>
       <HeaderTitle des="Đây là trang danh sách admin" />
-      
+
       {/* Tìm kiếm người dùng */}
-      <TextField
-        label="Tìm kiếm theo tên"
-        variant="outlined"
-        fullWidth
-        value={searchQuery}
-        onChange={handleSearchChange}
-        sx={{ marginBottom: 2 }}
-      />
-      
+      <Box sx={{ mb: 2, p: 2 }} component={Paper}>
+
+        <TextField
+          label="Tìm kiếm theo tên"
+          variant="outlined"
+          fullWidth
+          value={searchQuery}
+          onChange={handleSearchChange}
+          sx={{ marginBottom: 2 }}
+        />
+      </Box>
       <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
         <Table sx={{ minWidth: 650 }} aria-label="user table">
           <TableHead>
