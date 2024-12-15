@@ -122,9 +122,9 @@ const columns: Column[] = [
         failed: { color: '#ef4444', background: '#fee2e2' },
       };
       const statusText: Record<string, string> = {
-        pending: 'Đang xử lý',
-        completed: 'Hoàn thành',
-        failed: 'Thất bại',
+        pending: 'Chưa thanh toán',
+        completed: 'Đã thanh toán',
+        failed: 'Thánh toán thất bại',
       };
       const style = statusStyles[value] || { color: '#666', background: '#f3f4f6' };
       const text = statusText[value] || value;
