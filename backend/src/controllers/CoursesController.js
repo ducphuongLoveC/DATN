@@ -422,7 +422,7 @@ class CoursesController {
   //       {
   //         $addFields: {
   //           total_users: { $size: "$userStats" }, // Total users enrolled
-  //           total_learning_hours: {
+  //           total_learning_seconds: {
   //             $sum: {
   //               $map: {
   //                 input: "$userStats",
@@ -450,8 +450,9 @@ class CoursesController {
   //               in: {
   //                 user_id: "$$user._id",
   //                 name: "$$user.name",
-  //                 email: "$$user.email", // Add other user fields as needed
-  //                 total_time: {
+  //                 email: "$$user.email",
+  //                 profile_picture: "$$user.profile_picture",
+  //                 stats: {
   //                   $arrayElemAt: [
   //                     {
   //                       $filter: {
@@ -474,6 +475,8 @@ class CoursesController {
   //           title: { $first: "$title" },
   //           level: { $first: "$level" },
   //           thumbnail: { $first: "$thumbnail" },
+  //           enrollment_count: { $first: "$enrollment_count" },
+
   //           description: { $first: "$description" },
   //           original_price: { $first: "$original_price" },
   //           sale_price: { $first: "$sale_price" },
@@ -481,7 +484,7 @@ class CoursesController {
   //           isFree: { $first: "$isFree" },
   //           isActive: { $first: "$isActive" },
   //           total_users: { $first: "$total_users" },
-  //           total_learning_hours: { $first: "$total_learning_hours" },
+  //           total_learning_seconds: { $first: "$total_learning_seconds" }, // Total time in seconds
   //           modules: { $push: "$modules" },
   //           enrolled_users: { $first: "$enrolled_users" },
   //         },
@@ -491,6 +494,7 @@ class CoursesController {
   //           title: 1,
   //           level: 1,
   //           thumbnail: 1,
+  //           enrollment_count: 1,
   //           description: 1,
   //           original_price: 1,
   //           sale_price: 1,
@@ -498,7 +502,7 @@ class CoursesController {
   //           isFree: 1,
   //           isActive: 1,
   //           total_users: 1,
-  //           total_learning_hours: { $divide: ["$total_learning_hours", 3600] }, // Convert seconds to hours
+  //           total_learning_seconds: 1, // Keep total time in seconds
   //           modules: 1,
   //           enrolled_users: 1,
   //         },
@@ -518,6 +522,9 @@ class CoursesController {
   async getCourseStatistics(req, res, next) {
     try {
       const courseId = req.params.id;
+
+      // Extract the 'search' parameter from the query
+      const { search } = req.query;
 
       // Fetch course data with user statistics and modules/resources
       const course = await Course.aggregate([
@@ -605,11 +612,47 @@ class CoursesController {
           },
         },
         {
+          $addFields: {
+            enrolled_users: {
+              // Apply search filter if 'search' query is present
+              $cond: {
+                if: { $and: [{ $ne: [search, null] }, { $ne: ["", search] }] }, // Check if search exists
+                then: {
+                  $filter: {
+                    input: "$enrolled_users",
+                    as: "user",
+                    cond: {
+                      $or: [
+                        {
+                          $regexMatch: {
+                            input: "$$user.name",
+                            regex: search,
+                            options: "i",
+                          },
+                        }, // Filter by name (case-insensitive)
+                        {
+                          $regexMatch: {
+                            input: "$$user.email",
+                            regex: search,
+                            options: "i",
+                          },
+                        }, // Filter by email (case-insensitive)
+                      ],
+                    },
+                  },
+                },
+                else: "$enrolled_users", // No filter if search is not provided
+              },
+            },
+          },
+        },
+        {
           $group: {
             _id: "$_id",
             title: { $first: "$title" },
             level: { $first: "$level" },
             thumbnail: { $first: "$thumbnail" },
+            enrollment_count: { $first: "$enrollment_count" },
             description: { $first: "$description" },
             original_price: { $first: "$original_price" },
             sale_price: { $first: "$sale_price" },
@@ -627,6 +670,7 @@ class CoursesController {
             title: 1,
             level: 1,
             thumbnail: 1,
+            enrollment_count: 1,
             description: 1,
             original_price: 1,
             sale_price: 1,
@@ -1573,6 +1617,37 @@ class CoursesController {
       res.status(200).json({ resource_ids: course[0].resource_ids });
     } catch (error) {
       next(error);
+    }
+  }
+
+  async deleteCourseById(req, res, next) {
+    try {
+      const { id } = req.params; // Lấy course_id từ tham số URL
+
+      // Kiểm tra xem khóa học có tồn tại không
+      const course = await Course.findById(id);
+      if (!course) {
+        return res.status(404).json({ message: "Course not found." });
+      }
+
+      // Xóa các modules liên quan
+      const modules = await Module.find({ course_id: id });
+      const moduleIds = modules.map((module) => module._id);
+
+      // Xóa resources liên quan đến các modules
+      await Resource.deleteMany({ module_id: { $in: moduleIds } });
+
+      // Xóa các modules
+      await Module.deleteMany({ course_id: id });
+
+      // Xóa khóa học
+      await Course.findByIdAndDelete(id);
+
+      res
+        .status(200)
+        .json({ message: "Course and related data deleted successfully." });
+    } catch (error) {
+      next(error); // Gửi lỗi tới middleware xử lý lỗi
     }
   }
 }

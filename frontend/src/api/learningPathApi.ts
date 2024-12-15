@@ -1,8 +1,8 @@
 import { LearningPath } from '@/views/pages/admin/LearningPath/LearningPathList';
 import axiosInstance from './axiosInstance';
 
-export const fetchLearningPaths = async () => {
-  const res = await axiosInstance('api/learning-path');
+export const fetchLearningPaths = async (params: {}) => {
+  const res = await axiosInstance('api/learning-path', { params });
   return res.data.data;
 };
 

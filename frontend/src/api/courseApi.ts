@@ -23,8 +23,8 @@ export const getCourseSearch = async (search: string) => {
   const res = await axiosInstance.get(`api/courses?search=${search}`);
   return res.data;
 };
-export const getCourseStatistics = async (id: string) => {
-  const res = await axiosInstance.get(`api/courses/${id}/statistics`);
+export const getCourseStatistics = async (id: string, params: {}) => {
+  const res = await axiosInstance.get(`api/courses/${id}/statistics`, { params });
   return res.data;
 };
 
@@ -247,4 +247,13 @@ export const updateCourse = async (id: string, data: any) => {
   });
 
   return res.data;
+};
+
+export const deleteCourse = async (id: string) => {
+  try {
+    const res = await axiosInstance.delete(`api/courses/${id}`);
+    return res;
+  } catch (error) {
+    throw error;
+  }
 };

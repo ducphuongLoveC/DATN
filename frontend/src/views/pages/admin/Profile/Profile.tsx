@@ -7,6 +7,7 @@ import axiosInstance from '@/api/axiosInstance';
 import { SET_USER } from '@/store/actions';
 import Cookies from 'js-cookie';
 import { Button } from '@mui/material';
+import { toast, ToastContainer } from 'react-toastify';
 
 interface FormData {
   id?: string;
@@ -37,7 +38,7 @@ const Profile: React.FC = () => {
   const [passwordForm, setPasswordForm] = useState<PasswordFormData>({
     currentPassword: '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -79,9 +80,9 @@ const Profile: React.FC = () => {
 
   const handlePasswordFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setPasswordForm(prev => ({
+    setPasswordForm((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Reset error when user starts typing
     setPasswordError(null);
@@ -93,12 +94,12 @@ const Profile: React.FC = () => {
 
     // Validate password
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      setPasswordError('Mật khẩu mới và xác nhận mật khẩu không khớp');
+      toast.error('Mật khẩu mới và xác nhận mật khẩu không khớp');
       return;
     }
 
     if (passwordForm.newPassword.length < 6) {
-      setPasswordError('Mật khẩu mới phải có ít nhất 6 ký tự');
+      toast.error('Mật khẩu mới phải có ít nhất 6 ký tự');
       return;
     }
 
@@ -106,17 +107,17 @@ const Profile: React.FC = () => {
       const response = await axiosInstance.put('/api/user/change-password', passwordForm);
 
       if (response.data.message) {
-        alert(response.data.message);
+        toast.success(response.data.message);
         // Reset form sau khi đổi mật khẩu thành công
         setPasswordForm({
           currentPassword: '',
           newPassword: '',
-          confirmPassword: ''
+          confirmPassword: '',
         });
         setIsChangingPassword(false);
       }
     } catch (error: any) {
-      setPasswordError(error.response?.data?.message || 'Có lỗi xảy ra khi đổi mật khẩu');
+      toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi đổi mật khẩu');
     }
   };
 
@@ -130,33 +131,36 @@ const Profile: React.FC = () => {
       const formDataToSend = new FormData();
       formDataToSend.append('profile_picture', file);
 
-      axiosInstance.put(`/api/user/${userId}`, formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }).then(response => {
-        console.log('Ảnh đã được upload thành công: ', response.data);
-        if (response.data.success) {
-          const uploadedImageUrl = response.data.data.profile_picture;
+      axiosInstance
+        .put(`/api/user/${userId}`, formDataToSend, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((response) => {
+          // toast.success
+          if (response.data.success) {
+            const uploadedImageUrl = response.data.data.profile_picture;
 
-          // Cập nhật formData
-          setFormData(prevData => ({
-            ...prevData,
-            profile_picture: uploadedImageUrl,
-          }));
+            // Cập nhật formData
+            setFormData((prevData) => ({
+              ...prevData,
+              profile_picture: uploadedImageUrl,
+            }));
 
-          // Cập nhật user trong Redux và cookies
-          const updatedUser = { ...user, profile_picture: uploadedImageUrl };
-          dispatch({ type: SET_USER, payload: updatedUser });
-          Cookies.set('user', JSON.stringify(updatedUser), {
-            domain: 'admin.localhost',
-            expires: 7
-          });
-        }
-      }).catch(error => {
-        console.error('Lỗi khi upload ảnh: ', error);
-        setError('Có lỗi xảy ra khi upload ảnh!');
-      });
+            // Cập nhật user trong Redux và cookies
+            const updatedUser = { ...user, profile_picture: uploadedImageUrl };
+            dispatch({ type: SET_USER, payload: updatedUser });
+            Cookies.set('user', JSON.stringify(updatedUser), {
+              domain: 'admin.localhost',
+              expires: 7,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error('Lỗi khi upload ảnh: ', error);
+          toast.error('Có lỗi xảy ra khi upload ảnh!');
+        });
     }
   };
   const handleSave = async () => {
@@ -175,30 +179,27 @@ const Profile: React.FC = () => {
         profile_picture: formData.profile_picture,
       };
 
-      const response = await axiosInstance.put(
-        `/api/user/${user._id || user.id}`,
-        updatedData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const response = await axiosInstance.put(`/api/user/${user._id || user.id}`, updatedData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (response.data.success) {
         const updatedUser = { ...user, ...response.data.data };
         dispatch({ type: SET_USER, payload: updatedUser });
         Cookies.set('user', JSON.stringify(updatedUser), {
           domain: 'admin.localhost',
-          expires: 7
+          expires: 7,
         });
 
         setIsEditing(false);
-        alert('Cập nhật thông tin thành công!');
+        toast.success('Cập nhật thông tin thành công');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Lỗi khi cập nhật:', error);
       setError('Có lỗi xảy ra, vui lòng thử lại!');
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -301,11 +302,7 @@ const Profile: React.FC = () => {
                   </div>
                   <div className="col-sm-9">
                     {isEditing ? (
-                      <input
-                        type="file"
-                        onChange={handleImageChange}
-                        className="form-control"
-                      />
+                      <input type="file" onChange={handleImageChange} className="form-control" />
                     ) : (
                       <span>Ảnh hiện tại đã được lưu</span>
                     )}
@@ -316,7 +313,9 @@ const Profile: React.FC = () => {
                 {error && <div className="alert alert-danger">{error}</div>}
 
                 {isEditing ? (
-                  <Button color="primary" variant="outlined"
+                  <Button
+                    color="primary"
+                    variant="outlined"
                     className={clsx(s['button-edit-profile'])}
                     onClick={handleSave}
                     disabled={loading}
@@ -324,7 +323,9 @@ const Profile: React.FC = () => {
                     {loading ? 'Saving...' : 'Save'}
                   </Button>
                 ) : (
-                  <Button color="primary" variant="outlined"
+                  <Button
+                    color="primary"
+                    variant="outlined"
                     className={clsx(s['button-edit-profile'])}
                     onClick={() => setIsEditing(true)}
                   >
@@ -339,7 +340,9 @@ const Profile: React.FC = () => {
               <div className={clsx(s['card-body'])}>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h6 className="mb-0">Đổi mật khẩu</h6>
-                  <Button color="primary" variant="outlined"
+                  <Button
+                    color="primary"
+                    variant="outlined"
                     className={clsx(s['button-edit-profile'])}
                     onClick={() => {
                       setIsChangingPassword(!isChangingPassword);
@@ -347,7 +350,7 @@ const Profile: React.FC = () => {
                       setPasswordForm({
                         currentPassword: '',
                         newPassword: '',
-                        confirmPassword: ''
+                        confirmPassword: '',
                       });
                     }}
                   >
@@ -390,15 +393,10 @@ const Profile: React.FC = () => {
                         required
                       />
                     </div>
-                    {passwordError && (
-                      <div className="alert alert-danger">{passwordError}</div>
-                    )}
-                    <button
-                      type="submit"
-                      className={clsx(s['button-edit-profile'])}
-                    >
+                    {passwordError && <div className="alert alert-danger">{passwordError}</div>}
+                    <Button variant="outlined" type="submit" className={clsx(s['button-edit-profile'])}>
                       Xác nhận đổi mật khẩu
-                    </button>
+                    </Button>
                   </form>
                 )}
               </div>
@@ -406,6 +404,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

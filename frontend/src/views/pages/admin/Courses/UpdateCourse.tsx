@@ -23,7 +23,7 @@ const UpdateCourse: React.FC = () => {
     mutationFn: (course: Course) => updateCourse(id || '', course),
     onSuccess: async () => {
       toast.dismiss();
-      toast.success('Cập nhật khóa học thành công...');
+      toast.success('Cập nhật khóa học thành công.');
     },
     onError: (error: any) => {
       console.log(error.response.data.message);

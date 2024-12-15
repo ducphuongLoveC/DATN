@@ -3,18 +3,27 @@ import fs from 'fs';
 
 
 class CloudinaryController {
-  // Lấy tất cả ảnh từ thư mục 'images'
+
   async getImages(req, res) {
     try {
+      const { order = 'asc' } = req.query; // Lấy order từ query, mặc định là 'asc'
+  
       const result = await cloudinary.v2.api.resources({
         type: "upload",
         prefix: "images/", // Lọc tài nguyên trong thư mục 'images'
         resource_type: "image", // Chỉ lấy ảnh
       });
-
+  
+      // Sắp xếp kết quả dựa trên thời gian tải lên
+      const sortedResources = result.resources.sort((a, b) => {
+        const timeA = new Date(a.created_at).getTime();
+        const timeB = new Date(b.created_at).getTime();
+        return order === 'asc' ? timeA - timeB : timeB - timeA;
+      });
+  
       res.status(200).json({
         success: true,
-        data: result.resources, // Danh sách ảnh
+        data: sortedResources, // Danh sách ảnh đã sắp xếp
       });
     } catch (error) {
       console.error("Error fetching images:", error);
@@ -25,19 +34,27 @@ class CloudinaryController {
       });
     }
   }
-
-  // Lấy tất cả video từ thư mục 'video'
+  
   async getVideos(req, res) {
     try {
+      const { order = 'asc' } = req.query; // Lấy order từ query, mặc định là 'asc'
+  
       const result = await cloudinary.v2.api.resources({
         type: "upload",
-        prefix: "videos/", // Lọc tài nguyên trong thư mục 'video'
+        prefix: "videos/", // Lọc tài nguyên trong thư mục 'videos'
         resource_type: "video", // Chỉ lấy video
       });
-
+  
+      // Sắp xếp kết quả dựa trên thời gian tải lên
+      const sortedResources = result.resources.sort((a, b) => {
+        const timeA = new Date(a.created_at).getTime();
+        const timeB = new Date(b.created_at).getTime();
+        return order === 'asc' ? timeA - timeB : timeB - timeA;
+      });
+  
       res.status(200).json({
         success: true,
-        data: result.resources, // Danh sách video
+        data: sortedResources, // Danh sách video đã sắp xếp
       });
     } catch (error) {
       console.error("Error fetching videos:", error);
@@ -48,6 +65,11 @@ class CloudinaryController {
       });
     }
   }
+  
+
+
+
+
 
   async uploadImage(req, res) {
     try {

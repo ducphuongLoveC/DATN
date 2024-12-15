@@ -210,7 +210,7 @@ const Dashboard: React.FC = () => {
             <Bar data={data} options={options} />
           </div>
 
-          <div
+          {/* <div
             style={{ background: theme.palette.background.default }}
             className="tw-h-20 tw-flex tw-justify-between tw-mt-4 tw-p-4 tw-shadow-md"
           >
@@ -219,7 +219,7 @@ const Dashboard: React.FC = () => {
               <p className="tw-text-[10px] md:tw-text-xs">Thống kê tài chính khóa học</p>
             </div>
             <button className="tw-bg-violet-500 tw-text-white tw-py-2 tw-px-4">Tải xuống</button>
-          </div>
+          </div> */}
         </div>
 
         <div style={{ background: theme.palette.background.default }} className="tw-shadow-md tw-relative">

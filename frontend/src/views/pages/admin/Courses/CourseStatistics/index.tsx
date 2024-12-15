@@ -1,19 +1,27 @@
+import { useState } from 'react';
 import { Box, Paper } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import TabsCustom from '@/components/TabsCustom';
-import HeaderTitle from '../../Title';
-import CourseDetail from './CourseDetail';
 import { useQuery } from '@tanstack/react-query';
 import { getCourseStatistics } from '@/api/courseApi';
+import HeaderTitle from '../../Title';
+import TabsCustom from '@/components/TabsCustom';
 import StudentList from './StudentList';
+import CourseDetail from './CourseDetail';
+import useDebounce from '@/hooks/useDebounce';
 
 const CourseStatistics: React.FC = () => {
+  const [params, setParams] = useState({
+    search: '',
+  });
   const navigate = useNavigate();
-
   const { id } = useParams();
-  const { data: cousrse, isLoading: isLoadingCourse } = useQuery({
-    queryKey: ['course', id],
-    queryFn: () => getCourseStatistics(id || ''),
+
+  // Debounce the search parameter before making an API call
+  const debouncedSearch = useDebounce(params.search, 500);
+
+  const { data: course, isLoading: isLoadingCourse } = useQuery({
+    queryKey: ['course', id, debouncedSearch],
+    queryFn: () => getCourseStatistics(id || '', { search: debouncedSearch }),
     enabled: !!id,
   });
 
@@ -24,8 +32,15 @@ const CourseStatistics: React.FC = () => {
       <HeaderTitle des="Thông kê chi tiết về cụ thể của khóa học" onClick={() => navigate(-1)} titleButton="Quay lại" />
       <Box component={Paper}>
         <TabsCustom
-          labels={['Thông tin khóa học', 'Học viên tham gia']}
-          contents={[<CourseDetail course={cousrse} />, <StudentList users={cousrse.enrolled_users} />]}
+          labels={['Học viên tham gia', 'Thông tin khóa học']}
+          contents={[
+            <StudentList
+              valueSearch={debouncedSearch}
+              onSearch={(search) => setParams((prev) => ({ ...prev, search }))}
+              users={course?.enrolled_users}
+            />,
+            <CourseDetail course={course} />,
+          ]}
           onChange={() => {}}
         />
       </Box>

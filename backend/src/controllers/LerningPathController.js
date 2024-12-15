@@ -20,14 +20,18 @@ class learningPath {
 
   async getAll(req, res, next) {
     try {
-      const data = await LearningPath.find().sort({ _id: -1 });
-      if (data) {
-        return res.status(200).json({
-          success: true,
-          data,
-          message: "getAll successfuly",
-        });
-      }
+      const { search } = req.query; // Lấy tham số 'search' từ query string
+      const query = search
+        ? { title: { $regex: search, $options: "i" } } // Tìm kiếm theo tiêu đề, không phân biệt hoa thường
+        : {}; // Nếu không có tham số, lấy tất cả
+
+      const data = await LearningPath.find(query).sort({ _id: -1 });
+
+      return res.status(200).json({
+        success: true,
+        data,
+        message: "getAll successfully",
+      });
     } catch (error) {
       next(error);
     }

@@ -5,9 +5,7 @@ import { Box, Button, Grid, styled, TablePagination, Typography, useTheme, List,
 import { More } from '@mui/icons-material';
 import moment from 'moment';
 // import * as _ from 'lodash';
-
 import HeadlessTippy from '@tippyjs/react/headless';
-
 // my pj
 import CourseListSkl from '@/ui-component/cards/Skeleton/CourseListSkl';
 import HeaderTitle from '../Title';
@@ -147,9 +145,7 @@ const CourseList: React.FC = () => {
                           <ListItem>
                             <Link to={path.admin.courseStatistics(course._id)}>Xem chi tiết</Link>
                           </ListItem>
-                          <ListItem>
-                            <Link to={path.admin.courseStatistics(course._id)}>Xóa</Link>
-                          </ListItem>
+                          {/* <ListItem><Link to={path.admin.courseStatistics(course._id)}>Xóa</Link></ListItem> */}
                         </List>
                       </Wrapper>
                     )}

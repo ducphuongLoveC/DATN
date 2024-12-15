@@ -86,7 +86,7 @@ const FilterComponent: React.FC<FilterProps> = ({ filters, onFilter }) => {
                   return selecteds.map((s) => s.display).join(', ');
                 }}
               >
-                {filter.values.map((value: any) => (
+                {filter?.values?.map((value: any) => (
                   <MenuItem key={value.value} value={value}>
                     <Checkbox checked={selectedFilters[filter.name]?.includes(value) || false} />
                     <ListItemText primary={value.display} />

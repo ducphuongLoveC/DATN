@@ -383,7 +383,7 @@ const CourseDetail: React.FC = () => {
                   zIndex: 2,
                 }}
               />
-              <Typography
+              {/* <Typography
                 variant="body1"
                 sx={{
                   position: 'absolute',
@@ -395,7 +395,7 @@ const CourseDetail: React.FC = () => {
                 }}
               >
                 Xem giới thiệu
-              </Typography>
+              </Typography> */}
             </BoxPreviewVideo>
 
             <Grid

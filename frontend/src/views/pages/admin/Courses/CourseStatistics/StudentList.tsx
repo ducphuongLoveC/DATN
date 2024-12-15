@@ -1,32 +1,23 @@
-import path from '@/constants/routes';
-import { Visibility } from '@mui/icons-material';
-import {
-  Avatar,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Tooltip,
-  Typography,
-  TablePagination,
-} from '@mui/material';
-import moment from 'moment';
-moment.locale('vi');
 
-import { useState } from 'react';
+
+import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, TablePagination, TextField, Avatar } from '@mui/material';
+import { Visibility } from '@mui/icons-material';
+import moment from 'moment';
+import { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
+
+moment.locale('vi');
 
 interface StudentListProps {
   users: any;
+  onSearch: (search: string) => void;
+  valueSearch: string;
 }
 
-const StudentList: React.FC<StudentListProps> = ({ users }) => {
-  const [page, setPage] = useState(0); // Current page
-  const [rowsPerPage, setRowsPerPage] = useState(5); // Rows per page
+const StudentList: React.FC<StudentListProps> = ({ users, onSearch, valueSearch }) => {
+  const [searchTerm, setSearchTerm] = useState(valueSearch);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Handle pagination change
   const handleChangePage = (_event: unknown, newPage: number) => {
@@ -38,11 +29,23 @@ const StudentList: React.FC<StudentListProps> = ({ users }) => {
     setPage(0); // Reset to first page
   };
 
-  // Calculate rows to display
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    onSearch(event.target.value); // Trigger the search callback
+  };
+
+  // Pagination logic
   const paginatedUsers = users?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
     <>
+      <TextField
+        placeholder="Tìm kiếm..."
+        variant="outlined"
+        value={searchTerm}
+        onChange={handleSearch}
+        sx={{ maxWidth: 300 }}
+      />
       {users?.length ? (
         <>
           <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
@@ -64,16 +67,13 @@ const StudentList: React.FC<StudentListProps> = ({ users }) => {
                       <Avatar src={user.profile_picture} />
                     </TableCell>
                     <TableCell>{user.name}</TableCell>
-
                     <TableCell>{user.email}</TableCell>
-
                     <TableCell>{moment.utc(user.stats.total_time * 1000).format('HH:mm:ss')}</TableCell>
                     <TableCell>{moment(user.stats.last_accessed).fromNow()}</TableCell>
-
                     <TableCell align="right">
                       <Tooltip title="Xem chi tiết">
-                        <Link to={path.admin.usersDetail(user.user_id)}>
-                          <IconButton onClick={() => {}} color="primary">
+                        <Link to={`/admin/users/${user.user_id}`}>
+                          <IconButton color="primary">
                             <Visibility />
                           </IconButton>
                         </Link>
@@ -98,10 +98,10 @@ const StudentList: React.FC<StudentListProps> = ({ users }) => {
           />
         </>
       ) : (
-        <Typography>Chưa có học viên nào tham gia khóa học này</Typography>
+        <Typography>Chưa có học viên nào tham gia khóa học này hoặc không tìm thấy</Typography>
       )}
     </>
   );
 };
 
-export default StudentList;
+export default memo(StudentList);
