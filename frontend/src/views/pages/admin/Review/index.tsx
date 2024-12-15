@@ -55,6 +55,9 @@ const ReviewList = () => {
   return (
     <Box>
       <HeaderTitle des="Đây là trang quản lý đánh giá" />
+
+      <Box sx={{ mb: 2, p: 2   }} component={Paper}>
+        
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel id="stars-filter-label">Lọc theo số sao</InputLabel>
         <Select
@@ -71,6 +74,7 @@ const ReviewList = () => {
           ))}
         </Select>
       </FormControl>
+      </Box>
 
       {reviews.length === 0 ? (
         <Typography align="center" color="textSecondary">

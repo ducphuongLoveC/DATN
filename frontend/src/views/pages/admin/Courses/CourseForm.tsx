@@ -305,6 +305,7 @@ const CourseForm: React.FC<CourseFormProps> = ({ datas, onSubmit }) => {
           handleAddModule(data.title);
         }
         setSaveOrUpdateModule({});
+        reset({ title: '' });
       };
 
       return (

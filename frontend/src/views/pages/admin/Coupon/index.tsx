@@ -161,18 +161,20 @@ const Coupon: React.FC = () => {
       ></HeaderTitle>
       {/* main */}
 
-      <FormControl sx={{ width: 'auto', minWidth: '150px', mb: 2 }}>
-        <InputLabel>Sắp xếp theo giá trị giảm</InputLabel>
-        <Select
-          value={params.order}
-          onChange={(e: any) => setParams((pre: any) => ({ ...pre, order: e.target.value }))}
-          fullWidth
-          label="Sắp xếp theo giá trị giảm"
-        >
-          <MenuItem value="asc">Tăng dần</MenuItem>
-          <MenuItem value="desc">Giảm dần</MenuItem>
-        </Select>
-      </FormControl>
+      <Box sx={{ mb: 2, p: 2 }} component={Paper}>
+        <FormControl sx={{ minWidth: '150px' }}>
+          <InputLabel>Sắp xếp theo giá trị giảm</InputLabel>
+          <Select
+            value={params.order}
+            onChange={(e: any) => setParams((pre: any) => ({ ...pre, order: e.target.value }))}
+            fullWidth
+            label="Sắp xếp theo giá trị giảm"
+          >
+            <MenuItem value="asc">Tăng dần</MenuItem>
+            <MenuItem value="desc">Giảm dần</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
 
       <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
         <Table aria-label="learning paths table">

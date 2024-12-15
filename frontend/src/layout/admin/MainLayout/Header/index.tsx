@@ -7,7 +7,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 // project imports
 
 import SearchSection from './SearchSection';
-import NotificationSection from './NotificationSection';
+// import NotificationSection from './NotificationSection';
 import ProfileSection from './ProfileSection';
 
 // assets
@@ -84,7 +84,7 @@ const Header: FC<HeaderProps> = ({ handleLeftDrawerToggle }) => {
       />
 
       {/* notification & profile */}
-      <NotificationSection />
+      {/* <NotificationSection /> */}
       <ProfileSection />
     </>
   );

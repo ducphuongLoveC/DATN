@@ -5,12 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+// import Card from '@mui/material/Card';
+// import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
+// import Grid from '@mui/material/Grid';
 import InputAdornment from '@mui/material/InputAdornment';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -20,7 +20,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import Stack from '@mui/material/Stack';
-import Switch from '@mui/material/Switch';
+// import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 
 // cookies
@@ -38,6 +38,7 @@ import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons-re
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/reducer';
 import { SET_USER } from '@/store/actions';
+import DrawerSetting from '@/layout/admin/DrawerSetting';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -48,14 +49,14 @@ const ProfileSection: React.FC = () => {
   const navigate = useNavigate();
 
   const [value, setValue] = useState<string>('');
-  const [notification, setNotification] = useState<boolean>(false);
+  // const [notification, setNotification] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [open, setOpen] = useState<boolean>(false);
+  const [openDrawerSetting, setOpenDrawerSetting] = useState<boolean>(false);
+
   const anchorRef = useRef<HTMLButtonElement | null>(null);
 
   const handleLogout = async () => {
-    console.log('check');
-
     dispatch({ type: SET_USER, payload: null });
     Cookies.remove('user', { domain: 'admin.localhost', path: '/' });
     Cookies.remove('accessToken', { domain: 'admin.localhost', path: '/' });
@@ -163,7 +164,6 @@ const ProfileSection: React.FC = () => {
                   >
                     <Stack>
                       <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">Xin chào,</Typography>
                         <Typography
                           component="span"
                           variant="h4"
@@ -171,10 +171,12 @@ const ProfileSection: React.FC = () => {
                             fontWeight: 400,
                           }}
                         >
-                          {user.name}
+                          Xin chào,
                         </Typography>
+                        <Typography variant="h4">{user.name}</Typography>
                       </Stack>
-                      <Typography variant="subtitle2">{user.role}</Typography>
+                      <Typography variant="subtitle2">Vai trò {user.role}</Typography>
+                      <Typography variant="subtitle2">{user.email}</Typography>
                     </Stack>
                     <OutlinedInput
                       sx={{
@@ -213,7 +215,7 @@ const ProfileSection: React.FC = () => {
                       }}
                     >
                       <Divider />
-                      <Card
+                      {/* <Card
                         sx={{
                           bgcolor: theme.palette.primary.light,
                           my: 2,
@@ -239,7 +241,7 @@ const ProfileSection: React.FC = () => {
                           </Grid>
                         </CardContent>
                       </Card>
-                      <Divider />
+                      <Divider /> */}
                       <List
                         component="nav"
                         sx={{
@@ -259,7 +261,9 @@ const ProfileSection: React.FC = () => {
                         </ListItemButton>
                         <ListItemButton
                           selected={selectedIndex === 1}
-                          onClick={(event: any) => handleListItemClick(event, 1, '/settings')}
+                          onClick={(_event: any) => {
+                            setOpenDrawerSetting(true);
+                          }}
                         >
                           <ListItemIcon>
                             <IconSettings stroke={1.5} size="1.25rem" />
@@ -281,6 +285,7 @@ const ProfileSection: React.FC = () => {
           </Transitions>
         )}
       </Popper>
+      <DrawerSetting open={openDrawerSetting} onClose={() => setOpenDrawerSetting(false)} />
     </>
   );
 };

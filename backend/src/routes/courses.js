@@ -4,6 +4,7 @@ import { validBodyRequets } from "../middlewares/validbodyRequets.js";
 import { courseSchema } from "../validSchema/courseSchema.js";
 
 import upload from "../middlewares/multer.js";
+import { checkAuth } from "../middlewares/checkAuth.js";
 const routerCourse = Router();
 
 routerCourse.get("/", CoursesController.get);
@@ -43,5 +44,7 @@ routerCourse.get(
   "/:id/resource-ids",
   CoursesController.getResourcesIdByCourseId
 );
+
+routerCourse.delete("/:id", checkAuth, CoursesController.deleteCourseById);
 
 export default routerCourse;

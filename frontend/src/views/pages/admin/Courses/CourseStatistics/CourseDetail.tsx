@@ -49,7 +49,7 @@ interface CourseDetailProps {
 const CourseDetail: React.FC<CourseDetailProps> = ({ course }) => {
   const theme = useTheme();
   const calculateTotalDuration = (course: Course): string => {
-    const totalDuration = course.modules.reduce(
+    const totalDuration = course?.modules.reduce(
       (moduleAcc, module) =>
         moduleAcc + module.resources.reduce((resourceAcc, resource) => resourceAcc + resource.duration, 0),
       0
@@ -58,7 +58,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course }) => {
   };
 
   const calculateTotalResources = (course: Course): number => {
-    return course.modules.reduce((moduleAcc, module) => moduleAcc + module.resources.length, 0);
+    return course?.modules.reduce((moduleAcc, module) => moduleAcc + module.resources.length, 0);
   };
 
   return (
@@ -66,35 +66,35 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course }) => {
       {/* Thumbnail and general information */}
       <Grid item xs={12} md={4.8}>
         <HighlightBox>
-          <CourseThumbnail src={typeof course.thumbnail === 'string' ? course.thumbnail : ''} />
+          <CourseThumbnail src={typeof course?.thumbnail === 'string' ? course.thumbnail : ''} />
           <Box p={2}>
             <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-              {course.title}
+              {course?.title}
             </Typography>
             <Typography
               variant="body2"
               color="text.secondary"
               sx={{ mt: 1 }}
-              dangerouslySetInnerHTML={{ __html: course.description }}
+              dangerouslySetInnerHTML={{ __html: course?.description }}
             />
             <Typography variant="body1" sx={{ mt: 2 }}>
-              <strong>Giá gốc:</strong> {course.original_price} đ
+              <strong>Giá gốc:</strong> {course?.original_price} đ
             </Typography>
             <Typography variant="body1" color="primary" sx={{ mt: 1, fontWeight: 700 }}>
-              <strong>Giá khuyến mãi:</strong> {course.sale_price} đ
+              <strong>Giá khuyến mãi:</strong> {course?.sale_price} đ
             </Typography>
             <Typography variant="body1" sx={{ mt: 2 }}>
               <strong>Loại: </strong>
-              {course.isFree ? 'Miễn phí' : 'Tính phí'}
+              {course?.isFree ? 'Miễn phí' : 'Tính phí'}
             </Typography>
 
             <Typography variant="body1" sx={{ mt: 2 }}>
               <strong>Cung cấp chứng chỉ: </strong>
-              {course.has_certificate ? 'Có' : 'Không'}
+              {course?.has_certificate ? 'Có' : 'Không'}
             </Typography>
             <Typography variant="body1" sx={{ mt: 2 }}>
               <strong>Trình độ: </strong>
-              {course.level}
+              {course?.level}
             </Typography>
           </Box>
         </HighlightBox>
@@ -116,7 +116,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course }) => {
               <School sx={{ mr: 1, color: theme.palette.secondary.main }} />
               Số lượng chương học:
             </StyledTypography>
-            <DetailValue>{course.modules.length}</DetailValue>
+            <DetailValue>{course?.modules.length}</DetailValue>
           </BoxCenter>
 
           <BoxCenter>
@@ -132,7 +132,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course }) => {
               <People sx={{ mr: 1, color: theme.palette.info.main }} />
               Tổng số học viên tham gia:
             </StyledTypography>
-            <DetailValue>{course?.total_users}</DetailValue>
+            <DetailValue>{course?.enrollment_count}</DetailValue>
           </BoxCenter>
 
           <BoxCenter>
@@ -140,7 +140,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ course }) => {
               <Timeline sx={{ mr: 1, color: theme.palette.primary.main }} />
               Tổng số giờ học viên đã học:
             </StyledTypography>
-            <DetailValue>{moment.utc(course.total_learning_seconds * 1000).format('HH:mm:ss')}</DetailValue>
+            <DetailValue>{moment.utc(course?.total_learning_seconds * 1000).format('HH:mm:ss')}</DetailValue>
           </BoxCenter>
         </HighlightBox>
       </Grid>

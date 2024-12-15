@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useQuery, useMutation } from '@tanstack/react-query';
 
@@ -33,6 +33,7 @@ import Dialog from '@/components/Dialog';
 import { deleteLearningPath, fetchLearningPaths, newLearningPath, updateLearningPath } from '@/api/learningPathApi';
 
 import HeaderTitle from '../Title';
+import useDebounce from '@/hooks/useDebounce';
 
 export interface LearningPath {
   _id: string;
@@ -41,6 +42,10 @@ export interface LearningPath {
 }
 
 export default function LearningPathList() {
+  const [params, setParams] = useState({
+    search: '',
+  });
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDialog, setOpenDialog] = useState(false);
@@ -48,16 +53,18 @@ export default function LearningPathList() {
   const [editMode, setEditMode] = useState<'create' | 'update' | 'detail' | ''>('');
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['learningPath'],
-    queryFn: fetchLearningPaths,
+    queryKey: ['learningPath', params],
+    queryFn: () => fetchLearningPaths(params),
   });
+
+  const refInput = useRef<HTMLDivElement | null>(null);
 
   const mutationCreate = useMutation({
     mutationKey: ['learningPath'],
     mutationFn: newLearningPath,
     onSuccess: () => {
       refetch();
-      toast.success('Thêm thành công');
+      toast.success('Tạo thành công');
       reset();
     },
     onError: (error: any) => {
@@ -73,12 +80,12 @@ export default function LearningPathList() {
     mutationKey: ['learningPath'],
     mutationFn: ({ _id, updateData }) => updateLearningPath(_id, updateData),
     onSuccess: () => {
-      toast.success('Sửa thành công.');
+      toast.success('Cập nhật thành công.');
       handleCloseDialog();
       refetch();
     },
     onError: (error) => {
-      toast.error('Sửa thất bại!');
+      toast.error('Cập nhật thất bại!');
       console.log(error);
     },
   });
@@ -101,6 +108,24 @@ export default function LearningPathList() {
       description: '',
     },
   });
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const debouncedSearchValue = useDebounce(searchTerm, 500);
+
+  useEffect(() => {
+    setParams((pre) => ({ ...pre, search: debouncedSearchValue }));
+  }, [debouncedSearchValue]);
+
+  useEffect(() => {
+    console.log(refInput);
+
+    refInput.current?.focus();
+  }, [data, debouncedSearchValue]);
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
@@ -161,6 +186,7 @@ export default function LearningPathList() {
 
   const handleCreate = (data: LearningPath) => {
     mutationCreate.mutate(data);
+    setOpenDialog(false);
   };
 
   const handleEdit = (data: LearningPath) => {
@@ -170,6 +196,7 @@ export default function LearningPathList() {
         updateData: data,
       });
     }
+    setOpenDialog(false);
   };
 
   const handleDelete = (id: string) => {
@@ -189,6 +216,18 @@ export default function LearningPathList() {
         onClick={openCreate}
         titleButton="Tạo lộ trình học"
       />
+
+      <Box sx={{ mb: 2, p: 2 }} component={Paper}>
+        <TextField
+          inputRef={refInput}
+          placeholder="Tìm kiếm..."
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearch}
+          sx={{ maxWidth: 300 }}
+        />
+      </Box>
+
       <Box sx={{ width: '100%' }}>
         <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
           <Table sx={{ minWidth: 650 }} aria-label="learning paths table">
