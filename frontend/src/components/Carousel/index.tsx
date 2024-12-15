@@ -378,12 +378,12 @@ const Carousel: React.FC<CarouselProps> = ({
     customPaging: (i: number) => {
       return (
         <div
-          onClick={() => setActiveIndex(i)} 
+          onClick={() => setActiveIndex(i)}
           style={{
-            borderRadius:'var(--main-border-radius)',
+            borderRadius: 'var(--main-border-radius)',
             width: '30px',
             height: '5px',
-            background: i === activeIndex ? '#d3d3d3' : 'white', 
+            background: i === activeIndex ? '#d3d3d3' : 'white',
             transition: 'background-color 0.3s',
             cursor: 'pointer',
           }}
@@ -398,10 +398,10 @@ const Carousel: React.FC<CarouselProps> = ({
         style={{
           width: '400px',
           display: 'flex',
-          justifyContent: 'space-between',
           position: 'absolute',
           left: '10px',
           bottom: '0px',
+          gap: '10px', // Tăng khoảng cách giữa các dots
         }}
       >
         {dots}

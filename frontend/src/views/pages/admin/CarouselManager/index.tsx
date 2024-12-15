@@ -1,138 +1,30 @@
-import {
-  Box,
-  Button,
-  Collapse,
-  Grid,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Button, Grid, TextField, Typography, Paper, TableRow, TableCell, IconButton, Tooltip, Collapse, TableContainer, Table, TableHead, TableBody } from '@mui/material';
+import axiosInstance from '@/api/axiosInstance';
+import Dialog from '@/components/Dialog';
 import HeaderTitle from '../Title';
 import Carousel from '@/components/Carousel';
-import { Link } from 'react-router-dom';
-import { Delete, Edit, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
-import { useState } from 'react';
 import TabsCustom from '@/components/TabsCustom';
-
-import Dialog from '@/components/Dialog';
-
-const fakeSlider = [
-  {
-    _id: '1',
-    path: '/reactjs',
-    image: '/images/react.png',
-    background: 'linear-gradient(to right, #00C9FF, #92FE9D)',
-    title: 'Khóa học React JS',
-    description:
-      'Khóa học React JS từ cơ bản đến nâng cao, giúp bạn xây dựng các ứng dụng web với khả năng tái sử dụng, quản lý trạng thái và xử lý dữ liệu hiệu quả.',
-  },
-  {
-    _id: '2',
-    path: '/nodejs',
-    image: '/images/nodejs.png',
-    background: 'linear-gradient(to right, #FDC830, #F37335)',
-    title: 'NodeJS',
-    description:
-      'Học NodeJS, nắm vững kiến trúc non-blocking, xây dựng API RESTful và quản lý dữ liệu lớn với tốc độ cao, tích hợp với cơ sở dữ liệu như MongoDB, MySQL.',
-  },
-  {
-    _id: '3',
-    path: '/vuejs',
-    image: '/images/vuejs.png',
-    background: 'linear-gradient(to right, #7F00FF, #E100FF)',
-    title: 'VueJS',
-    description:
-      'Tìm hiểu VueJS để xây dựng các ứng dụng web SPA nhanh, mượt mà, và quản lý trạng thái hiệu quả với Vue Router và Vuex.',
-  },
-  {
-    _id: '4',
-    path: '/angular',
-    image: '/images/angular.png',
-    background: 'linear-gradient(to right, #FF512F, #DD2476)',
-    title: 'Angular',
-    description:
-      'Trở thành chuyên gia Angular, sử dụng TypeScript để phát triển ứng dụng với hiệu suất cao, tối ưu hóa và dễ bảo trì.',
-  },
-  {
-    _id: '5',
-    path: '/javascript',
-    image: '/images/javascript-banner.png',
-    background: 'linear-gradient(to right, #FFE000, #799F0C)',
-    title: 'JavaScript',
-    description:
-      'Nắm vững JavaScript từ cơ bản đến nâng cao, bao gồm lập trình bất đồng bộ và tối ưu hóa hiệu suất trên cả front-end và back-end.',
-  },
-  {
-    _id: '6',
-    path: '/python',
-    image: '/images/python-banner.png',
-    background: 'linear-gradient(to right, #00B4DB, #0083B0)',
-    title: 'Python',
-    description:
-      'Học Python cho phát triển web, khoa học dữ liệu và tự động hóa, xây dựng ứng dụng với Django hoặc Flask, phân tích dữ liệu hiệu quả.',
-  },
-  {
-    _id: '7',
-    path: '/ruby',
-    image: '/images/ruby-banner.png',
-    background: 'linear-gradient(to right, #FF416C, #FF4B2B)',
-    title: 'Ruby',
-    description:
-      'Khám phá Ruby và Rails để phát triển ứng dụng web mạnh mẽ, tối ưu hóa và dễ bảo trì với hiệu suất cao.',
-  },
-  {
-    _id: '8',
-    path: '/php',
-    image: '/images/php-banner.png',
-    background: 'linear-gradient(to right, #1D976C, #93F9B9)',
-    title: 'PHP',
-    description:
-      'Học PHP để xây dựng ứng dụng web server-side mạnh mẽ, kết nối cơ sở dữ liệu, xử lý yêu cầu HTTP và bảo mật cao.',
-  },
-  {
-    _id: '9',
-    path: '/golang',
-    image: '/images/golang-banner.png',
-    background: 'linear-gradient(to right, #36D1DC, #5B86E5)',
-    title: 'Golang',
-    description: 'Thành thạo Go để xây dựng hệ thống đa luồng, xử lý nhiều kết nối và tối ưu hóa mã cho hiệu suất cao.',
-  },
-  {
-    _id: '10',
-    path: '/java',
-    image: '/images/java-banner.png',
-    background: 'linear-gradient(to right, #FFB75E, #ED8F03)',
-    title: 'Java',
-    description:
-      'Trở thành chuyên gia Java, phát triển ứng dụng doanh nghiệp, hệ thống lớn và phần mềm di động với Java Spring.',
-  },
-];
-
-const colors = [
-  'linear-gradient(to right, #00C9FF, #92FE9D)',
-  'linear-gradient(to right, #FDC830, #F37335)',
-  'linear-gradient(to right, #7F00FF, #E100FF)',
-  'linear-gradient(to right, #FF512F, #DD2476)',
-  'linear-gradient(to right, #FFE000, #799F0C)',
-  'linear-gradient(to right, #00B4DB, #0083B0)',
-  'linear-gradient(to right, #FF416C, #FF4B2B)',
-  'linear-gradient(to right, #1D976C, #93F9B9)',
-  'linear-gradient(to right, #36D1DC, #5B86E5)',
-  'linear-gradient(to right, #FFB75E, #ED8F03)',
-];
+import { Delete, Edit, KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import { Link } from 'react-router-dom';
+import { colors } from '@/api/color';
 
 const CarouselManager: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string>('');
   const [isIndexOpens, setIsIndexOpens] = useState<number[]>([]);
-
-  const [dataEdit, setDataEdit] = useState({});
+  const [newCarousel, setNewCarousel] = useState({
+    path: '',
+    image: '' as string | File,
+    background: '',
+    title: '',
+    description: '',
+  });
+  const [carousels, setCarousels] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [carouselToDelete, setCarouselToDelete] = useState<string | null>(null);
+  const [editCarouselId, setEditCarouselId] = useState<string | null>(null);  // For editing
 
   const handleToggler = (index: number) => {
     if (isIndexOpens.includes(index)) {
@@ -141,17 +33,152 @@ const CarouselManager: React.FC = () => {
       setIsIndexOpens((pre) => [...pre, index]);
     }
   };
+
+  const handleColorSelect = (color: string) => {
+    setSelectedColor(color);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewCarousel((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async () => {
+    if (!newCarousel.image) {
+      setError('Vui lòng chọn hình ảnh.');
+      return;
+    }
+
+    if (!selectedColor) {
+      setError('Vui lòng chọn màu nền.');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      if (newCarousel.path) formData.append('path', newCarousel.path);
+      if (newCarousel.image instanceof File) {
+        formData.append('image', newCarousel.image);
+      } else {
+        console.error('Image không phải là File.');
+        setError('Hình ảnh không hợp lệ.');
+        return;
+      }
+
+      if (selectedColor) formData.append('background', selectedColor);
+      if (newCarousel.title) formData.append('title', newCarousel.title);
+      if (newCarousel.description) formData.append('description', newCarousel.description);
+
+      let response;
+      if (editCarouselId) {
+        response = await axiosInstance.put(`/api/carousel/${editCarouselId}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      } else {
+        response = await axiosInstance.post('/api/carousel', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      }
+
+      if (response.data.success) {
+        if (editCarouselId) {
+          setCarousels((prevCarousels) =>
+            prevCarousels.map((carousel) =>
+              carousel._id === editCarouselId ? response.data.data : carousel
+            )
+          );
+          alert('Carousel đã được sửa thành công!');
+        } else {
+          setCarousels((prevCarousels) => [...prevCarousels, response.data.data]);
+          alert('Carousel đã được tạo thành công!');
+        }
+        setOpenDialog(false);
+        setNewCarousel({ path: '', image: '', background: '', title: '', description: '' });
+        setSelectedColor('');
+        setEditCarouselId(null);  // Reset the edit carousel ID
+        setError(null);
+      } else {
+        setError('Không thể tạo/sửa carousel');
+        alert('Không thể tạo/sửa carousel');
+      }
+    } catch (error: any) {
+      console.error('Error creating/updating carousel:', error);
+      setError('Lỗi khi tạo/sửa carousel');
+      alert('Đã có lỗi xảy ra khi tạo/sửa carousel!');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!carouselToDelete) return;
+
+    try {
+      const response = await axiosInstance.delete(`/api/carousel/${carouselToDelete}`);
+      if (response.data.success) {
+        setCarousels((prevCarousels) =>
+          prevCarousels.filter((carousel) => carousel._id !== carouselToDelete)
+        );
+        alert('Carousel đã được xóa thành công!');
+        setError(null);
+      } else {
+        setError('Không thể xóa carousel');
+        alert('Không thể xóa carousel');
+      }
+    } catch (error) {
+      setError('Lỗi khi xóa carousel');
+      console.error(error);
+      alert('Đã có lỗi xảy ra khi xóa carousel!');
+    }
+  };
+
+  const fetchCarousels = async () => {
+    try {
+      const response = await axiosInstance.get('/api/carousel');
+      if (response.data.success) {
+        setCarousels(response.data.data);
+      } else {
+        setError('Không có carousel nào');
+      }
+    } catch (error) {
+      setError('Lỗi khi tải dữ liệu');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (carousel: any) => {
+    setNewCarousel({
+      path: carousel.path,
+      image: carousel.image,
+      background: carousel.background,
+      title: carousel.title,
+      description: carousel.description,
+    });
+    setSelectedColor(carousel.background);
+    setEditCarouselId(carousel._id);  // Set the carousel ID for editing
+    setOpenDialog(true);
+  };
+
+  useEffect(() => {
+    fetchCarousels();
+  }, []);
+
   return (
     <>
       <HeaderTitle des="Quản lý banner" titleButton="Tạo carousel" onClick={() => setOpenDialog(true)} />
-      <Box component={Paper}>
+      <Box component={Paper} sx={{ padding: '20px' }}>
         <TabsCustom
-          onChange={() => {}}
+          onChange={() => { }}
           labels={['Xem trước', 'Dữ liệu']}
           contents={[
-            <Carousel dot sliders={fakeSlider} />,
-
-            <TableContainer sx={{ borderRadius: 0 }}>
+            <Carousel dot sliders={carousels.length > 0 ? carousels : []} />,
+            <TableContainer sx={{ borderRadius: '0' }}>
               <Table aria-label="learning paths table">
                 <TableHead>
                   <TableRow>
@@ -162,48 +189,49 @@ const CarouselManager: React.FC = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {fakeSlider.length > 0 ? (
-                    fakeSlider.map((s: any, index: number) => (
+                  {loading ? (
+                    <Typography>Đang tải dữ liệu...</Typography>
+                  ) : (
+                    carousels.map((carousel) => (
                       <>
-                        <TableRow key={s._id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                        <TableRow key={carousel._id}>
                           <TableCell>
-                            <IconButton aria-label="expand row" size="small" onClick={() => handleToggler(index)}>
-                              {isIndexOpens.includes(index) ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                            <IconButton onClick={() => handleToggler(carousel._id)} size="small">
+                              {isIndexOpens.includes(carousel._id) ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                             </IconButton>
                           </TableCell>
-                          <TableCell component="th" scope="row">
-                            {s.title}
-                          </TableCell>
-
-                          <TableCell>{s.path}</TableCell>
+                          <TableCell>{carousel.title}</TableCell>
+                          <TableCell>{carousel.path}</TableCell>
                           <TableCell align="right">
                             <Tooltip title="Sửa">
                               <IconButton
-                                onClick={() => {
-                                  setOpenDialog(true);
-                                  setDataEdit(s);
-                                }}
                                 color="primary"
+                                onClick={() => handleEdit(carousel)}
                               >
                                 <Edit />
                               </IconButton>
                             </Tooltip>
                             <Tooltip title="Xóa">
-                              <IconButton color="error">
+                              <IconButton
+                                color="error"
+                                onClick={() => {
+                                  setCarouselToDelete(carousel._id);
+                                  handleDelete();
+                                }}
+                              >
                                 <Delete />
                               </IconButton>
                             </Tooltip>
                           </TableCell>
                         </TableRow>
-
                         <TableRow>
                           <TableCell colSpan={4} style={{ paddingBottom: 0, paddingTop: 0 }}>
-                            <Collapse in={isIndexOpens.includes(index)} timeout="auto" unmountOnExit>
+                            <Collapse in={isIndexOpens.includes(carousel._id)} timeout="auto" unmountOnExit>
                               <Box
                                 sx={{
                                   width: '100%',
                                   height: '250px',
-                                  background: s.background,
+                                  background: carousel.background,
                                   display: 'flex',
                                   justifyContent: 'space-between',
                                   padding: '20px 10px 0 50px',
@@ -225,14 +253,14 @@ const CarouselManager: React.FC = () => {
                                       variant="h1"
                                       component="h1"
                                     >
-                                      {s.title}
+                                      {carousel.title}
                                     </Typography>
                                     <Typography sx={{ lineHeight: '25px' }} variant="body1" component="p">
-                                      {s.description}
+                                      {carousel.description}
                                     </Typography>
                                   </Box>
                                   <Box>
-                                    <Link to={s.path}>
+                                    <Link to={carousel.path}>
                                       <Button
                                         sx={{
                                           backgroundColor: 'transparent',
@@ -263,7 +291,7 @@ const CarouselManager: React.FC = () => {
                                     padding: '10px',
                                   }}
                                 >
-                                  <img src={s.image} alt={s.title} style={{ height: '100%', objectFit: 'contain' }} />
+                                  <img src={carousel.image} alt={carousel.title} style={{ height: '100%', objectFit: 'contain' }} />
                                 </Box>
                               </Box>
                             </Collapse>
@@ -271,32 +299,95 @@ const CarouselManager: React.FC = () => {
                         </TableRow>
                       </>
                     ))
-                  ) : (
-                    <Typography>Không có dữ liệu</Typography>
                   )}
                 </TableBody>
               </Table>
-            </TableContainer>,
+            </TableContainer>
           ]}
         />
       </Box>
-      <Dialog
-        open={openDialog}
-        title={Object.keys(dataEdit).length > 0 ? 'Sửa carousel' : 'Thêm carousel'}
-        onClose={() => setOpenDialog(false)}
-      >
-        <Typography>Chọn mẫu màu</Typography>
-        <Grid container spacing={1}>
-          {colors.map((c, index: number) => (
-            <Grid item key={index} xs={1}>
-              <Box sx={{ width: '60px', height: '60px', background: c }} />
+
+      <Dialog open={openDialog} title={editCarouselId ? 'Sửa carousel' : 'Tạo carousel'} onClose={() => setOpenDialog(false)}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              label="Tên Carousel"
+              name="title"
+              fullWidth
+              value={newCarousel.title}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Đường dẫn"
+              name="path"
+              fullWidth
+              value={newCarousel.path}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Mô tả"
+              name="description"
+              fullWidth
+              value={newCarousel.description}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography>Chọn màu nền</Typography>
+            <Grid container spacing={1}>
+              {colors.map((color, index) => (
+                <Grid item key={index} xs={1}>
+                  <Box
+                    sx={{
+                      width: '60px',
+                      height: '60px',
+                      background: color,
+                      cursor: 'pointer',
+                      border: selectedColor === color ? '10px solid #fff' : '1px solid transparent',
+                    }}
+                    onClick={() => handleColorSelect(color)}
+                  />
+                </Grid>
+              ))}
             </Grid>
-          ))}
+          </Grid>
+          <Grid item xs={12}>
+            {newCarousel.image && typeof newCarousel.image === 'string' && (
+              <Box sx={{ marginBottom: 2 }}>
+                <Typography>Hình ảnh hiện tại:</Typography>
+                <Box
+                  component="img"
+                  src={newCarousel.image}
+                  alt="Hình ảnh hiện tại"
+                  sx={{ width: '100%', maxWidth: '200px', borderRadius: '8px' }}
+                />
+              </Box>
+            )}
+            <Typography>Tải lên hình ảnh mới:</Typography>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setNewCarousel({ ...newCarousel, image: e.target.files![0] })}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              onClick={handleSubmit}
+              variant="contained"
+              color="primary"
+              fullWidth
+            >
+              {editCarouselId ? 'Cập nhật' : 'Tạo'}
+            </Button>
+          </Grid>
         </Grid>
-        thêm/ sửa ở đây
-        {Object.keys(dataEdit).length > 0 && JSON.stringify(dataEdit)}
       </Dialog>
     </>
   );
 };
+
 export default CarouselManager;
