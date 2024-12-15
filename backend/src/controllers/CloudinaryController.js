@@ -1,11 +1,6 @@
 import cloudinary from "cloudinary";
 import fs from 'fs';
 
-cloudinary.config({
-  cloud_name: "dgzwrfdjn",
-  api_key: "884514879143886",
-  api_secret: "L_sdFIOH6Z164w43rJg3p-N_gWw",
-});
 
 class CloudinaryController {
   // Lấy tất cả ảnh từ thư mục 'images'

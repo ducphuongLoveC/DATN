@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Grid, TextField, Typography, Paper, TableRow, TableCell, IconButton, Tooltip, Collapse, TableContainer, Table, TableHead, TableBody } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography, Paper, TableRow, TableCell, IconButton, Tooltip, Collapse, TableContainer, Table, TableHead, TableBody, Backdrop, CircularProgress } from '@mui/material';
 import axiosInstance from '@/api/axiosInstance';
 import Dialog from '@/components/Dialog';
 import HeaderTitle from '../Title';
@@ -22,6 +22,7 @@ const CarouselManager: React.FC = () => {
   });
   const [carousels, setCarousels] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [carouselToDelete, setCarouselToDelete] = useState<string | null>(null);
   const [editCarouselId, setEditCarouselId] = useState<string | null>(null);  // For editing
@@ -38,6 +39,15 @@ const CarouselManager: React.FC = () => {
     setSelectedColor(color);
   };
 
+  const handleCloseDialog = () => {
+    // Reset form khi đóng Dialog
+    setNewCarousel({ path: '', image: '', background: '', title: '', description: '' });
+    setSelectedColor('');
+    setEditCarouselId(null); // Reset editCarouselId khi đóng Dialog
+    setError(null); // Xóa lỗi
+    setOpenDialog(false);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewCarousel((prev) => ({
@@ -47,23 +57,30 @@ const CarouselManager: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!newCarousel.image) {
+    if (!newCarousel.path || !newCarousel.title || !newCarousel.description) {
+      setError('Vui lòng điền đầy đủ thông tin bắt buộc.');
+      return;
+    }
+
+    if (!newCarousel.image && !editCarouselId) {
       setError('Vui lòng chọn hình ảnh.');
       return;
     }
 
-    if (!selectedColor) {
-      setError('Vui lòng chọn màu nền.');
-      return;
-    }
+    setIsLoading(true); // Bắt đầu loading
 
     try {
       const formData = new FormData();
       if (newCarousel.path) formData.append('path', newCarousel.path);
-      if (newCarousel.image instanceof File) {
+
+      // Nếu đang chỉnh sửa và không thay đổi ảnh, gửi URL hiện tại
+      if (editCarouselId && typeof newCarousel.image === 'string') {
+        formData.append('image', newCarousel.image); // URL ảnh hiện tại
+      }
+      // Nếu ảnh là file mới được chọn
+      else if (newCarousel.image instanceof File) {
         formData.append('image', newCarousel.image);
-      } else {
-        console.error('Image không phải là File.');
+      } else if (!editCarouselId) {
         setError('Hình ảnh không hợp lệ.');
         return;
       }
@@ -88,6 +105,7 @@ const CarouselManager: React.FC = () => {
       }
 
       if (response.data.success) {
+        // Update state for carousel list
         if (editCarouselId) {
           setCarousels((prevCarousels) =>
             prevCarousels.map((carousel) =>
@@ -99,19 +117,30 @@ const CarouselManager: React.FC = () => {
           setCarousels((prevCarousels) => [...prevCarousels, response.data.data]);
           alert('Carousel đã được tạo thành công!');
         }
-        setOpenDialog(false);
+
+        // Reset form data and states
         setNewCarousel({ path: '', image: '', background: '', title: '', description: '' });
         setSelectedColor('');
-        setEditCarouselId(null);  // Reset the edit carousel ID
+        setEditCarouselId(null);
         setError(null);
+        setOpenDialog(false);
+
       } else {
-        setError('Không thể tạo/sửa carousel');
-        alert('Không thể tạo/sửa carousel');
+        // Kiểm tra thông điệp lỗi từ backend
+        if (response.data.message === "Đã đạt giới hạn 10 carousel, không thể tạo thêm") {
+          setError('Đã đạt giới hạn 10 carousel, không thể tạo thêm');
+          alert('Không thể tạo thêm carousel, đã đạt giới hạn!');
+        } else {
+          setError('Không thể tạo/sửa carousel');
+          alert('Không thể tạo/sửa carousel');
+        }
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error creating/updating carousel:', error);
       setError('Lỗi khi tạo/sửa carousel');
-      alert('Đã có lỗi xảy ra khi tạo/sửa carousel!');
+      alert('Đã có lỗi xảy ra khi tạo/sửa carousel hoặc vượt quá 10 carousel!');
+    } finally {
+      setIsLoading(false); // Tắt loading
     }
   };
 
@@ -307,7 +336,7 @@ const CarouselManager: React.FC = () => {
         />
       </Box>
 
-      <Dialog open={openDialog} title={editCarouselId ? 'Sửa carousel' : 'Tạo carousel'} onClose={() => setOpenDialog(false)}>
+      <Dialog open={openDialog} title={editCarouselId ? 'Sửa carousel' : 'Tạo carousel'} onClose={handleCloseDialog}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -375,17 +404,16 @@ const CarouselManager: React.FC = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button
-              onClick={handleSubmit}
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
+            <Button disabled={isLoading} onClick={handleSubmit} variant="contained" color="primary" fullWidth>
               {editCarouselId ? 'Cập nhật' : 'Tạo'}
             </Button>
           </Grid>
         </Grid>
       </Dialog>
+      {/* Hiển thị CircularProgress khi đang loading */}
+      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };

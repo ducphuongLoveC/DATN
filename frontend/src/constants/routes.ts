@@ -42,7 +42,7 @@ const path = {
     news: '/news',
     newsDetail: '/news-detail',
     contact: '/contact',
-    profile: '/profile',
+    profile: (id:string) => `/profile${id}`,
     setting: '/setting',
     newPost: '/new-post',
     myPost: '/my-post',

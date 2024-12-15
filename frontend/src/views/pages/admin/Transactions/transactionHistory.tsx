@@ -19,7 +19,6 @@ import {
 import axiosInstance from '@/api/axiosInstance';
 import HeaderTitle from '../Title';
 
-// Định nghĩa các interface
 interface Order {
   _id: string;
   user_id: {
@@ -42,6 +41,7 @@ interface FilterOptions {
   minPrice: string;
   maxPrice: string;
   sortPrice: 'asc' | 'desc' | '';
+  searchId: string; // Tìm kiếm theo ID
 }
 
 interface Column {
@@ -55,6 +55,11 @@ interface Column {
 const DEFAULT_IMAGE = '/placeholder-image.jpg';
 
 const columns: Column[] = [
+  {
+    id: '_id',
+    label: 'ID Đơn Hàng',
+    minWidth: 150,
+  },
   {
     id: 'user_id',
     label: 'Người Mua',
@@ -122,9 +127,9 @@ const columns: Column[] = [
         failed: { color: '#ef4444', background: '#fee2e2' },
       };
       const statusText: Record<string, string> = {
-        pending: 'Đang xử lý',
-        completed: 'Hoàn thành',
-        failed: 'Thất bại',
+        pending: 'Chưa thanh toán',
+        completed: 'Đã thanh toán',
+        failed: 'Thánh toán thất bại',
       };
       const style = statusStyles[value] || { color: '#666', background: '#f3f4f6' };
       const text = statusText[value] || value;
@@ -159,7 +164,7 @@ const columns: Column[] = [
     },
   },
   {
-    id: 'amount', // Đổi từ 'total_price' thành 'amount'
+    id: 'amount', 
     label: 'Tổng Tiền',
     minWidth: 120,
     align: 'right',
@@ -185,6 +190,7 @@ const TransactionHistory: React.FC = () => {
     minPrice: '',
     maxPrice: '',
     sortPrice: '',
+    searchId: '', 
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -197,6 +203,7 @@ const TransactionHistory: React.FC = () => {
       if (filters.minPrice) params.append('minPrice', filters.minPrice);
       if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
       if (filters.sortPrice) params.append('sortPrice', filters.sortPrice);
+      if (filters.searchId) params.append('searchId', filters.searchId); 
 
       const response = await axiosInstance.get(`/api/order/transactionhistory?${params.toString()}`);
       if (response.data && Array.isArray(response.data.data)) {
@@ -238,87 +245,79 @@ const TransactionHistory: React.FC = () => {
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <Box sx={{ p: 2, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <TextField
+            label="Tìm kiếm ID Đơn Hàng"
+            name="searchId"
+            value={filters.searchId}
+            onChange={handleFilterChange as React.ChangeEventHandler<HTMLInputElement>}
+            size="small"
+          />
+          <TextField
             label="Giá tối thiểu"
             name="minPrice"
-            type="number"
             value={filters.minPrice}
             onChange={handleFilterChange as React.ChangeEventHandler<HTMLInputElement>}
             size="small"
-            InputProps={{
-              inputProps: { min: 0 },
-              startAdornment: <span style={{ marginRight: 8 }}>₫</span>,
-            }}
           />
           <TextField
             label="Giá tối đa"
             name="maxPrice"
-            type="number"
             value={filters.maxPrice}
             onChange={handleFilterChange as React.ChangeEventHandler<HTMLInputElement>}
             size="small"
-            InputProps={{
-              inputProps: { min: 0 },
-              startAdornment: <span style={{ marginRight: 8 }}>₫</span>,
-            }}
           />
           <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>Sắp xếp giá</InputLabel>
-            <Select value={filters.sortPrice} label="Sắp xếp giá" name="sortPrice" onChange={handleFilterChange}>
-              <MenuItem value="">Không sắp xếp</MenuItem>
+            <InputLabel id="sortPriceLabel">Sắp xếp giá</InputLabel>
+            <Select
+              labelId="sortPriceLabel"
+              label="Sắp xếp giá"
+              name="sortPrice"
+              value={filters.sortPrice}
+              onChange={handleFilterChange}
+            >
+              <MenuItem value="">Không</MenuItem>
               <MenuItem value="asc">Tăng dần</MenuItem>
               <MenuItem value="desc">Giảm dần</MenuItem>
             </Select>
           </FormControl>
         </Box>
 
-        <TableContainer sx={{ maxHeight: 440 }}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {loading ? (
+        {loading ? (
+          <div>Đang tải...</div>
+        ) : error ? (
+          <div>{error}</div>
+        ) : (
+          <TableContainer sx={{ maxHeight: 440 }}>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan={columns.length} align="center">
-                    Đang tải dữ liệu...
-                  </TableCell>
+                  {columns.map((column) => (
+                    <TableCell key={column.id} style={{ minWidth: column.minWidth }}>
+                      {column.label}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              ) : error ? (
-                <TableRow>
-                  <TableCell colSpan={columns.length} align="center" style={{ color: 'red' }}>
-                    {error}
-                  </TableCell>
-                </TableRow>
-              ) : orders.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={columns.length} align="center">
-                    Không có dữ liệu
-                  </TableCell>
-                </TableRow>
-              ) : (
-                orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
-                  <TableRow hover key={order._id}>
-                    {columns.map((column) => {
-                      const value = order[column.id as keyof Order];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format ? column.format(value) : value?.toString() || 'N/A'}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
+              </TableHead>
+              <TableBody>
+                {orders
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((order : any) => {
+                    return (
+                      <TableRow hover role="checkbox" tabIndex={-1} key={order._id}>
+                        {columns.map((column) => {
+                          const value = order[column.id];
+                          return (
+                            <TableCell key={column.id}>
+                              {column.format ? column.format(value) : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
@@ -327,8 +326,6 @@ const TransactionHistory: React.FC = () => {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="Số dòng mỗi trang"
-          labelDisplayedRows={({ from, to, count }) => `${from}-${to} của ${count}`}
         />
       </Paper>
     </Box>

@@ -16,8 +16,8 @@ const resourceSchema = new mongoose.Schema(
 
     title: {
       type: String,
-      required: [true, "Title is required"],
-      minlength: 6,
+      required: [true, "Tiêu đề là bắt buộc"],
+      minlength: [6, "Tiêu đề tài liệu phải có ít nhất 6 ký tự"], 
       maxlength: 255,
     },
 

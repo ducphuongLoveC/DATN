@@ -7,47 +7,6 @@ import Module from "../models/Module.js";
 import Resource from "../models/Resource.js";
 
 class CommentController {
-  // Tạo bình luận mới
-
-  // async createComment(req, res) {
-  //   try {
-  //     const { resource_id, user_id, content, parent_id = null } = req.body;
-
-  //     if (!content || !resource_id || !user_id) {
-  //       return res
-  //         .status(400)
-  //         .json({ message: "Content, resource_id, and user_id are required." });
-  //     }
-
-  //     // Tạo bình luận mới
-  //     const newComment = new Comment({
-  //       resource_id,
-  //       user_id,
-  //       content,
-  //       parent_id,
-  //     });
-
-  //     // Lưu bình luận vào cơ sở dữ liệu
-  //     await newComment.save();
-
-  //     // Nếu có parent_id, cập nhật bình luận cha thêm ID của bình luận con vào mảng replies
-  //     if (parent_id) {
-  //       await Comment.findByIdAndUpdate(parent_id, {
-  //         $push: { replies: newComment._id },
-  //       });
-  //     }
-
-  //     req.io
-  //       .to(resource_id)
-  //       .emit("newComment", { resource_id, comment: newComment });
-  //     // Trả về bình luận mới vừa tạo
-  //     return res.status(201).json(newComment);
-  //   } catch (error) {
-  //     console.error(error);
-  //     return res.status(500).json({ message: "Internal Server Error" });
-  //   }
-  // }
-
   async createComment(req, res) {
     try {
       const { resource_id, user_id, content, parent_id = null } = req.body;
@@ -204,10 +163,12 @@ class CommentController {
   async getAllComments(req, res) {
     try {
       const { courseId } = req.query; // Lấy khóa học từ query string
-  
+
       // Tạo điều kiện lọc nếu có courseId
-      const matchCondition = courseId ? { 'course._id': new mongoose.Types.ObjectId(courseId) } : {};
-  
+      const matchCondition = courseId
+        ? { "course._id": new mongoose.Types.ObjectId(courseId) }
+        : {};
+
       // Lấy tất cả các bình luận (gồm cả bình luận gốc và trả lời) với điều kiện lọc khóa học
       const comments = await Comment.aggregate([
         {
@@ -265,7 +226,7 @@ class CommentController {
         { $match: matchCondition }, // Lọc bình luận theo khóa học nếu courseId có
         { $sort: { timestamp: -1 } }, // Sắp xếp bình luận theo thời gian giảm dần
       ]);
-  
+
       // Hàm đệ quy để lấy bình luận lồng cấp (replies)
       async function getReplies(commentId) {
         const replies = await Comment.aggregate([
@@ -287,20 +248,20 @@ class CommentController {
           },
           { $sort: { timestamp: -1 } },
         ]);
-  
+
         // Duyệt qua các bình luận trả lời để gọi đệ quy cho các trả lời (nếu có)
         for (let reply of replies) {
           reply.replies = await getReplies(reply._id); // Gọi đệ quy cho các bình luận trả lời
         }
-  
+
         return replies;
       }
-  
+
       // Lấy các bình luận trả lời cho mỗi bình luận
       for (let comment of comments) {
         comment.replies = await getReplies(comment._id);
       }
-  
+
       // Trả kết quả, bao gồm tên khóa học
       return res.status(200).json(comments || []); // Đảm bảo trả về mảng, ngay cả khi không có bình luận
     } catch (error) {
@@ -308,7 +269,7 @@ class CommentController {
       return res.status(500).json({ message: "Internal Server Error" });
     }
   }
-  
+
   async deleteComment(req, res) {
     try {
       const { id } = req.params; // Lấy ID của comment từ URL

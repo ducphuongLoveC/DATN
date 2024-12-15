@@ -59,15 +59,12 @@ const CertificateCheck: React.FC = () => {
           <Grid xs={12} md={10} item>
             <Controller
               name="code"
-              rules={{ required: 'Vui lòng nhập code' }}
               control={control}
               render={({ field }) => (
                 <TextField
                   fullWidth
                   {...field}
                   label="Nhập code chứng chỉ"
-                  error={!!errors.code}
-                  helperText={errors.code?.message}
                 />
               )}
             />

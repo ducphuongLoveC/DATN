@@ -1,31 +1,5 @@
 import Note from "../models/Note.js";
 class NoteController {
-  // async getNotes(req, res) {
-  //   const { resource_id, user_id } = req.query;
-
-  //   console.log(resource_id, user_id);
-
-  //   if (!resource_id || !user_id) {
-  //     return res
-  //       .status(400)
-  //       .json({ message: "Resource ID và User ID bắt buộc" });
-  //   }
-  //   try {
-  //     const notes = await Note.find({ resource_id, user_id });
-
-  //     if (notes.length === 0) {
-  //       return res.status(404).json({
-  //         message: "Không tìm thấy note nào ở userid và resourceid này",
-  //       });
-  //     }
-
-  //     return res.status(200).json({ notes });
-  //   } catch (error) {
-  //     console.error("Error fetching notes:", error);
-  //     return res.status(500).json({ message: "Failed to fetch notes" });
-  //   }
-  // }
-
   async getNotes(req, res) {
     const { resource_id, user_id, type, sort } = req.query;
 

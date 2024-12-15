@@ -12,9 +12,17 @@ interface ImageDescriptionProps extends BoxProps {
   bodyContent?: string | React.ReactNode;
   bExtend?: React.ReactNode;
   hover: boolean;
+  isUnRead?: boolean;
 }
 
-const ImageDescription: React.FC<ImageDescriptionProps> = ({ thumbnail, bodyHead, bodyContent, bExtend, ...rest }) => {
+const ImageDescription: React.FC<ImageDescriptionProps> = ({
+  thumbnail,
+  bodyHead,
+  bodyContent,
+  bExtend,
+  isUnRead,
+  ...rest
+}) => {
   const theme = useTheme();
 
   return (
@@ -32,7 +40,11 @@ const ImageDescription: React.FC<ImageDescriptionProps> = ({ thumbnail, bodyHead
         }}
       >
         <Grid item sx={{ marginRight: '10px' }}>
-          <Thumbnail sx={{ width: 120, borderRadius: 'var(--mini-border-radius)' }} src={thumbnail} alt="img" />
+          <Box sx={{ display: 'flex' }}>
+            <Box sx={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: `${isUnRead && 'red'}` }} />
+
+            <Thumbnail sx={{ width: 120, borderRadius: 'var(--mini-border-radius)' }} src={thumbnail} alt="img" />
+          </Box>
         </Grid>
         <Grid item xs>
           <Typography variant="h6" sx={{ fontSize: 'var(--main-font-size)' }}>
