@@ -8,6 +8,7 @@ import { SET_USER } from '@/store/actions';
 import Cookies from 'js-cookie';
 import { Button } from '@mui/material';
 import { toast, ToastContainer } from 'react-toastify';
+import Loading from '@/ui-component/Loading';
 
 interface FormData {
   id?: string;
@@ -121,46 +122,76 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const userId = user?._id || user?.id;
 
     if (file && userId) {
-      console.log('Bắt đầu upload ảnh...');
+      const formData = new FormData();
+      formData.append('file', file);
 
-      const formDataToSend = new FormData();
-      formDataToSend.append('profile_picture', file);
+      setLoading(true);
 
-      axiosInstance
-        .put(`/api/user/${userId}`, formDataToSend, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then((response) => {
-          // toast.success
-          if (response.data.success) {
-            const uploadedImageUrl = response.data.data.profile_picture;
+      const response = await axiosInstance.post('/api/media/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-            // Cập nhật formData
-            setFormData((prevData) => ({
-              ...prevData,
-              profile_picture: uploadedImageUrl,
-            }));
+      const responseUpdatePictureLink = await axiosInstance.put(`/api/user/${userId}`, {
+        profile_picture: response.data.url,
+      });
 
-            // Cập nhật user trong Redux và cookies
-            const updatedUser = { ...user, profile_picture: uploadedImageUrl };
-            dispatch({ type: SET_USER, payload: updatedUser });
-            Cookies.set('user', JSON.stringify(updatedUser), {
-              domain: 'admin.localhost',
-              expires: 7,
-            });
-          }
-        })
-        .catch((error) => {
-          console.error('Lỗi khi upload ảnh: ', error);
-          toast.error('Có lỗi xảy ra khi upload ảnh!');
+      if (response.data.success && responseUpdatePictureLink.data.success) {
+        const uploadedImageUrl = response.data.url;
+
+        // Cập nhật formData
+        setFormData((prevData) => ({
+          ...prevData,
+          profile_picture: uploadedImageUrl,
+        }));
+
+        // Cập nhật user trong Redux và cookies
+        const updatedUser = { ...user, profile_picture: uploadedImageUrl };
+        dispatch({ type: SET_USER, payload: updatedUser });
+        Cookies.set('user', JSON.stringify(updatedUser), {
+          domain: 'admin.localhost',
+          expires: 7,
         });
+        setLoading(false);
+      } else {
+        throw new Error(response.data.message || 'Upload failed');
+      }
+
+      // axiosInstance.put(`/api/user/${userId}`, formDataToSend, {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //     },
+      //   })
+      //   .then((response) => {
+      //     // toast.success
+      //     if (response.data.success) {
+      //       const uploadedImageUrl = response.data.data.profile_picture;
+
+      //       // Cập nhật formData
+      //       setFormData((prevData) => ({
+      //         ...prevData,
+      //         profile_picture: uploadedImageUrl,
+      //       }));
+
+      //       // Cập nhật user trong Redux và cookies
+      //       const updatedUser = { ...user, profile_picture: uploadedImageUrl };
+      //       dispatch({ type: SET_USER, payload: updatedUser });
+      //       Cookies.set('user', JSON.stringify(updatedUser), {
+      //         domain: 'admin.localhost',
+      //         expires: 7,
+      //       });
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error('Lỗi khi upload ảnh: ', error);
+      //     toast.error('Có lỗi xảy ra khi upload ảnh!');
+      //   });
     }
   };
   const handleSave = async () => {
@@ -208,20 +239,6 @@ const Profile: React.FC = () => {
   return (
     <div className="container">
       <div className="main-body">
-        <nav aria-label="breadcrumb" className="main-breadcrumb">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <a href="index.html">Home</a>
-            </li>
-            <li className="breadcrumb-item">
-              <a href="javascript:void(0)">User</a>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              User Profile
-            </li>
-          </ol>
-        </nav>
-
         <div className="row gutters-sm">
           <div className="col-md-4 mb-3">
             <div className="card">
@@ -320,7 +337,7 @@ const Profile: React.FC = () => {
                     onClick={handleSave}
                     disabled={loading}
                   >
-                    {loading ? 'Saving...' : 'Save'}
+                    {loading ? 'Đang lưu...' : 'Lưu'}
                   </Button>
                 ) : (
                   <Button
@@ -329,7 +346,7 @@ const Profile: React.FC = () => {
                     className={clsx(s['button-edit-profile'])}
                     onClick={() => setIsEditing(true)}
                   >
-                    Edit
+                    Sửa
                   </Button>
                 )}
               </div>
@@ -404,6 +421,8 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+      {loading && <Loading />}
+
       <ToastContainer />
     </div>
   );

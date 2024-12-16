@@ -28,7 +28,7 @@
   border: none;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   transition: transform 0.3s ease;
-  border-radius: 0; // Loại bỏ border-radius cho card
+   // Loại bỏ border-radius cho card
 
   &:hover {
     transform: translateY(-2px);
@@ -37,7 +37,7 @@
 
 .card-body-user {
   padding: 1.5rem;
-  border-radius: 0; // Loại bỏ border-radius
+   // Loại bỏ border-radius
 
   .rounded-circle {
     width: 150px;
@@ -56,7 +56,7 @@
 
 .card-body {
   padding: 1.5rem;
-  border-radius: 0; // Loại bỏ border-radius
+   // Loại bỏ border-radius
 
   h6 {
     color: #495057;
@@ -65,10 +65,10 @@
   }
 
   .form-control {
-    border: 1px solid #ced4da;
+    
     padding: 0.5rem 0.75rem;
     transition: border-color 0.15s ease-in-out;
-    border-radius: 0; // Loại bỏ border-radius cho input
+     // Loại bỏ border-radius cho input
 
     &:focus {
       border-color: #80bdff;
@@ -94,7 +94,7 @@
 .alert {
   padding: 1rem;
   margin-bottom: 1rem;
-  border-radius: 0; // Loại bỏ border-radius cho alert
+   // Loại bỏ border-radius cho alert
 
   &.alert-danger {
     background-color: #f8d7da;

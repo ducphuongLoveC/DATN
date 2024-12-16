@@ -24,7 +24,7 @@ const Container = styled('div')(() => ({
   marginBottom: '10px',
   overflow: 'hidden',
   borderRadius: 'var(--main-border-radius)',
-  height: '250px',
+  height: '270px',
   position: 'relative',
 }));
 
@@ -125,7 +125,7 @@ const Carousel: React.FC<CarouselProps> = ({ dot = false, time = 4000, auto = fa
           <div key={slider._id}>
             <Box
               sx={{
-                height: '250px',
+                height: '270px',
                 background: slider.background,
                 display: 'flex',
                 justifyContent: 'space-between',

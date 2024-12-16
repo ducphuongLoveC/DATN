@@ -146,10 +146,9 @@ const SettingUser: React.FC = () => {
       }
     } catch (error: any) {
       console.log(error);
-      
+
       console.error('Lỗi khi cập nhật dữ liệu:', error);
       setSnackbar({ open: true, message: error.response.data.message });
-      
     } finally {
       setLoading(false);
     }
