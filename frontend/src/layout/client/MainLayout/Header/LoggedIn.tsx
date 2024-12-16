@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Button, useTheme } from '@mui/material';
+import { Box, Button, useTheme } from '@mui/material';
 import { useMediaQuery } from '@mui/material';
-import HeadlessTippy from '@tippyjs/react/headless';
 import { Link, useNavigate } from 'react-router-dom';
 
-import lodash from 'lodash';  
+// tippy
+import Tippy from '@tippyjs/react';
+import HeadlessTippy from '@tippyjs/react/headless';
+
+import lodash from 'lodash';
 // moment
 import moment from 'moment';
 // mui
@@ -189,9 +192,11 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
               </Wrapper>
             )}
           >
-            <i className="tw-cursor-pointer tw-select-none">
-              <BiBell />
-            </i>
+            <Tippy content="Thông báo">
+              <i className="tw-cursor-pointer tw-select-none">
+                <BiBell />
+              </i>
+            </Tippy>
           </HeadlessTippy>
         </div>
       </li>
@@ -253,13 +258,16 @@ const LoggedIn: React.FC<UserProp> = ({ user }) => {
             </Wrapper>
           )}
         >
-          <div className="tw-cursor-pointer">
-            <img
-              src={user.profile_picture}
-              className="tw-rounded-full tw-h-9 tw-w-9 tw-object-cover tw-max-w-full tw-max-h-full tw-min-w-[36px] tw-min-h-[36px]"
-              alt="User Avatar"
-            />
-          </div>
+          <Tippy content="Trang cá nhân">
+            <Box className="tw-cursor-pointer">
+              <img
+                style={{ border: `3px solid ${theme.palette.divider}` }}
+                src={user.profile_picture}
+                className="tw-rounded-full tw-h-9 tw-w-9 tw-object-cover tw-max-w-full tw-max-h-full tw-min-w-[36px] tw-min-h-[36px]"
+                alt="User Avatar"
+              />
+            </Box>
+          </Tippy>
         </HeadlessTippy>
       </li>
     </>
