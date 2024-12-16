@@ -9,6 +9,7 @@ import Header from '../MainLayout/Header';
 import Footer from '../MainLayout/Footer';
 import Layout from '../Layout.scss.module.scss';
 import axiosInstance from '@/api/axiosInstance';
+import CarouselSkeleton from '@/ui-component/cards/Skeleton/CarouselSkeleton';
 
 interface BannerLayoutProp {
   children: React.ReactNode;
@@ -46,10 +47,6 @@ const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
     fetchCarousels();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>; // Loading state
-  }
-
   return (
     <div
       style={{
@@ -65,8 +62,9 @@ const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
       >
         <SideBar />
         <div className={clsx(Layout['content-main'], downMD ? 'tw-px-2' : '')}>
-          <Carousel dot auto time={4000} sliders={carousels} />
-          <Box mt='var(--large-space)'>{children}</Box>
+          {loading ? <CarouselSkeleton /> : <Carousel dot auto time={7000} sliders={carousels} />}
+
+          <Box mt="var(--large-space)">{children}</Box>
         </div>
       </div>
       <Footer />

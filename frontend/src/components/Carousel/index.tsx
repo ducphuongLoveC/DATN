@@ -129,7 +129,6 @@ const Carousel: React.FC<CarouselProps> = ({ dot = false, time = 4000, auto = fa
                 background: slider.background,
                 display: 'flex',
                 justifyContent: 'space-between',
-                padding: '20px 10px 0 50px',
               }}
             >
               <Box
@@ -139,13 +138,18 @@ const Carousel: React.FC<CarouselProps> = ({ dot = false, time = 4000, auto = fa
                   display: 'flex',
                   justifyContent: 'space-between',
                   flexDirection: 'column',
+                  padding: '20px 10px 0 50px',
                 }}
               >
                 <Box>
-                  <Typography sx={{ color: 'white', marginBottom: '10px' }} variant="h1" component="h1">
+                  <Typography
+                    sx={{ color: 'white', marginBottom: '20px', fontWeight: 'bold' }}
+                    variant="h1"
+                    component="h1"
+                  >
                     {slider.title}
                   </Typography>
-                  <Typography sx={{ lineHeight: '25px' }} variant="body1" component="p">
+                  <Typography sx={{ lineHeight: '25px', fontSize: '16px' }} variant="body1">
                     {slider.description}
                   </Typography>
                 </Box>
@@ -157,7 +161,7 @@ const Carousel: React.FC<CarouselProps> = ({ dot = false, time = 4000, auto = fa
                         color: 'white',
                         border: `2px solid white`,
                         marginBottom: '35px',
-                        padding: '3px 20px',
+                        padding: '3px 30px',
                         borderRadius: 'var(--main-border-radius)',
                         fontWeight: '600',
                         transition: 'background-color 0.3s, color 0.3s',
@@ -177,8 +181,7 @@ const Carousel: React.FC<CarouselProps> = ({ dot = false, time = 4000, auto = fa
                   display: { xs: 'none', sm: 'flex' },
                   justifyContent: 'center',
                   alignItems: 'center',
-                  flex: 1,
-                  padding: '10px',
+                  flex:0.9
                 }}
               >
                 <img src={slider.image} alt={slider.title} style={{ height: '100%', objectFit: 'contain' }} />

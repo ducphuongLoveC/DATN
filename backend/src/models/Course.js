@@ -10,7 +10,7 @@ const courseSchema = new mongoose.Schema(
     title: {
       type: String,
       required: [true, "Title is required"],
-      minlength: 6,
+      minlength: 1,
       maxlength: 255,
     },
     level: {
@@ -25,6 +25,7 @@ const courseSchema = new mongoose.Schema(
       maxlength: 255,
     },
     description: {
+      default: "",
       type: String,
       maxlength: 25000,
     },

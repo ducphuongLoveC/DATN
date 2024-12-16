@@ -141,7 +141,6 @@ const Question: React.FC<QuestionProps> = ({ questions, onCompleted }) => {
       {/* Display confetti for 3 seconds when quiz is completed */}
       {quizCompleted && <Confetti width={width} height={height} />}
 
-      <ToastContainer />
     </Box>
   );
 };

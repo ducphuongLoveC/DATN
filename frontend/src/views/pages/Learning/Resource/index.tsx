@@ -9,7 +9,7 @@ import Question from './Question';
 
 // ui
 import { toast, ToastContainer } from 'react-toastify';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, useMediaQuery } from '@mui/material';
 import { useTheme, styled } from '@mui/material';
 
 // api
@@ -116,6 +116,8 @@ const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => 
     [resource._id, user._id]
   );
 
+  const isXs = useMediaQuery('(max-width:600px)');
+
   return (
     <>
       {(() => {
@@ -162,7 +164,8 @@ const Resource: React.FC<any> = ({ resource, refetchResource, refetchNote }) => 
         sx={{
           marginTop: '20px',
           minHeight: '300px',
-          padding: '0 20px',
+          padding: resource.resource_type === 'Document' && !isXs ? `0 150px` : '0 20px',
+
           background: theme.palette.background.paper,
         }}
       >

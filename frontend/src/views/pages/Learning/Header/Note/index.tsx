@@ -26,6 +26,9 @@ const Note: React.FC<Notes> = ({ notes }) => {
   const query = useQueryParams();
   const dispatch = useDispatch();
 
+  console.log(notes);
+  
+
   const handleSeek = (seek: number, idCurrentResource: string) => {
     const idResource = query.get('id');
     if (idResource !== idCurrentResource) {

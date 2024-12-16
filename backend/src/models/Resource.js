@@ -17,7 +17,7 @@ const resourceSchema = new mongoose.Schema(
     title: {
       type: String,
       required: [true, "Tiêu đề là bắt buộc"],
-      minlength: [6, "Tiêu đề tài liệu phải có ít nhất 6 ký tự"], 
+      minlength: [1, "Tiêu đề tài liệu phải có ít nhất 6 ký tự"],
       maxlength: 255,
     },
 
@@ -33,8 +33,8 @@ const resourceSchema = new mongoose.Schema(
     },
 
     duration: {
+      default: 0,
       type: Number,
-      min: 0,
       max: 6000,
     },
 
@@ -48,12 +48,13 @@ const resourceSchema = new mongoose.Schema(
       {
         question: {
           type: String,
-          required: [true, "Question is required"],
+          default: "Câu hỏi:",
+
           maxlength: 255000,
         },
         correctAnswer: {
           type: String, // Correct answer could be a letter or index
-          required: [true, "Correct answer is required"],
+          default: "A",
         },
         options: {
           type: Map,
@@ -62,14 +63,15 @@ const resourceSchema = new mongoose.Schema(
         },
         hint: {
           type: String,
+          default: "",
         },
       },
     ],
 
     description: {
       type: String,
-      // maxlength: 25000,
-      default: "",
+      maxlength: 2500000,
+      default: " ",
     },
     isActive: {
       type: Boolean,

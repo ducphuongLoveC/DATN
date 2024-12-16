@@ -9,8 +9,7 @@ const moduleSchema = new mongoose.Schema(
     },
     title: {
       type: String,
-      required: [true, "Title is required"],
-      minlength: 6,
+      default: "",
       maxlength: 255,
     },
     status: {

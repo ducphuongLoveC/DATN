@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -108,6 +108,13 @@ const Learning: React.FC = () => {
     queryFn: () => getNotes(idResource, user._id, queryNote),
   });
 
+  const mutateDelete = useMutation({
+    mutationFn: deleteNote,
+    onSuccess: () => {
+      refetchNote();
+    },
+  });
+
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -163,8 +170,7 @@ const Learning: React.FC = () => {
     refetchNote();
   };
   const handleDeleteNote = async (id: string) => {
-    await deleteNote(id);
-    refetchNote();
+    mutateDelete.mutate(id);
   };
 
   useEffect(() => {
