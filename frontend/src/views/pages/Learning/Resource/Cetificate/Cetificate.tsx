@@ -29,7 +29,7 @@ const Certificate: React.FC<CertificateProp> = ({ certificate_code, user_id, cou
 
   useEffect(() => {
     const fetchImage = async () => {
-      const url = 'https://res.cloudinary.com/dgzwrfdjn/image/upload/v1733853248/certificate_qt2ndi.png';
+      const url = 'https://res.cloudinary.com/dbd4kxjwi/image/upload/v1734324929/cert_uqffm9.jpg';
       try {
         const response = await fetch(url, { mode: 'cors' });
         const blob = await response.blob();

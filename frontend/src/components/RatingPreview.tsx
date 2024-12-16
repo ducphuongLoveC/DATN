@@ -243,6 +243,7 @@ import {
 } from '@mui/material';
 import StarRatings from 'react-star-ratings';
 import { useState } from 'react';
+import moment from 'moment';
 
 interface RatingPreviewProps {
   user_id?: string;
@@ -387,10 +388,12 @@ export const RatingPreview: React.FC<RatingPreviewProps> = ({
             >
               <Box display={'flex'} justifyContent={'space-between'} mb={1}>
                 <Typography variant="h6" fontWeight="bold">
-                  {c.user.name} {user_id === c.user._id && '( bạn )'}
+                  {c.user.name} - {c.user.email} {user_id === c.user._id && '( bạn )'}
                 </Typography>
+                <Typography variant="h6" fontWeight="bold"></Typography>
+
                 <Typography variant="body2" color="textSecondary">
-                  {new Date(c.createdAt).toLocaleDateString()}
+                  {moment(c.createdAt).format('YYYY-MM-DD - HH:mm:ss')}
                 </Typography>
               </Box>
               <Typography variant="body1" mb={2} sx={{ lineHeight: 1.6 }}>
