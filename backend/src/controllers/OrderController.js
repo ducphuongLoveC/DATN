@@ -133,32 +133,38 @@ class OrderController {
         minPrice,
         maxPrice,
         sortPrice, // 'asc' hoặc 'desc' để sắp xếp theo giá
+        searchId, // Tìm kiếm theo ID đơn hàng
       } = req.query;
-
+  
       // Xây dựng query filter
       let query = Order.find();
-
+  
       // Thêm điều kiện lọc theo giá
       if (minPrice || maxPrice) {
         let priceFilter = {};
         if (minPrice) priceFilter["$gte"] = parseFloat(minPrice);
         if (maxPrice) priceFilter["$lte"] = parseFloat(maxPrice);
-
+  
         query = query.where("amount", priceFilter);
       }
-
+  
+      // Thêm điều kiện tìm kiếm theo ID đơn hàng
+      if (searchId) {
+        query = query.where("_id").equals(searchId);
+      }
+  
       // Thêm populate
       query = query.populate("user_id").populate("course_id");
-
+  
       // Thêm sắp xếp theo giá nếu có
       if (sortPrice) {
         query = query.sort({
           amount: sortPrice === "desc" ? -1 : 1,
         });
       }
-
+  
       const orders = await query;
-
+  
       return res.status(200).json({
         success: true,
         total: orders.length,
@@ -170,6 +176,7 @@ class OrderController {
       next(error);
     }
   }
+  
 }
 
 export default new OrderController();

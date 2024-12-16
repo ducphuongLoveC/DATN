@@ -13,8 +13,8 @@ import {
   Tooltip,
   IconButton,
   TablePagination,
+  TextField,
 } from '@mui/material';
-import LockIcon from '@mui/icons-material/Lock';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import useUsers from '../../../../api/useUsers';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +24,7 @@ const StudentList = () => {
   const { rows, loading, error } = useUsers();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   const handleViewDetails = (user: any) => {
@@ -35,14 +36,34 @@ const StudentList = () => {
     }
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredRows = rows.filter((row) =>
+    row.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) return <Typography>Loading...</Typography>;
   if (error) return <Typography>Error: {error}</Typography>;
 
-  const paginatedRows = rows.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  const paginatedRows = filteredRows.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
   return (
     <Box>
       <HeaderTitle des="Đây là trang chi danh sách người dùng" />
+      
+      {/* Tìm kiếm người dùng */}
+       <Box sx={{ mb: 2, p: 2 }} component={Paper}>
+      <TextField
+        label="Tìm kiếm theo tên"
+        variant="outlined"
+        fullWidth
+        value={searchQuery}
+        onChange={handleSearchChange}
+        sx={{ marginBottom: 2 }}
+      />
+      </Box>
       <TableContainer component={Paper} sx={{ borderRadius: 0 }}>
         <Table>
           <TableHead>
@@ -78,7 +99,7 @@ const StudentList = () => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={rows.length}
+        count={filteredRows.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={(_, newPage) => setPage(newPage)}

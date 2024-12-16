@@ -73,7 +73,7 @@ const ProFile = () => {
   return (
     <div className={clsx(s['main-profileUser'])}>
       <div className={clsx(s['banner-profileUser'])}>
-        <img src="https://fullstack.edu.vn/assets/cover-profile-CDYcrPwJ.png" alt="Banner" />
+        <img src="/images/banner-user.png" alt="Banner" />
       </div>
 
       <div className={clsx(s['box-avatar-name'])}>
@@ -82,7 +82,7 @@ const ProFile = () => {
         </div>
         <span className={clsx(s['name-profileProfile'])}>
           {user?.name || 'Tên người dùng'}
-          {user?.role === 'admin' && <CheckCircleIcon sx={{ fontSize: 'var(--medium-icon)', color: 'primary.main', ml:1 }} />}
+          {user?.role === 'admin' && <CheckCircleIcon sx={{ fontSize: 'var(--medium-icon)', color: 'primary.main', ml: 1 }} />}
         </span>
       </div>
 
@@ -93,7 +93,10 @@ const ProFile = () => {
           <div className={clsx(s['box-top'])}>
             <h4 className={clsx(s['h4-title'])}>Giới thiệu</h4>
             <div className={clsx(s['box-icon-name'])}>
+              <span>Biệt danh: {user?.referring}</span>
+              <br />
               <PersonPinCircleRounded />
+
               <span>
                 Thành viên của Ftech - Ngày tham gia:{' '}
                 {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Chưa có thông tin'}

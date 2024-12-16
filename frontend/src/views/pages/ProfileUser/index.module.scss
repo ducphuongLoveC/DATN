@@ -11,10 +11,13 @@
     position: relative;
 }
 
-.banner-profileUser>img {
+.banner-profileUser > img {
     width: 100%;
     height: 100%;
+    object-fit: cover; /* Đảm bảo ảnh không bị vỡ và vừa khung */
+    background-repeat: no-repeat; /* Ngăn ảnh lặp lại */
 }
+
 
 .box-avatar-name {
     display: flex;
@@ -22,7 +25,7 @@
     align-items: center;
     position: relative;
     top: -80px;
-    left: -380px;
+    left: -280px;
 }
 
 .avatar-profileUser {
@@ -53,7 +56,7 @@
     height: auto;
     display: flex;
     justify-content: space-between;
-    margin: 0 auto;
+    margin:  -50px auto;
     padding: 0px 24px;
     gap: 20px;
 }
