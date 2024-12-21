@@ -1,7 +1,7 @@
 /backend/node_modules
 /frontend/node_modules
-/backend/.env.local
-/frontend/.env
+# /backend/.env.local
+# /frontend/.env
 
-/backend/*.env
-/frontend/*.env
+# /backend/*.env
+# /frontend/*.env
