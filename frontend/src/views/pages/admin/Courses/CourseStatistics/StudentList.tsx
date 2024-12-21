@@ -1,6 +1,18 @@
-
-
-import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, TablePagination, TextField, Avatar } from '@mui/material';
+import {
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+  TablePagination,
+  TextField,
+  Avatar,
+} from '@mui/material';
 import { Visibility } from '@mui/icons-material';
 import moment from 'moment';
 import { memo, useState } from 'react';
@@ -72,7 +84,7 @@ const StudentList: React.FC<StudentListProps> = ({ users, onSearch, valueSearch 
                     <TableCell>{moment(user.stats.last_accessed).fromNow()}</TableCell>
                     <TableCell align="right">
                       <Tooltip title="Xem chi tiết">
-                        <Link to={`/admin/users/${user.user_id}`}>
+                        <Link to={`/user-detail/${user.user_id}`}>
                           <IconButton color="primary">
                             <Visibility />
                           </IconButton>

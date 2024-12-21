@@ -233,7 +233,7 @@ export default function LearningPathList() {
           <Table sx={{ minWidth: 650 }} aria-label="learning paths table">
             <TableHead>
               <TableRow>
-                <TableCell>Tên lộ trình</TableCell>
+                <TableCell>Tên danh mục</TableCell>
                 <TableCell>Mô tả</TableCell>
                 <TableCell align="right">Hành động</TableCell>
               </TableRow>

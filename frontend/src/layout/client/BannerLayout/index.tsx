@@ -1,7 +1,7 @@
 import { useTheme, Theme, useMediaQuery, Box } from '@mui/material';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+
 
 import SideBar from '../MainLayout/SideBar';
 import Carousel from '@/components/Carousel';
@@ -62,7 +62,7 @@ const BannerLayout: React.FC<BannerLayoutProp> = ({ children }) => {
       >
         <SideBar />
         <div className={clsx(Layout['content-main'], downMD ? 'tw-px-2' : '')}>
-          {loading ? <CarouselSkeleton /> : <Carousel dot auto time={7000} sliders={carousels} />}
+          {loading ? <CarouselSkeleton /> : <Carousel dot auto time={15000} sliders={carousels} />}
 
           <Box mt="var(--large-space)">{children}</Box>
         </div>

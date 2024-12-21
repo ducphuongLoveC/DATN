@@ -152,7 +152,7 @@ class PaymentContronller {
               <td style="border: 1px solid #ddd; padding: 8px;">${course.level}</td>
             </tr>
             <tr>
-              <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Giá đã thanh toán</th>
+              <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Giá gốc thanh toán</th>
               <td style="border: 1px solid #ddd; padding: 8px;">${course.sale_price || course.original_price} VND</td>
             </tr>
             <tr>

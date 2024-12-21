@@ -64,7 +64,7 @@ const Header: React.FC = () => {
       </Box>
       <BoxCenter>
         <BoxCenter>
-          <Progress width={50} value={88} />
+          <Progress value={88} />
           {!isMobile && (
             <Typography variant="caption" color="white">
               1/100 bài học
