@@ -1,0 +1,11 @@
+# Exported from Render on 2024-12-21T03:11:50Z
+services:
+- type: web
+  name: DATN
+  runtime: node
+  repo: https://github.com/ducphuongLoveC/DATN
+  plan: free
+  region: oregon
+  buildCommand: yarn
+  startCommand: npm run dev
+version: "1"
