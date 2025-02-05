@@ -19,7 +19,6 @@ const CertificateCheck: React.FC = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
   } = useForm<FormValues>();
 
   const [errorFind, setErrorFind] = useState('');

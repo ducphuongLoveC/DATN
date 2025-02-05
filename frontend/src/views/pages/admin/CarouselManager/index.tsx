@@ -23,7 +23,7 @@ const CarouselManager: React.FC = () => {
   const [carousels, setCarousels] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
   const [carouselToDelete, setCarouselToDelete] = useState<string | null>(null);
   const [editCarouselId, setEditCarouselId] = useState<string | null>(null);  // For editing
 

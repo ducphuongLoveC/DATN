@@ -53,7 +53,6 @@ const VerifyEmail: React.FC<VerifyEmailProps> = ({ isLoading, onSubmit, ...other
     control,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<FormLoginValues>({
     resolver: zodResolver(schema),
     defaultValues: {
