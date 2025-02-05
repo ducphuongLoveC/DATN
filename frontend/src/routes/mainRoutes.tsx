@@ -34,7 +34,7 @@ const ForgetPassword = Loadable(lazy(() => import('../views/pages/authentication
 import RouteProp from '@/interfaces/route';
 import HasUser from '@/middlewares/HasUser';
 
-const publicRoutes: RouteProp[] = [
+const publicRoutes : RouteProp[] = [
   {
     path: '/',
     layout: BannerLayout,
@@ -56,24 +56,24 @@ const publicRoutes: RouteProp[] = [
     page: PostDetail,
   },
   {
-    middleware: RedirectIfAuthenticated,
+    middleware: [RedirectIfAuthenticated],
     path: path.client.auth.login,
     layout: MainLayout,
     page: Login3,
   },
   {
-    middleware: RedirectIfAuthenticated,
+    middleware: [RedirectIfAuthenticated],
     path: path.client.logAuth,
     page: LogAuth,
   },
   {
-    middleware: RedirectIfAuthenticated,
+    middleware: [RedirectIfAuthenticated],
     path: path.client.auth.register,
     layout: MainLayout,
     page: Register3,
   },
   {
-    middleware: HasAccess,
+    middleware: [HasAccess],
     path: path.client.learning,
     page: Learning,
   },
@@ -108,7 +108,7 @@ const publicRoutes: RouteProp[] = [
   },
   {
     layout: MainLayout,
-    middleware: HasUser,
+    middleware: [HasUser],
     path: path.client.myCourses,
     page: MyCourses,
   },

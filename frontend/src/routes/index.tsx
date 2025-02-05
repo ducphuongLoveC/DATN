@@ -18,23 +18,14 @@ const createRoutes = (routes: RouteProp[]) => {
       <ResetScroll />
       <Routes>
         {routes.map((route, index) => {
-          const Middleware: any = route.middleware || Fragment;
-          const Layout: any = route.layout || Fragment;
+          const Middlewares = route.middleware || [];
+          const Layout = route.layout || Fragment;
           const Page = route.page;
-
-          return (
-            <Route
-              key={index}
-              path={route.path}
-              element={
-                <Middleware>
-                  <Layout>
-                    <Page />
-                  </Layout>
-                </Middleware>
-              }
-            />
+          const WrappedPage = Middlewares.reduceRight(
+            (child, Middleware) => <Middleware>{child}</Middleware>,
+            <Page />
           );
+          return <Route key={index} path={route.path} element={<Layout>{WrappedPage}</Layout>} />;
         })}
         {!getMainDomain().url.hostname.includes('admin') && <Route path="*" element={<NotFound />} />}
       </Routes>
